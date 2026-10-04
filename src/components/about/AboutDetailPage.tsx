@@ -274,7 +274,7 @@ export const AboutDetailPage: React.FC = () => {
             {/* Action CTA Card */}
             <div className="p-6 space-y-4 text-center">
               <div className="w-14 h-14 rounded-ful text-blue-900 flex items-center justify-center mx-auto shadow-xs">
-                <img src="/icon-login-btn.png" alt="Isi Kuisioner" className="w-7 h-7 object-contain" />
+                <img src="/icon-login-btn.svg" alt="Isi Kuisioner" className="w-7 h-7 object-contain" />
               </div>
 
               <div>

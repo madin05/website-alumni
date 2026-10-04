@@ -14,6 +14,7 @@ import {
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { ArrowLeft } from "lucide-react";
 
 interface Step3Props {
   onNext: () => void;
@@ -103,14 +104,14 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Blue Section Header Bar matching Dapodik screenshot */}
-      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-bold text-xs uppercase tracking-wider rounded-t-sm">
-        DETAIL AKTIVITAS LULUSAN
+      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-medium text-xs rounded-t-sm">
+        Detal Aktivitas Lulusan
       </div>
 
       {/* 1. BLOK JIKA ALUMNI BEKERJA */}
       {isKerja && (
         <div className="space-y-4 pt-1">
-          <div className="text-xs font-bold text-blue-900 uppercase tracking-wide border-b border-blue-100 pb-1.5">
+          <div className="text-xs font-medium text-blue-900  border-b border-blue-100 pb-1.5">
             Jika Alumni Bekerja
           </div>
 
@@ -233,7 +234,7 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
       {/* 2. BLOK JIKA ALUMNI KULIAH */}
       {isKuliah && (
         <div className="space-y-4 pt-2">
-          <div className="text-xs font-bold text-blue-900 uppercase tracking-wide border-b border-blue-100 pb-1.5">
+          <div className="text-xs font-medium text-blue-900  border-b border-blue-100 pb-1.5">
             Jika Melanjutkan Kuliah
           </div>
 
@@ -341,7 +342,7 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
       {/* 3. BLOK JIKA ALUMNI BERWIRAUSAHA */}
       {isUsaha && (
         <div className="space-y-4 pt-2">
-          <div className="text-xs font-bold text-blue-900 uppercase tracking-wide border-b border-blue-100 pb-1.5">
+          <div className="text-xs font-medium text-blue-900  border-b border-blue-100 pb-1.5">
             Jika Berwirausaha
           </div>
 
@@ -458,10 +459,11 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
         <Button
           type="button"
           onClick={onPrev}
-          variant="outline"
+          variant="ghost"
           size="md"
           className="text-xs sm:text-sm"
         >
+          <ArrowLeft size={16} className="mr-1" />
           Kembali
         </Button>
 

@@ -76,8 +76,8 @@ export const HeroSection: React.FC = () => {
   return (
     <section id="beranda" className="relative w-full overflow-hidden">
       
-      {/* Main Hero Visual Container: Fixed stable height to prevent bg-cover zoom/shift on scroll */}
-      <div className="relative h-[560px] sm:h-[620px] lg:h-[660px] w-full flex items-center">
+      {/* Main Hero Visual Container: Extended height on mobile to seamlessly wrap the content & stats bar */}
+      <div className="relative h-[700px] sm:h-[620px] lg:h-[660px] w-full flex items-center pt-4 pb-20 sm:py-0">
         
         {/* Background Photo Image (Stable anchor) */}
         <div
@@ -136,7 +136,7 @@ export const HeroSection: React.FC = () => {
       {/* Floating Statistics Bar with subtle geometric ornament & count up animation */}
       <div
         ref={statsRef}
-        className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 -mt-12 sm:-mt-16 mb-16 sm:mb-20"
+        className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 -mt-20 sm:-mt-16 mb-12 sm:mb-20"
       >
         <div className="relative bg-gradient-to-r from-[#142e5c] via-[#1a3c75] to-[#142e5c] rounded-xl p-5 sm:p-7 shadow-2xl border border-white/15 overflow-hidden">
           

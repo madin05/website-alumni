@@ -59,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
             <img
               src="/logo-smk.png"
               alt="SMK Sasmita Jaya 2"
-              className="h-16 sm:h-20 lg:h-[78px] w-auto max-w-[280px] sm:max-w-[340px] object-contain select-none"
+              className="h-11 sm:h-16 lg:h-[78px] w-auto max-w-[210px] sm:max-w-[340px] object-contain select-none"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = '/logo smk sasmita.png';
               }}
@@ -122,9 +122,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 className="flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#132238] hover:bg-[#1c3355] text-white text-sm font-semibold tracking-wide shadow-md transition-all active:scale-95 cursor-pointer"
               >
                 <img
-                  src="/icon-login-btn.png"
+                  src="/icon-login-btn.svg"
                   alt="Login"
-                  className="w-4 h-4 object-contain invert opacity-95"
+                  className="w-5 h-5 object-contain invert opacity-95"
                   onError={(e) => {
                     (e.target as HTMLElement).style.display = 'none';
                   }}
@@ -199,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <Link
                   to="/#beranda"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-50  transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-100  transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <Home className="w-4 h-4 text-slate-400" />
@@ -211,7 +211,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <Link
                   to="/#tentang"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-50  transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-100  transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <Info className="w-4 h-4 text-slate-400" />
@@ -223,10 +223,10 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <Link
                   to={isAuthenticated ? '/tracer-study' : '/login'}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold text-slate-600 bg-blue-50/70 hover:bg-blue-100/70 transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-100 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <GraduationCap className="w-4 h-4 text-slate-600" />
+                    <GraduationCap className="w-4 h-4 text-slate-400" />
                     <span>Tracer Study</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-slate-300" />
@@ -235,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <Link
                   to="/#berita"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-50  transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-100  transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <Newspaper className="w-4 h-4 text-slate-400" />
@@ -247,7 +247,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <Link
                   to="/laporan"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-50 transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-100 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <FileText className="w-4 h-4 text-slate-400" />
@@ -259,7 +259,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <Link
                   to="/#kontak"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-50  transition-colors"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-800 hover:bg-blue-100  transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <PhoneCall className="w-4 h-4 text-slate-400" />
@@ -292,9 +292,9 @@ export const Navbar: React.FC<NavbarProps> = () => {
                   className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl bg-[#132238] hover:bg-[#1c3355] text-white text-sm font-semibold tracking-wide shadow-md transition-all active:scale-95 cursor-pointer"
                 >
                   <img
-                    src="/icon-login-btn.png"
+                    src="/icon-login-btn.svg"
                     alt="Login"
-                    className="w-4 h-4 object-contain invert opacity-95"
+                    className="w-5 h-5 object-contain invert opacity-95"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = 'none';
                     }}

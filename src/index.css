@@ -16,7 +16,7 @@
   html {
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
   }
 
   body {
@@ -24,12 +24,18 @@
     color: #1e293b;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "rlig" 1, "calt" 1;
-    font-family: 'Poppins', sans-serif;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+    font-family: "Poppins", sans-serif;
   }
 
-  button, input, optgroup, select, textarea {
-    font-family: 'Poppins', sans-serif;
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
+    font-family: "Poppins", sans-serif;
   }
 }
 
@@ -64,7 +70,7 @@
     rgba(255, 255, 255, 0) 100%
   );
   animation: skeleton-shimmer 1.8s ease-in-out infinite;
-  content: '';
+  content: "";
 }
 
 /* Custom scrollbars */
@@ -110,7 +116,9 @@
   z-index: 1;
   overflow: hidden;
   border: 1px solid #e2e8f0;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
   cursor: pointer;
   min-height: 165px;
 }
@@ -127,7 +135,9 @@
   background-color: #0d2346; /* Deep Navy Blue from user reference */
   -webkit-clip-path: circle(0% at 100% 0%);
   clip-path: circle(0% at 100% 0%);
-  transition: -webkit-clip-path 0.38s cubic-bezier(0.4, 0, 0.2, 1), clip-path 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    -webkit-clip-path 0.38s cubic-bezier(0.4, 0, 0.2, 1),
+    clip-path 0.38s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   z-index: 1;
 }
@@ -186,4 +196,113 @@
 .uiverse-stat-card:hover .stat-action {
   color: #ffffff !important;
   transition: color 0.25s ease-out;
+}
+
+/* Material Floating Input (Uiverse style) */
+.material-group {
+  position: relative;
+  margin-top: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+.material-input {
+  font-size: 15px;
+  padding: 10px 8px 10px 4px;
+  display: block;
+  width: 100%;
+  border: none;
+  border-bottom: 1.5px solid #cbd5e1;
+  background: transparent;
+  color: #0f172a;
+}
+
+.material-input:focus {
+  outline: none;
+}
+
+.material-input::placeholder {
+  color: transparent;
+  opacity: 0;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+
+.material-input:focus::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
+
+.material-label {
+  font-size: 14px;
+  font-weight: 500;
+  position: absolute;
+  pointer-events: none;
+  left: 4px;
+  top: 10px;
+  transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1) all;
+}
+
+.material-input:focus ~ .material-label,
+.material-input:not(:placeholder-shown) ~ .material-label,
+.material-input:valid ~ .material-label {
+  top: -22px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #182a4a;
+  letter-spacing: normal;
+}
+
+.material-bar {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.material-bar:before,
+.material-bar:after {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 0px;
+  position: absolute;
+  background: #182a4a;
+  transition: 0.25s ease all;
+}
+
+.material-bar:before {
+  left: 50%;
+}
+
+.material-bar:after {
+  right: 50%;
+}
+
+.material-input:focus ~ .material-bar:before,
+.material-input:focus ~ .material-bar:after {
+  width: 50%;
+}
+
+.material-highlight {
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.material-input:focus ~ .material-highlight {
+  animation: materialInputHighlighter 0.3s ease;
+}
+
+@keyframes materialInputHighlighter {
+  from {
+    background: #182a4a;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
 }

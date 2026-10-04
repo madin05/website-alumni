@@ -181,7 +181,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               {/* Step Label & Title */}
               <div className="mb-5 pr-8">
                 <span className="text-[10px] font-extrabold text-slate-900 tracking-wider block uppercase mb-1">
-                  LANGKAH 1 DARI 2
+                  Langkah 1 dari 2
                 </span>
                 <h3 className="text-xl sm:text-2xl font-extrabold text-[#182a4a] tracking-tight">
                   Masuk Alumni

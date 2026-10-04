@@ -17,7 +17,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-semibold tracking-wider text-slate-700">
+          <label htmlFor={inputId} className="block text-xs font-semibold text-slate-700">
             {label}
             {requiredStar && <span className="text-rose-500 ml-1">*</span>}
           </label>

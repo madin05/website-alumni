@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useTracerStore } from '@/store/tracerStore';
-import { useAuthStore } from '@/store/authStore';
-import { TracerSubmissionPayload } from '@/types/tracer';
-import { submitTracerStudy } from '@/services/tracerService';
-import { Button } from '@/components/ui/Button';
-import confetti from 'canvas-confetti';
+import React, { useState } from "react";
+import { useTracerStore } from "@/store/tracerStore";
+import { useAuthStore } from "@/store/authStore";
+import { TracerSubmissionPayload } from "@/types/tracer";
+import { submitTracerStudy } from "@/services/tracerService";
+import { Button } from "@/components/ui/Button";
+import confetti from "canvas-confetti";
+import { ArrowLeft } from "lucide-react";
 
 interface Step5Props {
   onPrev: () => void;
@@ -33,40 +34,40 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
   // Construct official payload
   const payload: TracerSubmissionPayload = {
     identitas: {
-      nama_lengkap: identitas.nama_lengkap || '',
-      nisn: identitas.nisn || '',
-      nik: identitas.nik || '',
+      nama_lengkap: identitas.nama_lengkap || "",
+      nisn: identitas.nisn || "",
+      nik: identitas.nik || "",
       tahun_masuk: identitas.tahun_masuk || 2021,
       tahun_lulus: identitas.tahun_lulus || 2024,
-      jurusan: (identitas.jurusan || 'Teknik Komputer dan Jaringan') as any,
-      no_whatsapp: identitas.no_whatsapp || '',
-      email: identitas.email || '',
+      jurusan: (identitas.jurusan || "Teknik Komputer dan Jaringan") as any,
+      no_whatsapp: identitas.no_whatsapp || "",
+      email: identitas.email || "",
       jenis_kelamin: identitas.jenis_kelamin,
     },
-    status_kegiatan: (status_kegiatan || 'KERJA') as any,
+    status_kegiatan: (status_kegiatan || "KERJA") as any,
     masa_tunggu: masa_tunggu,
     detail_kerja:
-      status_kegiatan === 'KERJA' || status_kegiatan === 'KERJA_KULIAH'
+      status_kegiatan === "KERJA" || status_kegiatan === "KERJA_KULIAH"
         ? (detail_kerja as any)
         : null,
     detail_kuliah:
-      status_kegiatan === 'KULIAH' ||
-      status_kegiatan === 'KERJA_KULIAH' ||
-      status_kegiatan === 'WIRAUSAHA_KULIAH'
+      status_kegiatan === "KULIAH" ||
+      status_kegiatan === "KERJA_KULIAH" ||
+      status_kegiatan === "WIRAUSAHA_KULIAH"
         ? (detail_kuliah as any)
         : null,
     detail_usaha:
-      status_kegiatan === 'WIRAUSAHA' || status_kegiatan === 'WIRAUSAHA_KULIAH'
+      status_kegiatan === "WIRAUSAHA" || status_kegiatan === "WIRAUSAHA_KULIAH"
         ? (detail_usaha as any)
         : null,
     evaluasi: {
       skor_relevansi: evaluasi.skor_relevansi || 5,
       kompetensi_bermanfaat: evaluasi.kompetensi_bermanfaat || [],
-      kompetensi_ditingkatkan: evaluasi.kompetensi_ditingkatkan || '',
-      bantu_dunia_kerja: evaluasi.bantu_dunia_kerja || 'Sangat membantu',
-      saran_pembelajaran: evaluasi.saran_pembelajaran || '',
-      saran_bkk: evaluasi.saran_bkk || '',
-      saran_industri: evaluasi.saran_industri || '',
+      kompetensi_ditingkatkan: evaluasi.kompetensi_ditingkatkan || "",
+      bantu_dunia_kerja: evaluasi.bantu_dunia_kerja || "Sangat membantu",
+      saran_pembelajaran: evaluasi.saran_pembelajaran || "",
+      saran_bkk: evaluasi.saran_bkk || "",
+      saran_industri: evaluasi.saran_industri || "",
       kesediaan_dihubungi: evaluasi.kesediaan_dihubungi ?? true,
     },
   };
@@ -76,7 +77,9 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
     setSubmitError(null);
 
     if (!agreement) {
-      setSubmitError('Anda harus mencentang persetujuan pernyataan kebenaran data.');
+      setSubmitError(
+        "Anda harus mencentang persetujuan pernyataan kebenaran data.",
+      );
       return;
     }
 
@@ -86,7 +89,7 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
 
       if (response.success && response.data) {
         await submitTracer(payload);
-        updateUserTracerStatus('SUDAH', response.data.submission_id);
+        updateUserTracerStatus("SUDAH", response.data.submission_id);
 
         confetti({
           particleCount: 80,
@@ -97,11 +100,14 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
         onSuccess(response.data.submission_id);
       } else {
         setSubmitError(
-          response.message || 'Terjadi kesalahan saat memproses data. Silakan periksa kembali formulir Anda.'
+          response.message ||
+            "Terjadi kesalahan saat memproses data. Silakan periksa kembali formulir Anda.",
         );
       }
     } catch (err: any) {
-      setSubmitError('Gagal mengirim data. Silakan periksa koneksi internet Anda.');
+      setSubmitError(
+        "Gagal mengirim data. Silakan periksa koneksi internet Anda.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -110,8 +116,8 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
   return (
     <form onSubmit={handleFinalSubmit} className="space-y-6">
       {/* Blue Section Header Bar matching Dapodik screenshot */}
-      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-bold text-xs uppercase tracking-wider rounded-t-sm">
-        MASUKAN ALUMNI & KONFIRMASI
+      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-medium text-xs rounded-t-sm">
+        Masukan Alumni & Konfirmasi
       </div>
 
       <div className="space-y-4">
@@ -122,8 +128,10 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
           </label>
           <textarea
             rows={2}
-            value={evaluasi.saran_pembelajaran || ''}
-            onChange={(e) => updateEvaluasi({ saran_pembelajaran: e.target.value })}
+            value={evaluasi.saran_pembelajaran || ""}
+            onChange={(e) =>
+              updateEvaluasi({ saran_pembelajaran: e.target.value })
+            }
             placeholder="Contoh : Perbanyak jam praktik dan pembaruan alat lab..."
             className="w-full rounded border border-slate-300 bg-white p-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
           />
@@ -136,7 +144,7 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
           </label>
           <textarea
             rows={2}
-            value={evaluasi.saran_bkk || ''}
+            value={evaluasi.saran_bkk || ""}
             onChange={(e) => updateEvaluasi({ saran_bkk: e.target.value })}
             placeholder="Contoh : Update lowongan kerja secara berkala..."
             className="w-full rounded border border-slate-300 bg-white p-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
@@ -150,7 +158,7 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
           </label>
           <textarea
             rows={2}
-            value={evaluasi.saran_industri || ''}
+            value={evaluasi.saran_industri || ""}
             onChange={(e) => updateEvaluasi({ saran_industri: e.target.value })}
             placeholder="Contoh : Perbanyak kunjungan industri dan guru tamu..."
             className="w-full rounded border border-slate-300 bg-white p-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
@@ -197,14 +205,30 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
 
       {/* Ringkasan Singkat Data */}
       <div className="p-3.5 bg-slate-50 border border-slate-200 rounded text-xs space-y-1.5">
-        <p className="font-bold text-slate-900 border-b border-slate-200 pb-1">
+        <p className="font-medium text-slate-900 border-b border-slate-200 pb-1">
           Ringkasan Isian Alumni
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-slate-700">
-          <p><span className="text-slate-500">Nama:</span> {identitas.nama_lengkap || '-'}</p>
-          <p><span className="text-slate-500">NIS/NISN:</span> {identitas.nisn || '-'}</p>
-          <p><span className="text-slate-500">Jurusan:</span> {identitas.jurusan || '-'}</p>
-          <p><span className="text-slate-500">Status:</span> {status_kegiatan === 'KERJA_KULIAH' ? 'Kuliah & Kerja' : (status_kegiatan ? status_kegiatan.replace(/_/g, ' ') : '-')}</p>
+          <p>
+            <span className="text-slate-500">Nama:</span>{" "}
+            {identitas.nama_lengkap || "-"}
+          </p>
+          <p>
+            <span className="text-slate-500">NIS/NISN:</span>{" "}
+            {identitas.nisn || "-"}
+          </p>
+          <p>
+            <span className="text-slate-500">Jurusan:</span>{" "}
+            {identitas.jurusan || "-"}
+          </p>
+          <p>
+            <span className="text-slate-500">Status:</span>{" "}
+            {status_kegiatan === "KERJA_KULIAH"
+              ? "Kuliah & Kerja"
+              : status_kegiatan
+                ? status_kegiatan.replace(/_/g, " ")
+                : "-"}
+          </p>
         </div>
       </div>
 
@@ -218,8 +242,12 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
           className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 mt-0.5 cursor-pointer"
           required
         />
-        <label htmlFor="agreement" className="text-xs text-slate-700 cursor-pointer leading-relaxed">
-          Saya menyatakan dengan sesungguhnya bahwa data yang saya isikan adalah benar dan sesuai dengan kondisi sebenarnya.
+        <label
+          htmlFor="agreement"
+          className="text-xs text-slate-700 cursor-pointer leading-relaxed"
+        >
+          Saya menyatakan dengan sesungguhnya bahwa data yang saya isikan adalah
+          benar dan sesuai dengan kondisi sebenarnya.
         </label>
       </div>
 
@@ -228,11 +256,12 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
         <Button
           type="button"
           onClick={onPrev}
-          variant="outline"
+          variant="ghost"
           size="md"
           className="text-xs sm:text-sm"
           disabled={isSubmitting}
         >
+          <ArrowLeft size={16} className="mr-1" />
           Kembali
         </Button>
 
@@ -241,7 +270,7 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
           variant="primary"
           size="md"
           isLoading={isSubmitting}
-          className="bg-blue-600 hover:bg-blue-700 font-medium text-xs sm:text-sm px-6 py-2 rounded shadow-none"
+          className="bg-blue-600 hover:bg-blue-700 font-medium text-xs sm:text-sm px-3 py-2 rounded shadow-none"
         >
           Simpan dan kirim survey
         </Button>

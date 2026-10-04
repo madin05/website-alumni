@@ -6,7 +6,7 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Send, HelpCircle, ChevronDown } from "lucide-react";
 
 export const HelpdeskTab: React.FC = () => {
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketSubject, setTicketSubject] = useState("");
   const [ticketMessage, setTicketMessage] = useState("");
   const [submittedTicket, setSubmittedTicket] = useState(false);

@@ -239,10 +239,7 @@ export const ReportSection: React.FC = () => {
     YEAR_OPTIONS.find((y) => y.value === selectedYear)?.label || selectedYear;
 
   return (
-    <section
-      id="laporan"
-      className="relative py-16 sm:py-20 lg:py-24 bg-white border-t border-slate-100"
-    >
+    <section id="laporan" className="relative py-16 sm:py-20 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
@@ -262,9 +259,6 @@ export const ReportSection: React.FC = () => {
           <div className="p-5 sm:p-6  flex flex-col justify-between">
             <div>
               <div className="pb-3 border-b border-slate-100 mb-4">
-                <span className="text-[10px] font-bold text-[#182a4a] uppercase tracking-wider block">
-                  Indikator 1
-                </span>
                 <h3 className="text-sm sm:text-base font-bold text-slate-900">
                   Laju Serap & Aktivitas
                 </h3>
@@ -363,7 +357,7 @@ export const ReportSection: React.FC = () => {
 
               {/* Legends */}
               <div className="space-y-2 mt-4 text-xs">
-                <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div className="flex items-center justify-between p-2 ">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#182a4a]" />
                     <span className="font-semibold text-slate-800">
@@ -374,7 +368,7 @@ export const ReportSection: React.FC = () => {
                     {chartStats.aktivitas.bekerja.percent}%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div className="flex items-center justify-between p-2 ">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#3b82f6]" />
                     <span className="font-semibold text-slate-800">Kuliah</span>
@@ -383,7 +377,7 @@ export const ReportSection: React.FC = () => {
                     {chartStats.aktivitas.kuliah.percent}%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div className="flex items-center justify-between p-2 ">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#64748b]" />
                     <span className="font-semibold text-slate-800">
@@ -394,7 +388,7 @@ export const ReportSection: React.FC = () => {
                     {chartStats.aktivitas.wirausaha.percent}%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div className="flex items-center justify-between p-2 ">
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
                     <span className="font-semibold text-slate-800">
@@ -413,9 +407,6 @@ export const ReportSection: React.FC = () => {
           <div className="p-5 sm:p-6  flex flex-col justify-between">
             <div>
               <div className="pb-3 border-b border-slate-100 mb-4">
-                <span className="text-[10px] font-bold text-[#182a4a] uppercase tracking-wider block">
-                  Indikator 2
-                </span>
                 <h3 className="text-sm sm:text-base font-bold text-slate-900">
                   Kesesuaian Bidang Kerja
                 </h3>
@@ -506,16 +497,13 @@ export const ReportSection: React.FC = () => {
           <div className="p-5 sm:p-6  flex flex-col justify-between">
             <div>
               <div className="pb-3 border-b border-slate-100 mb-4">
-                <span className="text-[10px] font-bold text-[#182a4a] uppercase tracking-wider block">
-                  Indikator 3
-                </span>
                 <h3 className="text-sm sm:text-base font-bold text-slate-900">
                   Sektor & Skala Kerja
                 </h3>
               </div>
 
               <div className="space-y-3 mt-2">
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                <div className="p-2.5 text-xs">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-bold text-slate-800">
                       Nasional / BUMN
@@ -534,7 +522,7 @@ export const ReportSection: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                <div className="p-2.5 text-xs">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-bold text-slate-800">
                       Lokal / Wilayah
@@ -553,7 +541,7 @@ export const ReportSection: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                <div className="p-2.5 text-xs">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-bold text-slate-800">
                       Multinasional / Global
@@ -572,7 +560,7 @@ export const ReportSection: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+                <div className="p-2.5 text-xs">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-bold text-slate-800">
                       Wirausaha / Mandiri
@@ -594,112 +582,14 @@ export const ReportSection: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* 3. Tabel Rekapitulasi Data (Di Bawah Chart) */}
-        <div className="bg-[#f8fafc] rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h3 className="text-lg sm:text-xl font-extrabold text-[#182a4a]">
-                Rekapitulasi Data Tracer Study per Jurusan
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Rincian numerik keterserapan alumni untuk seluruh program
-                keahlian
-              </p>
-            </div>
-
-            <button
-              onClick={() => navigate("/laporan")}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#182a4a] hover:bg-[#122038] text-white font-semibold text-xs shadow-md transition active:scale-95 cursor-pointer self-start sm:self-auto hover:scale-105"
-            >
-              <span>Buka Halaman Laporan Lengkap</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          <div className="overflow-x-auto bg-white rounded-2xl border border-slate-200">
-            <table className="w-full text-left text-xs sm:text-sm border-collapse">
-              <thead>
-                <tr className="border-b-2 border-slate-200 bg-slate-50 text-slate-800 font-bold">
-                  <th className="py-3.5 px-4 rounded-l-xl">
-                    Program Keahlian (Jurusan)
-                  </th>
-                  <th className="py-3.5 px-4 text-center">Total Alumni</th>
-                  <th className="py-3.5 px-4 text-center">Mengisi Tracer</th>
-                  <th className="py-3.5 px-4 text-center">Bekerja</th>
-                  <th className="py-3.5 px-4 text-center">Kuliah</th>
-                  <th className="py-3.5 px-4 text-center">Wirausaha</th>
-                  <th className="py-3.5 px-4 text-center rounded-r-xl">
-                    Belum Kerja
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {tableRows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-slate-50 text-slate-700 transition-colors"
-                  >
-                    <td className="py-3.5 px-4 font-bold text-slate-900 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#182a4a]" />
-                      <span>
-                        {row.name} ({row.code})
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-center text-slate-800">
-                      {row.totalAlumni}
-                    </td>
-                    <td className="py-3.5 px-4 text-center font-bold text-[#182a4a]">
-                      {row.mengisiTracer}{" "}
-                      <span className="text-[11px] font-normal text-slate-500">
-                        ({row.tracerPercent}%)
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-center text-slate-800">
-                      {row.bekerja}
-                    </td>
-                    <td className="py-3.5 px-4 text-center text-slate-800">
-                      {row.kuliah}
-                    </td>
-                    <td className="py-3.5 px-4 text-center text-slate-800">
-                      {row.wirausaha}
-                    </td>
-                    <td className="py-3.5 px-4 text-center text-slate-800">
-                      {row.belumKerja}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className="border-t-2 border-slate-300 bg-slate-100 font-extrabold text-slate-900">
-                  <td className="py-4 px-4 text-slate-900">
-                    Total Keseluruhan
-                  </td>
-                  <td className="py-4 px-4 text-center">
-                    {totalSummary.totalAlumni}
-                  </td>
-                  <td className="py-4 px-4 text-center text-[#182a4a]">
-                    {totalSummary.mengisiTracer}{" "}
-                    <span className="text-[11px] font-bold text-slate-600">
-                      ({totalSummary.tracerPercent}%)
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-center text-slate-900">
-                    {totalSummary.bekerja}
-                  </td>
-                  <td className="py-4 px-4 text-center text-slate-900">
-                    {totalSummary.kuliah}
-                  </td>
-                  <td className="py-4 px-4 text-center text-slate-900">
-                    {totalSummary.wirausaha}
-                  </td>
-                  <td className="py-4 px-4 text-center text-slate-900">
-                    {totalSummary.belumKerja}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+        <div className="flex justify-center">
+          <button
+            onClick={() => navigate("/laporan")}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#182a4a] hover:bg-[#122038] text-white font-semibold text-xs shadow-md transition active:scale-95 cursor-pointer self-start sm:self-auto hover:scale-105"
+          >
+            <span>Buka Halaman Laporan Lengkap</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </section>

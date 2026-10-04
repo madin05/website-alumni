@@ -318,17 +318,17 @@ export const AdminMasterAlumniTab: React.FC = () => {
         {/* Master Data Table */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[#0d2346] text-white">
+            <table className="w-full text-left text-[11px]">
+              <thead className="bg-[#0d2346] text-white text-[11px]">
                 <tr>
-                  <th className="p-3.5 font-semibold">NISN dan NIK</th>
-                  <th className="p-3.5 font-semibold">
+                  <th className="py-2.5 px-3 font-semibold">NISN dan NIK</th>
+                  <th className="py-2.5 px-3 font-semibold">
                     <button
                       type="button"
                       onClick={() => {
                         setNameSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
                       }}
-                      className="inline-flex items-center gap-1.5 hover:text-white transition cursor-pointer select-none group"
+                      className="inline-flex items-center gap-1 hover:text-white transition cursor-pointer select-none group"
                       title={
                         nameSortOrder === "asc"
                           ? "Urutan Nama: A - Z (Klik untuk Z - A)"
@@ -337,22 +337,22 @@ export const AdminMasterAlumniTab: React.FC = () => {
                     >
                       <span>Nama Lengkap</span>
                       {nameSortOrder === "asc" ? (
-                        <ArrowUp className="w-3.5 h-3.5 text-slate-200" />
+                        <ArrowUp className="w-3 h-3 text-slate-200" />
                       ) : (
-                        <ArrowDown className="w-3.5 h-3.5 text-slate-200" />
+                        <ArrowDown className="w-3 h-3 text-slate-200" />
                       )}
                     </button>
                   </th>
-                  <th className="p-3.5 font-semibold">Program Keahlian</th>
-                  <th className="p-3.5 font-semibold">Nomor WhatsApp</th>
-                  <th className="p-3.5 font-semibold">Status Pengisian</th>
-                  <th className="p-3.5 font-semibold text-right">Tindakan</th>
+                  <th className="py-2.5 px-3 font-semibold">Program Keahlian</th>
+                  <th className="py-2.5 px-3 font-semibold">Nomor WhatsApp</th>
+                  <th className="py-2.5 px-3 font-semibold">Status Pengisian</th>
+                  <th className="py-2.5 px-3 font-semibold text-right">Tindakan</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
+              <tbody className="divide-y divide-slate-200 text-[11px]">
                 {paginatedAlumni.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-500">
+                    <td colSpan={6} className="p-6 text-center text-slate-500 text-xs">
                       Tidak ada data siswa yang cocok dengan pencarian atau
                       filter yang dipilih.
                     </td>
@@ -363,57 +363,57 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       key={alumni.id}
                       className="hover:bg-slate-50 transition"
                     >
-                      <td className="p-3.5 font-mono">
-                        <div className="font-semibold text-slate-900">
+                      <td className="py-2.5 px-3 font-mono">
+                        <div className="font-semibold text-slate-900 text-[11px]">
                           {alumni.nisn}
                         </div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[9.5px] text-slate-400">
                           {alumni.nik}
                         </div>
                       </td>
-                      <td className="p-3.5">
-                        <div className="font-semibold text-slate-900">
+                      <td className="py-2.5 px-3">
+                        <div className="font-semibold text-slate-900 text-[11px]">
                           {alumni.nama}
                         </div>
-                        <div className="text-[10px] text-slate-400 truncate max-w-[180px]">
+                        <div className="text-[9.5px] text-slate-400 truncate max-w-[180px]">
                           {alumni.email}
                         </div>
                       </td>
-                      <td className="p-3.5">
-                        <div className="text-slate-800">{alumni.jurusan}</div>
-                        <div className="text-[10px] text-slate-400">
+                      <td className="py-2.5 px-3">
+                        <div className="text-slate-800 text-[11px]">{alumni.jurusan}</div>
+                        <div className="text-[9.5px] text-slate-400">
                           Lulusan Tahun {alumni.tahunLulus}
                         </div>
                       </td>
-                      <td className="p-3.5 font-mono text-slate-700">
+                      <td className="py-2.5 px-3 font-mono text-slate-700 text-[11px]">
                         {alumni.noWhatsapp}
                       </td>
-                      <td className="p-3.5">
+                      <td className="py-2.5 px-3">
                         {alumni.statusTracer === "SUDAH" ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 font-semibold text-slate-800">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 font-semibold text-slate-800 text-[10px]">
                             <span>Sudah Mengisi</span>
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 font-semibold text-slate-800">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 font-semibold text-slate-800 text-[10px]">
                             <span>Belum Mengisi</span>
                           </span>
                         )}
                       </td>
-                      <td className="p-3.5 text-right">
+                      <td className="py-2.5 px-3 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           {alumni.statusTracer === "BELUM" ? (
                             <a
                               href={generateWaLink(alumni)}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition flex items-center gap-1 shadow-xs cursor-pointer text-[11px]"
+                              className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition flex items-center gap-1 shadow-xs cursor-pointer text-[10px]"
                               title="Kirim pesan pengingat ke nomor WhatsApp alumni"
                             >
-                              <WhatsAppIcon className="w-3.5 h-3.5 shrink-0" />
+                              <WhatsAppIcon className="w-3 h-3 shrink-0" />
                               <span>Kirim Pengingat</span>
                             </a>
                           ) : (
-                            <span className="text-[11px] text-slate-500 font-mono">
+                            <span className="text-[10px] text-slate-500 font-mono">
                               {alumni.submissionId || "-"}
                             </span>
                           )}
@@ -421,7 +421,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setDeleteConfirmAlumni(alumni)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                            className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                             title="Hapus data siswa"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

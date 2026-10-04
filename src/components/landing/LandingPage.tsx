@@ -22,7 +22,7 @@ export const LandingPage: React.FC = () => {
       {/* Features Grid & About Tracer Study with continuous wavy illustration */}
       <div className="relative overflow-hidden bg-[#f8fafc]/50">
         {/* Continuous Background Wavy Decoration */}
-        <div className="absolute top-0 -left-20 w-[130%] max-w-none opacity-[0.08] pointer-events-none z-0">
+        <div className="absolute top-0 -left-20 w-[1050px] sm:w-[1300px] lg:w-[130%] min-w-[1050px] sm:min-w-0 max-w-none opacity-[0.08] pointer-events-none z-0">
           <img
             src="/background-decoration.svg"
             alt="Background Decoration"
@@ -49,7 +49,7 @@ export const LandingPage: React.FC = () => {
       {/* Dasar Hukum & Berita Sections with continuous background sweeping from top-right to bottom-left */}
       <div className="relative overflow-hidden bg-white">
         {/* Background Wavy Decoration from Top-Right down to Bottom-Left */}
-        <div className="absolute -top-10 -right-24 w-[135%] max-w-none opacity-[0.08] pointer-events-none z-0 transform -scale-x-100">
+        <div className="absolute -top-10 -right-24 w-[1050px] sm:w-[1300px] lg:w-[135%] min-w-[1050px] sm:min-w-0 max-w-none opacity-[0.08] pointer-events-none z-0 transform -scale-x-100">
           <img
             src="/background-decoration.svg"
             alt="Background Decoration"

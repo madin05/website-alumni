@@ -61,8 +61,8 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Blue Section Header Bar matching Dapodik screenshot */}
-      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-bold text-xs uppercase tracking-wider flex items-center justify-between rounded-t-sm">
-        <span>UPDATE DATA PRIBADI</span>
+      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-medium text-xs  flex items-center justify-between rounded-t-sm">
+        <span>Update Data Pribadi</span>
         <button
           type="button"
           onClick={handleFillDemo}

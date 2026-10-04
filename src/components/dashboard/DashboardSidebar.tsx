@@ -547,7 +547,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         onClose={() => setShowLogoutModal(false)}
         onConfirm={confirmLogout}
         title="Keluar dari Portal?"
-        message="Sesi login Anda akan diakhiri. Anda dapat masuk kembali kapan saja."
+        message="Sesi Anda telah berakhir."
         confirmText="Ya, Keluar"
         cancelText="Batal"
         type="danger"

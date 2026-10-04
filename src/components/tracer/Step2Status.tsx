@@ -7,6 +7,7 @@ import {
 } from '@/schemas/tracerSchema';
 import { Button } from '@/components/ui/Button';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { ArrowLeft } from "lucide-react";
 
 interface Step2Props {
   onNext: () => void;
@@ -44,7 +45,7 @@ export const Step2Status: React.FC<Step2Props> = ({ onNext, onPrev }) => {
   return (
     <form onSubmit={handleContinue} className="space-y-5">
       {/* Blue Section Header Bar matching Dapodik screenshot */}
-      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-bold text-xs uppercase tracking-wider rounded-t-sm">
+      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-medium text-xs  rounded-t-sm">
         Aktifitas Lulusan
       </div>
 
@@ -131,10 +132,11 @@ export const Step2Status: React.FC<Step2Props> = ({ onNext, onPrev }) => {
         <Button
           type="button"
           onClick={onPrev}
-          variant="outline"
+          variant="ghost"
           size="md"
           className="text-xs sm:text-sm"
         >
+          <ArrowLeft size={16} className="mr-1" />
           Kembali
         </Button>
 

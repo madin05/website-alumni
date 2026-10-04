@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
-import {
-  ShieldCheck,
-  ArrowRight,
-  ChevronLeft,
-  Info,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, ChevronLeft } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
   const [loginMethod, setLoginMethod] = useState<"nisn" | "nik">("nisn");
@@ -72,10 +66,10 @@ export const LoginPage: React.FC = () => {
         />
       </div>
 
-      {/* Main Split Login Card without animations */}
-      <div className="relative z-10 w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200/90 grid grid-cols-1 lg:grid-cols-12">
-        {/* LEFT COLUMN: Dark Navy Branding & Guarantee Panel (5 cols) */}
-        <div className="lg:col-span-5 bg-[#122e5d] text-white p-8 sm:p-10 lg:p-11 flex flex-col justify-between relative overflow-hidden">
+      {/* Main Login Card: Single column on mobile/tablet, 12-col split on desktop */}
+      <div className="relative z-10 w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-white rounded-2xl lg:rounded-xl shadow-xl sm:shadow-2xl overflow-hidden border border-slate-200/90 grid grid-cols-1 lg:grid-cols-12">
+        {/* LEFT COLUMN: Dark Navy Branding & Guarantee Panel (Visible only on Desktop lg+) */}
+        <div className="hidden lg:flex lg:col-span-5 bg-[#122e5d] text-white p-8 sm:p-10 lg:p-11 flex-col justify-between relative overflow-hidden">
           {/* Seigaiha Wave Pattern Overlay */}
           <svg
             className="absolute inset-0 w-full h-full opacity-[0.14] pointer-events-none"
@@ -122,8 +116,8 @@ export const LoginPage: React.FC = () => {
                 <h3 className="text-xs sm:text-sm font-extrabold text-white leading-none tracking-tight">
                   SMK SASMITA JAYA 2
                 </h3>
-                <p className="text-[9px] text-slate-300 font-medium tracking-wider uppercase mt-1">
-                  TRACER STUDY & ALUMNI
+                <p className="text-[9px] text-slate-300 font-medium tracking-wider mt-1">
+                  Tracer Study & Alumni
                 </p>
               </div>
             </div>
@@ -135,16 +129,8 @@ export const LoginPage: React.FC = () => {
               Selamat datang kembali, pejuang pendidikan kejuruan.
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
-              Masuk menggunakan NISN atau NIK untuk memulai atau melanjutkan
-              pengisian tracer study alumni.
-            </p>
-
             {/* Privacy callout box */}
-            <div className="p-4 rounded-md bg-white/10 backdrop-blur-md border border-white/15 text-left space-y-1 mt-6">
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-white">
-                <span>Data Anda aman</span>
-              </div>
+            <div className="p-2 rounded-md bg-white/10 backdrop-blur-md border border-white/15 text-left space-y-1 mt-6">
               <p className="text-[11px] text-slate-300 leading-relaxed">
                 Seluruh jawaban tidak dipublikasikan & dilindungi sesuai UU
                 Perlindungan Data.
@@ -158,57 +144,67 @@ export const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Interactive Login Form (7 cols) */}
-        <div className="lg:col-span-7 p-8 sm:p-10 lg:p-12 flex flex-col justify-between bg-white">
+        {/* RIGHT COLUMN / MOBILE CARD: Interactive Login Form (Full width on mobile/tablet, 7 cols on desktop) */}
+        <div className="lg:col-span-7 p-6 sm:p-8 lg:p-12 flex flex-col justify-between bg-white">
           <div>
             {/* Top Back Link */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
               <Link
                 to="/"
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Kembali ke beranda</span>
+                <span>Kembali</span>
               </Link>
             </div>
 
-            {/* Step Label & Title */}
-            <div className="mb-6">
-              <span className="text-[11px] font-extrabold text-slate-900 tracking-wider block uppercase mb-1">
-                LANGKAH 1 DARI 2
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#182a4a] tracking-tight">
-                Masuk Alumni
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 font-normal mt-1">
-                Pilih metode login menggunakan NISN atau NIK kependudukan Anda.
-              </p>
+            {/* Mobile & Tablet Logo Banner (Hidden on Desktop) */}
+            <div className="flex justify-center items-center mb-5 lg:hidden">
+              <img
+                src="/favicon.png"
+                alt="Logo SMK Sasmita Jaya 2"
+                className="w-20 h-20 object-contain drop-shadow-xs"
+              />
             </div>
 
-            {/* Login Method Switcher */}
-            <div className="grid grid-cols-2 gap-3 mb-5">
+            {/* Step Label & Title */}
+            <div className="mb-5 sm:mb-6">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#182a4a] tracking-tight text-center">
+                Selamat Datang
+              </h2>
+            </div>
+
+            {/* Login Method Switcher with Smooth Slider */}
+            <div className="relative grid grid-cols-2 p-1 bg-slate-100/90 rounded-full border border-slate-200/90 mb-5 select-none">
+              {/* Sliding Pill Indicator */}
+              <div
+                className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-[#182a4a] rounded-full shadow-sm transition-transform duration-300 ease-out pointer-events-none ${
+                  loginMethod === "nik" ? "translate-x-full" : "translate-x-0"
+                }`}
+              />
+
               <button
                 type="button"
                 onClick={() => handleLoginMethodChange("nisn")}
-                className={`py-2 px-3 rounded-xl text-xs font-bold text-center cursor-pointer ${
+                className={`relative z-10 py-2 px-3 rounded-full text-xs text-center cursor-pointer transition-colors duration-200 ${
                   loginMethod === "nisn"
-                    ? "border-2 border-[#182a4a] text-[#182a4a] bg-blue-50/40 shadow-xs"
-                    : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                    ? "text-white"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Login pakai NISN
+                Login NISN
               </button>
 
               <button
                 type="button"
                 onClick={() => handleLoginMethodChange("nik")}
-                className={`py-2 px-3 rounded-xl text-xs font-bold text-center cursor-pointer ${
+                className={`relative z-10 py-2 px-3 rounded-full text-xs text-center cursor-pointer transition-colors duration-200 ${
                   loginMethod === "nik"
-                    ? "border-2 border-[#182a4a] text-[#182a4a] bg-blue-50/40 shadow-xs"
-                    : "border border-slate-200 text-slate-600 hover:bg-slate-50"
+                    ? "text-white"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Login pakai NIK
+                Login NIK
               </button>
             </div>
 
@@ -220,32 +216,34 @@ export const LoginPage: React.FC = () => {
             )}
 
             {/* Form Inputs */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  {loginMethod === "nisn"
-                    ? "NISN (10 digit)"
-                    : "NIK KTP (16 digit)"}
-                </label>
+            <form onSubmit={handleSubmit} className="mt-7 space-y-8">
+              <div className="material-group">
                 <input
                   type="text"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder={
                     loginMethod === "nisn"
-                      ? "Contoh: 0061234567"
-                      : "Contoh: 3274012304050001"
+                      ? "0061234567"
+                      : "3274012304050001"
                   }
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#182a4a] focus:border-transparent"
+                  className="material-input"
                   required
                 />
+                <span className="material-bar" />
+                <span className="material-highlight" />
+                <label className="material-label">
+                  {loginMethod === "nisn"
+                    ? "NISN (10 digit)"
+                    : "NIK KTP (16 digit)"}
+                </label>
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 px-6 rounded-md bg-[#182945] hover:bg-[#122038] text-white font-bold text-sm tracking-wide shadow-md cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-6 rounded-xl bg-[#182945] hover:bg-[#122038] text-white font-medium text-sm tracking-wide shadow-md cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
               >
                 {loading ? (
                   <span>Memproses...</span>
@@ -260,7 +258,7 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Quick Demo Fill & Helpdesk */}
-          <div className="mt-8 pt-4 border-t border-slate-100 space-y-3 text-center">
+          <div className="mt-6 pt-4 border-t border-slate-100 space-y-3 text-center">
             {/* 1-Click Demo Shortcut */}
             <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
               <button
@@ -288,8 +286,13 @@ export const LoginPage: React.FC = () => {
                 rel="noreferrer"
                 className="font-bold text-[#182a4a] hover:text-blue-600 underline"
               >
-                Hubungi WA Helpdesk BKK
+                Hubungi Helpdesk
               </a>
+            </p>
+
+            {/* Mobile Footer Copyright */}
+            <p className="text-[10px] text-slate-400 pt-1 lg:hidden">
+              © SMK Sasmita Jaya 2
             </p>
           </div>
         </div>

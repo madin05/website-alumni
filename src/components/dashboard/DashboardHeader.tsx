@@ -156,7 +156,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700 cursor-pointer"
                   >
                     <Download className="w-4 h-4 text-blue-900" />
-                    <span>Unduh Bukti Pengisian (PDF)</span>
+                    <span>Unduh Bukti Pengisian</span>
                   </button>
                 </div>
               )}

@@ -7,16 +7,13 @@ import { DashboardTab } from "./DashboardSidebar";
 import {
   Check,
   AlertCircle,
-  FileSpreadsheet,
   Download,
   Briefcase,
   GraduationCap,
   Building,
   ArrowRight,
   MapPin,
-  Calendar,
   Clock,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -114,7 +111,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                 Status Tracer Study
               </span>
               <h4 className="stat-heading text-lg sm:text-xl font-bold text-slate-900 leading-snug transition-colors">
-                {isTracerDone ? "Sudah Terisi" : "Belum Terisi"}
+                {isTracerDone ? "Selesai Terjawab" : "Belum Terjawab"}
               </h4>
               <p className="stat-desc text-xs font-light text-slate-600 mt-1.5 transition-colors">
                 {isTracerDone
@@ -125,8 +122,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
             <div className="card-content mt-4 pt-3 border-t border-slate-200/60 group-hover:border-white/20 transition-colors">
               <div className="stat-action text-xs font-bold text-[#0d2346] flex items-center gap-1.5 transition-colors">
-                <span>{isTracerDone ? "Buka Form Tracer" : "Lengkapi Sekarang"}</span>
-                <span className="font-mono">→</span>
+                <span>
+                  {isTracerDone ? "Buka Form Tracer" : "Lengkapi Sekarang"}
+                </span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
 
@@ -164,7 +163,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <div className="card-content mt-4 pt-3 border-t border-slate-200/60 group-hover:border-white/20 transition-colors">
               <div className="stat-action text-xs font-bold text-[#0d2346] flex items-center gap-1.5 transition-colors">
                 <span>Cek Alur Pengambilan</span>
-                <span className="font-mono">→</span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
 
@@ -198,7 +197,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <div className="card-content mt-4 pt-3 border-t border-slate-200/60 group-hover:border-white/20 transition-colors">
               <div className="stat-action text-xs font-bold text-[#0d2346] flex items-center gap-1.5 transition-colors">
                 <span>Eksplor Lowongan</span>
-                <span className="font-mono">→</span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
 
@@ -214,7 +213,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-base font-bold text-slate-900">
-              Info Loker & Magang Rekomendasi
+              Info Loker & Magang
             </h3>
           </div>
           <button
@@ -254,13 +253,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   </p>
                 </div>
 
-                <div className="space-y-1 text-xs text-slate-500 pt-1">
-                  <p className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <span className="truncate">{job.location}</span>
-                  </p>
-                  <p className="font-semibold text-emerald-600">{job.salary}</p>
-                </div>
+                <p className="text-xs font-light text-slate-700 mt-1 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>{job.location}</span>
+                </p>
+                <p className="text-xs font-bold text-slate-600 mt-1">
+                  {job.salary}
+                </p>
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
