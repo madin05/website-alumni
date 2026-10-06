@@ -30,6 +30,14 @@ import {
   LokerTabSkeleton,
   AlumniTabSkeleton,
   HelpdeskTabSkeleton,
+  AdminOverviewTabSkeleton,
+  AdminMasterAlumniTabSkeleton,
+  AdminRespondentsTabSkeleton,
+  AdminMessagesTabSkeleton,
+  AdminNewsTabSkeleton,
+  AdminJobsTabSkeleton,
+  AdminExportReportTabSkeleton,
+  AdminSettingsTabSkeleton,
 } from './skeletons';
 
 const VALID_TABS: DashboardTab[] = [
@@ -228,7 +236,7 @@ export const DashboardLayout: React.FC = () => {
             <>
               {activeTab === 'beranda' && (
                 isTabLoading ? (
-                  <OverviewTabSkeleton />
+                  <AdminOverviewTabSkeleton />
                 ) : (
                   <AdminOverviewTab
                     onNavigateTab={(tab) => setActiveTab(tab as DashboardTab)}
@@ -244,33 +252,51 @@ export const DashboardLayout: React.FC = () => {
                 )
               )}
 
-              {activeTab === 'master_alumni' && <AdminMasterAlumniTab />}
+              {activeTab === 'master_alumni' && (
+                isTabLoading ? <AdminMasterAlumniTabSkeleton /> : <AdminMasterAlumniTab />
+              )}
 
               {activeTab === 'verifikasi' && (
-                <AdminRespondentsTab
-                  initialSelectedId={selectedRespondentId}
-                  onClearInitialSelectedId={() => setSelectedRespondentId(null)}
-                />
+                isTabLoading ? (
+                  <AdminRespondentsTabSkeleton />
+                ) : (
+                  <AdminRespondentsTab
+                    initialSelectedId={selectedRespondentId}
+                    onClearInitialSelectedId={() => setSelectedRespondentId(null)}
+                  />
+                )
               )}
 
               {activeTab === 'pesan' && (
-                <AdminMessagesTab
-                  onNavigateTab={(tab, respondentId) => {
-                    if (respondentId) {
-                      setSelectedRespondentId(respondentId);
-                    }
-                    setActiveTab(tab as DashboardTab);
-                  }}
-                />
+                isTabLoading ? (
+                  <AdminMessagesTabSkeleton />
+                ) : (
+                  <AdminMessagesTab
+                    onNavigateTab={(tab, respondentId) => {
+                      if (respondentId) {
+                        setSelectedRespondentId(respondentId);
+                      }
+                      setActiveTab(tab as DashboardTab);
+                    }}
+                  />
+                )
               )}
 
-              {activeTab === 'kelola_berita' && <AdminNewsTab />}
+              {activeTab === 'kelola_berita' && (
+                isTabLoading ? <AdminNewsTabSkeleton /> : <AdminNewsTab />
+              )}
 
-              {activeTab === 'kelola_loker' && <AdminJobsTab />}
+              {activeTab === 'kelola_loker' && (
+                isTabLoading ? <AdminJobsTabSkeleton /> : <AdminJobsTab />
+              )}
 
-              {activeTab === 'laporan' && <AdminExportReportTab />}
+              {activeTab === 'laporan' && (
+                isTabLoading ? <AdminExportReportTabSkeleton /> : <AdminExportReportTab />
+              )}
 
-              {activeTab === 'pengaturan' && <AdminSettingsTab />}
+              {activeTab === 'pengaturan' && (
+                isTabLoading ? <AdminSettingsTabSkeleton /> : <AdminSettingsTab />
+              )}
             </>
           ) : (
             /* ALUMNI VIEW */

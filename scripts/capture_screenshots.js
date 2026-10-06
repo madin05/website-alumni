@@ -15,7 +15,7 @@ if (!fs.existsSync(SCREENSHOT_DIR)) {
 }
 
 async function run() {
-  console.log("Launching browser with:", CHROME_PATH);
+  console.log("Launching browser...");
   const browser = await puppeteer.launch({
     executablePath: CHROME_PATH,
     headless: "new",
@@ -26,126 +26,130 @@ async function run() {
   const page = await browser.newPage();
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+  // 1. Landing Page
   console.log("1. Capturing Landing Page...");
-  await page.goto(`${BASE_URL}/`, { waitUntil: "domcontentloaded", timeout: 15000 });
-  await sleep(800);
+  await page.goto(`${BASE_URL}/`, { waitUntil: "domcontentloaded" });
+  await sleep(1000);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "01_landing_page.png") });
 
+  // 2. Login Page
   console.log("2. Capturing Login Page...");
-  await page.goto(`${BASE_URL}/login`, { waitUntil: "domcontentloaded", timeout: 15000 });
+  await page.goto(`${BASE_URL}/login`, { waitUntil: "domcontentloaded" });
   await sleep(800);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "02_login_page.png") });
 
-  console.log("3. Logging in as Alumni...");
-  await page.evaluate(() => {
-    const authData = {
-      state: {
-        isAuthenticated: true,
-        user: {
-          id: "usr-001",
-          nisn: "0051234567",
-          nama: "Ahmad Dani",
-          email: "ahmaddani@example.com",
-          role: "alumni",
-          jurusan: "Teknik Komputer dan Jaringan",
-          tahun_lulus: 2024,
-          tracerStatus: "SUDAH",
-          submissionId: "2026102498",
-          submittedAt: "2026-09-26T13:38:16Z",
-          jenisKelamin: "L"
-        },
-        lastDashboardActivity: Date.now()
-      },
-      version: 0
-    };
-    localStorage.setItem("auth-storage", JSON.stringify(authData));
-  });
+  // 3. Perform REAL UI Login
+  console.log("3. Performing UI Login...");
+  await page.waitForSelector("button[type='submit']");
+  await page.click("button[type='submit']");
+  await sleep(1500);
 
-  console.log("4. Capturing Dashboard Beranda (Overview)...");
-  await page.goto(`${BASE_URL}/dashboard?tab=beranda`, { waitUntil: "domcontentloaded", timeout: 15000 });
+  console.log("Current page URL after login:", page.url());
+
+  // 4. Dashboard Beranda
+  console.log("4. Capturing Dashboard Beranda...");
   await sleep(1000);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "03_dashboard_beranda.png") });
 
+  // 5. Cek Ijazah Tab
   console.log("5. Capturing Cek Ijazah Tab...");
-  await page.goto(`${BASE_URL}/dashboard?tab=cek_ijazah`, { waitUntil: "domcontentloaded", timeout: 15000 });
-  await sleep(1000);
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll("button, a, div[role='button']"));
+    const target = buttons.find(b => b.textContent && b.textContent.includes("Cek Ijazah"));
+    if (target) target.click();
+  });
+  await sleep(1200);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "04_dashboard_cek_ijazah.png") });
 
+  // 6. Info Loker Tab
   console.log("6. Capturing Info Loker Tab...");
-  await page.goto(`${BASE_URL}/dashboard?tab=loker`, { waitUntil: "domcontentloaded", timeout: 15000 });
-  await sleep(1000);
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll("button, a, div[role='button']"));
+    const target = buttons.find(b => b.textContent && b.textContent.includes("Loker"));
+    if (target) target.click();
+  });
+  await sleep(1200);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "05_dashboard_loker.png") });
 
+  // 7. Detail Loker Modal
   console.log("7. Capturing Detail Loker Modal...");
   try {
-    const cards = await page.$$("button");
-    for (const btn of cards) {
-      const txt = await page.evaluate((el) => el.textContent, btn);
-      if (txt && (txt.includes("Detail") || txt.includes("Lihat"))) {
-        await btn.click();
-        await sleep(600);
-        await page.screenshot({ path: path.join(SCREENSHOT_DIR, "06_dashboard_loker_detail.png") });
-        await page.keyboard.press("Escape");
-        await sleep(300);
-        break;
-      }
-    }
+    await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll("button"));
+      const target = buttons.find(b => b.textContent && (b.textContent.includes("Detail") || b.textContent.includes("Lamar") || b.textContent.includes("Lihat")));
+      if (target) target.click();
+    });
+    await sleep(800);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "06_dashboard_loker_detail.png") });
+    await page.keyboard.press("Escape");
+    await sleep(400);
   } catch (err) {
-    console.warn("Could not capture loker detail modal:", err.message);
+    console.warn("Loker modal capture warn:", err.message);
   }
 
+  // 8. Direktori Alumni Tab
   console.log("8. Capturing Direktori Alumni Tab...");
-  await page.goto(`${BASE_URL}/dashboard?tab=alumni`, { waitUntil: "domcontentloaded", timeout: 15000 });
-  await sleep(1000);
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll("aside button, aside a"));
+    const target = buttons.find(b => b.textContent && b.textContent.trim() === "Alumni");
+    if (target) target.click();
+  });
+  await sleep(1200);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "07_dashboard_alumni.png") });
 
-  console.log("9. Capturing Helpdesk & Pusat Bantuan Tab...");
-  await page.goto(`${BASE_URL}/dashboard?tab=helpdesk`, { waitUntil: "domcontentloaded", timeout: 15000 });
-  await sleep(1000);
+  // 9. Helpdesk Tab
+  console.log("9. Capturing Helpdesk Tab...");
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll("aside button, aside a"));
+    const target = buttons.find(b => b.textContent && b.textContent.includes("Helpdesk"));
+    if (target) target.click();
+  });
+  await sleep(1200);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "08_dashboard_helpdesk.png") });
 
-  console.log("10. Capturing Tracer Study Page / Wizard...");
-  await page.goto(`${BASE_URL}/tracer-study`, { waitUntil: "domcontentloaded", timeout: 15000 });
-  await sleep(1000);
+  // 10. Tracer Study Form / Wizard
+  console.log("10. Capturing Tracer Study Form...");
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll("aside button, aside a"));
+    const target = buttons.find(b => b.textContent && b.textContent.includes("Tracer"));
+    if (target) target.click();
+  });
+  await sleep(1200);
   await page.screenshot({ path: path.join(SCREENSHOT_DIR, "09_tracer_study_wizard.png") });
 
-  console.log("11. Capturing Notifikasi / Mail Menu Popup...");
-  await page.goto(`${BASE_URL}/dashboard?tab=beranda`, { waitUntil: "domcontentloaded", timeout: 15000 });
+  // 11. Mail Notification Dropdown
+  console.log("11. Capturing Mail Notification Dropdown...");
+  // Go back to beranda
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll("aside button, aside a"));
+    const target = buttons.find(b => b.textContent && b.textContent.includes("Beranda"));
+    if (target) target.click();
+  });
   await sleep(800);
-  try {
-    const mailBtn = await page.$("button[title*='Kotak Masuk'], button[aria-label*='Pesan']");
-    if (mailBtn) {
-      await mailBtn.click();
-      await sleep(500);
-      await page.screenshot({ path: path.join(SCREENSHOT_DIR, "10_dashboard_notifikasi.png") });
-    }
-  } catch (err) {
-    console.warn("Could not capture mail popup:", err.message);
-  }
+  await page.evaluate(() => {
+    const mailBtn = document.querySelector("button[title*='Kotak Masuk'], button[aria-label*='Pesan'], button[title*='Pesan']");
+    if (mailBtn) mailBtn.click();
+  });
+  await sleep(800);
+  await page.screenshot({ path: path.join(SCREENSHOT_DIR, "10_dashboard_notifikasi.png") });
+  await page.keyboard.press("Escape");
+  await sleep(300);
 
-  console.log("12. Capturing Bukti Tanda Terima Kuesioner (Receipt Modal)...");
-  try {
-    await page.goto(`${BASE_URL}/dashboard?tab=beranda`, { waitUntil: "domcontentloaded", timeout: 15000 });
-    await sleep(800);
-    const buttons = await page.$$("button");
-    for (const btn of buttons) {
-      const text = await page.evaluate((el) => el.textContent, btn);
-      if (text && (text.includes("Bukti") || text.includes("Tanda Terima") || text.includes("Unduh"))) {
-        await btn.click();
-        await sleep(700);
-        await page.screenshot({ path: path.join(SCREENSHOT_DIR, "11_bukti_tanda_terima_modal.png") });
-        break;
-      }
-    }
-  } catch (err) {
-    console.warn("Could not capture receipt modal:", err.message);
-  }
+  // 12. Receipt Modal
+  console.log("12. Capturing Receipt Modal...");
+  await page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll("button"));
+    const receiptBtn = buttons.find(b => b.textContent && (b.textContent.includes("Bukti") || b.textContent.includes("Tanda Terima") || b.textContent.includes("Unduh")));
+    if (receiptBtn) receiptBtn.click();
+  });
+  await sleep(800);
+  await page.screenshot({ path: path.join(SCREENSHOT_DIR, "11_bukti_tanda_terima_modal.png") });
 
   await browser.close();
-  console.log("All screenshots captured successfully!");
+  console.log("All screenshots captured with real UI state!");
 }
 
 run().catch((err) => {
-  console.error("Screenshot error:", err);
+  console.error("Capture error:", err);
   process.exit(1);
 });

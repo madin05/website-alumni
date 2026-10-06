@@ -91,10 +91,10 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={() => handlePageClick(currentPage - 1)}
           disabled={currentPage <= 1}
           className={cn(
-            'inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium border transition-colors',
+            'inline-flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-medium transition-colors',
             currentPage <= 1
               ? 'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed'
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-slate-900 cursor-pointer active:bg-slate-100'
+              : 'bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 cursor-pointer active:bg-slate-100'
           )}
           aria-label="Halaman Sebelumnya"
         >
@@ -125,9 +125,9 @@ export const Pagination: React.FC<PaginationProps> = ({
                 type="button"
                 onClick={() => handlePageClick(pageNum)}
                 className={cn(
-                  'min-w-[32px] h-8 px-2 flex items-center justify-center rounded-md text-xs font-medium border transition-colors',
+                  'min-w-[32px] h-8 px-2 flex items-center justify-center rounded-md text-xs font-medium transition-colors',
                   isActive
-                    ? 'bg-blue-50 text-blue-600 border-blue-300 font-semibold pointer-events-none'
+                    ? 'bg-slate-200 text-slate-600 border-blue-300 font-semibold rounded-full pointer-events-none'
                     : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-900 cursor-pointer active:bg-slate-100'
                 )}
                 aria-label={`Halaman ${pageNum}`}
@@ -145,7 +145,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage >= totalPages}
           className={cn(
-            'inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium border transition-colors',
+            'inline-flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors',
             currentPage >= totalPages
               ? 'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed'
               : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:text-slate-900 cursor-pointer active:bg-slate-100'

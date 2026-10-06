@@ -754,7 +754,7 @@ export const AdminNewsTab: React.FC = () => {
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-3 py-1.5 rounded-lg font-semibold text-xs whitespace-nowrap transition cursor-pointer ${
                     selectedCategory === cat
-                      ? "bg-[#0d2346] text-white shadow-xs"
+                      ? "bg-slate-200 text-slate-600 shadow-xs"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >

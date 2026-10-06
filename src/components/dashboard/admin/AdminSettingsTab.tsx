@@ -206,7 +206,7 @@ export const AdminSettingsTab: React.FC = () => {
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
-            </div>
+            </div>  
           </div>
 
           {/* Section 3: Identitas Sekolah & Kontak Layanan */}
@@ -306,7 +306,7 @@ export const AdminSettingsTab: React.FC = () => {
 
       {/* Toast Alert */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#0d2346] text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 pointer-events-none animate-in slide-in-from-bottom duration-200 border border-slate-700">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0d2346] text-white text-xs sm:text-sm font-normal px-4 py-3 shadow-xl flex items-center gap-2 pointer-events-none transition-all duration-200 border border-slate-700">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>

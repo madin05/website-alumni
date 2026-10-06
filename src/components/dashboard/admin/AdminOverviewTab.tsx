@@ -112,7 +112,7 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-[#0d2346] text-white rounded-md p-6 sm:p-7 border border-[#163868] shadow-sm relative overflow-hidden">
+      <div className="bg-[#0d2346] text-white rounded-t-md p-6 sm:p-7 border border-[#163868] shadow-sm relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
             Pemantauan Penelusuran Lulusan Angkatan {settings.targetYear}
@@ -258,19 +258,19 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
           </div>
           <div className="mt-2.5 space-y-1 text-xs">
             <div className="flex items-center justify-between text-slate-700">
-              <span>Bekerja:</span>
+              <span>Bekerja</span>
               <span className="font-bold text-slate-900">
                 {countKerja} Siswa
               </span>
             </div>
             <div className="flex items-center justify-between text-slate-700">
-              <span>Melanjutkan Kuliah:</span>
+              <span>Melanjutkan Kuliah</span>
               <span className="font-bold text-slate-900">
                 {countKuliah} Siswa
               </span>
             </div>
             <div className="flex items-center justify-between text-slate-700">
-              <span>Wirausaha:</span>
+              <span>Wirausaha</span>
               <span className="font-bold text-slate-900">
                 {countWirausaha} Siswa
               </span>
@@ -301,16 +301,16 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
             {jurusanStats.map((item) => (
               <div key={item.code} className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-800">
+                  <span className="font-semibold text-slate-800 mb-1.5">
                     {item.name}
                   </span>
-                  <span className="font-bold text-slate-700">
+                  <span className="font-light text-slate-700">
                     {item.filled} dari {item.total} Siswa ({item.percent}%)
                   </span>
                 </div>
                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#0d2346] rounded-full transition-all duration-300"
+                    className="h-full bg-blue-700 rounded-full transition-all duration-300"
                     style={{ width: `${Math.min(item.percent, 100)}%` }}
                   />
                 </div>

@@ -66,7 +66,7 @@ export const DashboardBreadcrumb: React.FC<DashboardBreadcrumbProps> = ({
     <div className="px-3.5 sm:px-6 lg:px-8 pt-3 pb-0 max-w-7xl w-full mx-auto">
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-1.5 text-xs text-slate-500 font-medium py-1 px-1 overflow-x-auto scrollbar-none"
+        className="flex items-center gap-1. 5 text-xs text-slate-500 font-medium py-1 px-1 overflow-x-auto scrollbar-none"
       >
         <button
           type="button"

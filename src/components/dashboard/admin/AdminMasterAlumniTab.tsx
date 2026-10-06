@@ -210,10 +210,10 @@ export const AdminMasterAlumniTab: React.FC = () => {
       : rawNumber;
     const text = encodeURIComponent(
       `Halo *${alumni.nama}* (Alumni ${alumni.jurusan} Angkatan ${alumni.tahunLulus}),\n\nKami dari Bursa Kerja Khusus SMK Sasmita Jaya 2 Pamulang mengingatkan Anda untuk mengisi kuesioner penelusuran lulusan (tracer study).\n\nSilakan masuk menggunakan NISN: *${alumni.nisn}* melalui halaman login:\nhttps://tracerstudy-sasmita2.sch.id/login\n\nTerima kasih atas bantuan dan kerja sama Anda.`,
-    );
+    );  
     return `https://wa.me/${cleanNumber}?text=${text}`;
   };
-
+ 
   return (
     <>
       <div className="space-y-5">
@@ -261,7 +261,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
             <button
               type="button"
               onClick={() => setStatusFilter("ALL")}
-              className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg font-semibold transition cursor-pointer ${
+              className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg font-normal transition cursor-pointer ${
                 statusFilter === "ALL"
                   ? "bg-[#0d2346] text-white"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -272,7 +272,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
             <button
               type="button"
               onClick={() => setStatusFilter("SUDAH")}
-              className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg font-semibold transition cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
+              className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg font-normal transition cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
                 statusFilter === "SUDAH"
                   ? "bg-[#0d2346] text-white"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -284,7 +284,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
             <button
               type="button"
               onClick={() => setStatusFilter("BELUM")}
-              className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg font-semibold transition cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
+              className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg font-normal transition cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
                 statusFilter === "BELUM"
                   ? "bg-slate-600 text-white"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -406,7 +406,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
                               href={generateWaLink(alumni)}
                               target="_blank"
                               rel="noreferrer"
-                              className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition flex items-center gap-1 shadow-xs cursor-pointer text-[10px]"
+                              className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition flex items-center gap-1 shadow-xs cursor-pointer text-[8px]"
                               title="Kirim pesan pengingat ke nomor WhatsApp alumni"
                             >
                               <WhatsAppIcon className="w-3 h-3 shrink-0" />
@@ -421,7 +421,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setDeleteConfirmAlumni(alumni)}
-                            className="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                            className="p-1 rounded text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                             title="Hapus data siswa"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -451,7 +451,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
 
       {/* Toast Notification (Outside space-y container to eliminate any layout shifting) */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none animate-in slide-in-from-bottom duration-200">
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs sm:text-sm font-medum px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 pointer-events-none animate-in slide-in-from-bottom duration-200">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
