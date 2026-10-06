@@ -38,7 +38,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* 1. Banner Tracer Study matching Wireframe */}
-      <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-[#102a4e] via-[#1a3d6d] to-[#254f8a] text-white p-4 sm:p-6 md:p-8 shadow-md">
+      <div className="relative rounded-t-md overflow-hidden bg-gradient-to-r from-[#102a4e] via-[#1a3d6d] to-[#254f8a] text-white p-4 sm:p-6 md:p-8 shadow-md">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
           <div className="space-y-1.5 sm:space-y-2 max-w-xl">
             <h2 className="text-base sm:text-xl md:text-2xl font-bold tracking-tight">
@@ -65,14 +65,6 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                 >
                   <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 mr-1" />
                   <span className="truncate">Unduh Bukti</span>
-                </Button>
-                <Button
-                  onClick={() => onNavigateTab("tracer_study")}
-                  variant="outline"
-                  size="md"
-                  className="bg-white/10 text-white hover:bg-white/20 border-white/30 w-full text-xs sm:text-sm px-2 sm:px-4 text-center cursor-pointer"
-                >
-                  <span>Update Data</span>
                 </Button>
               </div>
             ) : (

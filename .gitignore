@@ -69,6 +69,8 @@ Thumbs.db
 .agents/
 
 # Documentation & Internal Specs
+docs/
+dokumentasi/
 ADMIN_WORKFLOW.md
 ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md
 DATABASE_SCHEMA.md
