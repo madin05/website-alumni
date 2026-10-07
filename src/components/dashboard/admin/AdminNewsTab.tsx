@@ -250,7 +250,7 @@ export const AdminNewsTab: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 content-start min-h-[520px]">
               {paginatedNews.map((item) => (
                 <div
                   key={item.id}
@@ -350,15 +350,13 @@ export const AdminNewsTab: React.FC = () => {
           )}
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={(p) => setCurrentPage(p)}
-              totalItems={filteredNews.length}
-              itemsPerPage={itemsPerPage}
-            />
-          )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(p) => setCurrentPage(p)}
+            totalItems={filteredNews.length}
+            itemsPerPage={itemsPerPage}
+          />
         </div>
       )}
 

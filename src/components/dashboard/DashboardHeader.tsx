@@ -182,7 +182,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         onClose={() => setShowLogoutModal(false)}
         onConfirm={confirmLogout}
         title="Keluar dari Portal Alumni?"
-        message="Sesi login Anda akan diakhiri. Anda dapat masuk kembali kapan saja menggunakan NISN atau NIK Anda."
+        message="Apakah Anda yakin ingin melanjutkan?"
         confirmText="Ya, Keluar"
         cancelText="Batal"
         type="danger"

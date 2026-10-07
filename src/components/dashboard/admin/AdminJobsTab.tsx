@@ -253,7 +253,7 @@ export const AdminJobsTab: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 content-start min-h-[520px]">
               {paginatedJobs.map((job) => (
                 <div
                   key={job.id}
@@ -370,15 +370,13 @@ export const AdminJobsTab: React.FC = () => {
           )}
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={(p) => setCurrentPage(p)}
-              totalItems={filteredJobs.length}
-              itemsPerPage={itemsPerPage}
-            />
-          )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(p) => setCurrentPage(p)}
+            totalItems={filteredJobs.length}
+            itemsPerPage={itemsPerPage}
+          />
         </div>
       )}
 
