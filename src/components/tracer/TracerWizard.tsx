@@ -21,7 +21,7 @@ import {
   ArrowRight,
   Download,
 } from "lucide-react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface TracerWizardProps {
   onBackToOverview?: () => void;
@@ -172,26 +172,6 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
     return (
       <div className="min-h-screen bg-slate-50/50 py-5 sm:py-10 px-3.5 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto space-y-5 sm:space-y-6">
-          {/* Top Back Navigation */}
-          <div>
-            {onBackToOverview ? (
-              <button
-                type="button"
-                onClick={onBackToOverview}
-                className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition cursor-pointer"
-              >
-                ← Kembali ke Beranda
-              </button>
-            ) : (
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition"
-              >
-                ← Kembali ke Beranda
-              </Link>
-            )}
-          </div>
-
           {/* Locked Status Card */}
           <div className="bg-white rounded-xl border border-slate-200/90 shadow-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             {/* Header Strip */}
@@ -214,9 +194,12 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
                     Pengisian Kuesioner Tracer Study Anda Sudah Tersimpan
                   </h3>
                   <p className="text-xs font-normal sm:text-sm text-slate-800/90 leading-relaxed">
-                    Terima kasih atas partisipasi Anda. Sesuai regulasi
-                    penelusuran tamatan Kemendikdasmen RI & BKK SMK Sasmita Jaya
-                    2, pengisian instrumen kuesioner dibatasi{" "}
+                    Terima kasih atas partisipasi Anda.
+                  </p>
+                  <hr />
+                  <p className="text-xs font-light sm:text-sm text-slate-800/90 text-justify leading-relaxed">
+                    Sesuai regulasi penelusuran tamatan Kemendikdasmen RI & BKK
+                    SMK Sasmita Jaya 2, pengisian instrumen kuesioner dibatasi{" "}
                     <strong>1 (satu) kali per periode tahun ajaran</strong> guna
                     menjaga integritas data statistik sekolah.
                   </p>
@@ -351,23 +334,6 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
       <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
         {/* Top Breadcrumb & Actions */}
         <div className="flex items-center justify-between">
-          {onBackToOverview ? (
-            <button
-              type="button"
-              onClick={onBackToOverview}
-              className="text-xs font-semibold text-slate-500 hover:text-blue-600 transition cursor-pointer"
-            >
-              ← Kembali ke Beranda
-            </button>
-          ) : (
-            <Link
-              to="/dashboard"
-              className="text-xs font-semibold text-slate-500 hover:text-blue-600 transition"
-            >
-              ← Kembali ke Beranda
-            </Link>
-          )}
-
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -394,7 +360,7 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
           <Stepper currentStep={currentStep} />
 
           {/* Form Step Body */}
-          <div className="p-4 sm:p-6 bg-white">
+          <div className="p-5 sm:p-8 md:p-10 bg-white">
             {currentStep === 1 && <Step1Identity onNext={() => goToStep(2)} />}
             {currentStep === 2 && (
               <Step2Status

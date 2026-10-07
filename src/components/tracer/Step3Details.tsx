@@ -102,20 +102,20 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
       {/* Blue Section Header Bar matching Dapodik screenshot */}
-      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-medium text-xs rounded-t-sm">
-        Detal Aktivitas Lulusan
+      <div className="bg-[#1d4ed8] text-white px-4 py-2.5 font-medium text-xs sm:text-sm rounded-t-sm">
+        Detail Aktivitas Lulusan
       </div>
 
       {/* 1. BLOK JIKA ALUMNI BEKERJA */}
       {isKerja && (
-        <div className="space-y-4 pt-1">
-          <div className="text-xs font-medium text-blue-900  border-b border-blue-100 pb-1.5">
+        <div className="space-y-6 pt-1">
+          <div className="text-xs sm:text-sm font-semibold text-blue-900 border-b border-blue-100 pb-2">
             Jika Alumni Bekerja
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
             {/* Nama Perusahaan */}
             <Input
               label="Nama perusahaan/instansi"
@@ -151,22 +151,22 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             />
 
             {/* Status Pekerjaan */}
-            <div className="sm:col-span-2 pt-1">
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
+            <div className="sm:col-span-2 pt-2 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
                 Status pekerjaan:
               </label>
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                 {STATUS_PEKERJAAN_OPTIONS.map((status) => {
                   const isSelected = (detail_kerja?.status_pekerjaan || 'Tetap') === status;
                   return (
-                    <label key={status} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                    <label key={status} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                       <input
                         type="radio"
                         name="status_pekerjaan"
                         value={status}
                         checked={isSelected}
                         onChange={() => handleKerjaChange('status_pekerjaan', status)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                       />
                       <span>{status}</span>
                     </label>
@@ -176,25 +176,25 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             </div>
 
             {/* Kesesuaian Kompetensi SMK */}
-            <div className="sm:col-span-2 pt-2 border-t border-slate-100">
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
                 Apakah pekerjaan sesuai dengan kompetensi keahlian di SMK? <span className="text-rose-500">*</span>
               </label>
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                 {KESESUAIAN_KERJA_OPTIONS.map((kesesuaian) => {
                   const isSelected =
                     detail_kerja?.kesesuaian_jurusan === kesesuaian ||
                     (kesesuaian === 'Sangat sesuai' && detail_kerja?.kesesuaian_jurusan === 'SANGAT_SESUAI') ||
                     (kesesuaian === 'Sesuai' && detail_kerja?.kesesuaian_jurusan === 'SESUAI');
                   return (
-                    <label key={kesesuaian} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                    <label key={kesesuaian} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                       <input
                         type="radio"
                         name="kesesuaian_jurusan"
                         value={kesesuaian}
                         checked={isSelected}
                         onChange={() => handleKerjaChange('kesesuaian_jurusan', kesesuaian)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                       />
                       <span>{kesesuaian}</span>
                     </label>
@@ -204,22 +204,22 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             </div>
 
             {/* Kisaran Penghasilan Bulanan (Opsional) */}
-            <div className="sm:col-span-2 pt-2 border-t border-slate-100">
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
-                Kisaran penghasilan per bulan <span className="text-slate-400 font-normal">(opsional)</span>
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
+                Kisaran penghasilan per bulan <span className="text-slate-400 font-normal text-xs sm:text-sm">(opsional)</span>
               </label>
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                 {PENGHASILAN_OPTIONS.map((gaji) => {
                   const isSelected = detail_kerja?.kisaran_penghasilan === gaji;
                   return (
-                    <label key={gaji} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                    <label key={gaji} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                       <input
                         type="radio"
                         name="kisaran_penghasilan"
                         value={gaji}
                         checked={isSelected}
                         onChange={() => handleKerjaChange('kisaran_penghasilan', gaji)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                       />
                       <span>{gaji}</span>
                     </label>
@@ -233,12 +233,12 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
 
       {/* 2. BLOK JIKA ALUMNI KULIAH */}
       {isKuliah && (
-        <div className="space-y-4 pt-2">
-          <div className="text-xs font-medium text-blue-900  border-b border-blue-100 pb-1.5">
+        <div className="space-y-6 pt-2">
+          <div className="text-xs sm:text-sm font-semibold text-blue-900 border-b border-blue-100 pb-2">
             Jika Melanjutkan Kuliah
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
             {/* Nama Kampus */}
             <Input
               label="Nama perguruan tinggi"
@@ -258,12 +258,12 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             />
 
             {/* Jenjang */}
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
+            <div className="sm:col-span-2 pt-2 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
                 Jenjang:
               </label>
-              <div className="flex flex-col gap-3">
-                <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-col gap-3.5">
+                <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                   {JENJANG_KULIAH_OPTIONS.map((jenjang) => {
                     const isLainnyaOption = (jenjang as string) === 'Lainnya';
                     const currentJenjang = (detail_kuliah?.jenjang as string) || 'S1';
@@ -272,14 +272,14 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
                       : currentJenjang === jenjang;
 
                     return (
-                      <label key={jenjang} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                      <label key={jenjang} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                         <input
                           type="radio"
                           name="jenjang"
                           value={jenjang}
                           checked={isSelected}
                           onChange={() => handleKuliahChange('jenjang', jenjang)}
-                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                         />
                         <span>{jenjang}</span>
                       </label>
@@ -294,11 +294,11 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
                   
                   if (isLainnyaSelected) {
                     return (
-                      <div className="w-full sm:w-1/2">
+                      <div className="w-full sm:w-1/2 mt-1">
                         <input
                           type="text"
                           placeholder="Sebutkan jenjang lainnya..."
-                          className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                           value={currentJenjang === 'Lainnya' ? '' : currentJenjang}
                           onChange={(e) => handleKuliahChange('jenjang', e.target.value || 'Lainnya')}
                           required
@@ -312,22 +312,22 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             </div>
 
             {/* Status Kuliah */}
-            <div>
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
                 Status kuliah:
               </label>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-5 sm:gap-6">
                 {STATUS_KULIAH_OPTIONS.map((status) => {
                   const isSelected = (detail_kuliah?.status_kuliah || 'Aktif') === status;
                   return (
-                    <label key={status} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                    <label key={status} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                       <input
                         type="radio"
                         name="status_kuliah"
                         value={status}
                         checked={isSelected}
                         onChange={() => handleKuliahChange('status_kuliah', status)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                       />
                       <span>{status}</span>
                     </label>
@@ -341,12 +341,12 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
 
       {/* 3. BLOK JIKA ALUMNI BERWIRAUSAHA */}
       {isUsaha && (
-        <div className="space-y-4 pt-2">
-          <div className="text-xs font-medium text-blue-900  border-b border-blue-100 pb-1.5">
+        <div className="space-y-6 pt-2">
+          <div className="text-xs sm:text-sm font-semibold text-blue-900 border-b border-blue-100 pb-2">
             Jika Berwirausaha
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
             {/* Nama Usaha */}
             <Input
               label="Nama/usaha yang dijalankan"
@@ -365,22 +365,22 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             />
 
             {/* Lama Menjalankan Usaha */}
-            <div className="sm:col-span-2 pt-1">
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
+            <div className="sm:col-span-2 pt-2 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
                 Lama menjalankan usaha:
               </label>
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                 {LAMA_USAHA_OPTIONS.map((lama) => {
                   const isSelected = (detail_usaha?.lama_usaha || '< 6 bulan') === lama;
                   return (
-                    <label key={lama} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                    <label key={lama} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                       <input
                         type="radio"
                         name="lama_usaha"
                         value={lama}
                         checked={isSelected}
                         onChange={() => handleUsahaChange('lama_usaha', lama)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                       />
                       <span>{lama}</span>
                     </label>
@@ -390,22 +390,22 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             </div>
 
             {/* Jumlah Tenaga Kerja */}
-            <div className="sm:col-span-2 pt-2 border-t border-slate-100">
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
                 Jumlah tenaga kerja (jika ada):
               </label>
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                 {JUMLAH_KARYAWAN_OPTIONS.map((jml) => {
                   const isSelected = (detail_usaha?.jumlah_karyawan || 'Belum ada (Dijalankan sendiri)') === jml;
                   return (
-                    <label key={jml} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                    <label key={jml} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                       <input
                         type="radio"
                         name="jumlah_karyawan"
                         value={jml}
                         checked={isSelected}
                         onChange={() => handleUsahaChange('jumlah_karyawan', jml)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                       />
                       <span>{jml}</span>
                     </label>
@@ -415,22 +415,22 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
             </div>
 
             {/* Keterkaitan Usaha dengan Kompetensi SMK */}
-            <div className="sm:col-span-2 pt-2 border-t border-slate-100">
-              <label className="block text-xs sm:text-sm font-semibold text-slate-800 mb-2">
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
                 Apakah usaha berkaitan dengan kompetensi yang dipelajari di SMK?
               </label>
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-5 sm:gap-6">
                 {KESESUAIAN_USAHA_OPTIONS.map((relasi) => {
                   const isSelected = (detail_usaha?.kesesuaian_kompetensi || 'Sangat berkaitan') === relasi;
                   return (
-                    <label key={relasi} className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+                    <label key={relasi} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
                       <input
                         type="radio"
                         name="kesesuaian_kompetensi"
                         value={relasi}
                         checked={isSelected}
                         onChange={() => handleUsahaChange('kesesuaian_kompetensi', relasi)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer"
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
                       />
                       <span>{relasi}</span>
                     </label>
@@ -444,7 +444,7 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
 
       {/* 4. BLOK JIKA ALUMNI BELUM BEKERJA / LAINNYA */}
       {isBelumKerja && (
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 space-y-1">
+        <div className="p-5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 space-y-2 leading-relaxed">
           <p className="font-semibold text-slate-900">
             Kesiapan Kerja & Informasi Tambahan
           </p>
@@ -455,7 +455,7 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
       )}
 
       {/* Bottom Bar with 'Simpan dan lanjut' matching screenshot */}
-      <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+      <div className="pt-6 mt-8 border-t border-slate-200 flex items-center justify-between">
         <Button
           type="button"
           onClick={onPrev}
@@ -471,7 +471,7 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
           type="submit"
           variant="primary"
           size="md"
-          className="bg-blue-600 hover:bg-blue-700 font-medium text-xs sm:text-sm px-6 py-2 rounded shadow-none"
+          className="bg-blue-600 hover:bg-blue-700 font-medium text-xs sm:text-sm px-6 py-2.5 rounded-lg shadow-none transition"
         >
           Simpan dan lanjut
         </Button>

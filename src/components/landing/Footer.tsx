@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Printer } from "lucide-react";
+import { PrivacyPolicyModal, TermsOfServiceModal } from "./LegalModals";
 
 export const Footer: React.FC = () => {
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+
   return (
     <footer
       id="kontak"
@@ -20,7 +24,7 @@ export const Footer: React.FC = () => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }}
-            className="flex items-center text-left cursor-pointer mx-auto md:mx-0"
+            className="flex items-center text-left cursor-pointer shrink-0 mx-auto md:mx-0"
           >
             <img
               src="/logo-smk-dark.png"
@@ -33,10 +37,10 @@ export const Footer: React.FC = () => {
           </Link>
 
           {/* School Address & Contacts (4 clean rows) */}
-          <div className="flex flex-col items-center md:items-start text-xs text-slate-400 max-w-md space-y-2 leading-relaxed mx-auto md:mx-0">
+          <div className="flex flex-col items-center md:items-start text-xs text-slate-400 max-w-xs md:max-w-sm lg:max-w-md space-y-2 leading-relaxed mx-auto md:mx-0">
             {/* 1. Alamat */}
             <div className="flex items-start gap-2.5 text-left w-full max-w-xs sm:max-w-sm md:max-w-md">
-              <MapPin className="w-4 h-4 text-slate-300 shrink-0 mt-0.5" />
+              <MapPin className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
               <span className="text-left">
                 Jl. Surya Kencana No. 1, Pamulang Barat, Kec. Pamulang, Kota
                 Tangerang Selatan, Banten 15417
@@ -69,7 +73,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* Social Icons & Copyright */}
-          <div className="flex flex-col items-center md:items-end gap-3 text-center md:text-right mx-auto md:mx-0">
+          <div className="flex flex-col items-center md:items-end gap-3 text-center md:text-right shrink-0 mx-auto md:mx-0">
             <div className="flex items-center gap-3">
               {/* Tiktok */}
               <a
@@ -114,6 +118,23 @@ export const Footer: React.FC = () => {
               © {new Date().getFullYear()} SMK Sasmita Jaya 2. All rights
               reserved.
             </p>
+            <p className="text-[11px] text-slate-500 flex items-center justify-center md:justify-end gap-1.5 whitespace-nowrap">
+              <button
+                type="button"
+                onClick={() => setIsPrivacyOpen(true)}
+                className="hover:text-slate-300 transition-colors focus:outline-none focus:underline cursor-pointer"
+              >
+                Kebijakan Privasi
+              </button>
+              <span className="text-slate-600">|</span>
+              <button
+                type="button"
+                onClick={() => setIsTermsOpen(true)}
+                className="hover:text-slate-300 transition-colors focus:outline-none focus:underline cursor-pointer"
+              >
+                Syarat & Ketentuan
+              </button>
+            </p>
           </div>
         </div>
 
@@ -122,6 +143,16 @@ export const Footer: React.FC = () => {
           Sistem Informasi Alumni & Tracer Study Vokasi
         </div>
       </div>
+
+      {/* Popups / Modals */}
+      <PrivacyPolicyModal
+        isOpen={isPrivacyOpen}
+        onClose={() => setIsPrivacyOpen(false)}
+      />
+      <TermsOfServiceModal
+        isOpen={isTermsOpen}
+        onClose={() => setIsTermsOpen(false)}
+      />
     </footer>
   );
 };

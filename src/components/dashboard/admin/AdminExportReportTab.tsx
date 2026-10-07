@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAdminStore } from '@/store/adminStore';
-import * as XLSX from 'xlsx';
+import { exportJsonToExcel } from '@/lib/excelExport';
 import {
   FileSpreadsheet,
   Download,
@@ -131,19 +131,7 @@ export const AdminExportReportTab: React.FC = () => {
       });
     }
 
-    const ws = XLSX.utils.json_to_sheet(dataRows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
-
-    // Auto column widths
-    if (dataRows.length > 0) {
-      const colKeys = Object.keys(dataRows[0]);
-      ws['!cols'] = colKeys.map((k) => ({
-        wch: Math.max(k.length + 4, 14),
-      }));
-    }
-
-    XLSX.writeFile(wb, filename);
+    exportJsonToExcel(dataRows, filename, { sheetName });
     showDownloadToast(`Berkas Excel (${filename}) berhasil diunduh.`);
   };
 

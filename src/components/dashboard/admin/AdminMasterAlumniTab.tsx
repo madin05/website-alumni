@@ -211,7 +211,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
     const text = encodeURIComponent(
       `Halo *${alumni.nama}* (Alumni ${alumni.jurusan} Angkatan ${alumni.tahunLulus}),\n\nKami dari Bursa Kerja Khusus SMK Sasmita Jaya 2 Pamulang mengingatkan Anda untuk mengisi kuesioner penelusuran lulusan (tracer study).\n\nSilakan masuk menggunakan NISN: *${alumni.nisn}* melalui halaman login:\nhttps://tracerstudy-sasmita2.sch.id/login\n\nTerima kasih atas bantuan dan kerja sama Anda.`,
     );  
-    return `https://wa.me/${cleanNumber}?text=${text}`;
+    return `https://wa.me/${cleanNumber}?tePxt=${text}`;
   };
  
   return (

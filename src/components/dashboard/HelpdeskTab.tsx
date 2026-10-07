@@ -171,8 +171,8 @@ export const HelpdeskTab: React.FC = () => {
         </div>
 
         {/* Right Column (Desktop: Right 6 cols, Mobile/Tablet: Bottom order-3): FAQs */}
-        <div className="order-3 lg:order-3 lg:col-span-6 space-y-3">
-          <h3 className="font-bold text-base text-slate-900 flex items-center gap-2 mb-2">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm order-3 lg:order-3 lg:col-span-6 space-y-3">
+          <h3 className="font-bold p-4 text-base text-slate-900 flex items-center gap-2 mb-2">
             <HelpCircle className="w-4 h-4 text-slate-900" />
             <span>Pertanyaan Umum Alumni (FAQ)</span>
           </h3>
@@ -180,10 +180,7 @@ export const HelpdeskTab: React.FC = () => {
           {MOCK_FAQS.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
-              <div
-                key={idx}
-                className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
-              >
+              <div key={idx} className=" overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setOpenFaq(isOpen ? null : idx)}

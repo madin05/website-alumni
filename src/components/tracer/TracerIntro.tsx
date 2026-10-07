@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 interface TracerIntroProps {
   onStart: () => void;
@@ -12,26 +11,6 @@ export const TracerIntro: React.FC<TracerIntroProps> = ({
 }) => {
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Top Navigation */}
-      <div className="mb-4 sm:mb-5">
-        {onBack ? (
-          <button
-            type="button"
-            onClick={onBack}
-            className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition cursor-pointer"
-          >
-            ← Kembali ke Beranda
-          </button>
-        ) : (
-          <Link
-            to="/dashboard"
-            className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-blue-600 transition"
-          >
-            ← Kembali ke Beranda
-          </Link>
-        )}
-      </div>
-
       {/* Main Official Intro Card */}
       <div className="bg-white rounded-lg sm:rounded-xl border border-slate-200/90 shadow-sm p-6 sm:p-10 md:p-12 text-slate-800">
         {/* Header Title */}
@@ -51,42 +30,42 @@ export const TracerIntro: React.FC<TracerIntroProps> = ({
           </p>
 
           {/* Section 1: Tujuan */}
-          <div className="space-y-2.5">
-            <h2 className="font-medium text-slate-900 text-sm sm:text-base">
+          <div className="space-y-3">
+            <h2 className="font-semibold text-slate-900 text-sm sm:text-base">
               Tujuan dari tracer study adalah untuk:
             </h2>
-            <div className="space-y-1.5 pl-1 sm:pl-2">
+            <div className="space-y-3 pl-1 sm:pl-2">
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">1)</span>
-                <span>
+                <span className="leading-relaxed">
                   mengetahui keterserapan lulusan pendidikan vokasi ke dunia
                   kerja atau melanjutkan pendidikan;
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">2)</span>
-                <span>
+                <span className="leading-relaxed">
                   mendapatkan informasi umpan balik dari lulusan untuk
                   meningkatkan kualitas program pendidikan dan pelatihan vokasi;
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">3)</span>
-                <span>
+                <span className="leading-relaxed">
                   mendapatkan informasi tentang ketenagakerjaan dan dunia
                   industri pada level lokal dan nasional;
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">4)</span>
-                <span>
+                <span className="leading-relaxed">
                   mendapatkan informasi kompetensi (hard skills dan soft skills)
                   yang dibutuhkan industri lokal dan nasional;
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">5)</span>
-                <span>
+                <span className="leading-relaxed">
                   memetakan kinerja satuan pendidikan vokasi dalam pelaksanaan
                   program pendidikan dan pelatihan vokasi.
                 </span>
@@ -95,7 +74,7 @@ export const TracerIntro: React.FC<TracerIntroProps> = ({
           </div>
 
           {/* Paragraph 2 */}
-          <p className="text-justify sm:text-left">
+          <p className="text-justify sm:text-left leading-relaxed">
             Kami mengharapkan partisipasi Anda selaku lulusan pendidikan vokasi
             untuk memberikan data dan informasi terkait dengan kegiatan anda
             setelah kelulusan. Informasi yang diberikan sangat bermanfaat bagi
@@ -107,20 +86,20 @@ export const TracerIntro: React.FC<TracerIntroProps> = ({
           </p>
 
           {/* Section 2: Petunjuk Pengisian */}
-          <div className="space-y-2.5 pt-2">
-            <h2 className="font-medium text-slate-900 text-sm sm:text-base">
+          <div className="space-y-3 pt-2">
+            <h2 className="font-semibold text-slate-900 text-sm sm:text-base">
               Petunjuk Pengisian
             </h2>
-            <div className="space-y-1.5 pl-1 sm:pl-2">
+            <div className="space-y-3 pl-1 sm:pl-2">
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">1.</span>
-                <span>
+                <span className="leading-relaxed">
                   Isilah data identitas Anda dengan lengkap dan benar.
                 </span>
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">2.</span>
-                <span>
+                <span className="leading-relaxed">
                   Jawab pertanyaan-pertanyaan dalam instrumen ini dengan cara
                   meng-klik tombol di samping jawaban yang sesuai dengan keadaan
                   sebenarnya.
@@ -128,7 +107,7 @@ export const TracerIntro: React.FC<TracerIntroProps> = ({
               </div>
               <div className="flex items-start gap-2.5">
                 <span className="font-medium text-slate-600 shrink-0">3.</span>
-                <span>
+                <span className="leading-relaxed">
                   Aplikasi ini secara otomatis akan mengarahkan Anda pada
                   pertanyaan berikut setelah pertanyaan yang muncul sebelumnya
                   Anda jawab.
