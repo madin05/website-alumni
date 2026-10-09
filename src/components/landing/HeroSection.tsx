@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { useAuthStore } from '@/store/authStore';
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
 
 interface StatCounterProps {
   end: number;
@@ -10,8 +10,13 @@ interface StatCounterProps {
   trigger: boolean;
 }
 
-const StatCounter: React.FC<StatCounterProps> = ({ end, decimals = 1, suffix = '', trigger }) => {
-  const [displayValue, setDisplayValue] = useState('0');
+const StatCounter: React.FC<StatCounterProps> = ({
+  end,
+  decimals = 1,
+  suffix = "",
+  trigger,
+}) => {
+  const [displayValue, setDisplayValue] = useState("0");
 
   useEffect(() => {
     if (!trigger) return;
@@ -27,7 +32,7 @@ const StatCounter: React.FC<StatCounterProps> = ({ end, decimals = 1, suffix = '
       const current = ease * end;
 
       if (decimals > 0) {
-        setDisplayValue(current.toFixed(decimals).replace('.', ','));
+        setDisplayValue(current.toFixed(decimals).replace(".", ","));
       } else {
         setDisplayValue(Math.round(current).toString());
       }
@@ -35,7 +40,7 @@ const StatCounter: React.FC<StatCounterProps> = ({ end, decimals = 1, suffix = '
       if (progress < 1) {
         frameId = requestAnimationFrame(animate);
       } else {
-        setDisplayValue(end.toFixed(decimals).replace('.', ','));
+        setDisplayValue(end.toFixed(decimals).replace(".", ","));
       }
     };
 
@@ -62,7 +67,7 @@ export const HeroSection: React.FC = () => {
           setStatsVisible(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     const el = statsRef.current;
@@ -75,14 +80,16 @@ export const HeroSection: React.FC = () => {
 
   return (
     <section id="beranda" className="relative w-full overflow-hidden">
-      
-      {/* Main Hero Visual Container: Fixed stable height to prevent bg-cover zoom/shift on scroll */}
-      <div className="relative h-[560px] sm:h-[620px] lg:h-[660px] w-full flex items-center">
-        
-        {/* Background Photo Image (Stable anchor) */}
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-no-repeat bg-[position:calc(100%+40px)_center] sm:bg-[position:right_center] lg:bg-[position:calc(100%+60px)_center]"
-          style={{ backgroundImage: `url('/bg-cto.png')` }}
+      {/* Main Hero Visual Container: Extended height on mobile to seamlessly wrap the content & stats bar */}
+      <div className="relative h-[700px] sm:h-[620px] lg:h-[660px] w-full flex items-center pt-4 pb-20 sm:py-0">
+        {/* Background Photo Image (Optimized WebP with fetchPriority & async decoding) */}
+        <img
+          src="/bg-cto2.webp"
+          alt="Banner Siswa SMK Sasmita Jaya 2"
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover object-[calc(100%+40px)_center] sm:object-right lg:object-[calc(100%+60px)_center] pointer-events-none select-none"
         />
 
         {/* Mobile & Tablet Backdrop (< 1024px): Smooth uniform royal blue backdrop so text is 100% crisp without any vertical split cut on the students' faces */}
@@ -94,13 +101,6 @@ export const HeroSection: React.FC = () => {
         {/* Left Content Area */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="max-w-xl lg:max-w-2xl text-left space-y-4 sm:space-y-5">
-            
-            {/* Top Tracer Study Line Badge matching exact screenshot */}
-            <div className="flex items-center gap-2.5 text-xs sm:text-sm font-semibold tracking-wider text-white/90 uppercase">
-              <span className="w-8 h-0.5 bg-white/70 inline-block" />
-              <span>TRACER STUDY</span>
-            </div>
-
             {/* Title matching exact typography and color */}
             <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold tracking-tight leading-[1.15]">
               <span className="text-white block">Masa Depan Lulusan,</span>
@@ -111,15 +111,16 @@ export const HeroSection: React.FC = () => {
 
             {/* Subtitle paragraph matching exact text */}
             <p className="text-xs sm:text-sm lg:text-[15px] text-white/90 font-normal leading-relaxed max-w-lg">
-              Tracer Study SMK Sasmita Jaya 2 merupakan sistem informasi untuk melacak keberadaan,
-              aktivitas, dan masa studi lulusan guna meningkatkan kualitas pendidikan dan relevansi
-              kompetensi dengan dunia kerja.
+              Tracer Study SMK Sasmita Jaya 2 merupakan sistem informasi untuk
+              melacak keberadaan, aktivitas, dan masa studi lulusan guna
+              meningkatkan kualitas pendidikan dan relevansi kompetensi dengan
+              dunia kerja.
             </p>
 
             {/* CTA Button matching exact pill style and text */}
             <div className="pt-2">
               <Link
-                to={isAuthenticated ? '/tracer-study' : '/login'}
+                to={isAuthenticated ? "/tracer-study" : "/login"}
                 className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#fdb813] hover:bg-[#f5ad07] text-[#0a2540] font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
               >
                 <span>Isi Kuesioner Tracer Study</span>
@@ -128,7 +129,6 @@ export const HeroSection: React.FC = () => {
                 </div>
               </Link>
             </div>
-
           </div>
         </div>
       </div>
@@ -136,17 +136,21 @@ export const HeroSection: React.FC = () => {
       {/* Floating Statistics Bar with subtle geometric ornament & count up animation */}
       <div
         ref={statsRef}
-        className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 -mt-12 sm:-mt-16 mb-16 sm:mb-20"
+        className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 -mt-20 sm:-mt-16 mb-12 sm:mb-20"
       >
         <div className="relative bg-gradient-to-r from-[#142e5c] via-[#1a3c75] to-[#142e5c] rounded-xl p-5 sm:p-7 shadow-2xl border border-white/15 overflow-hidden">
-          
           {/* Seigaiha Japanese Wave Pattern Illustration from example */}
           <svg
             className="absolute inset-0 w-full h-full opacity-[0.16] pointer-events-none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
-              <pattern id="seigaiha-pattern" width="60" height="30" patternUnits="userSpaceOnUse">
+              <pattern
+                id="seigaiha-pattern"
+                width="60"
+                height="30"
+                patternUnits="userSpaceOnUse"
+              >
                 <g stroke="#ffffff" strokeWidth="1.2" fill="none">
                   {/* Top center arcs */}
                   <circle cx="30" cy="0" r="30" />
@@ -175,7 +179,6 @@ export const HeroSection: React.FC = () => {
           </svg>
 
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/20">
-            
             {/* Stat 1: Alumni Terdaftar with Count-Up Animation */}
             <div className="py-3.5 md:py-1 px-4">
               <div className="w-full max-w-[210px] md:max-w-none mx-auto flex items-center justify-start md:justify-center gap-4">
@@ -185,13 +188,18 @@ export const HeroSection: React.FC = () => {
                     alt="Alumni Terdaftar"
                     className="w-10 h-10 object-contain invert brightness-200"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/Student.svg';
+                      (e.target as HTMLImageElement).src = "/Student.svg";
                     }}
                   />
                 </div>
                 <div className="text-left">
                   <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none">
-                    <StatCounter end={3.5} decimals={1} suffix="Ribu" trigger={statsVisible} />
+                    <StatCounter
+                      end={3.5}
+                      decimals={1}
+                      suffix="Ribu"
+                      trigger={statsVisible}
+                    />
                   </div>
                   <div className="text-xs text-slate-300 font-medium mt-1">
                     Alumni Terdaftar
@@ -212,7 +220,12 @@ export const HeroSection: React.FC = () => {
                 </div>
                 <div className="text-left">
                   <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none">
-                    <StatCounter end={87.5} decimals={1} suffix="%" trigger={statsVisible} />
+                    <StatCounter
+                      end={87.5}
+                      decimals={1}
+                      suffix="%"
+                      trigger={statsVisible}
+                    />
                   </div>
                   <div className="text-xs text-slate-300 font-medium mt-1">
                     Bekerja
@@ -233,7 +246,12 @@ export const HeroSection: React.FC = () => {
                 </div>
                 <div className="text-left">
                   <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-none">
-                    <StatCounter end={12.5} decimals={1} suffix="%" trigger={statsVisible} />
+                    <StatCounter
+                      end={12.5}
+                      decimals={1}
+                      suffix="%"
+                      trigger={statsVisible}
+                    />
                   </div>
                   <div className="text-xs text-slate-300 font-medium mt-1">
                     Melanjutkan Studi
@@ -241,11 +259,9 @@ export const HeroSection: React.FC = () => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
     </section>
   );
 };

@@ -1,22 +1,34 @@
 import React, { useState } from "react";
 import {
-  Mail,
   Search,
   CheckCheck,
   Trash2,
   ExternalLink,
   Clock,
   Inbox,
-  Filter,
-  ArrowRight,
-  Send,
+  ChevronRight,
   FileCheck2,
   CheckCircle2,
+  X,
 } from "lucide-react";
 import { useMailStore, MailItem } from "@/store/mailStore";
 import { useAuthStore } from "@/store/authStore";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { createPortal } from "react-dom";
+
+const SolidMailIcon: React.FC<{ className?: string }> = ({
+  className = "w-5 h-5 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+  </svg>
+);
 
 interface AdminMessagesTabProps {
   onNavigateTab?: (tab: string, respondentId?: string) => void;
@@ -48,11 +60,26 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
   const [activeFilter, setActiveFilter] = useState<"all" | "unread">("all");
-  const [selectedMailId, setSelectedMailId] = useState<string | null>(
-    mails[0]?.id || null,
-  );
+  const [selectedMailForModal, setSelectedMailForModal] =
+    useState<MailItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedMailForModal(null);
+      }
+    };
+    if (selectedMailForModal) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedMailForModal]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -69,10 +96,7 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
       (mail.submissionId &&
         mail.submissionId.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchRead =
-      activeFilter === "unread"
-        ? !mail.isRead || mail.id === selectedMailId
-        : true;
+    const matchRead = activeFilter === "unread" ? !mail.isRead : true;
 
     const matchCategory =
       selectedCategory === "Semua" ||
@@ -84,15 +108,8 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     return matchSearch && matchRead && matchCategory;
   });
 
-  const selectedMail =
-    mails.find((m) => m.id === selectedMailId) ||
-    filteredMails.find((m) => m.id === selectedMailId) ||
-    filteredMails[0] ||
-    mails[0] ||
-    null;
-
-  const handleSelectMail = (mail: MailItem) => {
-    setSelectedMailId(mail.id);
+  const handleOpenMailModal = (mail: MailItem) => {
+    setSelectedMailForModal(mail);
     if (!mail.isRead) {
       markAsRead(mail.id);
     }
@@ -111,9 +128,8 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     if (deleteConfirmId) {
       deleteMail(deleteConfirmId);
       showToast("Pesan berhasil dihapus.");
-      if (selectedMailId === deleteConfirmId) {
-        const remaining = mails.filter((m) => m.id !== deleteConfirmId);
-        setSelectedMailId(remaining[0]?.id || null);
+      if (selectedMailForModal?.id === deleteConfirmId) {
+        setSelectedMailForModal(null);
       }
       setDeleteConfirmId(null);
     }
@@ -121,6 +137,7 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
 
   const handleAction = (mail: MailItem) => {
     if (!mail.actionUrl) return;
+    setSelectedMailForModal(null);
     if (onNavigateTab) {
       onNavigateTab(mail.actionUrl.tab, mail.actionUrl.respondentId);
     }
@@ -165,10 +182,10 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
   ).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 bg-[#0d2346] text-white rounded-xl shadow-xl flex items-center gap-3 border border-slate-700 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 p-3 sm:p-4 bg-[#0d2346] text-white rounded-xl shadow-xl flex items-center gap-3 border border-slate-700 animate-in slide-in-from-bottom-5">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span className="text-xs sm:text-sm font-semibold">
             {toastMessage}
@@ -177,10 +194,10 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
       )}
 
       {/* Header Banner */}
-      <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-[#0d2346]" />
+            <SolidMailIcon className="w-5 h-5 text-[#0d2346] shrink-0" />
             <span>Pesan & Kotak Masuk Alumni</span>
           </h1>
         </div>
@@ -189,7 +206,7 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
           <button
             type="button"
             onClick={handleMarkAllRead}
-            className="px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+            className="px-3.5 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
           >
             <CheckCheck className="w-3.5 h-3.5" />
             <span>Tandai Semua Dibaca</span>
@@ -197,8 +214,8 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
         )}
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* 3 Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
         <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-xs flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-slate-500">Total Pesan</p>
@@ -236,55 +253,52 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
         </div>
       </div>
 
-      {/* Main Mail Center: 2-Column Split Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Left Column: List & Filter (5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
-          {/* Search & Tabs */}
-          <div className="p-4 border-b border-slate-200 space-y-3">
-            <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+      {/* Main Mail Center: Clean Full-Width Inbox */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
+        {/* Search & Filter Header Bar */}
+        <div className="p-4 border-b border-slate-200 space-y-3.5 bg-slate-50/40">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Cari nama alumni, NISN, atau subjek..."
+                placeholder="Cari nama alumni, NISN, atau subjek pesan..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0d2346] focus:border-[#0d2346] transition"
+                className="w-full pl-9 pr-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-[#0d2346]/10 focus:border-[#0d2346] transition"
               />
             </div>
 
             {/* Read/Unread Filter */}
-            <div className="flex items-center justify-between gap-1">
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => setActiveFilter("all")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
-                    activeFilter === "all"
-                      ? "bg-[#0d2346] text-white"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-600"
-                  }`}
-                >
-                  Semua ({mails.length})
-                </button>
-                <button
-                  onClick={() => setActiveFilter("unread")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
-                    activeFilter === "unread"
-                      ? "bg-[#0d2346] text-white"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-600"
-                  }`}
-                >
-                  Belum Dibaca ({unreadCount})
-                </button>
-              </div>
-
-              <span className="text-[11px] text-slate-400">
-                {filteredMails.length} pesan
-              </span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => setActiveFilter("all")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+                  activeFilter === "all"
+                    ? "bg-[#0d2346] text-white shadow-xs"
+                    : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                Semua ({mails.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveFilter("unread")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+                  activeFilter === "unread"
+                    ? "bg-[#0d2346] text-white shadow-xs"
+                    : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200"
+                }`}
+              >
+                Belum Dibaca ({unreadCount})
+              </button>
             </div>
+          </div>
 
-            {/* Category Filter Chips */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pt-1 pb-0.5 text-[11px]">
+          {/* Category Filter Chips & Counter */}
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 text-xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
               {[
                 { id: "Semua", label: "Semua Kategori" },
                 { id: "tracer_submission", label: "Isian Tracer" },
@@ -293,8 +307,9 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
               ].map((cat) => (
                 <button
                   key={cat.id}
+                  type="button"
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-2.5 py-1 rounded-md shrink-0 cursor-pointer transition font-medium border ${
+                  className={`px-2.5 py-1 rounded-md shrink-0 cursor-pointer transition text-xs font-medium border ${
                     selectedCategory === cat.id
                       ? "bg-slate-800 text-white border-slate-800"
                       : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
@@ -304,203 +319,304 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Mail Items List */}
-          <div className="divide-y divide-slate-100 max-h-[560px] overflow-y-auto">
-            {filteredMails.length === 0 ? (
-              <div className="p-8 text-center">
-                <div className="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
-                  <Inbox className="w-5 h-5" />
-                </div>
-                <p className="text-xs font-bold text-slate-700">
-                  Tidak ada pesan
-                </p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Coba sesuaikan kata kunci pencarian atau filter.
-                </p>
-              </div>
-            ) : (
-              filteredMails.map((mail) => {
-                const isSelected = selectedMail?.id === mail.id;
-
-                return (
-                  <div
-                    key={mail.id}
-                    onClick={() => handleSelectMail(mail)}
-                    className={`p-3.5 flex items-start gap-3 cursor-pointer transition-all relative border-l-4 ${
-                      isSelected
-                        ? "bg-slate-100/90 border-[#0d2346] shadow-2xs"
-                        : mail.isRead
-                          ? "bg-white border-transparent hover:bg-slate-50 hover:border-slate-300"
-                          : "bg-slate-50/70 border-transparent hover:bg-slate-100/70 hover:border-slate-300 font-semibold"
-                    }`}
-                  >
-                    {!mail.isRead && (
-                      <span className="w-2 h-2 rounded-full bg-[#0d2346] shrink-0 mt-1.5" />
-                    )}
-
-                    <UserAvatar
-                      name={mail.senderName}
-                      gender={mail.senderAvatarGender}
-                      className="w-8 h-8 shrink-0 border border-slate-200"
-                    />
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1 mb-0.5">
-                        <span className="text-xs font-bold text-slate-900 truncate">
-                          {mail.senderName}
-                        </span>
-                        <span className="text-[10px] text-slate-400 shrink-0 flex items-center gap-1 font-normal">
-                          <Clock className="w-2.5 h-2.5" />
-                          {formatTimeAgo(mail.createdAt)}
-                        </span>
-                      </div>
-
-                      <p
-                        className={`text-xs truncate mb-1 ${
-                          !mail.isRead
-                            ? "font-bold text-[#0d2346]"
-                            : "font-medium text-slate-700"
-                        }`}
-                      >
-                        {mail.subject}
-                      </p>
-
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <span className="inline-block px-2 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                          {getCategoryLabel(mail.category)}
-                        </span>
-                        {mail.submissionId && (
-                          <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-mono text-slate-600 bg-white border border-slate-200">
-                            {mail.submissionId}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
+            <span className="text-[11px] text-slate-400">
+              Menampilkan {filteredMails.length} pesan
+            </span>
           </div>
         </div>
 
-        {/* Right Column: Selected Message Reader (7 cols) */}
-        <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          {selectedMail ? (
-            <div>
-              {/* Message Header */}
-              <div className="p-5 border-b border-slate-200 flex items-start justify-between gap-4">
-                <div className="flex items-start gap-3.5">
+        {/* Mail Items List */}
+        <div className="divide-y divide-slate-100">
+          {filteredMails.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2.5">
+                <Inbox className="w-6 h-6" />
+              </div>
+              <p className="text-sm font-bold text-slate-700">
+                Tidak ada pesan yang cocok
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Coba sesuaikan kata kunci pencarian atau filter kategori.
+              </p>
+            </div>
+          ) : (
+            filteredMails.map((mail) => (
+              <div
+                key={mail.id}
+                onClick={() => handleOpenMailModal(mail)}
+                className={`p-4 sm:p-4.5 flex items-start gap-3.5 cursor-pointer transition-all relative group ${
+                  !mail.isRead
+                    ? "bg-blue-50/30 hover:bg-blue-50/60 font-medium"
+                    : "bg-white hover:bg-slate-50"
+                }`}
+              >
+                {/* Unread Indicator Bar */}
+                {!mail.isRead && (
+                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#0d2346]" />
+                )}
+
+                {/* Avatar */}
+                <div className="shrink-0 pt-0.5">
                   <UserAvatar
-                    name={selectedMail.senderName}
-                    gender={selectedMail.senderAvatarGender}
-                    className="w-11 h-11 shrink-0 border border-slate-200"
+                    name={mail.senderName}
+                    gender={mail.senderAvatarGender}
+                    className="w-10 h-10 border border-slate-200"
                   />
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-sm sm:text-base font-bold text-slate-900">
-                        {selectedMail.senderName}
-                      </h2>
-                      {selectedMail.senderMajor && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                          {selectedMail.senderMajor}{" "}
-                          {selectedMail.senderGradYear
-                            ? `(${selectedMail.senderGradYear})`
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-xs sm:text-sm truncate ${
+                          !mail.isRead
+                            ? "font-bold text-slate-900"
+                            : "font-semibold text-slate-800"
+                        }`}
+                      >
+                        {mail.senderName}
+                      </span>
+                      {mail.senderMajor && (
+                        <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                          {mail.senderMajor}{" "}
+                          {mail.senderGradYear
+                            ? `(${mail.senderGradYear})`
                             : ""}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      {selectedMail.senderEmail}
-                      {selectedMail.senderNisn
-                        ? ` • NISN: ${selectedMail.senderNisn}`
-                        : ""}
+
+                    <span className="text-[11px] text-slate-400 shrink-0 flex items-center gap-1 font-normal">
+                      <Clock className="w-3 h-3" />
+                      {formatTimeAgo(mail.createdAt)}
+                    </span>
+                  </div>
+
+                  <p
+                    className={`text-xs sm:text-sm mb-1 line-clamp-1 ${
+                      !mail.isRead
+                        ? "font-bold text-[#0d2346]"
+                        : "font-semibold text-slate-800"
+                    }`}
+                  >
+                    {mail.subject}
+                  </p>
+
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed font-normal">
+                    {mail.preview || mail.body}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+                    <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                      {getCategoryLabel(mail.category)}
+                    </span>
+                    {mail.submissionId && (
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-700 bg-white border border-slate-200">
+                        <FileCheck2 className="w-2.5 h-2.5 text-[#0d2346]" />
+                        <span>{mail.submissionId}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right Arrow / Action Hint */}
+                <div className="shrink-0 self-center hidden sm:flex items-center text-slate-400 group-hover:text-[#0d2346] group-hover:translate-x-0.5 transition-all">
+                  <ChevronRight className="w-4 h-4" />
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Message Detail Responsive Modal / Fullscreen Mobile Viewer */}
+      {selectedMailForModal &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center sm:p-4 overflow-hidden">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-200"
+              onClick={() => setSelectedMailForModal(null)}
+            />
+
+            {/* Modal Dialog: Full Screen on Mobile, Centered Card on Desktop */}
+            <div className="relative z-10 w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-2xl bg-white sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in duration-200">
+              {/* Header */}
+              <div className="p-4 sm:p-5 border-b border-slate-100 bg-[#0d2346] text-white flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-white shrink-0">
+                    <SolidMailIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                      Rincian Pesan Masuk
+                    </h2>
+                    <p className="text-xs text-slate-300 mt-0.5">
+                      {getCategoryLabel(selectedMailForModal.category)}
                     </p>
                   </div>
                 </div>
 
-                <div className="text-right shrink-0">
-                  <span className="text-[11px] text-slate-400 block">
-                    {new Date(selectedMail.createdAt).toLocaleString("id-ID", {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })}
-                  </span>
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                    {getCategoryLabel(selectedMail.category)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Message Content */}
-              <div className="p-5 space-y-4">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                    SUBJEK PESAN
-                  </span>
-                  <h3 className="text-base font-bold text-[#0d2346]">
-                    {selectedMail.subject}
-                  </h3>
-                </div>
-
-                {selectedMail.submissionId && (
-                  <div className="inline-flex items-center gap-2 text-xs font-medium">
-                    <span>
-                      Nomor Pengajuan Tracer Study:{" "}
-                      <strong className="font-mono text-slate-900">
-                        {selectedMail.submissionId}
-                      </strong>
-                    </span>
-                  </div>
-                )}
-
-                <div className="p-4 text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line">
-                  {selectedMail.body}
-                </div>
-              </div>
-
-              {/* Message Actions */}
-              <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-3">
                 <button
-                  onClick={() => handleDelete(selectedMail.id)}
-                  className="px-3.5 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer flex items-center gap-1.5"
+                  type="button"
+                  onClick={() => setSelectedMailForModal(null)}
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
+                  aria-label="Tutup pesan"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Scrollable Body */}
+              <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 flex-1 bg-slate-50/60 text-slate-800">
+                {/* 1. Sender Info Card */}
+                <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3.5">
+                  <div className="flex items-start gap-3.5">
+                    <UserAvatar
+                      name={selectedMailForModal.senderName}
+                      gender={selectedMailForModal.senderAvatarGender}
+                      className="w-12 h-12 shrink-0 border border-slate-200 text-sm font-bold"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-bold text-slate-900 break-words">
+                          {selectedMailForModal.senderName}
+                        </h3>
+                        {selectedMailForModal.senderMajor && (
+                          <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                            {selectedMailForModal.senderMajor}{" "}
+                            {selectedMailForModal.senderGradYear
+                              ? `(${selectedMailForModal.senderGradYear})`
+                              : ""}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2.5 pt-2.5 border-t border-slate-100 text-xs text-slate-600">
+                        {selectedMailForModal.senderEmail && (
+                          <div className="flex items-center gap-1.5 break-all">
+                            <SolidMailIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <span>{selectedMailForModal.senderEmail}</span>
+                          </div>
+                        )}
+                        {selectedMailForModal.senderNisn && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-slate-400 font-medium">
+                              NISN:
+                            </span>
+                            <span className="font-mono font-semibold text-slate-800">
+                              {selectedMailForModal.senderNisn}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1.5 text-slate-500 sm:col-span-2">
+                          <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>
+                            {new Date(
+                              selectedMailForModal.createdAt,
+                            ).toLocaleString("id-ID", {
+                              weekday: "long",
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}{" "}
+                            WIB
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Subject & Submission Box */}
+                <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                      SUBJEK PESAN
+                    </span>
+                    <h4 className="text-base sm:text-lg font-bold text-[#0d2346] leading-snug">
+                      {selectedMailForModal.subject}
+                    </h4>
+                  </div>
+
+                  {selectedMailForModal.submissionId && (
+                    <div className="p-3.5 bg-blue-50/60 border border-blue-200/70 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                      <div className="flex items-center gap-2">
+                        <FileCheck2 className="w-4 h-4 text-[#0d2346] shrink-0" />
+                        <span className="text-xs sm:text-sm font-medium text-slate-700">
+                          Nomor Pengajuan Tracer Study:
+                        </span>
+                        <strong className="font-mono text-xs sm:text-sm font-bold text-[#0d2346]">
+                          {selectedMailForModal.submissionId}
+                        </strong>
+                      </div>
+                      {selectedMailForModal.actionUrl && (
+                        <button
+                          type="button"
+                          onClick={() => handleAction(selectedMailForModal)}
+                          className="text-xs font-semibold text-[#0d2346] hover:underline inline-flex items-center gap-1 cursor-pointer self-start sm:self-auto"
+                        >
+                          <span>Buka Verifikasi</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Message Body Card */}
+                <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
+                    ISI PESAN
+                  </span>
+                  <div className="p-4 sm:p-5 bg-slate-50/80 rounded-xl border border-slate-100 text-sm sm:text-base text-slate-800 leading-relaxed whitespace-pre-line break-words">
+                    {selectedMailForModal.body}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-3.5 sm:p-4 border-t border-slate-200 bg-white flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleDelete(selectedMailForModal.id)}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Trash2 className="w-4 h-4" />
                   <span>Hapus Pesan</span>
                 </button>
 
-                <div className="flex items-center gap-2.5">
-                  {selectedMail.actionUrl && (
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedMailForModal(null)}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition cursor-pointer text-center"
+                  >
+                    Tutup
+                  </button>
+
+                  {selectedMailForModal.actionUrl && (
                     <button
-                      onClick={() => handleAction(selectedMail)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0d2346] hover:bg-[#163868] shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5"
+                      type="button"
+                      onClick={() => handleAction(selectedMailForModal)}
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-[#0d2346] hover:bg-[#163868] shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
                     >
-                      <span>{selectedMail.actionUrl.label}</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>{selectedMailForModal.actionUrl.label}</span>
+                      <ExternalLink className="w-4 h-4" />
                     </button>
                   )}
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="p-16 text-center">
-              <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
-                <Mail className="w-6 h-6" />
-              </div>
-              <h3 className="text-sm font-bold text-slate-800">
-                Pilih pesan untuk membaca
-              </h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Pilih salah satu pesan di sebelah kiri untuk melihat rincian isi
-                pesan secara lengkap.
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
+          </div>,
+          document.body,
+        )}
 
-      {/* Custom System Confirmation Modal */}
+      {/* Delete Confirmation Modal */}
       <ConfirmModal
         isOpen={Boolean(deleteConfirmId)}
         onClose={() => setDeleteConfirmId(null)}

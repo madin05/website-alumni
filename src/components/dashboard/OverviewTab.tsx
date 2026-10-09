@@ -7,16 +7,13 @@ import { DashboardTab } from "./DashboardSidebar";
 import {
   Check,
   AlertCircle,
-  FileSpreadsheet,
   Download,
   Briefcase,
   GraduationCap,
   Building,
   ArrowRight,
   MapPin,
-  Calendar,
   Clock,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -41,8 +38,8 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* 1. Banner Tracer Study matching Wireframe */}
-      <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-[#102a4e] via-[#1a3d6d] to-[#254f8a] text-white p-4 sm:p-6 md:p-8 shadow-md">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+      <div className="relative rounded-t-md overflow-hidden bg-gradient-to-r from-[#102a4e] via-[#1a3d6d] to-[#254f8a] text-white p-4 sm:p-6 md:p-8 shadow-md">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
           <div className="space-y-1.5 sm:space-y-2 max-w-xl">
             <h2 className="text-base sm:text-xl md:text-2xl font-bold tracking-tight">
               {isTracerDone
@@ -57,33 +54,23 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             </p>
           </div>
 
-          <div className="shrink-0 w-full md:w-auto">
+          <div className="shrink-0 w-full sm:w-auto flex sm:justify-end">
             {isTracerDone ? (
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full">
-                <Button
-                  onClick={onOpenReceipt}
-                  variant="secondary"
-                  size="md"
-                  className="font-bold text-slate-950 w-full flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer text-xs sm:text-sm px-2 sm:px-4 text-center"
-                >
-                  <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 mr-1" />
-                  <span className="truncate">Unduh Bukti</span>
-                </Button>
-                <Button
-                  onClick={() => onNavigateTab("tracer_study")}
-                  variant="outline"
-                  size="md"
-                  className="bg-white/10 text-white hover:bg-white/20 border-white/30 w-full text-xs sm:text-sm px-2 sm:px-4 text-center cursor-pointer"
-                >
-                  <span>Update Data</span>
-                </Button>
-              </div>
+              <Button
+                onClick={onOpenReceipt}
+                variant="secondary"
+                size="md"
+                className="font-bold text-slate-950 w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-sm hover:shadow hover:bg-slate-100 transition whitespace-nowrap"
+              >
+                <Download className="w-4 h-4 shrink-0" />
+                <span>Unduh Bukti</span>
+              </Button>
             ) : (
               <Button
                 onClick={() => onNavigateTab("tracer_study")}
-                variant="yellow"
+                variant="secondary"
                 size="lg"
-                className="font-bold text-slate-950 shadow-lg w-full md:w-auto cursor-pointer"
+                className="font-bold text-slate-950 shadow-lg w-full sm:w-auto cursor-pointer whitespace-nowrap"
               >
                 <span>Isi Kuesioner Sekarang</span>
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -114,7 +101,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                 Status Tracer Study
               </span>
               <h4 className="stat-heading text-lg sm:text-xl font-bold text-slate-900 leading-snug transition-colors">
-                {isTracerDone ? "Sudah Terisi" : "Belum Terisi"}
+                {isTracerDone ? "Selesai Terjawab" : "Belum Terjawab"}
               </h4>
               <p className="stat-desc text-xs font-light text-slate-600 mt-1.5 transition-colors">
                 {isTracerDone
@@ -125,8 +112,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
             <div className="card-content mt-4 pt-3 border-t border-slate-200/60 group-hover:border-white/20 transition-colors">
               <div className="stat-action text-xs font-bold text-[#0d2346] flex items-center gap-1.5 transition-colors">
-                <span>{isTracerDone ? "Buka Form Tracer" : "Lengkapi Sekarang"}</span>
-                <span className="font-mono">→</span>
+                <span>
+                  {isTracerDone ? "Buka Form Tracer" : "Lengkapi Sekarang"}
+                </span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
 
@@ -164,7 +153,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <div className="card-content mt-4 pt-3 border-t border-slate-200/60 group-hover:border-white/20 transition-colors">
               <div className="stat-action text-xs font-bold text-[#0d2346] flex items-center gap-1.5 transition-colors">
                 <span>Cek Alur Pengambilan</span>
-                <span className="font-mono">→</span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
 
@@ -198,7 +187,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <div className="card-content mt-4 pt-3 border-t border-slate-200/60 group-hover:border-white/20 transition-colors">
               <div className="stat-action text-xs font-bold text-[#0d2346] flex items-center gap-1.5 transition-colors">
                 <span>Eksplor Lowongan</span>
-                <span className="font-mono">→</span>
+                <ArrowRight className="w-4 h-4" />
               </div>
             </div>
 
@@ -214,7 +203,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-base font-bold text-slate-900">
-              Info Loker & Magang Rekomendasi
+              Info Loker & Magang
             </h3>
           </div>
           <button
@@ -254,13 +243,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   </p>
                 </div>
 
-                <div className="space-y-1 text-xs text-slate-500 pt-1">
-                  <p className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                    <span className="truncate">{job.location}</span>
-                  </p>
-                  <p className="font-semibold text-emerald-600">{job.salary}</p>
-                </div>
+                <p className="text-xs font-light text-slate-700 mt-1 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>{job.location}</span>
+                </p>
+                <p className="text-xs font-bold text-slate-600 mt-1">
+                  {job.salary}
+                </p>
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">

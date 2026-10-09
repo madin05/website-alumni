@@ -175,7 +175,7 @@ export const AdminRespondentDetailDrawer: React.FC<
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden touch-none select-none">
+    <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-300"
@@ -186,16 +186,16 @@ export const AdminRespondentDetailDrawer: React.FC<
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-2xl bg-white shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-300">
           {/* Header */}
-          <div className="p-4 sm:p-5 border-b border-slate-100 bg-[#0d2346] text-white flex items-center justify-between">
+          <div className="p-4 sm:p-5 sm:px-6 border-b border-slate-100 bg-[#0d2346] text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-sm sm:text-base font-semibold text-white truncate">
+                <div className="flex items-center gap-2.5">
+                  <h2 className="text-base sm:text-lg font-bold text-white tracking-tight truncate">
                     {respondent.nama}
                   </h2>
                   {getStatusBadge(respondent.verificationStatus)}
                 </div>
-                <p className="text-[10px] sm:text-xs text-slate-300 mt-0.5">
+                <p className="text-xs sm:text-sm text-slate-300 mt-1 leading-normal">
                   Nomor Berkas:{" "}
                   <span className="font-mono text-white">
                     {respondent.submissionId}
@@ -206,57 +206,62 @@ export const AdminRespondentDetailDrawer: React.FC<
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 sm:p-2 rounded-md bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
             >
               <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 
           {/* Scrollable Content Body */}
-          <div className="p-3.5 sm:p-5 overflow-y-auto space-y-3.5 sm:space-y-4 flex-1 text-slate-800">
+          <div className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1 text-slate-800 bg-slate-50/60">
             {/* Section 1: Identitas Alumni */}
-            <div className="bg-slate-50/70 rounded-xl p-3 sm:p-4 border border-slate-200/80 space-y-2.5">
-              <h3 className="font-semibold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
-                <SolidUserIcon className="w-3.5 h-3.5 text-[#0d2346]" />
-                <span>Identitas dan Kontak Alumni</span>
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs">
-                <div>
-                  <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+            <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-xs space-y-4 sm:space-y-5">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-[#0d2346]">
+                  <SolidUserIcon className="w-4 h-4 text-[#0d2346]" />
+                </div>
+                <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                  Identitas dan Kontak Alumni
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 text-xs">
+                <div className="space-y-1">
+                  <span className="text-slate-500 block text-xs font-medium tracking-wide">
                     NISN / NIK:
                   </span>
-                  <span className="font-mono text-[11px] sm:text-xs font-medium text-slate-800">
+                  <span className="font-mono text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block break-words">
                     {identitas.nisn}{" "}
                     {identitas.nik ? ` / ${identitas.nik}` : ""}
                   </span>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                <div className="space-y-1">
+                  <span className="text-slate-500 block text-xs font-medium tracking-wide">
                     Jurusan / Program Keahlian:
                   </span>
-                  <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                  <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                     {identitas.jurusan}
                   </span>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                <div className="space-y-1">
+                  <span className="text-slate-500 block text-xs font-medium tracking-wide">
                     Nomor WhatsApp:
                   </span>
                   <a
                     href={`https://wa.me/${identitas.no_whatsapp.replace(/\D/g, "")}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-mono text-[11px] sm:text-xs font-medium text-[#0d2346] hover:underline inline-flex items-center gap-1"
+                    className="font-mono text-sm sm:text-[15px] font-semibold text-emerald-700 hover:text-emerald-800 hover:underline inline-flex items-center gap-1.5 leading-relaxed"
                   >
-                    <Phone className="w-3 h-3 text-[#0d2346]" />
+                    <Phone className="w-4 h-4 text-emerald-600" />
                     <span>{identitas.no_whatsapp}</span>
                   </a>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                <div className="space-y-1">
+                  <span className="text-slate-500 block text-xs font-medium tracking-wide">
                     Alamat Email:
                   </span>
-                  <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                  <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block break-words">
                     {identitas.email || "-"}
                   </span>
                 </div>
@@ -264,70 +269,78 @@ export const AdminRespondentDetailDrawer: React.FC<
             </div>
 
             {/* Section 2: Aktivitas Pasca Kelulusan */}
-            <div className="bg-slate-50/70 rounded-xl p-3 sm:p-4 border border-slate-200/80 space-y-2.5">
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <h3 className="font-semibold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
-                  <SolidBuildingIcon className="w-3.5 h-3.5 text-[#0d2346]" />
-                  <span>
-                    Aktivitas Setelah Kelulusan (
-                    {getAktivitasLabel(respondent.statusKegiatan)})
+            <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-xs space-y-4 sm:space-y-5">
+              <div className="flex items-center justify-between gap-3 flex-wrap pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-[#0d2346]">
+                    <SolidBuildingIcon className="w-4 h-4 text-[#0d2346]" />
+                  </div>
+                  <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                    Aktivitas Setelah Kelulusan
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-2.5 py-1 bg-[#0d2346]/10 text-[#0d2346] rounded-md text-xs font-semibold">
+                    {getAktivitasLabel(respondent.statusKegiatan)}
                   </span>
-                </h3>
-                {payload.masa_tunggu && (
-                  <span className="px-2 py-0.5 bg-slate-200/70 border border-slate-300/60 text-slate-700 rounded-full text-[9px] sm:text-[10px] font-medium">
-                    Waktu Tunggu: {payload.masa_tunggu}
-                  </span>
-                )}
+                  {payload.masa_tunggu && (
+                    <span className="px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-700 rounded-md text-xs font-medium">
+                      Waktu Tunggu: {payload.masa_tunggu}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Kerja Detail */}
               {kerja && (
-                <div className="pt-2 border-t border-slate-200/70 space-y-2 text-xs">
-                  <div className="font-medium text-slate-700 text-[11px] sm:text-xs">
-                    Rincian Pekerjaan dan Perusahaan:
+                <div className="space-y-3.5 pt-1">
+                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Rincian Pekerjaan & Perusahaan:
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
                         Nama Perusahaan / Tempat Kerja:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                         {kerja.nama_perusahaan}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
                         Posisi / Jabatan:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                         {kerja.jabatan}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
                         Kesesuaian dengan Jurusan SMK:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-700">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-800 leading-relaxed block">
                         {kerja.kesesuaian_jurusan}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
                         Perkiraan Penghasilan Per Bulan:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                         {kerja.kisaran_penghasilan || "-"}
                       </span>
                     </div>
                     {kerja.nama_atasan && (
-                      <div className="sm:col-span-2 bg-white border border-slate-200 p-2.5 rounded-lg space-y-0.5">
-                        <span className="text-slate-500 block text-[10px] sm:text-[11px]">
+                      <div className="sm:col-span-2 bg-slate-50 border border-slate-200/80 p-4 rounded-xl space-y-1.5">
+                        <span className="text-slate-500 block text-xs font-medium">
                           Kontak Atasan / HRD (Untuk Survei Kepuasan Pengguna
                           Lulusan):
                         </span>
-                        <p className="text-slate-800 text-[11px] sm:text-xs font-medium">
-                          {kerja.nama_atasan} (
-                          {kerja.kontak_atasan || "Nomor kontak belum diisi"})
+                        <p className="text-slate-900 text-sm font-semibold leading-relaxed">
+                          {kerja.nama_atasan}{" "}
+                          <span className="text-slate-600 font-normal">
+                            ({kerja.kontak_atasan || "Nomor kontak belum diisi"})
+                          </span>
                         </p>
                       </div>
                     )}
@@ -337,25 +350,25 @@ export const AdminRespondentDetailDrawer: React.FC<
 
               {/* Kuliah Detail */}
               {kuliah && (
-                <div className="pt-2 border-t border-slate-200/70 space-y-2 text-xs">
-                  <div className="font-medium text-slate-700 text-[11px] sm:text-xs flex items-center gap-1.5">
-                    <SolidGraduationCapIcon className="w-3.5 h-3.5 text-[#0d2346]" />
+                <div className="space-y-3.5 pt-3 border-t border-slate-100">
+                  <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <SolidGraduationCapIcon className="w-3.5 h-3.5 text-slate-500" />
                     <span>Rincian Perguruan Tinggi:</span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
-                        Nama Kampus:
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
+                        Nama Kampus / Perguruan Tinggi:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                         {kuliah.nama_kampus}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
-                        Program Studi:
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
+                        Program Studi & Jenjang:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                         {kuliah.program_studi} ({kuliah.jenjang})
                       </span>
                     </div>
@@ -365,25 +378,25 @@ export const AdminRespondentDetailDrawer: React.FC<
 
               {/* Usaha Detail */}
               {usaha && (
-                <div className="pt-2 border-t border-slate-200/70 space-y-2 text-xs">
-                  <div className="font-medium text-slate-700 text-[11px] sm:text-xs flex items-center gap-1.5">
-                    <SolidStoreIcon className="w-3.5 h-3.5 text-[#0d2346]" />
+                <div className="space-y-3.5 pt-3 border-t border-slate-100">
+                  <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <SolidStoreIcon className="w-3.5 h-3.5 text-slate-500" />
                     <span>Rincian Usaha Mandiri:</span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
                         Nama Usaha:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                         {usaha.nama_usaha}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px]">
+                    <div className="space-y-1">
+                      <span className="text-slate-500 block text-xs font-medium">
                         Bidang Usaha:
                       </span>
-                      <span className="text-[11px] sm:text-xs font-medium text-slate-800">
+                      <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
                         {usaha.bidang_usaha || usaha.kategori_usaha}
                       </span>
                     </div>
@@ -394,28 +407,32 @@ export const AdminRespondentDetailDrawer: React.FC<
 
             {/* Section 3: Evaluasi Pembelajaran & Masukan */}
             {evaluasi && (
-              <div className="bg-slate-50/70 rounded-xl p-3 sm:p-4 border border-slate-200/80 space-y-2.5">
-                <h3 className="font-semibold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
-                  <SolidMessageSquareIcon className="w-3.5 h-3.5 text-[#0d2346]" />
-                  <span>Evaluasi Pembelajaran dan Masukan Sekolah</span>
-                </h3>
-                <div className="space-y-2 text-xs">
+              <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-xs space-y-4 sm:space-y-5">
+                <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                  <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-[#0d2346]">
+                    <SolidMessageSquareIcon className="w-4 h-4 text-[#0d2346]" />
+                  </div>
+                  <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                    Evaluasi Pembelajaran dan Masukan Sekolah
+                  </h3>
+                </div>
+                <div className="space-y-4 text-xs">
                   {evaluasi.saran_pembelajaran && (
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px] mb-1">
-                        Saran Pembelajaran:
+                    <div className="space-y-1.5">
+                      <span className="text-slate-500 block text-xs font-medium">
+                        Saran untuk Pembelajaran & Kurikulum:
                       </span>
-                      <p className="bg-white p-2.5 rounded-lg border border-slate-200 text-slate-700 text-[11px] sm:text-xs italic leading-relaxed">
+                      <p className="bg-slate-50 p-4 rounded-xl border border-slate-200/80 text-slate-800 text-sm italic leading-relaxed">
                         "{evaluasi.saran_pembelajaran}"
                       </p>
                     </div>
                   )}
                   {evaluasi.saran_bkk && (
-                    <div>
-                      <span className="text-slate-400 block text-[10px] sm:text-[11px] mb-1">
-                        Saran Layanan Bursa Kerja Khusus:
+                    <div className="space-y-1.5">
+                      <span className="text-slate-500 block text-xs font-medium">
+                        Saran untuk Layanan Bursa Kerja Khusus (BKK):
                       </span>
-                      <p className="bg-white p-2.5 rounded-lg border border-slate-200 text-slate-700 text-[11px] sm:text-xs italic leading-relaxed">
+                      <p className="bg-slate-50 p-4 rounded-xl border border-slate-200/80 text-slate-800 text-sm italic leading-relaxed">
                         "{evaluasi.saran_bkk}"
                       </p>
                     </div>
@@ -425,20 +442,24 @@ export const AdminRespondentDetailDrawer: React.FC<
             )}
 
             {/* Section 4: Form Tindakan Verifikasi Admin */}
-            <div className="bg-slate-50/70 rounded-xl p-3 sm:p-4 border border-slate-200/80 space-y-3">
-              <h3 className="font-semibold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
-                <SolidFileCheckIcon className="w-3.5 h-3.5 text-[#0d2346]" />
-                <span>Pembaruan Status Verifikasi</span>
-              </h3>
+            <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-xs space-y-4 sm:space-y-5">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-[#0d2346]">
+                  <SolidFileCheckIcon className="w-4 h-4 text-[#0d2346]" />
+                </div>
+                <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                  Pembaruan Status Verifikasi
+                </h3>
+              </div>
 
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 <button
                   type="button"
                   onClick={() => setSelectedStatus("VALID")}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer ${
                     selectedStatus === "VALID"
                       ? "bg-[#0d2346] text-white shadow-xs"
-                      : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-100"
+                      : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
                   }`}
                 >
                   Disetujui
@@ -447,7 +468,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                 <button
                   type="button"
                   onClick={() => setSelectedStatus("REVISI")}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer ${
                     selectedStatus === "REVISI"
                       ? "bg-rose-700 text-white shadow-xs"
                       : "bg-white text-rose-800 border border-rose-200 hover:bg-rose-50"
@@ -459,10 +480,10 @@ export const AdminRespondentDetailDrawer: React.FC<
                 <button
                   type="button"
                   onClick={() => setSelectedStatus("PENDING")}
-                  className={`px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition cursor-pointer ${
+                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer ${
                     selectedStatus === "PENDING"
                       ? "bg-slate-700 text-white shadow-xs"
-                      : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-100"
+                      : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
                   }`}
                 >
                   Menunggu Tinjauan
@@ -470,16 +491,16 @@ export const AdminRespondentDetailDrawer: React.FC<
               </div>
 
               {selectedStatus === "REVISI" && (
-                <div className="space-y-1.5 animate-in fade-in duration-200">
-                  <label className="text-[10px] sm:text-[11px] font-medium text-slate-700 block">
+                <div className="space-y-2 pt-2 animate-in fade-in duration-200">
+                  <label className="text-xs sm:text-sm font-semibold text-slate-700 block">
                     Catatan Perbaikan untuk Alumni:
                   </label>
                   <textarea
-                    rows={2}
+                    rows={3}
                     value={revisionNote}
                     onChange={(e) => setRevisionNote(e.target.value)}
                     placeholder="Contoh: Mohon lengkapi nama atasan atau konfirmasi kembali nama instansi tempat bekerja..."
-                    className="w-full p-2 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346] bg-white"
+                    className="w-full p-3.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#0d2346]/20 focus:border-[#0d2346] bg-white leading-relaxed"
                   />
                 </div>
               )}
@@ -487,18 +508,18 @@ export const AdminRespondentDetailDrawer: React.FC<
           </div>
 
           {/* Footer Action */}
-          <div className="p-3.5 sm:p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-2.5">
+          <div className="p-4 sm:p-5 border-t border-slate-100 bg-white flex items-center justify-between gap-3">
             <button
               onClick={onClose}
-              className="px-3.5 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs sm:text-sm font-medium border border-slate-200 transition cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-medium transition cursor-pointer"
             >
               Tutup
             </button>
             <button
               onClick={handleSaveVerification}
-              className="px-4 py-2 rounded-lg bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-medium shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5"
+              className="px-5 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-2"
             >
-              <Send className="w-3.5 h-3.5 text-slate-300" />
+              <Send className="w-4 h-4 text-slate-300" />
               <span>{isSaved ? "Tersimpan" : "Simpan Status Verifikasi"}</span>
             </button>
           </div>

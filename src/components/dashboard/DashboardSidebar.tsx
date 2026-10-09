@@ -49,29 +49,51 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
   if (!isActive) {
     switch (id) {
       case "beranda":
-        return <Home className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <Home className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "cek_ijazah":
-        return <FileCheck className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <FileCheck className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "tracer_study":
-        return <FileSpreadsheet className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <FileSpreadsheet className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "loker":
       case "kelola_loker":
-        return <Briefcase className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <Briefcase className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "pesan":
-        return <Mail className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <Mail className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "kelola_berita":
-        return <Newspaper className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <Newspaper className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "alumni":
       case "master_alumni":
-        return <Users className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <Users className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "verifikasi":
-        return <ShieldCheck className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <ShieldCheck className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "laporan":
-        return <FileSpreadsheet className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <FileSpreadsheet className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "pengaturan":
-        return <Settings className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <Settings className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
       case "helpdesk":
-        return <Headphones className="w-5 h-5 shrink-0 text-white/80 transition-colors" />;
+        return (
+          <Headphones className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
+        );
     }
   }
 
@@ -193,7 +215,14 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
             strokeWidth="2"
             fill="#2563eb"
           />
-          <line x1="2" y1="13" x2="22" y2="13" stroke="#2563eb" strokeWidth="1.5" />
+          <line
+            x1="2"
+            y1="13"
+            x2="22"
+            y2="13"
+            stroke="#2563eb"
+            strokeWidth="1.5"
+          />
         </svg>
       );
     case "kelola_berita":
@@ -216,7 +245,12 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
           />
           <path d="M18 14h-8" stroke="#2563eb" strokeWidth="2" />
           <path d="M15 18h-5" stroke="#2563eb" strokeWidth="2" />
-          <path d="M10 6h8v4h-8V6Z" fill="#2563eb" stroke="#2563eb" strokeWidth="1" />
+          <path
+            d="M10 6h8v4h-8V6Z"
+            fill="#2563eb"
+            stroke="#2563eb"
+            strokeWidth="1"
+          />
         </svg>
       );
     case "alumni":
@@ -236,7 +270,14 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
           <defs>
             <mask id="users-sidebar-active-mask">
               <rect width="24" height="24" fill="white" />
-              <circle cx="9" cy="7" r="4" fill="black" stroke="black" strokeWidth="4" />
+              <circle
+                cx="9"
+                cy="7"
+                r="4"
+                fill="black"
+                stroke="black"
+                strokeWidth="4"
+              />
               <path
                 d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2z"
                 fill="black"
@@ -246,7 +287,14 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
             </mask>
           </defs>
           <g mask="url(#users-sidebar-active-mask)">
-            <circle cx="16" cy="7" r="4" fill="white" stroke="white" strokeWidth="1" />
+            <circle
+              cx="16"
+              cy="7"
+              r="4"
+              fill="white"
+              stroke="white"
+              strokeWidth="1"
+            />
             <path
               d="M22 21v-2a4 4 0 0 0-4-4h-2a4 4 0 0 0-2 1v5h8z"
               fill="white"
@@ -254,7 +302,14 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
               strokeWidth="1"
             />
           </g>
-          <circle cx="9" cy="7" r="4" fill="white" stroke="white" strokeWidth="2" />
+          <circle
+            cx="9"
+            cy="7"
+            r="4"
+            fill="white"
+            stroke="white"
+            strokeWidth="2"
+          />
           <path
             d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2z"
             fill="white"
@@ -305,8 +360,21 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
           strokeLinejoin="round"
           aria-hidden="true"
         >
-          <rect width="20" height="16" x="2" y="4" rx="2" fill="white" stroke="white" />
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" stroke="#2563eb" strokeWidth="2" fill="none" />
+          <rect
+            width="20"
+            height="16"
+            x="2"
+            y="4"
+            rx="2"
+            fill="white"
+            stroke="white"
+          />
+          <path
+            d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
+            stroke="#2563eb"
+            strokeWidth="2"
+            fill="none"
+          />
         </svg>
       );
     case "pengaturan":
@@ -327,7 +395,14 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
             fill="white"
             stroke="white"
           />
-          <circle cx="12" cy="12" r="3" fill="#2563eb" stroke="#2563eb" strokeWidth="1" />
+          <circle
+            cx="12"
+            cy="12"
+            r="3"
+            fill="#2563eb"
+            stroke="#2563eb"
+            strokeWidth="1"
+          />
         </svg>
       );
     case "helpdesk":
@@ -368,8 +443,8 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
 
 const ALUMNI_MENU_ITEMS = [
   { id: "beranda", label: "Beranda" },
-  { id: "cek_ijazah", label: "Cek Ijazah" },
   { id: "tracer_study", label: "Tracer Study" },
+  { id: "cek_ijazah", label: "Cek Ijazah" },
   { id: "loker", label: "Info Loker/Magang" },
   { id: "alumni", label: "Alumni" },
   { id: "helpdesk", label: "Helpdesk" },
@@ -445,8 +520,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         )}
 
         {/* Scrollable Navigation Body */}
-        <div className={`p-4 space-y-5 flex-1 overflow-y-auto overflow-x-hidden ${isCollapsed ? "lg:px-2.5 px-5" : "px-5"}`}>
-          
+        <div
+          className={`p-4 space-y-5 flex-1 overflow-y-auto overflow-x-hidden ${isCollapsed ? "lg:px-2.5 px-5" : "px-5"}`}
+        >
           {/* Top Logo Section */}
           <div className="relative pb-4 border-b border-blue-900/60 flex flex-col items-center justify-center text-center">
             {/* Logo Emblem */}
@@ -464,9 +540,11 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
             </div>
 
             {/* School Name & Portal Badge */}
-            <div className={`space-y-0.5 overflow-hidden animate-in fade-in duration-200 text-center ${
-              isCollapsed ? "lg:hidden block" : "block"
-            }`}>
+            <div
+              className={`space-y-0.5 overflow-hidden animate-in fade-in duration-200 text-center ${
+                isCollapsed ? "lg:hidden block" : "block"
+              }`}
+            >
               <h2 className="font-bold text-sm text-white tracking-tight truncate">
                 SMK Sasmita Jaya 2
               </h2>
@@ -495,7 +573,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
                   }`}
                 >
                   {renderMenuIcon(item.id as DashboardTab, isActive)}
-                  <span className={`truncate ${isCollapsed ? "lg:hidden block" : "block"}`}>
+                  <span
+                    className={`truncate ${isCollapsed ? "lg:hidden block" : "block"}`}
+                  >
                     {item.label}
                   </span>
                 </button>
@@ -505,7 +585,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         </div>
 
         {/* User Profile Footer & Logout */}
-        <div className={`p-3.5 border-t border-blue-900/60 bg-[#08172f]/80 shrink-0 ${isCollapsed ? "lg:px-2 px-4" : "px-4"}`}>
+        <div
+          className={`p-3.5 border-t border-blue-900/60 bg-[#08172f]/80 shrink-0 ${isCollapsed ? "lg:px-2 px-4" : "px-4"}`}
+        >
           <div
             className={`flex items-center gap-2.5 mb-3 px-1 ${
               isCollapsed ? "lg:justify-center" : ""
@@ -516,12 +598,16 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
               gender={user?.jenisKelamin}
               className="w-9 h-9 border border-blue-400/40 shrink-0"
             />
-            <div className={`text-left overflow-hidden ${isCollapsed ? "lg:hidden block" : "block"}`}>
+            <div
+              className={`text-left overflow-hidden ${isCollapsed ? "lg:hidden block" : "block"}`}
+            >
               <p className="text-xs font-bold text-white truncate">
                 {user?.nama || "Admin BKK Sasmita"}
               </p>
               <p className="text-[10px] text-blue-300/70 truncate">
-                {isAdmin ? "Pengelola Bursa Kerja" : `NISN: ${user?.nisn || "0051234567"}`}
+                {isAdmin
+                  ? "Pengelola Bursa Kerja"
+                  : `NISN: ${user?.nisn || "0051234567"}`}
               </p>
             </div>
           </div>
@@ -547,7 +633,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
         onClose={() => setShowLogoutModal(false)}
         onConfirm={confirmLogout}
         title="Keluar dari Portal?"
-        message="Sesi login Anda akan diakhiri. Anda dapat masuk kembali kapan saja."
+        message="Apakah Anda yakin ingin melanjutkan?"
         confirmText="Ya, Keluar"
         cancelText="Batal"
         type="danger"

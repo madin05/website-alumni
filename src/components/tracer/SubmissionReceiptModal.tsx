@@ -60,7 +60,7 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} maxWidth="2xl">
       <div className="space-y-5 text-center">
         <div>
-          <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-lg sm:text-xl font-medium text-slate-900 tracking-tight">
             Pengisian Tracer Study Berhasil
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -75,10 +75,10 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
         >
           {/* KOP SURAT RESMI */}
           <div className="text-center space-y-0.5 border-b-2 border-black pb-2">
-            <h3 className="text-xs sm:text-sm font-bold tracking-wider uppercase">
+            <h3 className="text-xs sm:text-sm font-medium tracking-wider ">
               Yayasan Sasmita Jaya
             </h3>
-            <h2 className="text-sm sm:text-base font-extrabold uppercase">
+            <h2 className="text-sm sm:text-base font-extrabold ">
               SMK Sasmita Jaya 2 Pamulang
             </h2>
             <p className="text-[10px] sm:text-[11px] text-slate-700">
@@ -97,11 +97,11 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
 
           {/* JUDUL DOKUMEN & NOMOR REGISTRASI */}
           <div className="text-center pt-1 space-y-0.5">
-            <h4 className="font-bold text-xs sm:text-sm uppercase underline">
+            <h4 className="font-medium text-xs sm:text-sm  underline">
               Surat Keterangan Bukti Pengisian Tracer Study
             </h4>
             <p className="text-xs font-mono font-medium">
-              Nomor Registrasi: <span className="font-bold">{formattedRegId}</span>
+              Nomor Registrasi: <span className="font-medium">{formattedRegId}</span>
             </p>
           </div>
 
@@ -115,17 +115,17 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
             <div className="grid grid-cols-12 gap-1">
               <span className="col-span-5 sm:col-span-4 font-normal">Nama Lengkap</span>
               <span className="col-span-1 text-center">:</span>
-              <span className="col-span-6 sm:col-span-7 font-bold">{identitas.nama_lengkap || '-'}</span>
+              <span className="col-span-6 sm:col-span-7 font-medium">{identitas.nama_lengkap || '-'}</span>
             </div>
             <div className="grid grid-cols-12 gap-1">
               <span className="col-span-5 sm:col-span-4 font-normal">NISN / NIK</span>
               <span className="col-span-1 text-center">:</span>
-              <span className="col-span-6 sm:col-span-7 font-bold font-mono">{identitas.nisn || '-'} / {identitas.nik || '-'}</span>
+              <span className="col-span-6 sm:col-span-7 font-medium font-mono">{identitas.nisn || '-'} / {identitas.nik || '-'}</span>
             </div>
             <div className="grid grid-cols-12 gap-1">
               <span className="col-span-5 sm:col-span-4 font-normal">Program Keahlian</span>
               <span className="col-span-1 text-center">:</span>
-              <span className="col-span-6 sm:col-span-7 font-bold">{identitas.jurusan || '-'}</span>
+              <span className="col-span-6 sm:col-span-7 font-medium">{identitas.jurusan || '-'}</span>
             </div>
             <div className="grid grid-cols-12 gap-1">
               <span className="col-span-5 sm:col-span-4 font-normal">Tahun Masuk / Lulus</span>
@@ -145,7 +145,7 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
             <div className="grid grid-cols-12 gap-1">
               <span className="col-span-5 sm:col-span-4 font-normal">Status Aktivitas Terdata</span>
               <span className="col-span-1 text-center">:</span>
-              <span className="col-span-6 sm:col-span-7 font-bold uppercase">{formatStatusKegiatan(status_kegiatan)}</span>
+              <span className="col-span-6 sm:col-span-7 font-medium ">{formatStatusKegiatan(status_kegiatan)}</span>
             </div>
             <div className="grid grid-cols-12 gap-1">
               <span className="col-span-5 sm:col-span-4 font-normal">Waktu Pengisian Sistem</span>
@@ -176,7 +176,7 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
               <div className="h-12 flex items-center justify-end">
                 <span className="text-[10px] text-slate-400 italic">[ Tanda Tangan & Cap Digital Terverifikasi ]</span>
               </div>
-              <p className="font-bold underline">Ahmad Fauzi, S.Pd., M.Kom.</p>
+              <p className="font-medium underline">Ahmad Fauzi, S.Pd., M.Kom.</p>
               <p className="text-[10px] text-slate-600">NIP. 19840219 200902 1 002</p>
             </div>
           </div>

@@ -5,11 +5,11 @@ interface StepperProps {
 }
 
 const STEPS = [
-  { id: 1, title: 'DATA LULUSAN' },
-  { id: 2, title: 'STATUS LULUSAN' },
-  { id: 3, title: 'DETAIL AKTIVITAS' },
-  { id: 4, title: 'PENILAIAN SMK' },
-  { id: 5, title: 'UMPAN BALIK' },
+  { id: 1, title: 'Data Lulusan' },
+  { id: 2, title: 'Status Lulusan' },
+  { id: 3, title: 'Detail Aktivitas' },
+  { id: 4, title: 'Penilaian SMK' },
+  { id: 5, title: 'Umpan Balik' },
 ];
 
 export const Stepper: React.FC<StepperProps> = ({ currentStep }) => {
@@ -24,7 +24,7 @@ export const Stepper: React.FC<StepperProps> = ({ currentStep }) => {
           return (
             <div
               key={step.id}
-              className={`py-3 px-2 border-r last:border-r-0 text-xs font-bold uppercase tracking-wide select-none transition-colors ${
+              className={`py-3 px-2 border-r last:border-r-0 text-xs font-medium select-none transition-colors ${
                 isCurrent
                   ? 'bg-blue-600 text-white'
                   : isDone
@@ -32,14 +32,14 @@ export const Stepper: React.FC<StepperProps> = ({ currentStep }) => {
                   : 'bg-white text-slate-500'
               }`}
             >
-              STEP {step.id} - {step.title}
+              Step {step.id} - {step.title}
             </div>
           );
         })}
       </div>
 
       {/* Mobile Bar */}
-      <div className="sm:hidden px-4 py-3 bg-blue-600 text-white flex items-center justify-between text-xs font-bold uppercase tracking-wider">
+      <div className="sm:hidden px-4 py-3 bg-blue-600 text-white flex items-center justify-between text-xs font-medium uppercase">
         <span>STEP {currentStep} - {STEPS[currentStep - 1].title}</span>
         <span className="text-blue-100">{currentStep} / 5</span>
       </div>

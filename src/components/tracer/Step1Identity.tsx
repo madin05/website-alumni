@@ -59,20 +59,20 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-7">
       {/* Blue Section Header Bar matching Dapodik screenshot */}
-      <div className="bg-[#1d4ed8] text-white px-4 py-2 font-bold text-xs uppercase tracking-wider flex items-center justify-between rounded-t-sm">
-        <span>UPDATE DATA PRIBADI</span>
+      <div className="bg-[#1d4ed8] text-white px-4 py-2.5 font-medium text-xs sm:text-sm flex items-center justify-between rounded-t-sm">
+        <span>Update Data Pribadi</span>
         <button
           type="button"
           onClick={handleFillDemo}
-          className="text-[11px] underline hover:text-blue-100 transition cursor-pointer"
+          className="text-xs underline hover:text-blue-100 transition cursor-pointer"
         >
           Isi Contoh Data
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
         {/* Nama Lengkap */}
         <div className="sm:col-span-2">
           <Input
@@ -149,30 +149,30 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
         />
 
         {/* Jenis Kelamin */}
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-2">
+        <div className="space-y-2">
+          <label className="block text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
             Jenis Kelamin <span className="text-rose-500">*</span>
           </label>
-          <div className="flex items-center gap-6 mt-1">
-            <label className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+          <div className="flex items-center gap-6 pt-1">
+            <label className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
               <input
                 type="radio"
                 name="jenis_kelamin"
                 value="Laki-laki"
                 checked={selectedGender === 'Laki-laki'}
                 onChange={() => setValue('jenis_kelamin', 'Laki-laki')}
-                className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300"
+                className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 shrink-0 cursor-pointer"
               />
               <span>Laki-laki</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-slate-800">
+            <label className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
               <input
                 type="radio"
                 name="jenis_kelamin"
                 value="Perempuan"
                 checked={selectedGender === 'Perempuan'}
                 onChange={() => setValue('jenis_kelamin', 'Perempuan')}
-                className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300"
+                className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 shrink-0 cursor-pointer"
               />
               <span>Perempuan</span>
             </label>
@@ -180,7 +180,7 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
         </div>
 
         {/* Optional NIK for Dapodik / Dukcapil */}
-        <div className="sm:col-span-2 pt-2 border-t border-slate-100">
+        <div className="sm:col-span-2 pt-4 border-t border-slate-200/80">
           <Input
             label="Nomor Induk Kependudukan (NIK - Opsional)"
             placeholder="Contoh : 3674012345670001 (opsional)"
@@ -192,12 +192,12 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
       </div>
 
       {/* Bottom Bar with 'Simpan dan lanjut' matching screenshot */}
-      <div className="pt-4 border-t border-slate-200 flex items-center justify-end">
+      <div className="pt-6 mt-8 border-t border-slate-200 flex items-center justify-end">
         <Button
           type="submit"
           variant="primary"
           size="md"
-          className="bg-blue-600 hover:bg-blue-700 font-medium text-xs sm:text-sm px-6 py-2 rounded shadow-none"
+          className="bg-blue-600 hover:bg-blue-700 font-medium text-xs sm:text-sm px-6 py-2.5 rounded-lg shadow-none transition"
         >
           Simpan dan lanjut
         </Button>

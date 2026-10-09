@@ -153,7 +153,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     className="w-full px-4 py-2 text-left hover:bg-slate-50 flex items-center gap-2 text-slate-700 cursor-pointer"
                   >
                     <Download className="w-4 h-4 text-blue-900" />
-                    <span>Unduh Bukti Pengisian (PDF)</span>
+                    <span>Unduh Bukti Pengisian</span>
                   </button>
                 </div>
               )}
@@ -179,7 +179,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         onClose={() => setShowLogoutModal(false)}
         onConfirm={confirmLogout}
         title="Keluar dari Portal Alumni?"
-        message="Sesi login Anda akan diakhiri. Anda dapat masuk kembali kapan saja menggunakan NISN atau NIK Anda."
+        message="Apakah Anda yakin ingin melanjutkan?"
         confirmText="Ya, Keluar"
         cancelText="Batal"
         type="danger"

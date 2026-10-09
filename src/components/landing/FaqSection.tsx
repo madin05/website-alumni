@@ -3,7 +3,7 @@ import { MOCK_FAQS } from "@/lib/mockData";
 import { ChevronDown } from "lucide-react";
 
 export const FaqSection: React.FC = () => {
-  const [openIdx, setOpenIdx] = useState<number | null>(0);
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   const toggle = (idx: number) => {
     setOpenIdx(openIdx === idx ? null : idx);
@@ -37,7 +37,7 @@ export const FaqSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => toggle(idx)}
-                  className="w-full py-4 sm:py-5 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-slate-900 hover:text-blue-600 transition-colors cursor-pointer group"
+                  className="w-full py-4 sm:py-5 text-left flex items-center justify-between gap-4 font-medium text-sm sm:text-base text-slate-900 hover:text-blue-600 transition-colors cursor-pointer group"
                 >
                   <span className="leading-snug">{faq.question}</span>
                   <ChevronDown
