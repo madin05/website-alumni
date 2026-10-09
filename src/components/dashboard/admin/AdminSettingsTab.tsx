@@ -24,11 +24,17 @@ const SolidSettingsIcon: React.FC<{ className?: string }> = ({
 );
 
 export const AdminSettingsTab: React.FC = () => {
-  const { settings, updateSettings, resetToDefaultData } = useAdminStore();
+  const { settings, updateSettings, resetToDefaultData, fetchSettingsFromBackend } = useAdminStore();
 
   const [formData, setFormData] = useState({ ...settings });
   const [toastMessage, setToastMessage] = useState('');
   const [showResetModal, setShowResetModal] = useState(false);
+
+  React.useEffect(() => {
+    fetchSettingsFromBackend().then(() => {
+      setFormData({ ...useAdminStore.getState().settings });
+    });
+  }, [fetchSettingsFromBackend]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);

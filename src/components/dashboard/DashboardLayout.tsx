@@ -12,6 +12,9 @@ import { TracerWizard } from '@/components/tracer/TracerWizard';
 import { generateTracerReceiptPdf } from '@/lib/pdfGenerator';
 import { useTracerStore } from '@/store/tracerStore';
 import { useAuthStore } from '@/store/authStore';
+import { useAdminStore } from '@/store/adminStore';
+import { useContentStore } from '@/store/contentStore';
+import { useMailStore } from '@/store/mailStore';
 import { JobVacancy } from '@/types/tracer';
 
 // Admin Tabs
@@ -58,6 +61,9 @@ const VALID_TABS: DashboardTab[] = [
 
 export const DashboardLayout: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore();
+  const { syncAllFromBackend } = useAdminStore();
+  const { syncAllContentFromBackend } = useContentStore();
+  const { fetchMailsFromBackend } = useMailStore();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -68,6 +74,20 @@ export const DashboardLayout: React.FC = () => {
   }, [isAuthenticated, navigate]);
 
   const isAdmin = user?.role === 'admin_bkk';
+
+  // Automatically fetch fresh data from backend when admin enters dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Always sync content (jobs, news) for all authenticated users
+      syncAllContentFromBackend();
+      fetchMailsFromBackend();
+      
+      // Admin-only sync
+      if (isAdmin) {
+        syncAllFromBackend();
+      }
+    }
+  }, [isAuthenticated, isAdmin, syncAllFromBackend, syncAllContentFromBackend, fetchMailsFromBackend]);
 
   const tabParam = (searchParams.get('tab') as DashboardTab) || 'beranda';
   const activeTab: DashboardTab = VALID_TABS.includes(tabParam) ? tabParam : 'beranda';
@@ -181,19 +201,21 @@ export const DashboardLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-100 flex">
       {/* Sidebar with Blue 900 scheme & Collapse Support */}
-      <DashboardSidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isMobileOpen={isMobileOpen}
-        setIsMobileOpen={setIsMobileOpen}
-        isCollapsed={isCollapsed}
-        setIsCollapsed={handleToggleCollapse}
-      />
+      <div className="print:hidden">
+        <DashboardSidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isMobileOpen={isMobileOpen}
+          setIsMobileOpen={setIsMobileOpen}
+          isCollapsed={isCollapsed}
+          setIsCollapsed={handleToggleCollapse}
+        />
+      </div>
 
       {/* Mobile Backdrop Overlay - Fully blocks touches, scrolls, & interactions outside sidebar */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-slate-950/60 z-40 lg:hidden backdrop-blur-xs transition-opacity duration-300 touch-none select-none overscroll-none"
+          className="fixed inset-0 bg-slate-950/60 z-40 lg:hidden backdrop-blur-xs transition-opacity duration-300 touch-none select-none overscroll-none print:hidden"
           onClick={() => setIsMobileOpen(false)}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
@@ -203,34 +225,35 @@ export const DashboardLayout: React.FC = () => {
 
       {/* Main Content Area - Smooth dynamic padding without layout shift */}
       <div
-        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out print:pl-0 ${
           isCollapsed ? 'lg:pl-20' : 'lg:pl-64'
         }`}
       >
-        {/* Header */}
-        <DashboardHeader
-          onToggleMobileMenu={() => setIsMobileOpen(!isMobileOpen)}
-          onOpenReceipt={handleDirectDownloadReceipt}
-          onNavigateTab={(tab, respondentId) => {
-            if (respondentId) {
-              setSelectedRespondentId(respondentId);
-            }
-            setActiveTab(tab as DashboardTab);
-          }}
-        />
+        {/* Header & Breadcrumb for screen only */}
+        <div className="print:hidden">
+          <DashboardHeader
+            onToggleMobileMenu={() => setIsMobileOpen(!isMobileOpen)}
+            onOpenReceipt={handleDirectDownloadReceipt}
+            onNavigateTab={(tab, respondentId) => {
+              if (respondentId) {
+                setSelectedRespondentId(respondentId);
+              }
+              setActiveTab(tab as DashboardTab);
+            }}
+          />
 
-        {/* Dynamic Breadcrumb Navigation for all pages except Dashboard */}
-        <DashboardBreadcrumb
-          activeTab={activeTab}
-          isAdmin={isAdmin}
-          onNavigateHome={() => {
-            setSelectedRespondentId(null);
-            setActiveTab('beranda');
-          }}
-        />
+          <DashboardBreadcrumb
+            activeTab={activeTab}
+            isAdmin={isAdmin}
+            onNavigateHome={() => {
+              setSelectedRespondentId(null);
+              setActiveTab('beranda');
+            }}
+          />
+        </div>
 
         {/* Dynamic Tab Body */}
-        <main className="p-3.5 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto">
+        <main className="p-3.5 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto print:p-0 print:max-w-none">
           {/* ADMIN VIEW */}
           {isAdmin ? (
             <>

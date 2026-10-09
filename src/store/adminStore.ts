@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { TracerSubmissionPayload, JurusanSMK, StatusKegiatan } from '@/types/tracer';
+import { useAuthStore } from './authStore';
 
 export interface MasterAlumniRecord {
   id: string;
@@ -65,7 +66,7 @@ interface AdminState {
     importedCount: number;
     duplicateCount: number;
   };
-  addSingleMasterAlumni: (record: Omit<MasterAlumniRecord, 'id' | 'createdAt' | 'statusTracer'>) => boolean;
+  addSingleMasterAlumni: (record: Omit<MasterAlumniRecord, 'id' | 'createdAt' | 'statusTracer'>) => Promise<{ success: boolean; message?: string }>;
   deleteMasterAlumni: (id: string) => void;
   updateMasterAlumni: (id: string, updates: Partial<MasterAlumniRecord>) => void;
 
@@ -79,6 +80,12 @@ interface AdminState {
   addOrUpdateRespondent: (payload: TracerSubmissionPayload, submissionId: string) => void;
   updateSettings: (updates: Partial<AdminSettings>) => void;
   resetToDefaultData: () => void;
+
+  // Backend Sync Actions
+  fetchMasterAlumniFromBackend: () => Promise<boolean>;
+  fetchRespondentsFromBackend: () => Promise<boolean>;
+  fetchSettingsFromBackend: () => Promise<boolean>;
+  syncAllFromBackend: () => Promise<void>;
 }
 
 const DEFAULT_SETTINGS: AdminSettings = {
@@ -1671,11 +1678,10 @@ const INITIAL_RESPONDENTS: RespondentRecord[] = [
 ];
 
 export const useAdminStore = create<AdminState>()(
-  persist(
-    (set, get) => ({
-      masterAlumni: INITIAL_MASTER_ALUMNI,
-      respondents: INITIAL_RESPONDENTS,
-      settings: DEFAULT_SETTINGS,
+  (set, get) => ({
+    masterAlumni: [],
+    respondents: [],
+    settings: DEFAULT_SETTINGS,
 
       importMasterAlumni: (records) => {
         const currentList = get().masterAlumni;
@@ -1705,41 +1711,86 @@ export const useAdminStore = create<AdminState>()(
 
         if (newEntries.length > 0) {
           set({ masterAlumni: [...newEntries, ...currentList] });
+          import('@/services/adminService').then(({ adminMasterAlumniApi }) => {
+            adminMasterAlumniApi.importCsv(records, true).catch((err) => {
+              console.warn('[AdminStore] Backend import CSV sync fallback:', err);
+            });
+          });
         }
 
         return { importedCount, duplicateCount };
       },
 
-      addSingleMasterAlumni: (record) => {
-        const currentList = get().masterAlumni;
-        const cleanNisn = (record.nisn || '').trim();
-        if (currentList.some((a) => a.nisn === cleanNisn)) {
-          return false;
+addSingleMasterAlumni: async (record) => {
+        try {
+          const { adminMasterAlumniApi } = await import('@/services/adminService');
+          const created = await adminMasterAlumniApi.create({
+            nisn: record.nisn,
+            nik: record.nik || undefined,
+            nama: record.nama.trim(),
+            jurusan: record.jurusan,
+            tahunLulus: record.tahunLulus,
+            noWhatsapp: record.noWhatsapp || undefined,
+            email: record.email || undefined,
+          });
+
+          if (created.success) {
+            const newRecord = {
+              id: `mst-single-${Date.now()}`,
+              nisn: record.nisn,
+              nik: record.nik || '',
+              nama: record.nama.trim(),
+              jurusan: record.jurusan,
+              tahunLulus: record.tahunLulus,
+              noWhatsapp: record.noWhatsapp || '',
+              email: record.email || '',
+              statusTracer: 'BELUM',
+              createdAt: new Date().toISOString(),
+            };
+            set((state) => ({
+              masterAlumni: [newRecord as MasterAlumniRecord, ...state.masterAlumni],
+            }));
+            return { success: true };
+          } else {
+            return { success: false, message: created.message };
+          }
+        } catch (err: any) {
+          return { success: false, message: err.message || 'Terjadi kesalahan jaringan' };
         }
-
-        const newRecord: MasterAlumniRecord = {
-          ...record,
-          id: `mst-single-${Date.now()}`,
-          statusTracer: 'BELUM',
-          createdAt: new Date().toISOString(),
-        };
-
-        set({ masterAlumni: [newRecord, ...currentList] });
-        return true;
       },
 
       deleteMasterAlumni: (id) => {
-        set((state) => ({
-          masterAlumni: state.masterAlumni.filter((a) => a.id !== id),
-        }));
+        import('@/services/adminService').then(({ adminMasterAlumniApi }) => {
+          adminMasterAlumniApi.delete(id).then((res) => {
+            if (res.success) {
+              set((state) => ({
+                masterAlumni: state.masterAlumni.filter((a) => a.id !== id),
+              }));
+            } else {
+              console.warn('[AdminStore] Backend delete alumni failed:', res.message);
+            }
+          }).catch((err) => {
+            console.warn('[AdminStore] Backend delete alumni error:', err);
+          });
+        });
       },
 
       updateMasterAlumni: (id, updates) => {
-        set((state) => ({
-          masterAlumni: state.masterAlumni.map((a) =>
-            a.id === id ? { ...a, ...updates } : a
-          ),
-        }));
+        import('@/services/adminService').then(({ adminMasterAlumniApi }) => {
+          adminMasterAlumniApi.update(id, updates as any).then((res) => {
+            if (res.success) {
+              set((state) => ({
+                masterAlumni: state.masterAlumni.map((a) =>
+                  a.id === id ? { ...a, ...updates } : a
+                ),
+              }));
+            } else {
+              console.warn('[AdminStore] Backend update alumni failed:', res.message);
+            }
+          }).catch((err) => {
+            console.warn('[AdminStore] Backend update alumni error:', err);
+          });
+        });
       },
 
       updateVerificationStatus: (submissionId, status, note, verifiedBy = 'Admin BKK Sasmita') => {
@@ -1758,6 +1809,12 @@ export const useAdminStore = create<AdminState>()(
           });
 
           return { respondents: updatedRespondents };
+        });
+
+        import('@/services/adminService').then(({ adminVerificationApi }) => {
+          adminVerificationApi.updateStatus(submissionId, status, note).catch((err) => {
+            console.warn('[AdminStore] Backend verification status sync fallback:', err);
+          });
         });
       },
 
@@ -1828,6 +1885,11 @@ export const useAdminStore = create<AdminState>()(
         set((state) => ({
           settings: { ...state.settings, ...updates },
         }));
+        import('@/services/adminService').then(({ adminSettingsApi }) => {
+          adminSettingsApi.update(updates).catch((err) => {
+            console.warn('[AdminStore] Sync settings to backend failed:', err);
+          });
+        });
       },
 
       resetToDefaultData: () => {
@@ -1836,40 +1898,146 @@ export const useAdminStore = create<AdminState>()(
           respondents: INITIAL_RESPONDENTS,
           settings: DEFAULT_SETTINGS,
         });
+        import('@/services/adminService').then(({ adminSettingsApi }) => {
+          adminSettingsApi.reset().catch((err) => {
+            console.warn('[AdminStore] Reset settings in backend failed:', err);
+          });
+        });
       },
-    }),
-    {
-      name: 'tracer_study_admin_sasmita2',
-      version: 6,
-      migrate: (persistedState: any, version: number) => {
-        if (
-          !persistedState ||
-          version < 6 ||
-          !persistedState.masterAlumni ||
-          persistedState.masterAlumni.length < 20 ||
-          !persistedState.respondents ||
-          persistedState.respondents.length < 20
-        ) {
-          return {
-            masterAlumni: persistedState?.masterAlumni || INITIAL_MASTER_ALUMNI,
-            respondents: persistedState?.respondents || INITIAL_RESPONDENTS,
-            settings: {
-              ...(persistedState?.settings || DEFAULT_SETTINGS),
-              kepalaSekolah: 'Siti Zubaidah, S.E., S.Pd., M.Pd.I',
-            },
-          };
+
+fetchMasterAlumniFromBackend: async () => {
+        try {
+          const { adminMasterAlumniApi } = await import('@/services/adminService');
+          const res = await adminMasterAlumniApi.listPublic({ limit: 100 });
+          const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? (res as any) : null);
+          if (list) {
+            const mapped: MasterAlumniRecord[] = list.map((item: any) => ({
+              id: item.id || `mst-${item.nisn}`,
+              nisn: item.nisn,
+              nik: item.nik || '',
+              nama: item.namaLengkap || item.nama || '',
+              jurusan: item.jurusan,
+              tahunLulus: Number(item.tahunLulus) || 2024,
+              noWhatsapp: item.noWhatsApp || item.noWhatsApp || '',
+              email: item.email || '',
+              statusTracer: (item.tracerStatus || item.statusTracer || 'BELUM') as 'SUDAH' | 'BELUM',
+              submissionId: item.submissionId || undefined,
+              submittedAt: item.submittedAt || undefined,
+              createdAt: item.createdAt || new Date().toISOString(),
+            }));
+            set({ masterAlumni: mapped });
+            return true;
+          }
+        } catch (err) {
+          console.warn('[AdminStore] Fetch master alumni from backend fallback:', err);
         }
-        return {
-          ...persistedState,
-          settings: {
-            ...persistedState.settings,
-            kepalaSekolah:
-              persistedState.settings?.kepalaSekolah === 'Drs. H. Bakri Hadi, M.M.'
-                ? 'Siti Zubaidah, S.E., S.Pd., M.Pd.I'
-                : persistedState.settings?.kepalaSekolah || 'Siti Zubaidah, S.E., S.Pd., M.Pd.I',
-          },
-        };
+        return false;
       },
-    }
-  )
+
+      fetchRespondentsFromBackend: async () => {
+        try {
+          const { adminVerificationApi } = await import('@/services/adminService');
+          const { accessToken } = useAuthStore.getState();
+          console.log('[AdminStore] fetchRespondentsFromBackend called, accessToken:', accessToken ? 'present' : 'MISSING');
+          console.log('[AdminStore] Fetching respondents from backend...');
+          const res = await adminVerificationApi.list({ limit: 100 });
+          console.log('[AdminStore] Backend response success:', res?.success, 'data length:', res?.data?.length);
+          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+            const mapped: RespondentRecord[] = res.data.map((item: any) => {
+              const alumni = item.alumni || {};
+              const detailKerja = item.detailKerja || {};
+              const detailKuliah = item.detailKuliah || {};
+              const detailUsaha = item.detailUsaha || {};
+
+              const instansi =
+                detailKerja.nama_perusahaan ||
+                detailKuliah.nama_kampus ||
+                detailUsaha.nama_usaha ||
+                (item.statusKegiatan === 'BELUM_KERJA' ? 'Pencari Kerja Aktif' : '-');
+
+              const jabatan =
+                detailKerja.jabatan ||
+                detailKuliah.program_studi ||
+                detailUsaha.bidang_usaha ||
+                (item.statusKegiatan === 'BELUM_KERJA' ? 'Pencari Kerja' : '-');
+
+              return {
+                id: item.id || `rsp-${item.submissionId}`,
+                submissionId: item.submissionId,
+                nisn: alumni.nisn || '',
+                nik: alumni.nik || '',
+                nama: alumni.namaLengkap || alumni.nama || '',
+                jurusan: alumni.jurusan || 'Teknik Komputer dan Jaringan',
+                tahunLulus: Number(alumni.tahunLulus) || 2024,
+                noWhatsapp: alumni.noWhatsApp || alumni.noWhatsapp || '',
+                email: alumni.email || '',
+                statusKegiatan: item.statusKegiatan,
+                instansiKampusUsaha: instansi,
+                jabatanProdiUsaha: jabatan,
+                submittedAt: item.submittedAt || new Date().toISOString(),
+                verificationStatus: item.verificationStatus || 'PENDING',
+                verificationNote: item.verificationNote || undefined,
+                verifiedAt: item.verifiedAt || undefined,
+                verifiedBy: item.verifiedBy || undefined,
+                fullPayload: {
+                  identitas: {
+                    nama_lengkap: alumni.namaLengkap || '',
+                    nisn: alumni.nisn || '',
+                    nik: alumni.nik || '',
+                    tahun_lulus: Number(alumni.tahunLulus) || 2024,
+                    jurusan: alumni.jurusan,
+                    tahun_masuk: (Number(alumni.tahunLulus) || 2024) - 3,
+                    no_whatsapp: alumni.noWhatsApp || '',
+                    email: alumni.email || '',
+                    jenis_kelamin: 'Laki-laki',
+                  },
+                  status_kegiatan: item.statusKegiatan,
+                  masa_tunggu: item.masaTunggu || '< 3 bulan',
+                  detail_kerja: item.detailKerja || null,
+                  detail_kuliah: item.detailKuliah || null,
+                  detail_usaha: item.detailUsaha || null,
+                  evaluasi: item.evaluasi || {},
+                },
+              };
+            });
+            console.log('[AdminStore] Mapped respondents:', mapped);
+            set({ respondents: mapped });
+            return true;
+          }
+        } catch (err) {
+          console.warn('[AdminStore] Fetch respondents from backend fallback:', err);
+        }
+        return false;
+      },
+
+      fetchSettingsFromBackend: async () => {
+        try {
+          const { adminSettingsApi } = await import('@/services/adminService');
+          const res = await adminSettingsApi.get();
+          const settingsData = res?.data;
+          if (settingsData) {
+            set((state) => ({
+              settings: {
+                ...state.settings,
+                ...settingsData,
+                periodStart: typeof settingsData.periodStart === 'string' ? settingsData.periodStart.split('T')[0] : state.settings.periodStart,
+                periodEnd: typeof settingsData.periodEnd === 'string' ? settingsData.periodEnd.split('T')[0] : state.settings.periodEnd,
+              },
+            }));
+            return true;
+          }
+        } catch (err) {
+          console.warn('[AdminStore] Fetch settings from backend fallback:', err);
+        }
+        return false;
+      },
+
+      syncAllFromBackend: async () => {
+        await Promise.allSettled([
+          get().fetchMasterAlumniFromBackend(),
+          get().fetchRespondentsFromBackend(),
+          get().fetchSettingsFromBackend(),
+        ]);
+      },
+    })
 );

@@ -205,12 +205,30 @@ export const generateTracerReceiptPdf = ({
   doc.setLineWidth(0.4);
   doc.line(colRightX, ySign + 38, colRightX + 58, ySign + 38);
 
+  // Baca data ketua BKK dari pengaturan jika tersedia
+  let ketuaBkk = 'Ahmad Fauzi, S.Pd., M.Kom.';
+  let nipKetuaBkk = 'NIP. 19840219 200902 1 002';
+  try {
+    const rawStorage = localStorage.getItem('tracer_study_admin_sasmita2');
+    if (rawStorage) {
+      const parsed = JSON.parse(rawStorage);
+      if (parsed?.state?.settings?.ketuaBkk) {
+        ketuaBkk = parsed.state.settings.ketuaBkk;
+      }
+      if (parsed?.state?.settings?.nipKetuaBkk) {
+        nipKetuaBkk = `NIP. ${parsed.state.settings.nipKetuaBkk.replace(/^NIP\.?\s*/i, '')}`;
+      }
+    }
+  } catch {
+    // ignore
+  }
+
   doc.setFont('times', 'bold');
   doc.setFontSize(10);
-  doc.text('Ahmad Fauzi, S.Pd., M.Kom.', colRightX, ySign + 42.5);
+  doc.text(ketuaBkk, colRightX, ySign + 42.5);
   doc.setFont('times', 'normal');
   doc.setFontSize(8.5);
-  doc.text('NIP. 19840219 200902 1 002', colRightX, ySign + 46.5);
+  doc.text(nipKetuaBkk, colRightX, ySign + 46.5);
 
   // 7. FOOTER / CATATAN KAKI RESMI
   const yFooter = 275;

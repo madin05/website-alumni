@@ -17,31 +17,28 @@ const getGreetingName = (user: any): string => {
   if (!user) return 'Ahmad Dani';
   if (user.role === 'admin_bkk') return 'Admin BKK';
 
-  const rawName = (user.nama || '').trim();
+  // Use actual name from API (normalized by authStore)
+  const rawName = (user.nama || user.namaLengkap || '').trim();
+  
+  if (rawName) {
+    const words = rawName.split(/\s+/).filter(Boolean);
+    if (words.length >= 2) {
+      return `${words[0]} ${words[1]}`;
+    } else if (words.length === 1) {
+      return words[0];
+    }
+  }
+
+  // Fallback based on NISN if no name available
   const ident = (user.nisn || user.nik || '').trim();
-
-  // If name contains raw placeholder like "Alumni (0061234567)" or "Alumni NIK"
-  if (!rawName || /^alumni\s*[\(/]/i.test(rawName)) {
-    if (ident.includes('1234567')) return 'Ahmad Dani';
-    if (ident.includes('2345678')) return 'Budi Santoso';
-    if (ident.includes('3456789')) return 'Citra Dewi';
-    if (ident.includes('4567890')) return 'Dimas Bagus';
-    if (ident.includes('5678901')) return 'Eko Wahyudi';
-    if (ident.includes('6789012')) return 'Farhan Rizki';
-    return 'Ahmad Dani';
-  }
-
-  // Clean any prefix and symbols
-  const cleanName = rawName.replace(/^alumni\s+/i, '').replace(/[\(\)\d]/g, '').trim();
-  const words = cleanName.split(/\s+/).filter(Boolean);
-
-  if (words.length >= 2) {
-    return `${words[0]} ${words[1]}`;
-  } else if (words.length === 1) {
-    return words[0];
-  }
-
-  return 'Ahmad Dani';
+  if (ident.includes('1234567')) return 'Ahmad Rizki';
+  if (ident.includes('2345678')) return 'Budi';
+  if (ident.includes('3456789')) return 'Citra';
+  if (ident.includes('4567890')) return 'Dimas';
+  if (ident.includes('5678901')) return 'Eka';
+  if (ident.includes('6789012')) return 'Fajar';
+  
+  return 'Alumni';
 };
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -142,8 +139,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-40 text-xs text-slate-700">
               <div className="px-4 py-2.5 border-b border-slate-100">
-                <p className="font-bold text-slate-900">{user?.nama || 'Ahmad Dani'}</p>
-                <p className="text-slate-400 text-[11px] truncate">{user?.email || 'admin@smksasmitajaya2.sch.id'}</p>
+                <p className="font-bold text-slate-900">{user?.nama || user?.namaLengkap || 'Alumni'}</p>
+                <p className="text-slate-400 text-[11px] truncate">{user?.email || 'alumni@smksasmitajaya2.sch.id'}</p>
               </div>
 
               {user?.role !== 'admin_bkk' && (

@@ -1,0 +1,2 @@
+-- AddForeignKey
+ALTER TABLE `Ijazah` ADD CONSTRAINT `Ijazah_nisn_fkey` FOREIGN KEY (`nisn`) REFERENCES `Alumni`(`nisn`) ON DELETE RESTRICT ON UPDATE CASCADE;

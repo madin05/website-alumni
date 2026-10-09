@@ -43,7 +43,11 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
   onNavigateTab,
   onOpenRespondentDetail,
 }) => {
-  const { masterAlumni, respondents, settings } = useAdminStore();
+  const { masterAlumni, respondents, settings, syncAllFromBackend } = useAdminStore();
+
+  React.useEffect(() => {
+    syncAllFromBackend();
+  }, [syncAllFromBackend]);
 
   const totalMaster = masterAlumni.length;
   const totalSubmitted = masterAlumni.filter(

@@ -62,7 +62,7 @@ const JURUSAN_OPTIONS = [
 ];
 
 export const AdminMasterAlumniTab: React.FC = () => {
-  const { masterAlumni, deleteMasterAlumni, addSingleMasterAlumni, settings } =
+  const { masterAlumni, deleteMasterAlumni, settings } =
     useAdminStore();
 
   const [search, setSearch] = useState("");
@@ -169,7 +169,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
     showToast("Format CSV berhasil diunduh.");
   };
 
-  const handleCreateSingle = (e: React.FormEvent) => {
+  const handleCreateSingle = async (e: React.FormEvent) => {
     e.preventDefault();
     setAddError("");
 
@@ -178,28 +178,34 @@ export const AdminMasterAlumniTab: React.FC = () => {
       return;
     }
 
-    const success = addSingleMasterAlumni({
+    const payload: Record<string, unknown> = {
       nisn: newNisn.trim(),
-      nik: newNik.trim() || "3674000000000000",
       nama: newNama.trim(),
       jurusan: newJurusan,
       tahunLulus: Number(newTahun) || 2024,
-      noWhatsapp: newNoWa.trim() || "081200000000",
-      email:
-        newEmail.trim() ||
-        `${newNama.toLowerCase().replace(/\s+/g, "")}@example.com`,
-    });
+    };
 
-    if (success) {
-      showToast(`Data siswa ${newNama} berhasil ditambahkan.`);
-      setIsAddModalOpen(false);
-      setNewNisn("");
-      setNewNik("");
-      setNewNama("");
-      setNewNoWa("");
-      setNewEmail("");
-    } else {
-      setAddError("NISN ini sudah terdaftar di basis data.");
+    if (newNik.trim()) payload.nik = newNik.trim();
+    if (newNoWa.trim()) payload.noWhatsapp = newNoWa.trim();
+    if (newEmail.trim()) payload.email = newEmail.trim();
+
+    try {
+      const { adminMasterAlumniApi } = await import("@/services/adminService");
+      const created = await adminMasterAlumniApi.create(payload as any);
+
+      if (created.success) {
+        showToast(`Data siswa ${newNama} berhasil ditambahkan.`);
+        setIsAddModalOpen(false);
+        setNewNisn("");
+        setNewNik("");
+        setNewNama("");
+        setNewNoWa("");
+        setNewEmail("");
+      } else {
+        setAddError(created.message || "Gagal menambahkan data siswa.");
+      }
+    } catch (err: any) {
+      setAddError(err.message || "Terjadi kesalahan saat menambahkan data.");
     }
   };
 
@@ -208,10 +214,11 @@ export const AdminMasterAlumniTab: React.FC = () => {
     const cleanNumber = rawNumber.startsWith("0")
       ? "62" + rawNumber.slice(1)
       : rawNumber;
+    const siteOrigin = typeof window !== "undefined" ? window.location.origin : "https://smksasmitajaya2.sch.id";
     const text = encodeURIComponent(
-      `Halo *${alumni.nama}* (Alumni ${alumni.jurusan} Angkatan ${alumni.tahunLulus}),\n\nKami dari Bursa Kerja Khusus SMK Sasmita Jaya 2 Pamulang mengingatkan Anda untuk mengisi kuesioner penelusuran lulusan (tracer study).\n\nSilakan masuk menggunakan NISN: *${alumni.nisn}* melalui halaman login:\nhttps://tracerstudy-sasmita2.sch.id/login\n\nTerima kasih atas bantuan dan kerja sama Anda.`,
-    );  
-    return `https://wa.me/${cleanNumber}?tePxt=${text}`;
+`Halo *${alumni.nama}* (Alumni ${alumni.jurusan} Angkatan ${alumni.tahunLulus}),\n\nKami dari Bursa Kerja Khusus SMK Sasmita Jaya 2 Pamulang mengingatkan Anda untuk mengisi kuesioner penelusuran lulusan (tracer study).\n\nSilakan masuk menggunakan NISN: *${alumni.nisn}* melalui halaman login:\n${siteOrigin}/login\n\nTerima kasih atas bantuan dan kerja sama Anda.`,
+    );
+    return `https://wa.me/${cleanNumber}?text=${text}`;
   };
  
   return (

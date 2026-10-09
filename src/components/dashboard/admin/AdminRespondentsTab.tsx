@@ -76,7 +76,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
   initialSelectedId,
   onClearInitialSelectedId,
 }) => {
-  const { respondents, updateVerificationStatus } = useAdminStore();
+  const { respondents, updateVerificationStatus, fetchRespondentsFromBackend } = useAdminStore();
 
   const [search, setSearch] = useState("");
   const [jurusanFilter, setJurusanFilter] = useState("ALL");
@@ -90,6 +90,11 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
+
+  // Fetch real database respondents on mount
+  React.useEffect(() => {
+    fetchRespondentsFromBackend();
+  }, [fetchRespondentsFromBackend]);
 
   // Handle initial auto-open if explicitly requested from overview, then clear it immediately
   React.useEffect(() => {

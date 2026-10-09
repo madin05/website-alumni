@@ -89,7 +89,7 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
 
       if (response.success && response.data) {
         await submitTracer(payload);
-        updateUserTracerStatus("SUDAH", response.data.submission_id);
+        updateUserTracerStatus('SUDAH', response.data.submission_id);
 
         confetti({
           particleCount: 80,
@@ -101,7 +101,7 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
       } else {
         setSubmitError(
           response.message ||
-            "Terjadi kesalahan saat memproses data. Silakan periksa kembali formulir Anda.",
+            'Gagal mengirim data ke server. Data Anda belum tersimpan, silakan coba lagi.'
         );
       }
     } catch (err: any) {

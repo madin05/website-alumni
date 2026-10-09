@@ -5,7 +5,12 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Send, HelpCircle, ChevronDown } from "lucide-react";
 
+import { useMailStore } from "@/store/mailStore";
+import { useAuthStore } from "@/store/authStore";
+
 export const HelpdeskTab: React.FC = () => {
+  const { user } = useAuthStore();
+  const { addMail } = useMailStore();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketSubject, setTicketSubject] = useState("");
   const [ticketMessage, setTicketMessage] = useState("");
@@ -17,12 +22,44 @@ export const HelpdeskTab: React.FC = () => {
     if (!ticketSubject.trim() || !ticketMessage.trim()) return;
 
     setSubmittedTicket(true);
+
+    addMail({
+      senderName: user?.nama || "Alumni Sasmita",
+      senderRole: "alumni",
+      senderEmail: user?.email || "alumni@smksasmitajaya2.sch.id",
+      senderNisn: user?.nisn,
+      senderMajor: user?.jurusan,
+      senderGradYear: user?.tahun_lulus,
+      senderAvatarGender: user?.jenisKelamin === "P" ? "P" : "L",
+      recipientRole: "admin_bkk",
+      subject: ticketSubject.trim(),
+      preview: ticketMessage.trim().slice(0, 80) + (ticketMessage.length > 80 ? "..." : ""),
+      body: ticketMessage.trim(),
+      category: "inquiry",
+    });
+
+    try {
+      fetch("/api/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nama: user?.nama || "Alumni Sasmita",
+          email: user?.email || "alumni@smksasmitajaya2.sch.id",
+          noWhatsApp: user?.noWhatsapp || "081298765432",
+          subject: ticketSubject.trim(),
+          message: ticketMessage.trim(),
+        }),
+      }).catch(() => {});
+    } catch {
+      // ignore backend error
+    }
+
     setTimeout(() => {
       setSubmittedTicket(false);
       setTicketSubject("");
       setTicketMessage("");
       setShowSuccessModal(true);
-    }, 800);
+    }, 400);
   };
 
   return (

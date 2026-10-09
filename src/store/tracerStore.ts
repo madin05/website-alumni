@@ -11,6 +11,7 @@ import {
   TracerSubmissionPayload,
   SubmissionResponse,
 } from '@/types/tracer';
+import { submitTracerStudy } from '@/services/tracerService';
 
 interface TracerFormState {
   currentStep: number;
@@ -44,7 +45,7 @@ interface TracerFormState {
   updateDetailUsaha: (data: Partial<DetailUsaha> | null) => void;
   updateEvaluasi: (data: Partial<EvaluasiPembelajaran>) => void;
   setAgreement: (agreed: boolean) => void;
-  submitTracer: (payload: TracerSubmissionPayload) => Promise<SubmissionResponse>;
+  submitTracer: (payload: TracerSubmissionPayload, customSubmissionId?: string, customSubmittedAt?: string) => Promise<SubmissionResponse>;
   resetForm: () => void;
   loadSampleData: () => void;
 }
@@ -179,65 +180,54 @@ export const useTracerStore = create<TracerFormState>()(
 
       setAgreement: (agreed) => set({ agreement: agreed }),
 
-      submitTracer: async (payload: TracerSubmissionPayload) => {
-        // Simulate REST API call with /api/v1/tracer-study contract
-        await new Promise((resolve) => setTimeout(resolve, 800));
+      submitTracer: async (payload: TracerSubmissionPayload, customSubmissionId?: string, customSubmittedAt?: string) => {
+        const response = await submitTracerStudy({ ...payload, agreement: true });
 
-        const now = new Date();
-        const year = now.getFullYear().toString();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const randomSeq = Math.floor(1000 + Math.random() * 9000).toString();
-        const submissionId = `${year}${month}${randomSeq}`;
-        const submittedAt = now.toISOString();
+        if (response.success && response.data) {
+          const submissionId = response.data.submission_id;
+          const submittedAt = response.data.submitted_at || new Date().toISOString();
 
-        const response: SubmissionResponse = {
-          success: true,
-          message:
-            'Data tracer study berhasil disimpan. Terima kasih atas partisipasi Anda.',
-          data: {
-            submission_id: submissionId,
-            submitted_at: submittedAt,
-          },
-        };
+          set((state) => ({
+            isSubmitted: true,
+            lastSubmissionId: submissionId,
+            lastSubmittedAt: submittedAt,
+            submissionHistory: [
+              { id: submissionId, submittedAt, payload },
+              ...state.submissionHistory,
+            ],
+          }));
 
-        set((state) => ({
-          isSubmitted: true,
-          lastSubmissionId: submissionId,
-          lastSubmittedAt: submittedAt,
-          submissionHistory: [
-            { id: submissionId, submittedAt, payload },
-            ...state.submissionHistory,
-          ],
-        }));
+          // Seamlessly sync with Admin Store, Auth Store & Mail Store
+          try {
+            const { useAdminStore } = await import('./adminStore');
+            useAdminStore.getState().addOrUpdateRespondent(payload, submissionId);
+            const { useAuthStore } = await import('./authStore');
+            useAuthStore.getState().updateUserTracerStatus('SUDAH', submissionId);
+            const { useMailStore } = await import('./mailStore');
+            useMailStore.getState().addMail({
+              senderName: payload.identitas.nama_lengkap,
+              senderRole: 'alumni',
+              senderEmail: payload.identitas.email,
+              senderNisn: payload.identitas.nisn,
+              senderMajor: payload.identitas.jurusan,
+              senderGradYear: payload.identitas.tahun_lulus,
+              senderAvatarGender: payload.identitas.jenis_kelamin === 'Perempuan' ? 'P' : 'L',
+              recipientRole: 'admin_bkk',
+              subject: `Pengajuan Tracer Study Baru (${submissionId})`,
+              preview: `${payload.identitas.nama_lengkap} (${payload.identitas.jurusan}) telah menyelesaikan pengisian kuesioner tracer study.`,
+              body: `Alumni ${payload.identitas.nama_lengkap} (NISN: ${payload.identitas.nisn}) telah mengirimkan formulir Tracer Study dengan ID ${submissionId}. Status kegiatan: ${payload.status_kegiatan}. Silakan periksa kelengkapan data di menu Verifikasi Isian.`,
+              category: 'tracer_submission',
+              submissionId,
+              actionUrl: {
+                tab: 'verifikasi',
+                label: 'Buka di Verifikasi Isian',
+              },
+            });
+          } catch {
+            // Ignore if stores are not available
+          }
 
-        // Seamlessly sync with Admin Store, Auth Store & Mail Store
-        try {
-          const { useAdminStore } = await import('./adminStore');
-          useAdminStore.getState().addOrUpdateRespondent(payload, submissionId);
-          const { useAuthStore } = await import('./authStore');
-          useAuthStore.getState().updateUserTracerStatus('SUDAH', submissionId);
-          const { useMailStore } = await import('./mailStore');
-          useMailStore.getState().addMail({
-            senderName: payload.identitas.nama_lengkap,
-            senderRole: 'alumni',
-            senderEmail: payload.identitas.email,
-            senderNisn: payload.identitas.nisn,
-            senderMajor: payload.identitas.jurusan,
-            senderGradYear: payload.identitas.tahun_lulus,
-            senderAvatarGender: payload.identitas.jenis_kelamin === 'Perempuan' ? 'P' : 'L',
-            recipientRole: 'admin_bkk',
-            subject: `Pengajuan Tracer Study Baru (${submissionId})`,
-            preview: `${payload.identitas.nama_lengkap} (${payload.identitas.jurusan}) telah menyelesaikan pengisian kuesioner tracer study.`,
-            body: `Alumni ${payload.identitas.nama_lengkap} (NISN: ${payload.identitas.nisn}) telah mengirimkan formulir Tracer Study dengan ID ${submissionId}. Status kegiatan: ${payload.status_kegiatan}. Silakan periksa kelengkapan data di menu Verifikasi Isian.`,
-            category: 'tracer_submission',
-            submissionId,
-            actionUrl: {
-              tab: 'verifikasi',
-              label: 'Buka di Verifikasi Isian',
-            },
-          });
-        } catch {
-          // Ignore if stores are not available
+          return { success: true, message: 'Data tracer study berhasil disimpan.', data: response.data };
         }
 
         return response;

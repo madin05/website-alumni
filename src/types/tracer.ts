@@ -145,6 +145,7 @@ export interface UserSession {
   nisn: string;
   nik?: string;
   nama: string;
+  namaLengkap?: string;
   email: string;
   noWhatsapp?: string;
   role: 'alumni' | 'admin_bkk';
@@ -155,6 +156,14 @@ export interface UserSession {
   submittedAt?: string;
   jenisKelamin?: 'L' | 'P' | 'Laki-laki' | 'Perempuan';
   avatarUrl?: string;
+  statusKegiatan?: StatusKegiatan;
+  instansi?: string;
+  jabatan?: string;
+  verificationStatus?: 'PENDING' | 'VALID' | 'REVISI';
+  verificationNote?: string;
+  detailKerja?: any;
+  detailKuliah?: any;
+  detailUsaha?: any;
 }
 
 // Loker & Magang

@@ -1,0 +1,223 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Alumni {
+  id           String             @id @default(cuid())
+  nisn         String             @unique @db.VarChar(10)
+  nik          String?            @unique @db.VarChar(16)
+  namaLengkap  String             @db.VarChar(100)
+  email        String?            @unique @db.VarChar(100)
+  passwordHash String
+  jurusan      String             @db.VarChar(50)
+  tahunMasuk   Int
+  tahunLulus   Int
+  noWhatsApp   String?            @db.VarChar(20)
+  role         Role               @default(ALUMNI)
+  tracerStatus TracerStatus       @default(BELUM)
+  submissionId String?            @unique @db.VarChar(20)
+  submittedAt  DateTime?
+  jenisKelamin String?            @db.VarChar(1)
+  avatarUrl    String?
+  pekerjaan    String?            @db.VarChar(100)
+  kota         String?            @db.VarChar(100)
+  kampus       String?            @db.VarChar(100)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  applications JobApplication[]
+  tickets      SupportTicket[]
+  submissions  TracerSubmission[]
+  ijazah       Ijazah?
+
+  @@index([tahunLulus])
+  @@index([jurusan])
+  @@index([tracerStatus])
+  @@index([role])
+}
+
+model TracerSubmission {
+  id                 String             @id @default(cuid())
+  alumniId           String
+  statusKegiatan     StatusKegiatan
+  masaTunggu         String?            @db.VarChar(30)
+  detailKerja        Json?
+  detailKuliah       Json?
+  detailUsaha        Json?
+  evaluasi           Json
+  submissionId       String             @unique @db.VarChar(20)
+  verificationStatus VerificationStatus @default(PENDING)
+  verificationNote   String?            @db.Text
+  verifiedAt         DateTime?
+  verifiedBy         String?            @db.VarChar(100)
+  submittedAt        DateTime           @default(now())
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  alumni             Alumni             @relation(fields: [alumniId], references: [id], onDelete: Cascade)
+
+  @@index([alumniId])
+  @@index([submissionId])
+  @@index([statusKegiatan])
+  @@index([submittedAt])
+  @@index([verificationStatus])
+}
+
+model JobVacancy {
+  id            String           @id @default(cuid())
+  title         String           @db.VarChar(100)
+  company       String           @db.VarChar(100)
+  companyLogo   String?
+  location      String           @db.VarChar(100)
+  type          String           @db.VarChar(30)
+  salary        String           @db.VarChar(50)
+  targetMajors  String           @db.Text
+  postedAt      DateTime         @default(now())
+  deadline      DateTime
+  description   String           @db.Text
+  requirements  String           @db.Text
+  contactPerson String           @db.VarChar(100)
+  isBkkPartner  Boolean          @default(false)
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  applications  JobApplication[]
+
+  @@index([isActive, deadline])
+  @@index([type])
+}
+
+model JobApplication {
+  id           String     @id @default(cuid())
+  alumniId     String
+  jobId        String
+  portfolioUrl String?
+  cvFileUrl    String?
+  status       String     @default("PENDING") @db.VarChar(20)
+  appliedAt    DateTime   @default(now())
+  reviewedAt   DateTime?
+  reviewedBy   String?
+  alumni       Alumni     @relation(fields: [alumniId], references: [id], onDelete: Cascade)
+  job          JobVacancy @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([alumniId, jobId])
+  @@index([jobId])
+  @@index([status])
+}
+
+model Ijazah {
+  id                  String    @id @default(cuid())
+  nisn                String    @unique @db.VarChar(10)
+  nama                String    @db.VarChar(100)
+  jurusan             String    @db.VarChar(50)
+  tahunLulus          Int
+  statusPengambilan   String    @db.VarChar(30)
+  nomorIjazah         String    @unique @db.VarChar(50)
+  nomorSertifikatBnsp String?
+  tanggalSiap         DateTime?
+  tanggalDiambil      DateTime?
+  lokasiPengambilan   String    @db.VarChar(100)
+  persyaratan         String    @db.Text
+  barcode             String    @unique @db.VarChar(50)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  alumni              Alumni?   @relation(fields: [nisn], references: [nisn])
+
+  @@index([statusPengambilan])
+  @@index([tahunLulus])
+}
+
+model NewsItem {
+  id          String   @id @default(cuid())
+  title       String   @db.VarChar(200)
+  excerpt     String   @db.Text
+  content     String   @db.LongText
+  category    String   @db.VarChar(50)
+  date        DateTime @default(now())
+  readTime    String   @db.VarChar(20)
+  imageUrl    String?
+  author      String   @db.VarChar(100)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, date])
+  @@index([category])
+}
+
+model SupportTicket {
+  id         String    @id @default(cuid())
+  alumniId   String?
+  nama       String    @db.VarChar(120)
+  email      String    @db.VarChar(100)
+  noWhatsApp String?   @db.VarChar(20)
+  subject    String    @db.VarChar(200)
+  message    String    @db.Text
+  status     String    @default("UNREAD") @db.VarChar(20)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  resolvedAt DateTime?
+  resolvedBy String?
+  alumni     Alumni?   @relation(fields: [alumniId], references: [id])
+
+  @@index([alumniId])
+  @@index([status])
+}
+
+model LegalBasis {
+  id          String   @id @default(cuid())
+  number      String   @db.VarChar(50)
+  year        String   @db.VarChar(4)
+  title       String   @db.VarChar(200)
+  description String   @db.Text
+  badge       String   @db.VarChar(30)
+  pdfUrl      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AdminSettings {
+  id               Int      @id @default(1)
+  targetQuota      Int      @default(450)
+  targetYear       Int      @default(2024)
+  periodStart      DateTime
+  periodEnd        DateTime
+  kepalaSekolah    String   @db.VarChar(120)
+  nipKepalaSekolah String   @db.VarChar(50)
+  ketuaBkk         String   @db.VarChar(120)
+  nipKetuaBkk      String   @db.VarChar(50)
+  namaSekolah      String   @db.VarChar(150)
+  npsn             String   @db.VarChar(20)
+  alamatSekolah    String   @db.Text
+  kontakBkk        String   @db.VarChar(50)
+  updatedAt        DateTime @updatedAt
+}
+
+enum Role {
+  ALUMNI
+  ADMIN_BKK
+}
+
+enum TracerStatus {
+  BELUM
+  DRAFT
+  SUDAH
+}
+
+enum StatusKegiatan {
+  KERJA
+  KULIAH
+  WIRAUSAHA
+  KERJA_KULIAH
+  WIRAUSAHA_KULIAH
+  BELUM_KERJA
+}
+
+enum VerificationStatus {
+  PENDING
+  VALID
+  REVISI
+}

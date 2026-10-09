@@ -32,7 +32,7 @@ const SolidBriefcaseIcon: React.FC<{ className?: string }> = ({
 );
 
 export const AdminJobsTab: React.FC = () => {
-  const { jobList, addJob, updateJob, deleteJob } = useContentStore();
+  const { jobList, addJob, updateJob, deleteJob, fetchJobsFromBackend } = useContentStore();
 
   const [viewMode, setViewMode] = useState<"list" | "editor">("list");
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,21 +41,26 @@ export const AdminJobsTab: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  useEffect(() => {
+    fetchJobsFromBackend();
+  }, [fetchJobsFromBackend]);
+
   // Editor State
   const [editingJob, setEditingJob] = useState<JobVacancy | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState("");
 
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(""), 3500);
-  };
+  }
 
   const handleOpenEditor = (job: JobVacancy | null) => {
     setEditingJob(job);
     setViewMode("editor");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }
 
   const handleSaveJob = (data: {
     title: string;
@@ -90,13 +95,13 @@ export const AdminJobsTab: React.FC = () => {
     }
 
     setViewMode("list");
-  };
+  }
 
   const handleDelete = (id: string) => {
     deleteJob(id);
     setDeleteConfirmId(null);
     showToast("Lowongan kerja berhasil dihapus dari sistem.");
-  };
+  }
 
   // Reset pagination when search query or filters change
   useEffect(() => {
@@ -406,3 +411,4 @@ export const AdminJobsTab: React.FC = () => {
     </div>
   );
 };
+

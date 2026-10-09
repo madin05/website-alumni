@@ -44,10 +44,15 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     markAsRead,
     markAllAsRead,
     deleteMail,
+    fetchMailsFromBackend,
   } = useMailStore();
 
   const role = user?.role === "admin_bkk" ? "admin_bkk" : "alumni";
   const userNisn = user?.nisn;
+
+  React.useEffect(() => {
+    fetchMailsFromBackend();
+  }, [fetchMailsFromBackend]);
 
   const mails = getMailsForUser(role, userNisn);
   const unreadCount = getUnreadCount(role, userNisn);
