@@ -346,13 +346,14 @@ export const AdminMasterAlumniTab: React.FC = () => {
                   <th className="py-2.5 px-3 font-semibold">Program Keahlian</th>
                   <th className="py-2.5 px-3 font-semibold">Nomor WhatsApp</th>
                   <th className="py-2.5 px-3 font-semibold">Status Pengisian</th>
-                  <th className="py-2.5 px-3 font-semibold text-right">Tindakan</th>
+                  <th className="py-2.5 px-3 font-semibold text-center">No. Registrasi</th>
+                  <th className="py-2.5 px-3 font-semibold text-center">Tindakan</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-[11px]">
                 {paginatedAlumni.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-6 text-center text-slate-500 text-xs">
+                    <td colSpan={7} className="p-6 text-center text-slate-500 text-xs">
                       Tidak ada data siswa yang cocok dengan pencarian atau
                       filter yang dipilih.
                     </td>
@@ -399,34 +400,33 @@ export const AdminMasterAlumniTab: React.FC = () => {
                           </span>
                         )}
                       </td>
-                      <td className="py-2.5 px-3 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          {alumni.statusTracer === "BELUM" ? (
-                            <a
-                              href={generateWaLink(alumni)}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition flex items-center gap-1 shadow-xs cursor-pointer text-[8px]"
-                              title="Kirim pesan pengingat ke nomor WhatsApp alumni"
-                            >
-                              <WhatsAppIcon className="w-3 h-3 shrink-0" />
-                              <span>Kirim Pengingat</span>
-                            </a>
-                          ) : (
-                            <span className="text-[10px] text-slate-500 font-mono">
-                              {alumni.submissionId || "-"}
-                            </span>
-                          )}
-
-                          <button
-                            type="button"
-                            onClick={() => setDeleteConfirmAlumni(alumni)}
-                            className="p-1 rounded text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
-                            title="Hapus data siswa"
+                      <td className="py-2.5 px-3 text-center">
+                        {alumni.statusTracer === "BELUM" ? (
+                          <a
+                            href={generateWaLink(alumni)}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition shadow-xs cursor-pointer text-[9.5px]"
+                            title="Kirim pesan pengingat ke nomor WhatsApp alumni"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
+                            <WhatsAppIcon className="w-3 h-3 shrink-0" />
+                            <span>Kirim Pengingat</span>
+                          </a>
+                        ) : (
+                          <span className="text-[11px] text-slate-700 font-mono font-semibold">
+                            {alumni.submissionId || "-"}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2.5 px-3 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setDeleteConfirmAlumni(alumni)}
+                          className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer inline-flex items-center justify-center"
+                          title="Hapus data siswa"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </td>
                     </tr>
                   ))

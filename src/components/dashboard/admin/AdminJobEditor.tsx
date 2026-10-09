@@ -53,27 +53,35 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
 }) => {
   const [title, setTitle] = useState(editingJob?.title || "");
   const [company, setCompany] = useState(editingJob?.company || "");
-  const [location, setLocation] = useState(editingJob?.location || "Tangerang Selatan");
-  const [type, setType] = useState<JobVacancy["type"]>(editingJob?.type || "Full-time");
-  const [salary, setSalary] = useState(editingJob?.salary || "Rp 4.500.000 - Rp 6.500.000");
-  const [targetMajors, setTargetMajors] = useState<string[]>(
-    editingJob?.targetMajors || ["Teknik Komputer dan Jaringan"]
+  const [location, setLocation] = useState(
+    editingJob?.location || "Tangerang Selatan",
   );
-  const [deadline, setDeadline] = useState(editingJob?.deadline || "30 Okt 2026");
+  const [type, setType] = useState<JobVacancy["type"]>(
+    editingJob?.type || "Full-time",
+  );
+  const [salary, setSalary] = useState(
+    editingJob?.salary || "Rp 4.500.000 - Rp 6.500.000",
+  );
+  const [targetMajors, setTargetMajors] = useState<string[]>(
+    editingJob?.targetMajors || ["Teknik Komputer dan Jaringan"],
+  );
+  const [deadline, setDeadline] = useState(
+    editingJob?.deadline || "30 Okt 2026",
+  );
   const [contactPerson, setContactPerson] = useState(
-    editingJob?.contactPerson || "bkk@smksasmitajaya2.sch.id"
+    editingJob?.contactPerson || "bkk@smksasmitajaya2.sch.id",
   );
   const [isBkkPartner, setIsBkkPartner] = useState(
-    editingJob ? editingJob.isBkkPartner : true
+    editingJob ? editingJob.isBkkPartner : true,
   );
   const [description, setDescription] = useState(editingJob?.description || "");
   const [requirementsText, setRequirementsText] = useState(
-    editingJob?.requirements?.join("\n") || ""
+    editingJob?.requirements?.join("\n") || "",
   );
 
   const toggleMajor = (major: string) => {
     setTargetMajors((prev) =>
-      prev.includes(major) ? prev.filter((m) => m !== major) : [...prev, major]
+      prev.includes(major) ? prev.filter((m) => m !== major) : [...prev, major],
     );
   };
 
@@ -89,7 +97,9 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
     e.preventDefault();
 
     if (!title.trim() || !company.trim() || !description.trim()) {
-      showToast("Harap lengkapi judul posisi, nama perusahaan, dan deskripsi pekerjaan.");
+      showToast(
+        "Harap lengkapi judul posisi, nama perusahaan, dan deskripsi pekerjaan.",
+      );
       return;
     }
 
@@ -115,9 +125,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
       isBkkPartner,
       description: description.trim(),
       requirements:
-        requirements.length > 0
-          ? requirements
-          : ["Lulusan SMK Sasmita Jaya 2"],
+        requirements.length > 0 ? requirements : ["Lulusan SMK Sasmita Jaya 2"],
     });
   };
 
@@ -129,7 +137,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="p-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+            className="p-2 text-slate-700 transition cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
             title="Kembali ke daftar lowongan"
           >
             <ArrowLeft className="w-4 h-4 text-slate-600" />
@@ -138,11 +146,10 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
 
           <div>
             <h1 className="text-base sm:text-lg font-bold text-[#0d2346]">
-              {editingJob ? "Edit Lowongan Kerja" : "Tambah Lowongan Kerja Baru"}
+              {editingJob
+                ? "Edit Lowongan Kerja"
+                : "Tambah Lowongan Kerja Baru"}
             </h1>
-            <p className="text-xs text-slate-500">
-              Lowongan akan langsung dipublikasikan dan ditampilkan pada Tab Loker portal alumni.
-            </p>
           </div>
         </div>
 
@@ -172,7 +179,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-900">
-                Posisi / Judul Pekerjaan <span className="text-rose-500">*</span>
+                Posisi / Judul Pekerjaan{" "}
+                <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -186,7 +194,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
 
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-900">
-                Nama Perusahaan / Instansi <span className="text-rose-500">*</span>
+                Nama Perusahaan / Instansi{" "}
+                <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -267,7 +276,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           {/* Field 4: Mitra Resmi BKK Sasmita Card */}
           <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 border border-slate-200 flex items-center justify-center shrink-0">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
@@ -275,7 +284,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                   Tandai sebagai Mitra Resmi BKK Sasmita
                 </span>
                 <p className="text-[11px] text-slate-500">
-                  Memberikan badge resmi verifikasi DUDI mitra sekolah pada kartu lowongan.
+                  Memberikan badge resmi verifikasi DUDI mitra sekolah pada
+                  kartu lowongan.
                 </p>
               </div>
             </div>
@@ -291,12 +301,13 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-slate-900">
-                Sasaran Program Keahlian / Jurusan <span className="text-rose-500">*</span>
+                Sasaran Program Keahlian{" "}
+                <span className="text-rose-500">*</span>
               </label>
               <button
                 type="button"
                 onClick={selectAllMajors}
-                className="text-[11px] font-semibold text-[#0d2346] hover:underline cursor-pointer"
+                className="text-[11px] text-blue-700 hover:underline cursor-pointer"
               >
                 {targetMajors.length === JURUSAN_OPTIONS.length
                   ? "Batal Pilih Semua"
@@ -310,10 +321,10 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 return (
                   <label
                     key={major}
-                    className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-xs font-medium cursor-pointer transition ${
+                    className={`flex items-center gap-2.5 p-2.5 text-xs font-medium cursor-pointer transition ${
                       isChecked
-                        ? "bg-white border-[#0d2346] text-[#0d2346] font-semibold shadow-2xs"
-                        : "bg-white/60 border-slate-200 text-slate-700 hover:bg-white"
+                        ? " text-[#0d2346] font-semibold shadow-2xs"
+                        : "  text-slate-700 hover:bg-white"
                     }`}
                   >
                     <input
@@ -339,7 +350,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Jelaskan ruang lingkup peran utama, tanggung jawab operasional, dan gambaran tugas harian..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
               required
             />
           </div>
@@ -359,7 +370,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
               value={requirementsText}
               onChange={(e) => setRequirementsText(e.target.value)}
               placeholder="Lulusan SMK Sasmita Jaya 2&#10;Memiliki sertifikat kompetensi BNSP&#10;Mampu bekerjasama dalam tim kerja industri&#10;Disiplin dan teliti"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
             />
           </div>
         </div>
@@ -368,9 +379,9 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
         <div className="lg:col-span-4 bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4 sticky top-6">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#0d2346]">
-              <span>Pratinjau Kartu Loker</span>
+              <span>Pratinjau</span>
             </div>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
               Live Preview
             </span>
           </div>
@@ -410,7 +421,9 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
               </div>
               <div className="flex items-center gap-1 truncate text-slate-500">
                 <Clock className="w-3 h-3 text-slate-400 shrink-0" />
-                <span className="truncate">Batas: {deadline || "30 Okt 2026"}</span>
+                <span className="truncate">
+                  Batas: {deadline || "30 Okt 2026"}
+                </span>
               </div>
               <div className="flex items-center gap-1 truncate text-slate-500">
                 <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
@@ -420,7 +433,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
 
             {/* Target Majors Tags */}
             <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              <span className="text-[10px] font-bold  tracking-wider text-slate-400 block">
                 Sasaran Jurusan ({targetMajors.length}):
               </span>
               <div className="flex flex-wrap gap-1">
@@ -450,14 +463,19 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 {contactPerson || "Kontak Lamaran"}
               </span>
               <span className="font-bold text-[#0d2346]">
-                {requirementsText.split("\n").filter((r) => r.trim().length > 0).length}{" "}
+                {
+                  requirementsText
+                    .split("\n")
+                    .filter((r) => r.trim().length > 0).length
+                }{" "}
                 Kualifikasi
               </span>
             </div>
           </div>
 
           <p className="text-[11px] text-slate-400 leading-relaxed italic text-center">
-            Perubahan pada form otomatis terupdate secara instan pada pratinjau kartu di atas.
+            Perubahan pada form otomatis terupdate secara instan pada pratinjau
+            kartu di atas.
           </p>
         </div>
       </div>

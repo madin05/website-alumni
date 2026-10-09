@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
-import { ArrowRight, ChevronLeft } from "lucide-react";
+import { ArrowRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
   const [loginMethod, setLoginMethod] = useState<"nisn" | "nik">("nisn");
   const [identifier, setIdentifier] = useState("0061234567");
+  const [password, setPassword] = useState("123456");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,6 +34,11 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
+    if (!password.trim()) {
+      setError("Harap masukkan password Anda.");
+      return;
+    }
+
     setLoading(true);
     try {
       await login(identifier, "alumni");
@@ -46,11 +53,13 @@ export const LoginPage: React.FC = () => {
   const handleQuickDemo = () => {
     setLoginMethod("nisn");
     setIdentifier("0051234567");
+    setPassword("123456");
   };
 
   const handleAdminDemo = () => {
     setLoginMethod("nisn");
     setIdentifier("admin@smksasmitajaya2.sch.id");
+    setPassword("admin123");
   };
 
   return (
@@ -216,7 +225,7 @@ export const LoginPage: React.FC = () => {
             )}
 
             {/* Form Inputs */}
-            <form onSubmit={handleSubmit} className="mt-7 space-y-8">
+            <form onSubmit={handleSubmit} className="mt-7 space-y-7">
               <div className="material-group">
                 <input
                   type="text"
@@ -239,11 +248,38 @@ export const LoginPage: React.FC = () => {
                 </label>
               </div>
 
+              <div className="material-group !mt-7">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="material-input pr-8"
+                  required
+                />
+                <span className="material-bar" />
+                <span className="material-highlight" />
+                <label className="material-label">Password</label>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-1 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer p-0.5"
+                  tabIndex={-1}
+                  aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
               {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 px-6 rounded-xl bg-[#182945] hover:bg-[#122038] text-white font-medium text-sm tracking-wide shadow-md cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                className="w-full py-3.5 px-6 rounded-xl bg-[#182945] hover:bg-[#122038] text-white font-medium text-sm tracking-wide shadow-md cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2 transition-all active:scale-[0.99] !mt-8"
               >
                 {loading ? (
                   <span>Memproses...</span>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAdminStore } from '@/store/adminStore';
 import {
-  Settings,
   Save,
   RotateCcw,
   CheckCircle2,
@@ -10,6 +9,19 @@ import {
   Building,
 } from 'lucide-react';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
+
+const SolidSettingsIcon: React.FC<{ className?: string }> = ({
+  className = "w-5 h-5 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+  </svg>
+);
 
 export const AdminSettingsTab: React.FC = () => {
   const { settings, updateSettings, resetToDefaultData } = useAdminStore();
@@ -47,8 +59,8 @@ export const AdminSettingsTab: React.FC = () => {
         <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Settings className="w-5 h-5 text-[#0d2346]" />
-              <span>Pengaturan Sistem & Profil Pelaporan</span>
+              <SolidSettingsIcon className="w-5 h-5 text-[#0d2346] shrink-0" />
+              <span>Pengaturan Sistem</span>
             </h1>
           </div>
         </div>
@@ -83,7 +95,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, targetQuota: Number(e.target.value) })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
                 <span className="text-[10px] text-slate-400 block">
                   Dasar perhitungan persentase partisipasi tracer study.
@@ -100,7 +112,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, targetYear: Number(e.target.value) })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
                 <span className="text-[10px] text-slate-400 block">
                   Tahun kelulusan alumni yang menjadi fokus pengumpulan data.
@@ -117,7 +129,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, periodStart: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
 
@@ -131,7 +143,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, periodEnd: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
             </div>
@@ -161,7 +173,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, kepalaSekolah: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
 
@@ -189,7 +201,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, ketuaBkk: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
 
@@ -203,7 +215,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, nipKetuaBkk: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
             </div>  
@@ -233,7 +245,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, namaSekolah: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
 
@@ -247,7 +259,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, npsn: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
 
@@ -261,7 +273,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, alamatSekolah: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
 
@@ -275,7 +287,7 @@ export const AdminSettingsTab: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, kontakBkk: e.target.value })
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                 />
               </div>
             </div>
@@ -286,7 +298,7 @@ export const AdminSettingsTab: React.FC = () => {
             <button
               type="button"
               onClick={handleReset}
-              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs font-semibold transition flex items-center gap-2 cursor-pointer border border-slate-200"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs sm:text-sm font-medium transition flex items-center gap-2 cursor-pointer border border-slate-200"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Kembalikan ke Data Awal Demo</span>

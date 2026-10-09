@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useContentStore } from "@/store/contentStore";
 import { NewsItem } from "@/types/tracer";
 import {
-  Newspaper,
   Plus,
   Search,
   Edit3,
@@ -17,6 +16,19 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { AdminNewsEditor, CATEGORIES } from "./AdminNewsEditor";
+
+const SolidNewspaperIcon: React.FC<{ className?: string }> = ({
+  className = "w-5 h-5 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM5 8h5v5H5V8zm14 9H5v-2h14v2zm0-4h-7v-2h7v2zm0-4h-7V7h7v2z" />
+  </svg>
+);
 
 export const AdminNewsTab: React.FC = () => {
   const { newsList, addNews, updateNews, deleteNews } = useContentStore();
@@ -37,51 +49,38 @@ export const AdminNewsTab: React.FC = () => {
     setTimeout(() => setToastMessage(""), 3500);
   };
 
-  const handleOpenEditor = (item: NewsItem | null) => {
-    setEditingNews(item);
+  const handleOpenEditor = (news: NewsItem | null) => {
+    setEditingNews(news);
     setViewMode("editor");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSaveNews = (data: {
     title: string;
-    category: string;
+    category: NewsItem["category"];
     author: string;
     readTime: string;
     imageUrl: string;
     excerpt: string;
     content: string;
   }) => {
-    const today = new Date();
-    const months = [
-      "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
-      "Jul", "Agu", "Sep", "Okt", "Nov", "Des",
-    ];
-    const todayStr = `${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+    const todayStr = new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
 
     if (editingNews) {
       updateNews(editingNews.id, {
-        title: data.title.trim(),
-        category: data.category,
-        author: data.author.trim() || "Tim Humas BKK",
-        readTime: data.readTime.trim() || "3 min read",
-        imageUrl: data.imageUrl.trim(),
-        excerpt: data.excerpt.trim(),
-        content: data.content.trim(),
+        ...data,
       });
-      showToast("Berita berhasil diperbarui dan disinkronkan ke Landing Page!");
+      showToast("Berita berhasil diperbarui dan dipublikasikan!");
     } else {
       addNews({
-        title: data.title.trim(),
-        category: data.category,
-        author: data.author.trim() || "Tim Humas BKK",
-        readTime: data.readTime.trim() || "3 min read",
-        imageUrl: data.imageUrl.trim(),
-        excerpt: data.excerpt.trim(),
-        content: data.content.trim(),
+        ...data,
         date: todayStr,
       });
-      showToast("Berita baru berhasil dibuat dan langsung tampil di Landing Page!");
+      showToast("Berita baru berhasil ditambahkan dan dipublikasikan!");
     }
 
     setViewMode("list");
@@ -93,20 +92,20 @@ export const AdminNewsTab: React.FC = () => {
     showToast("Berita berhasil dihapus dari sistem.");
   };
 
-  // Reset pagination when search query or category changes
+  // Reset pagination when search query or filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedCategory]);
 
-  // Filtered News
+  // Filtered List
   const filteredNews = newsList.filter((item) => {
     const matchSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.author.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchCat =
+    const matchCategory =
       selectedCategory === "Semua" || item.category === selectedCategory;
-    return matchSearch && matchCat;
+    return matchSearch && matchCategory;
   });
 
   const totalPages = Math.ceil(filteredNews.length / itemsPerPage);
@@ -142,7 +141,7 @@ export const AdminNewsTab: React.FC = () => {
           <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-                <Newspaper className="w-5 h-5 text-[#0d2346]" />
+                <SolidNewspaperIcon className="w-5 h-5 text-[#0d2346] shrink-0" />
                 <span>Kelola Berita & Informasi BKK</span>
               </h1>
             </div>
@@ -168,7 +167,21 @@ export const AdminNewsTab: React.FC = () => {
                   {newsList.length}
                 </p>
                 <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                  Tayang di Landing Page
+                  Tampil di portal publik & alumni
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-xs flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500">
+                  Agenda & Kegiatan
+                </p>
+                <p className="text-2xl font-bold text-[#0d2346] mt-1">
+                  {newsList.filter((n) => n.category === "Agenda").length}
+                </p>
+                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                  Jadwal rekrutmen & event
                 </p>
               </div>
             </div>
@@ -178,49 +191,35 @@ export const AdminNewsTab: React.FC = () => {
                 <p className="text-xs font-semibold text-slate-500">
                   Kategori Aktif
                 </p>
-                <p className="text-2xl font-bold text-[#0d2346] mt-1">
-                  {new Set(newsList.map((n) => n.category)).size}
-                </p>
-                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                  Topik Informasi
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-xs flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold text-slate-500">
-                  Status Sinkronisasi
-                </p>
                 <p className="text-2xl font-bold text-emerald-600 mt-1">
-                  Real-time
+                  {CATEGORIES.length} Kategori
                 </p>
                 <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                  Live di Portal Publik
+                  Terstruktur & rapi
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Search, Filter & Action Bar */}
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          {/* Search and Filter Controls */}
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto flex-1">
               <div className="relative w-full sm:w-72">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari judul, topik, penulis..."
+                  placeholder="Cari judul berita, penulis..."
                   className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#0d2346]/10 focus:border-[#0d2346] transition"
                 />
               </div>
 
               <div className="w-full sm:w-48">
                 <CustomSelect
-                  options={CATEGORIES.map((cat) => ({
-                    value: cat,
-                    label: cat,
+                  options={["Semua", ...CATEGORIES].map((c) => ({
+                    value: c,
+                    label: c === "Semua" ? "Semua Kategori" : c,
                   }))}
                   value={selectedCategory}
                   onChange={(val) => setSelectedCategory(val)}
@@ -228,10 +227,10 @@ export const AdminNewsTab: React.FC = () => {
               </div>
             </div>
 
-            <div className="text-xs text-slate-500 font-medium self-end md:self-center">
+            <div className="text-xs text-slate-500 font-medium self-end sm:self-center">
               Menampilkan{" "}
               <strong className="text-slate-800">{filteredNews.length}</strong>{" "}
-              artikel berita
+              berita
             </div>
           </div>
 
@@ -245,88 +244,68 @@ export const AdminNewsTab: React.FC = () => {
                 Tidak ada berita ditemukan
               </h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Coba ubah kata kunci pencarian atau filter kategori untuk melihat
-                berita lainnya.
+                Coba sesuaikan kata kunci pencarian atau pilih kategori lain.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 content-start min-h-[520px]">
-              {paginatedNews.map((item) => (
+              {paginatedNews.map((news) => (
                 <div
-                  key={item.id}
+                  key={news.id}
                   className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition duration-200 flex flex-col justify-between group"
                 >
-                  {/* Card Cover Image */}
-                  <div className="relative h-44 overflow-hidden bg-slate-100">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80";
-                      }}
-                    />
-                    <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-[#0d2346]/90 text-white backdrop-blur-xs shadow-xs">
-                        {item.category}
+                  <div>
+                    {/* Thumbnail Image */}
+                    <div className="relative h-44 bg-slate-100 overflow-hidden">
+                      <img
+                        src={news.imageUrl}
+                        alt={news.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=60";
+                        }}
+                      />
+                      <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[11px] font-bold bg-[#0d2346]/90 text-white backdrop-blur-xs shadow-xs">
+                        {news.category}
                       </span>
                     </div>
-                  </div>
 
-                  {/* Card Content */}
-                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2.5 text-[11px] text-slate-500">
-                        <span className="flex items-center gap-1 font-medium">
+                    {/* Body Info */}
+                    <div className="p-4.5 space-y-2">
+                      <div className="flex items-center gap-3 text-[11px] text-slate-500 font-medium">
+                        <span className="flex items-center gap-1">
                           <Calendar className="w-3 h-3 text-slate-400" />
-                          {item.date}
+                          {news.date}
                         </span>
                         <span>•</span>
-                        <span className="flex items-center gap-1 font-medium">
+                        <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3 text-slate-400" />
-                          {item.readTime}
+                          {news.readTime}
                         </span>
                       </div>
 
-                      <h3 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 group-hover:text-[#0d2346] transition">
-                        {item.title}
+                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#0d2346] transition line-clamp-2 leading-snug">
+                        {news.title}
                       </h3>
 
-                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                        {item.excerpt}
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                        {news.excerpt}
                       </p>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                      <div className="flex items-center gap-1.5 truncate max-w-[150px]">
-                        <User className="w-3 h-3 text-slate-400 shrink-0" />
-                        <span className="truncate font-medium">
-                          {item.author}
-                        </span>
-                      </div>
-
-                      <a
-                        href={`/berita/${item.id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[#0d2346] hover:underline font-semibold flex items-center gap-1 shrink-0"
-                      >
-                        <span>Lihat</span>
-                        <ArrowUpRight className="w-3 h-3" />
-                      </a>
                     </div>
                   </div>
 
-                  {/* Card Footer Actions */}
-                  <div className="px-4 sm:px-5 py-3 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      Aksi Pengelola:
+                  {/* Card Actions Footer */}
+                  <div className="p-4 border-t border-slate-100 flex items-center justify-between gap-2 mt-4 pt-3">
+                    <span className="text-[11px] text-slate-500 flex items-center gap-1 truncate max-w-[120px]">
+                      <User className="w-3 h-3 text-slate-400 shrink-0" />
+                      <span className="truncate">{news.author}</span>
                     </span>
+
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
-                        onClick={() => handleOpenEditor(item)}
+                        onClick={() => handleOpenEditor(news)}
                         className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
                         title="Edit Berita"
                       >
@@ -335,7 +314,7 @@ export const AdminNewsTab: React.FC = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setDeleteConfirmId(item.id)}
+                        onClick={() => setDeleteConfirmId(news.id)}
                         className="px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50/50 hover:bg-rose-100/80 text-rose-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
                         title="Hapus Berita"
                       >
@@ -364,7 +343,7 @@ export const AdminNewsTab: React.FC = () => {
       <ConfirmModal
         isOpen={!!deleteConfirmId}
         title="Konfirmasi Hapus Berita"
-        message="Apakah Anda yakin ingin menghapus artikel berita ini? Artikel yang dihapus tidak akan lagi ditampilkan pada Landing Page."
+        message="Apakah Anda yakin ingin menghapus artikel berita ini? Berita yang dihapus tidak akan lagi tampil di halaman publik dan portal alumni."
         confirmText="Hapus Berita"
         cancelText="Batal"
         type="danger"

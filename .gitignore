@@ -68,7 +68,8 @@ Thumbs.db
 # Agent / AI Scratch caches
 .agents/
 
-# Documentation & Internal Specs
+# Documentation, Internal Scripts & Specs
+scripts/
 docs/
 dokumentasi/
 ADMIN_WORKFLOW.md

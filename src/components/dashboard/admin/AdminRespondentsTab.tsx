@@ -393,13 +393,14 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                   </button>
                 </th>
                 <th className="py-2.5 px-3 font-semibold">Status Verifikasi</th>
-                <th className="py-2.5 px-3 font-semibold text-right">Tindakan</th>
+                <th className="py-2.5 px-3 font-semibold text-center">Rincian</th>
+                <th className="py-2.5 px-3 font-semibold text-center">Tindakan</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 text-[11px]">
               {paginatedRespondents.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-6 text-center text-slate-500 text-xs">
+                  <td colSpan={8} className="p-6 text-center text-slate-500 text-xs">
                     Tidak ditemukan data kuesioner yang sesuai dengan kriteria
                     pencarian.
                   </td>
@@ -449,34 +450,42 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                       {renderVerificationBadge(rsp.verificationStatus)}
                     </td>
                     <td
-                      className="py-2.5 px-3 text-right"
+                      className="py-2.5 px-3 text-center"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedRespondent(rsp)}
+                        className="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition text-[10px] cursor-pointer shadow-2xs"
+                        title="Lihat rincian kuesioner"
+                      >
+                        <Eye className="w-3 h-3 text-slate-600" />
+                        <span>Rincian</span>
+                      </button>
+                    </td>
+                    <td
+                      className="py-2.5 px-3 text-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {rsp.verificationStatus !== "VALID" ? (
                         <button
-                          onClick={() => setSelectedRespondent(rsp)}
-                          className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition flex items-center gap-1 text-[10px] cursor-pointer"
-                          title="Lihat rincian kuesioner"
+                          type="button"
+                          onClick={() =>
+                            updateVerificationStatus(
+                              rsp.submissionId,
+                              "VALID",
+                            )
+                          }
+                          className="p-1 rounded bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-emerald-700 transition cursor-pointer inline-flex items-center justify-center shadow-2xs"
+                          title="Setujui data kuesioner"
                         >
-                          <Eye className="w-3 h-3" />
-                          <span>Rincian</span>
+                          <Check className="w-3.5 h-3.5" />
                         </button>
-
-                        {rsp.verificationStatus !== "VALID" && (
-                          <button
-                            onClick={() =>
-                              updateVerificationStatus(
-                                rsp.submissionId,
-                                "VALID",
-                              )
-                            }
-                            className="p-1 rounded bg-slate-50 hover:bg-slate-100 text-slate-700 transition cursor-pointer"
-                            title="Setujui data kuesioner"
-                          >
-                            <Check className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
+                      ) : (
+                        <span className="inline-flex items-center justify-center p-1 text-emerald-600" title="Sudah Terverifikasi">
+                          <Check className="w-3.5 h-3.5" />
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))

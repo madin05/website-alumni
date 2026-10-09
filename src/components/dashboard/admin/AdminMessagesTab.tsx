@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Mail,
   Search,
   CheckCheck,
   Trash2,
@@ -16,7 +15,20 @@ import { useMailStore, MailItem } from "@/store/mailStore";
 import { useAuthStore } from "@/store/authStore";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
-import { Modal } from "@/components/ui/Modal";
+import { createPortal } from "react-dom";
+
+const SolidMailIcon: React.FC<{ className?: string }> = ({
+  className = "w-5 h-5 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+  </svg>
+);
 
 interface AdminMessagesTabProps {
   onNavigateTab?: (tab: string, respondentId?: string) => void;
@@ -47,6 +59,22 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     useState<MailItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedMailForModal(null);
+      }
+    };
+    if (selectedMailForModal) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedMailForModal]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -161,15 +189,12 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
       )}
 
       {/* Header Banner */}
-      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white rounded-xl border border-slate-200 shadow-xs">
+      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Mail className="w-5 h-5 text-[#0d2346]" />
+            <SolidMailIcon className="w-5 h-5 text-[#0d2346] shrink-0" />
             <span>Pesan & Kotak Masuk Alumni</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Kelola tanggapan kuesioner baru, pertanyaan helpdesk, dan masukan alumni.
-          </p>
         </div>
 
         {unreadCount > 0 && (
@@ -351,7 +376,9 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
                       {mail.senderMajor && (
                         <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                           {mail.senderMajor}{" "}
-                          {mail.senderGradYear ? `(${mail.senderGradYear})` : ""}
+                          {mail.senderGradYear
+                            ? `(${mail.senderGradYear})`
+                            : ""}
                         </span>
                       )}
                     </div>
@@ -399,124 +426,190 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
         </div>
       </div>
 
-      {/* Message Detail Modal (Opens when clicked) */}
-      <Modal
-        isOpen={Boolean(selectedMailForModal)}
-        onClose={() => setSelectedMailForModal(null)}
-        maxWidth="2xl"
-      >
-        {selectedMailForModal && (
-          <div className="flex flex-col max-h-[85vh]">
-            {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-200 bg-white flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3.5 min-w-0">
-                <UserAvatar
-                  name={selectedMailForModal.senderName}
-                  gender={selectedMailForModal.senderAvatarGender}
-                  className="w-11 h-11 shrink-0 border border-slate-200"
-                />
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-sm sm:text-base font-bold text-slate-900 truncate">
-                      {selectedMailForModal.senderName}
-                    </h2>
-                    {selectedMailForModal.senderMajor && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                        {selectedMailForModal.senderMajor}{" "}
-                        {selectedMailForModal.senderGradYear
-                          ? `(${selectedMailForModal.senderGradYear})`
-                          : ""}
-                      </span>
-                    )}
+      {/* Message Detail Responsive Modal / Fullscreen Mobile Viewer */}
+      {selectedMailForModal &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center sm:p-4 overflow-hidden">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-200"
+              onClick={() => setSelectedMailForModal(null)}
+            />
+
+            {/* Modal Dialog: Full Screen on Mobile, Centered Card on Desktop */}
+            <div className="relative z-10 w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-2xl bg-white sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in duration-200">
+              {/* Header */}
+              <div className="p-4 sm:p-5 border-b border-slate-100 bg-[#0d2346] text-white flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-white shrink-0">
+                    <SolidMailIcon className="w-5 h-5 text-white" />
                   </div>
-                  <p className="text-xs text-slate-500 mt-0.5 truncate">
-                    {selectedMailForModal.senderEmail}
-                    {selectedMailForModal.senderNisn
-                      ? ` • NISN: ${selectedMailForModal.senderNisn}`
-                      : ""}
-                  </p>
+                  <div>
+                    <h2 className="text-sm sm:text-base font-bold text-white tracking-tight">
+                      Rincian Pesan Masuk
+                    </h2>
+                    <p className="text-xs text-slate-300 mt-0.5">
+                      {getCategoryLabel(selectedMailForModal.category)}
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="text-right shrink-0">
-                <span className="text-[11px] text-slate-400 block font-medium">
-                  {new Date(selectedMailForModal.createdAt).toLocaleString(
-                    "id-ID",
-                    {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    },
-                  )}
-                </span>
-                <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                  {getCategoryLabel(selectedMailForModal.category)}
-                </span>
-              </div>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-4 sm:p-6 overflow-y-auto space-y-4">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                  SUBJEK PESAN
-                </span>
-                <h3 className="text-base font-bold text-[#0d2346]">
-                  {selectedMailForModal.subject}
-                </h3>
-              </div>
-
-              {selectedMailForModal.submissionId && (
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium">
-                  <FileCheck2 className="w-3.5 h-3.5 text-[#0d2346]" />
-                  <span>
-                    Nomor Pengajuan Tracer Study:{" "}
-                    <strong className="font-mono text-slate-900">
-                      {selectedMailForModal.submissionId}
-                    </strong>
-                  </span>
-                </div>
-              )}
-
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line">
-                {selectedMailForModal.body}
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="p-4 sm:p-5 border-t border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-3">
-              <button
-                type="button"
-                onClick={() => handleDelete(selectedMailForModal.id)}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer flex items-center gap-1.5"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Hapus Pesan</span>
-              </button>
-
-              <div className="flex items-center gap-2.5">
                 <button
                   type="button"
                   onClick={() => setSelectedMailForModal(null)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-200/70 border border-slate-200 transition cursor-pointer"
+                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
+                  aria-label="Tutup pesan"
                 >
-                  Tutup
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Scrollable Body */}
+              <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 flex-1 bg-slate-50/60 text-slate-800">
+                {/* 1. Sender Info Card */}
+                <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3.5">
+                  <div className="flex items-start gap-3.5">
+                    <UserAvatar
+                      name={selectedMailForModal.senderName}
+                      gender={selectedMailForModal.senderAvatarGender}
+                      className="w-12 h-12 shrink-0 border border-slate-200 text-sm font-bold"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-bold text-slate-900 break-words">
+                          {selectedMailForModal.senderName}
+                        </h3>
+                        {selectedMailForModal.senderMajor && (
+                          <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                            {selectedMailForModal.senderMajor}{" "}
+                            {selectedMailForModal.senderGradYear
+                              ? `(${selectedMailForModal.senderGradYear})`
+                              : ""}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2.5 pt-2.5 border-t border-slate-100 text-xs text-slate-600">
+                        {selectedMailForModal.senderEmail && (
+                          <div className="flex items-center gap-1.5 break-all">
+                            <SolidMailIcon className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                            <span>{selectedMailForModal.senderEmail}</span>
+                          </div>
+                        )}
+                        {selectedMailForModal.senderNisn && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-slate-400 font-medium">
+                              NISN:
+                            </span>
+                            <span className="font-mono font-semibold text-slate-800">
+                              {selectedMailForModal.senderNisn}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1.5 text-slate-500 sm:col-span-2">
+                          <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>
+                            {new Date(
+                              selectedMailForModal.createdAt,
+                            ).toLocaleString("id-ID", {
+                              weekday: "long",
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}{" "}
+                            WIB
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Subject & Submission Box */}
+                <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                      SUBJEK PESAN
+                    </span>
+                    <h4 className="text-base sm:text-lg font-bold text-[#0d2346] leading-snug">
+                      {selectedMailForModal.subject}
+                    </h4>
+                  </div>
+
+                  {selectedMailForModal.submissionId && (
+                    <div className="p-3.5 bg-blue-50/60 border border-blue-200/70 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                      <div className="flex items-center gap-2">
+                        <FileCheck2 className="w-4 h-4 text-[#0d2346] shrink-0" />
+                        <span className="text-xs sm:text-sm font-medium text-slate-700">
+                          Nomor Pengajuan Tracer Study:
+                        </span>
+                        <strong className="font-mono text-xs sm:text-sm font-bold text-[#0d2346]">
+                          {selectedMailForModal.submissionId}
+                        </strong>
+                      </div>
+                      {selectedMailForModal.actionUrl && (
+                        <button
+                          type="button"
+                          onClick={() => handleAction(selectedMailForModal)}
+                          className="text-xs font-semibold text-[#0d2346] hover:underline inline-flex items-center gap-1 cursor-pointer self-start sm:self-auto"
+                        >
+                          <span>Buka Verifikasi</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Message Body Card */}
+                <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
+                    ISI PESAN
+                  </span>
+                  <div className="p-4 sm:p-5 bg-slate-50/80 rounded-xl border border-slate-100 text-sm sm:text-base text-slate-800 leading-relaxed whitespace-pre-line break-words">
+                    {selectedMailForModal.body}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-3.5 sm:p-4 border-t border-slate-200 bg-white flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handleDelete(selectedMailForModal.id)}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Hapus Pesan</span>
                 </button>
 
-                {selectedMailForModal.actionUrl && (
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => handleAction(selectedMailForModal)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0d2346] hover:bg-[#163868] shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    onClick={() => setSelectedMailForModal(null)}
+                    className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition cursor-pointer text-center"
                   >
-                    <span>{selectedMailForModal.actionUrl.label}</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    Tutup
                   </button>
-                )}
+
+                  {selectedMailForModal.actionUrl && (
+                    <button
+                      type="button"
+                      onClick={() => handleAction(selectedMailForModal)}
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-[#0d2346] hover:bg-[#163868] shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <span>{selectedMailForModal.actionUrl.label}</span>
+                      <ExternalLink className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body,
         )}
-      </Modal>
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal
