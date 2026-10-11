@@ -194,7 +194,7 @@ const INITIAL_MAILS: MailItem[] = [
 
 export const useMailStore = create<MailState>()(
   (set, get) => ({
-    mails: [],
+    mails: INITIAL_MAILS,
 
       markAsRead: (id: string) => {
         set((state) => ({
