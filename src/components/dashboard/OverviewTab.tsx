@@ -32,7 +32,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
   const { isSubmitted, lastSubmissionId } = useTracerStore();
   const { jobList } = useContentStore();
 
-  const isTracerDone = user ? user.tracerStatus === "SUDAH" : isSubmitted;
+  const isTracerDone = isSubmitted || user?.tracerStatus === "SUDAH";
   const recentJobs = jobList.slice(0, 3);
 
   return (
