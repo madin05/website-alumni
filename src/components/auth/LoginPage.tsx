@@ -221,7 +221,7 @@ export const LoginPage: React.FC = () => {
             )}
 
             {/* Form Inputs */}
-            <form onSubmit={handleSubmit} className="mt-7 space-y-6">
+            <form onSubmit={handleSubmit} className="mt-7 space-y-7">
               <div className="material-group">
                 <input
                   type="text"
@@ -244,37 +244,34 @@ export const LoginPage: React.FC = () => {
                 </label>
               </div>
 
-              {/* Single Password Input Block */}
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Masukkan password Anda"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-[#182a4a] focus:border-transparent pr-12"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    aria-label={
-                      showPassword
-                        ? "Sembunyikan password"
-                        : "Tampilkan password"
-                    }
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
+              {/* Material Style Password Input */}
+              <div className="material-group !mt-7">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="material-input pr-8"
+                  required
+                />
+                <span className="material-bar" />
+                <span className="material-highlight" />
+                <label className="material-label">Password</label>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-1 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer p-0.5"
+                  tabIndex={-1}
+                  aria-label={
+                    showPassword ? "Sembunyikan password" : "Tampilkan password"
+                  }
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
 
               {/* Submit Button */}
