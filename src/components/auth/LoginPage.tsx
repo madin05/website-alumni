@@ -80,11 +80,10 @@ export const LoginPage: React.FC = () => {
         />
       </div>
 
-      {/* Main Login Card: Single column on mobile/tablet, 12-col split on desktop */}
+      {/* Main Login Card */}
       <div className="relative z-10 w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-white rounded-2xl lg:rounded-xl shadow-xl sm:shadow-2xl overflow-hidden border border-slate-200/90 grid grid-cols-1 lg:grid-cols-12">
-        {/* LEFT COLUMN: Dark Navy Branding & Guarantee Panel (Visible only on Desktop lg+) */}
+        {/* LEFT COLUMN: Branding */}
         <div className="hidden lg:flex lg:col-span-5 bg-[#122e5d] text-white p-8 sm:p-10 lg:p-11 flex-col justify-between relative overflow-hidden">
-          {/* Seigaiha Wave Pattern Overlay */}
           <svg
             className="absolute inset-0 w-full h-full opacity-[0.14] pointer-events-none"
             xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +117,6 @@ export const LoginPage: React.FC = () => {
             <rect width="100%" height="100%" fill="url(#login-seigaiha)" />
           </svg>
 
-          {/* Top Brand Logo */}
           <div className="relative z-10">
             <div className="flex items-center gap-3 group">
               <img
@@ -137,13 +135,11 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Middle Content */}
           <div className="relative z-10 my-8 sm:my-10 space-y-4">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">
               Selamat datang kembali, pejuang pendidikan kejuruan.
             </h1>
 
-            {/* Privacy callout box */}
             <div className="p-2 rounded-md bg-white/10 backdrop-blur-md border border-white/15 text-left space-y-1 mt-6">
               <p className="text-[11px] text-slate-300 leading-relaxed">
                 Seluruh jawaban tidak dipublikasikan & dilindungi sesuai UU
@@ -152,16 +148,14 @@ export const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Bottom Copyright */}
           <div className="relative z-10 text-[10px] text-slate-400">
             © SMK Sasmita Jaya 2
           </div>
         </div>
 
-        {/* RIGHT COLUMN / MOBILE CARD: Interactive Login Form (Full width on mobile/tablet, 7 cols on desktop) */}
+        {/* RIGHT COLUMN: Login Form */}
         <div className="lg:col-span-7 p-6 sm:p-8 lg:p-12 flex flex-col justify-between bg-white">
           <div>
-            {/* Top Back Link */}
             <div className="flex items-center justify-between mb-4 sm:mb-6">
               <Link
                 to="/"
@@ -172,7 +166,6 @@ export const LoginPage: React.FC = () => {
               </Link>
             </div>
 
-            {/* Mobile & Tablet Logo Banner (Hidden on Desktop) */}
             <div className="flex justify-center items-center mb-5 lg:hidden">
               <img
                 src="/favicon.png"
@@ -181,16 +174,14 @@ export const LoginPage: React.FC = () => {
               />
             </div>
 
-            {/* Step Label & Title */}
             <div className="mb-5 sm:mb-6">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-[#182a4a] tracking-tight text-center">
                 Selamat Datang
               </h2>
             </div>
 
-            {/* Login Method Switcher with Smooth Slider */}
+            {/* Login Method Switcher */}
             <div className="relative grid grid-cols-2 p-1 bg-slate-100/90 rounded-full border border-slate-200/90 mb-5 select-none">
-              {/* Sliding Pill Indicator */}
               <div
                 className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-[#182a4a] rounded-full shadow-sm transition-transform duration-300 ease-out pointer-events-none ${
                   loginMethod === "nik" ? "translate-x-full" : "translate-x-0"
@@ -230,7 +221,7 @@ export const LoginPage: React.FC = () => {
             )}
 
             {/* Form Inputs */}
-            <form onSubmit={handleSubmit} className="mt-7 space-y-7">
+            <form onSubmit={handleSubmit} className="mt-7 space-y-6">
               <div className="material-group">
                 <input
                   type="text"
@@ -253,33 +244,7 @@ export const LoginPage: React.FC = () => {
                 </label>
               </div>
 
-              <div className="material-group !mt-7">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="material-input pr-8"
-                  required
-                />
-                <span className="material-bar" />
-                <span className="material-highlight" />
-                <label className="material-label">Password</label>
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-1 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer p-0.5"
-                  tabIndex={-1}
-                  aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-
+              {/* Single Password Input Block */}
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1.5">
                   Password
@@ -297,9 +262,17 @@ export const LoginPage: React.FC = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                    aria-label={
+                      showPassword
+                        ? "Sembunyikan password"
+                        : "Tampilkan password"
+                    }
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -324,7 +297,6 @@ export const LoginPage: React.FC = () => {
 
           {/* Quick Demo Fill & Helpdesk */}
           <div className="mt-6 pt-4 border-t border-slate-100 space-y-3 text-center">
-            {/* 1-Click Demo Shortcut */}
             <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
               <button
                 type="button"
@@ -342,7 +314,6 @@ export const LoginPage: React.FC = () => {
               </button>
             </div>
 
-            {/* WA Helpdesk Link */}
             <p className="text-xs text-slate-500">
               Butuh bantuan?{" "}
               <a
@@ -355,7 +326,6 @@ export const LoginPage: React.FC = () => {
               </a>
             </p>
 
-            {/* Mobile Footer Copyright */}
             <p className="text-[10px] text-slate-400 pt-1 lg:hidden">
               © SMK Sasmita Jaya 2
             </p>
