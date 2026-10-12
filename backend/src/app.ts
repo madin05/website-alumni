@@ -25,10 +25,12 @@ export async function buildApp(): Promise<FastifyInstance> {
   });
 
   // CORS
+  // CORS
   await app.register(cors, {
-    origin: env.corsOrigins,
+    origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   });
 
   // Helmet
