@@ -5,6 +5,7 @@ import { LoginPage } from './components/auth/LoginPage';
 import { TracerWizard } from './components/tracer/TracerWizard';
 import { DashboardLayout } from './components/dashboard/DashboardLayout';
 import { NewsDetailPage } from './components/news/NewsDetailPage';
+import { NewsPortalPage } from './components/news/NewsPortalPage';
 import { AboutDetailPage } from './components/about/AboutDetailPage';
 import { ReportDetailPage } from './components/report/ReportDetailPage';
 import { SessionTracker } from './components/common/SessionTracker';
@@ -40,7 +41,9 @@ export const App: React.FC = () => {
         <Route path="/laporan" element={<ReportDetailPage />} />
         <Route path="/hasil-laporan" element={<ReportDetailPage />} />
 
-        {/* Dedicated News Article Portal Page */}
+        {/* Dedicated News Portal & Article Detail Pages */}
+        <Route path="/berita" element={<NewsPortalPage />} />
+        <Route path="/news" element={<NewsPortalPage />} />
         <Route path="/berita/:id" element={<NewsDetailPage />} />
         <Route path="/news/:id" element={<NewsDetailPage />} />
 

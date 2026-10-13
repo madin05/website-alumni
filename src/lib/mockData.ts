@@ -450,88 +450,130 @@ export const MOCK_NEWS: NewsItem[] = [
   {
     id: "news-1",
     title:
-      "Pelantikan Pengurus BKK Baru: Siap Salurkan Ratusan Alumni ke Berbagai Sektor Industri",
+      "Peluncuran Portal Tracer Study 2026: Pantau Keterserapan dan Mutu Lulusan SMK Sasmita Jaya 2",
     excerpt:
-      "SMK Sasmita Jaya 2 memperkuat sinergi Bursa Kerja Khusus bersama puluhan mitra strategis industri nasional di Jabodetabek.",
-    content: `SMK Sasmita Jaya 2 Pamulang resmi mengukuhkan jajaran pengurus Bursa Kerja Khusus (BKK) untuk periode 2026-2028. Langkah ini menjadi tonggak percepatan penyaluran lulusan langsung ke dunia usaha dan dunia industri (DUDI).
+      "Platform digital terpadu pelacakan tamatan resmi diluncurkan guna memetakan keterserapan alumni di industri, perguruan tinggi, dan wirausaha mandiri.",
+    content: `SMKS Sasmita Jaya 2 Pamulang resmi meluncurkan portal digital Tracer Study terpadu untuk tahun ajaran 2026. Platform ini dirancang khusus guna menyelaraskan data alumni dengan indikator kinerja penelusuran tamatan Ditjen Pendidikan Vokasi Kemendikbudristek RI.
     
-    Kepala Sekolah SMK Sasmita Jaya 2 menegaskan bahwa target penyerapan lulusan tahun ini dipatok menembus angka 90% dalam kurun waktu 3 bulan setelah kelulusan. BKK kini dilengkapi sistem digital terpadu untuk memudahkan verifikasi portofolio alumni dan matchmaking kompetensi industri.`,
-    category: "BKK & Karir",
-    date: "24 Sep 2026",
+Melalui sistem ini, pihak sekolah dan BKK dapat memantau waktu tunggu lulusan, persebaran sektor kerja lokal maupun mancanegara, serta tingkat keselarasan kompetensi 6 kejuruan teknik (TKJ, TITL, TPM, TKRO, TBSM, dan TEI). Data yang terkumpul menjadi landasan evaluasi kurikulum Teaching Factory dan akreditasi sekolah berkelanjutan.`,
+    category: "Tracer Study",
+    date: "12 Okt 2026",
     readTime: "3 min read",
     imageUrl:
-      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=800&q=80",
-    author: "Tim Humas BKK",
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
+    author: "Tim Pengelola Tracer Study",
   },
   {
     id: "news-2",
     title:
-      "Tracer Study: Mengapa Sekolah Sangat Membutuhkan Partisipasi Data Anda?",
+      "BKK Sasmita Jaya 2 Jalin Kemitraan Strategis dengan PT Astra Honda Motor & PT PLN Distribusi",
     excerpt:
-      "Pengisian kuesioner pelacakan alumni bukan sekadar formalitas, namun menjadi kompas penyusunan kurikulum vokasi masa depan.",
-    content: `Tracer Study adalah instrumen resmi Kementerian Pendidikan dan Kebudayaan serta instrumen internal yayasan untuk mengukur relevansi materi ajar di sekolah dengan dinamika teknologi terbaru di tempat kerja.
+      "Membuka jalur rekrutmen prioritas bagi alumni kejuruan TBSM, TKRO, TITL, dan TEI untuk penempatan kerja langsung tahun 2026.",
+    content: `Bursa Kerja Khusus (BKK) SMK Sasmita Jaya 2 memperluas jejaring kemitraan industri dengan menandatangani nota kesepahaman (MoU) bersama PT Astra Honda Motor (AHM) dan PT PLN Distribusi. Kerjasama ini mencakup rekrutmen teknisi perakitan, teknisi pemeliharaan jaringan listrik gardu, dan mekanik bersertifikat.
     
-    Data yang terkumpul memberikan gambaran jelas: bidang keahlian mana yang paling banyak dicari, sertifikasi apa yang paling bernilai tinggi, serta soft skills apa yang perlu ditingkatkan di ruang kelas.`,
-    category: "Tracer Study",
-    date: "20 Sep 2026",
+Ketua BKK menegaskan bahwa alumni lulusan SMK Sasmita Jaya 2 mendapatkan kuota seleksi khusus di kampus Pamulang tanpa harus melalui jalur umum, mempercepat masa tunggu kerja menjadi di bawah 2 bulan.`,
+    category: "BKK & Karir",
+    date: "10 Okt 2026",
     readTime: "4 min read",
     imageUrl:
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
-    author: "Koordinator Tracer",
+      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+    author: "Bursa Kerja Khusus (BKK)",
   },
   {
     id: "news-3",
     title:
-      "Yayasan Sasmita Jaya Resmikan Fasilitas Workshop Otomotif & Lab Jaringan Terpadu",
+      "Penyaluran Lulusan Vokasi ke Luar Negeri: Program Magang Industri Manufaktur & Otomotif di Jepang",
     excerpt:
-      "Investasi sarana prasarana modern guna menunjang standarisasi sertifikasi kompetensi BNSP siswa dan alumni.",
-    content: `Dalam rangka mendukung pembelajaran berbasis Teaching Factory (Tefa), Yayasan Sasmita Jaya meresmikan fasilitas laboratorium mutakhir di kampus Pamulang. Fasilitas ini terbuka juga untuk program upskilling dan reskilling bagi para alumni SMK Sasmita Jaya 2.`,
-    category: "Fasilitas",
-    date: "18 Sep 2026",
-    readTime: "2 min read",
+      "SMK Sasmita Jaya 2 membuka akses program Specified Skilled Worker (SSW) dan technical internship ke Tokyo dan Osaka bagi alumni teknik.",
+    content: `Merespons tingginya permintaan tenaga terampil teknik di kawasan Asia Pasifik, SMK Sasmita Jaya 2 bermitra dengan lembaga pengirim resmi (Sending Organization) untuk membuka program magang kerja dan Specified Skilled Worker (SSW) di Jepang.
+    
+Program ini ditujukan bagi alumni Teknik Pemesinan (TPM), Otomotif (TKRO/TBSM), dan Mekatronika/Listrik dengan fasilitas pelatihan bahasa Jepang intensif, visa kerja resmi, dan standar pendapatan kompetitif internasional.`,
+    category: "Karir Global",
+    date: "07 Okt 2026",
+    readTime: "4 min read",
     imageUrl:
-      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
-    author: "Redaksi Sekolah",
+      "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80",
+    author: "Bidang Hubungan Industri",
   },
   {
     id: "news-4",
-    title: "Kerjasama Strategis dengan 25 Perusahaan IT & Otomotif Diteken",
+    title:
+      "Akses Kuliah Khusus Alumni: Universitas Pamulang (UNPAM) Sediakan Program Kelas Karyawan & Beasiswa",
     excerpt:
-      "Peluang magang bersertifikat dan rekrutmen jalur prioritas bagi lulusan SMK Sasmita Jaya 2.",
-    content: `Sebanyak 25 pimpinan korporasi menandatangani MoU keselarasan vokasi dengan SMK Sasmita Jaya 2. Melalui MoU ini, kurikulum industri akan langsung diselaraskan ke dalam silabus kejuruan TPM, TITL, EL, TKRO, TBSM, dan TKJ.`,
-    category: "Kemitraan DUDI",
-    date: "12 Sep 2026",
+      "Kemudahan bagi alumni yang ingin melanjutkan studi S-1 Teknik Informatika, Teknik Mesin, dan Elektro sembari tetap aktif bekerja di industri.",
+    content: `Di bawah naungan Yayasan Sasmita Jaya, Universitas Pamulang (UNPAM) memberikan kemudahan registrasi dan skema biaya pendidikan terjangkau bagi para lulusan SMK Sasmita Jaya 2. Tersedia program perkuliahan kelas malam dan sabtu (karyawan) yang fleksibel.
+    
+Lebih dari 100 alumni angkatan terbaru tercatat aktif menempuh jenjang sarjana di UNPAM pada program studi Teknik Elektro, Teknik Informatika, dan Teknik Mesin sembari berkarir di berbagai perusahaan rekanan BKK.`,
+    category: "Studi Lanjut",
+    date: "04 Okt 2026",
     readTime: "3 min read",
     imageUrl:
-      "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
-    author: "Tim Kerjasama Industri",
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80",
+    author: "Yayasan Sasmita Jaya",
   },
   {
     id: "news-5",
-    title: "Tips Memilih Jalur Karir: Kerja, Kuliah, atau Berwirausaha?",
+    title:
+      "Uji Kompetensi Keahlian (UKK) & Sertifikasi BNSP 2026: Standarisasi Teknisi Andal Berdaya Saing Tinggi",
     excerpt:
-      "Panduan praktis bagi alumni baru dalam memetakan potensi diri dan peluang masa depan yang berkelanjutan.",
-    content: `Memasuki masa pasca-kelulusan SMK sering kali menghadirkan pilihan krusial. Artikel ini mengupas perbandingan fleksibilitas kuliah kelas karyawan, akselerasi karir korporat, hingga membangun usaha mandiri digital.`,
-    category: "Panduan Karir",
-    date: "08 Sep 2026",
-    readTime: "5 min read",
+      "LSP-P1 SMK Sasmita Jaya 2 memfasilitasi sertifikasi profesi berlisensi nasional guna memperkuat portofolio kompetensi kerja alumni.",
+    content: `Lembaga Sertifikasi Profesi Pihak Pertama (LSP-P1) SMK Sasmita Jaya 2 sukses menyelenggarakan asesmen uji kompetensi berlisensi Badan Nasional Sertifikasi Profesi (BNSP). Skema asesmen mencakup teknisi komputer jaringan, instalasi tenaga listrik industri, dan pemeliharaan kendaraan bermotor roda dua.
+    
+Sertifikat kompetensi berlogo Garuda Emas ini menjadi jaminan kredibilitas keahlian riil para lulusan saat melamar posisi teknisi di perusahaan multinasional dan BUMN.`,
+    category: "Sertifikasi",
+    date: "01 Okt 2026",
+    readTime: "3 min read",
     imageUrl:
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80",
-    author: "Guru BK & Konselor",
+      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80",
+    author: "LSP SMK Sasmita Jaya",
   },
   {
     id: "news-6",
     title:
-      "Pentingnya Sertifikasi BNSP bagi Daya Saing Lulusan di Era Industri 4.0",
+      "Kisah Inspiratif Wirausaha: Alumni TKRO Sukses Rintis Bengkel Mandiri dan Jual-Beli Sparepart di Tangsel",
     excerpt:
-      "Sertifikat kompetensi resmi menjadi pembeda utama saat bersaing di bursa tenaga kerja nasional dan regional.",
-    content: `Lembaga Sertifikasi Profesi (LSP) SMK Sasmita Jaya 2 terus mendorong seluruh alumni untuk memanfaatkan fasilitas uji kompetensi berstandar BNSP guna memvalidasi kemampuan teknis di mata recruiter HRD.`,
-    category: "Sertifikasi",
-    date: "01 Sep 2026",
-    readTime: "4 min read",
+      "Berbekal kompetensi teknik dan modal tekad, alumni angkatan muda buktikan lulusan SMK mampu ciptakan lapangan kerja baru.",
+    content: `Agil Firmansyah, salah satu alumni kejuruan otomotif SMKS Sasmita Jaya 2, membuktikan bahwa jalur wirausaha mandiri pasca-kelulusan memberikan prospek ekonomi yang cerah. Melalui unit usaha bengkel servis dan penyediaan suku cadang kendaraan, ia kini mampu mempekerjakan rekan sesama lulusan.
+    
+BKK sekolah terus mendukung ekosistem kewirausahaan vokasi melalui pembinaan manajemen UMKM, akses permodalan micro-finance, dan promosi digital di katalog alumni.`,
+    category: "Inspirasi Alumni",
+    date: "27 Sep 2026",
+    readTime: "5 min read",
     imageUrl:
-      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80",
-    author: "LSP SMK Sasmita Jaya",
+      "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80",
+    author: "Redaksi Portal Alumni",
+  },
+  {
+    id: "news-7",
+    title:
+      "Job Fair & Career Expo Akbar Vokasi 2026: Ratusan Lowongan Terbuka Khusus Lulusan SMK Sasmita Jaya",
+    excerpt:
+      "Diikuti 35 korporasi terkemuka Jabodetabek di bidang teknologi informasi, telekomunikasi, manufaktur presisi, dan otomotif.",
+    content: `Pameran bursa kerja tahunan Job Fair SMK Sasmita Jaya 2 kembali digelar dengan partisipasi lebih dari 35 perusahaan mitra industri ternama. Acara ini memfasilitasi walk-in interview langsung, tes psikotes di tempat, dan edukasi bimbingan karir oleh konselor BKK.
+    
+Ratusan alumni terdaftar langsung terserap di posisi technical support, operator perakitan mesin, drafter CAD, dan staf kelistrikan gedung komersial.`,
+    category: "Event & Karir",
+    date: "22 Sep 2026",
+    readTime: "3 min read",
+    imageUrl:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80",
+    author: "Tim Humas BKK",
+  },
+  {
+    id: "news-8",
+    title:
+      "Pembaruan Fasilitas Lab Jaringan TKJ & Fiber Optic: Dukung Kesiapan Karir Network Engineer",
+    excerpt:
+      "Laboratorium jaringan komputer modern dengan perangkat enterprise kini siap digunakan untuk pelatihan upskilling alumni.",
+    content: `Yayasan Sasmita Jaya merampungkan peremajaan total laboratorium Teknik Komputer dan Jaringan (TKJ). Fasilitas terbaru mencakup fusion splicer serat optik berstandar telekomunikasi, rak server enterprise Mikrotik & Cisco, serta lab simulasi cloud computing.
+    
+Fasilitas ini juga dibuka untuk pelatihan upskilling malam hari bagi para alumni yang ingin memperdalam sertifikasi MTCNA dan CCNA.`,
+    category: "Fasilitas",
+    date: "18 Sep 2026",
+    readTime: "3 min read",
+    imageUrl:
+      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+    author: "Sarpras SMK Sasmita Jaya 2",
   },
 ];
 
@@ -699,7 +741,6 @@ export const MOCK_IJAZAH_DATABASE: Record<string, IjazahStatus> = {
     tahunLulus: 2024,
     statusPengambilan: "SUDAH_DIAMBIL",
     nomorIjazah: "M-SMK/K13-3/24/0048291",
-    nomorSertifikatBnsp: "BNSP-TKJ-2024-99812",
     tanggalSiap: "15 Juli 2024",
     tanggalDiambil: "22 Juli 2024",
     lokasiPengambilan: "Ruang Tata Usaha (TU) SMK Sasmita Jaya 2 Pamulang",
@@ -718,7 +759,6 @@ export const MOCK_IJAZAH_DATABASE: Record<string, IjazahStatus> = {
     tahunLulus: 2024,
     statusPengambilan: "SIAP_DIAMBIL",
     nomorIjazah: "M-SMK/K13-3/24/0048292",
-    nomorSertifikatBnsp: "BNSP-TPM-2024-55410",
     tanggalSiap: "15 Juli 2024",
     lokasiPengambilan: "Loket 2 Pelayanan Alumni & Ijazah SMK Sasmita Jaya 2",
     persyaratan: [
@@ -736,7 +776,6 @@ export const MOCK_IJAZAH_DATABASE: Record<string, IjazahStatus> = {
     tahunLulus: 2024,
     statusPengambilan: "PROSES_LEGALISIR",
     nomorIjazah: "M-SMK/K13-3/24/0048293",
-    nomorSertifikatBnsp: "BNSP-TBSM-2024-11203",
     tanggalSiap: "28 September 2026",
     lokasiPengambilan: "Ruang BKK SMK Sasmita Jaya 2",
     persyaratan: [

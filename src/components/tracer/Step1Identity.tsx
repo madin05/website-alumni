@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { step1Schema, JURUSAN_OPTIONS } from '@/schemas/tracerSchema';
+import { step1Schema, JURUSAN_OPTIONS, STATUS_MENIKAH_OPTIONS } from '@/schemas/tracerSchema';
 import { useTracerStore } from '@/store/tracerStore';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -35,10 +35,15 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
       no_whatsapp: identitas.no_whatsapp || '',
       email: identitas.email || '',
       jenis_kelamin: (identitas.jenis_kelamin as any) || 'Laki-laki',
+      status_menikah: identitas.status_menikah || 'Belum Menikah',
+      usia: identitas.usia ?? 20,
+      provinsi_domisili: identitas.provinsi_domisili || 'Prov. Banten',
+      kota_domisili: identitas.kota_domisili || 'Kota Tangerang Selatan',
     },
   });
 
   const selectedGender = watch('jenis_kelamin');
+  const selectedMarital = watch('status_menikah');
 
   const onSubmit = (data: Step1FormData) => {
     updateIdentitas(data as any);
@@ -56,6 +61,10 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
     setValue('no_whatsapp', '081298765432');
     setValue('email', 'ahmaddani@example.com');
     setValue('jenis_kelamin', 'Laki-laki');
+    setValue('status_menikah', 'Belum Menikah');
+    setValue('usia', 20);
+    setValue('provinsi_domisili', 'Prov. Banten');
+    setValue('kota_domisili', 'Kota Tangerang Selatan');
   };
 
   return (
@@ -178,6 +187,51 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
             </label>
           </div>
         </div>
+
+        {/* Usia & Status Menikah */}
+        <Input
+          label="Usia Saat Ini"
+          type="number"
+          placeholder="Contoh : 19"
+          error={errors.usia?.message}
+          {...register('usia', { valueAsNumber: true })}
+        />
+
+        <div className="space-y-2">
+          <label className="block text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+            Status Menikah
+          </label>
+          <div className="flex items-center gap-6 pt-1">
+            {STATUS_MENIKAH_OPTIONS.map((status) => (
+              <label key={status} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
+                <input
+                  type="radio"
+                  name="status_menikah"
+                  value={status}
+                  checked={selectedMarital === status}
+                  onChange={() => setValue('status_menikah', status)}
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 shrink-0 cursor-pointer"
+                />
+                <span>{status}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Provinsi & Kota Domisili Tempat Tinggal */}
+        <Input
+          label="Provinsi Domisili Tinggal"
+          placeholder="Contoh : Prov. Banten"
+          error={errors.provinsi_domisili?.message}
+          {...register('provinsi_domisili')}
+        />
+
+        <Input
+          label="Kota / Kab. Domisili Tinggal"
+          placeholder="Contoh : Kota Tangerang Selatan"
+          error={errors.kota_domisili?.message}
+          {...register('kota_domisili')}
+        />
 
         {/* Optional NIK for Dapodik / Dukcapil */}
         <div className="sm:col-span-2 pt-4 border-t border-slate-200/80">

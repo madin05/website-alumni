@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import * as XLSX from 'xlsx';
 import { useAdminStore } from '@/store/adminStore';
 import { JurusanSMK } from '@/types/tracer';
 import {
@@ -8,6 +9,7 @@ import {
   CheckCircle2,
   X,
   HelpCircle,
+  FileSpreadsheet,
 } from 'lucide-react';
 
 const SolidFileSpreadsheetIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5 text-[#0d2346]" }) => (
@@ -48,16 +50,92 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleDownloadTemplate = () => {
+  const sampleAlumniData = [
+    {
+      nisn: '0051234567',
+      nik: '3674012345670001',
+      nama: 'Ahmad Dani',
+      jurusan: 'Teknik Komputer dan Jaringan',
+      tahun_lulus: 2024,
+      no_wa: '081298765432',
+      email: 'ahmaddani@example.com',
+    },
+    {
+      nisn: '0052345678',
+      nik: '3674012345670002',
+      nama: 'Budi Santoso',
+      jurusan: 'Teknik Pemesinan',
+      tahun_lulus: 2024,
+      no_wa: '081311223344',
+      email: 'budisantoso@example.com',
+    },
+    {
+      nisn: '0053456789',
+      nik: '3674012345670003',
+      nama: 'Citra Dewi',
+      jurusan: 'Teknik Instalasi Tenaga Listrik',
+      tahun_lulus: 2024,
+      no_wa: '081233445566',
+      email: 'citradewi@example.com',
+    },
+    {
+      nisn: '0054567890',
+      nik: '3674012345670004',
+      nama: 'Dimas Pratama',
+      jurusan: 'Teknik Elektronika Industri',
+      tahun_lulus: 2024,
+      no_wa: '085711229988',
+      email: 'dimaspratama@example.com',
+    },
+    {
+      nisn: '0055678901',
+      nik: '3674012345670005',
+      nama: 'Eko Wahyudi',
+      jurusan: 'Teknik Kendaraan Ringan Otomotif',
+      tahun_lulus: 2024,
+      no_wa: '087811992233',
+      email: 'ekowahyudi@example.com',
+    },
+    {
+      nisn: '0056789012',
+      nik: '3674012345670006',
+      nama: 'Farhan Rizki',
+      jurusan: 'Teknik dan Bisnis Sepeda Motor',
+      tahun_lulus: 2024,
+      no_wa: '081299887766',
+      email: 'farhanrizki@example.com',
+    },
+  ];
+
+  const handleDownloadExcelTemplate = () => {
+    try {
+      const ws = XLSX.utils.json_to_sheet(sampleAlumniData);
+      ws['!cols'] = [
+        { wch: 14 },
+        { wch: 20 },
+        { wch: 24 },
+        { wch: 36 },
+        { wch: 14 },
+        { wch: 16 },
+        { wch: 28 },
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Template Siswa');
+      XLSX.writeFile(wb, 'template_data_alumni_smk_sasmita2.xlsx');
+    } catch (e) {
+      console.error(e);
+      handleDownloadCsvTemplate();
+    }
+  };
+
+  const handleDownloadCsvTemplate = () => {
     const headers = 'nisn,nik,nama,jurusan,tahun_lulus,no_wa,email\n';
-    const sampleRows = [
-      '0051234567,3674012345670001,Ahmad Dani,Teknik Komputer dan Jaringan,2024,081298765432,ahmaddani@example.com',
-      '0052345678,3674012345670002,Budi Santoso,Teknik Pemesinan,2024,081311223344,budisantoso@example.com',
-      '0053456789,3674012345670003,Citra Dewi,Teknik Instalasi Tenaga Listrik,2024,081233445566,citradewi@example.com',
-      '0054567890,3674012345670004,Dimas Pratama,Teknik Elektronika Industri,2024,085711229988,dimaspratama@example.com',
-      '0055678901,3674012345670005,Eko Wahyudi,Teknik Kendaraan Ringan Otomotif,2024,087811992233,ekowahyudi@example.com',
-      '0056789012,3674012345670006,Farhan Rizki,Teknik dan Bisnis Sepeda Motor,2024,081299887766,farhanrizki@example.com',
-    ].join('\n');
+    const sampleRows = sampleAlumniData
+      .map(
+        (r) =>
+          `${r.nisn},${r.nik},${r.nama},${r.jurusan},${r.tahun_lulus},${r.no_wa},${r.email}`
+      )
+      .join('\n');
 
     const blob = new Blob([headers + sampleRows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -75,54 +153,117 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  const parseFileContent = (content: string) => {
-    setErrorMessage('');
-    const lines = content
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter((l) => l.length > 0);
+  const mapJurusan = (raw: string): JurusanSMK => {
+    const lower = (raw || '').toLowerCase();
+    if (lower.includes('mesin') || lower.includes('tpm')) return 'Teknik Pemesinan';
+    if (lower.includes('listrik') || lower.includes('titl')) return 'Teknik Instalasi Tenaga Listrik';
+    if (lower.includes('elektronika') || lower.includes('industri') || lower.includes('tei')) return 'Teknik Elektronika Industri';
+    if (lower.includes('ringan') || lower.includes('tkro') || lower.includes('mobil')) return 'Teknik Kendaraan Ringan Otomotif';
+    if (lower.includes('motor') || lower.includes('tbsm') || lower.includes('sepeda')) return 'Teknik dan Bisnis Sepeda Motor';
+    if (lower.includes('komputer') || lower.includes('jaringan') || lower.includes('tkj')) return 'Teknik Komputer dan Jaringan';
+    return 'Teknik Komputer dan Jaringan';
+  };
 
-    if (lines.length <= 1) {
-      setErrorMessage('Berkas tidak memiliki data atau isi berkas kosong.');
+  const cleanIdString = (val: unknown): string => {
+    if (val === null || val === undefined) return '';
+    let str = String(val).trim().replace(/^['"]|['"]$/g, '');
+    if (/^[0-9]+(\.[0-9]+)?e\+[0-9]+$/i.test(str)) {
+      try {
+        str = BigInt(Math.floor(Number(val))).toString();
+      } catch {
+        // keep string
+      }
+    }
+    return str;
+  };
+
+  const parseWorkbookMatrix = (rawRows: unknown[][]) => {
+    setErrorMessage('');
+    const cleanRows = rawRows.filter(
+      (r) => Array.isArray(r) && r.some((c) => String(c ?? '').trim().length > 0)
+    );
+
+    if (cleanRows.length <= 1) {
+      setErrorMessage('Berkas tidak memiliki baris data atau isi berkas kosong.');
       return;
     }
 
-    const firstLine = lines[0];
-    let delimiter = ',';
-    if (firstLine.includes(';') && !firstLine.includes(',')) delimiter = ';';
-    else if (firstLine.includes('\t')) delimiter = '\t';
+    let headerRowIndex = 0;
+    const colMap = {
+      nisn: 0,
+      nik: 1,
+      nama: 2,
+      jurusan: 3,
+      tahun: 4,
+      noWa: 5,
+      email: 6,
+    };
 
-    const dataLines = lines.slice(1);
+    // Detect header row dynamically
+    for (let i = 0; i < Math.min(cleanRows.length, 6); i++) {
+      const row = cleanRows[i].map((c) => String(c ?? '').toLowerCase().trim());
+      const hasNisn = row.some((c) => c.includes('nisn'));
+      const hasNama = row.some((c) => c.includes('nama'));
+      if (hasNisn || hasNama) {
+        headerRowIndex = i;
+        row.forEach((colName, colIdx) => {
+          if (colName.includes('nisn')) colMap.nisn = colIdx;
+          else if (colName.includes('nik') || colName.includes('ktp')) colMap.nik = colIdx;
+          else if (colName.includes('nama')) colMap.nama = colIdx;
+          else if (
+            colName.includes('jurusan') ||
+            colName.includes('prodi') ||
+            colName.includes('kompetensi') ||
+            colName.includes('keahlian')
+          )
+            colMap.jurusan = colIdx;
+          else if (
+            colName.includes('tahun') ||
+            colName.includes('angkatan') ||
+            colName.includes('lulus')
+          )
+            colMap.tahun = colIdx;
+          else if (
+            colName.includes('wa') ||
+            colName.includes('hp') ||
+            colName.includes('telepon') ||
+            colName.includes('ponsel')
+          )
+            colMap.noWa = colIdx;
+          else if (colName.includes('email') || colName.includes('surel'))
+            colMap.email = colIdx;
+        });
+        break;
+      }
+    }
+
+    const dataRows = cleanRows.slice(headerRowIndex + 1);
     const result: typeof parsedRows = [];
 
-    dataLines.forEach((line) => {
-      const parts = line.split(delimiter).map((p) => p.replace(/^["']|["']$/g, '').trim());
-      if (parts.length < 3) return;
+    dataRows.forEach((row) => {
+      const getVal = (idx: number) => {
+        if (idx < 0 || idx >= row.length) return '';
+        const v = row[idx];
+        return v === null || v === undefined ? '' : String(v).trim();
+      };
 
-      const nisn = parts[0] || '';
-      const nik = parts[1] || '';
-      const nama = parts[2] || '';
-      let rawJurusan = parts[3] || 'Teknik Komputer dan Jaringan';
-      const rawTahun = parseInt(parts[4], 10) || 2024;
-      const noWa = parts[5] || '081200000000';
-      const email = parts[6] || `${nama.toLowerCase().replace(/\s+/g, '')}@example.com`;
-
-      let matchedJurusan: JurusanSMK = 'Teknik Komputer dan Jaringan';
-      const lower = rawJurusan.toLowerCase();
-      if (lower.includes('mesin') || lower.includes('tpm')) matchedJurusan = 'Teknik Pemesinan';
-      else if (lower.includes('listrik') || lower.includes('titl')) matchedJurusan = 'Teknik Instalasi Tenaga Listrik';
-      else if (lower.includes('elektronika') || lower.includes('el')) matchedJurusan = 'Teknik Elektronika Industri';
-      else if (lower.includes('ringan') || lower.includes('mobil') || lower.includes('tkro')) matchedJurusan = 'Teknik Kendaraan Ringan Otomotif';
-      else if (lower.includes('motor') || lower.includes('tbsm')) matchedJurusan = 'Teknik dan Bisnis Sepeda Motor';
-      else if (lower.includes('komputer') || lower.includes('jaringan') || lower.includes('tkj')) matchedJurusan = 'Teknik Komputer dan Jaringan';
+      const nisn = cleanIdString(getVal(colMap.nisn));
+      const nik = cleanIdString(getVal(colMap.nik));
+      const nama = getVal(colMap.nama);
+      const rawJurusan = getVal(colMap.jurusan);
+      const parsedTahun = parseInt(getVal(colMap.tahun), 10) || 2024;
+      const noWa = getVal(colMap.noWa) || '081200000000';
+      const email =
+        getVal(colMap.email) ||
+        `${nama.toLowerCase().replace(/[^a-z0-9]/g, '')}@example.com`;
 
       if (nisn && nama) {
         result.push({
           nisn,
-          nik,
+          nik: nik || '3674000000000000',
           nama,
-          jurusan: matchedJurusan,
-          tahunLulus: rawTahun,
+          jurusan: mapJurusan(rawJurusan),
+          tahunLulus: parsedTahun,
           noWhatsapp: noWa,
           email,
         });
@@ -130,41 +271,59 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
     });
 
     if (result.length === 0) {
-      setErrorMessage('Tidak ditemukan baris data yang valid. Pastikan kolom NISN dan Nama terisi.');
+      setErrorMessage(
+        'Tidak ditemukan baris data yang valid. Pastikan kolom NISN dan Nama Lengkap terisi.'
+      );
     } else {
       setParsedRows(result);
     }
   };
 
+  const processFile = (file: File) => {
+    setFileName(file.name);
+    setErrorMessage('');
+    const reader = new FileReader();
+
+    reader.onload = (evt) => {
+      try {
+        const buffer = evt.target?.result as ArrayBuffer;
+        if (!buffer) return;
+
+        const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+        const firstSheetName = workbook.SheetNames[0];
+        if (!firstSheetName) {
+          setErrorMessage('Berkas tidak memiliki sheet data.');
+          return;
+        }
+
+        const worksheet = workbook.Sheets[firstSheetName];
+        const rawRows: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          defval: '',
+        });
+        parseWorkbookMatrix(rawRows);
+      } catch (err: unknown) {
+        console.error(err);
+        setErrorMessage(
+          'Gagal membaca berkas: Format berkas tidak didukung atau berkas rusak.'
+        );
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    setFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      const text = evt.target?.result as string;
-      if (text) {
-        parseFileContent(text);
-      }
-    };
-    reader.readAsText(file);
+    processFile(file);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (!file) return;
-
-    setFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      const text = evt.target?.result as string;
-      if (text) {
-        parseFileContent(text);
-      }
-    };
-    reader.readAsText(file);
+    processFile(file);
   };
 
   const handleCommitImport = () => {
@@ -218,13 +377,26 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
                 </code>
               </div>
             </div>
-            <button
-              onClick={handleDownloadTemplate}
-              className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 font-semibold border border-slate-200 shadow-xs transition flex items-center gap-1.5 shrink-0 cursor-pointer"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Unduh Format CSV</span>
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleDownloadExcelTemplate}
+                className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-800 font-semibold border border-slate-200 shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                title="Unduh format template Excel (.xlsx)"
+              >
+                <Download className="w-3.5 h-3.5 text-slate-600" />
+                <span>Format Excel (.xlsx)</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleDownloadCsvTemplate}
+                className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-600 font-medium border border-slate-200 shadow-xs transition flex items-center gap-1 cursor-pointer"
+                title="Unduh format CSV (.csv)"
+              >
+                <Download className="w-3.5 h-3.5 text-slate-500" />
+                <span>CSV</span>
+              </button>
+            </div>
           </div>
 
           {/* Upload Dropzone */}
@@ -237,7 +409,7 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept=".csv,.txt"
+              accept=".xlsx,.xls,.csv,.txt"
               className="hidden"
               onChange={handleFileUpload}
             />
@@ -246,10 +418,10 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
             </div>
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-800">
-                {fileName ? fileName : 'Pilih berkas CSV atau tarik berkas ke area ini'}
+                {fileName ? fileName : 'Pilih berkas Excel (.xlsx, .xls) / CSV atau tarik ke area ini'}
               </p>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Mendukung berkas CSV atau TXT hasil ekspor data sekolah
+                Mendukung berkas Excel (.xlsx, .xls) dan CSV hasil ekspor Dapodik
               </p>
             </div>
           </div>

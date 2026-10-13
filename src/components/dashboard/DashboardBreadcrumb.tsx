@@ -19,7 +19,7 @@ export const getTabBreadcrumbLabel = (
       case 'master_alumni':
         return 'Data Alumni';
       case 'verifikasi':
-        return 'Verifikasi Isian';
+        return 'Data Responden';
       case 'pesan':
         return 'Pesan Masuk';
       case 'kelola_berita':
@@ -36,8 +36,6 @@ export const getTabBreadcrumbLabel = (
   }
 
   switch (tab) {
-    case 'cek_ijazah':
-      return 'Cek Ijazah';
     case 'tracer_study':
       return 'Kuesioner Tracer Study';
     case 'loker':

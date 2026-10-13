@@ -182,7 +182,7 @@ export const generateTracerReceiptPdf = ({
 
   currentY += 10;
   const p2 =
-    'Surat keterangan ini merupakan dokumen resmi yang diterbitkan secara elektronik oleh Sistem Informasi Alumni SMK Sasmita Jaya 2 dan dapat dipergunakan sebagai salah satu syarat verifikasi administrasi pengambilan Ijazah asli serta Sertifikat Uji Kompetensi Keahlian (BNSP).';
+    'Surat keterangan ini merupakan dokumen resmi yang diterbitkan secara elektronik oleh Sistem Informasi Alumni SMK Sasmita Jaya 2 dan dapat dipergunakan sebagai salah satu syarat verifikasi administrasi pengambilan Ijazah asli.';
   doc.text(p2, margin, currentY, { maxWidth: contentWidth, align: 'justify' });
 
   currentY += 12;

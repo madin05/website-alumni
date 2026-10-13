@@ -111,13 +111,10 @@ export const HelpdeskTab: React.FC = () => {
               </svg>
               <div className="space-y-1">
                 <h3 className="font-bold text-sm text-slate-900">
-                  Loket Fisik Tata Usaha
+                  Loket Tata Usaha
                 </h3>
-                <p className="text-xs text-slate-600">
-                  Gedung SMK Sasmita Jaya 2 Pamulang Barat
-                </p>
-                <span className="inline-block pt-1 text-xs font-bold text-slate-700">
-                  Loket Pelayanan Ijazah
+                <span className="inline-block text-xs text-slate-700">
+                  Ruang Tata Usaha
                 </span>
               </div>
             </div>
@@ -138,7 +135,7 @@ export const HelpdeskTab: React.FC = () => {
           <form onSubmit={handleTicketSubmit} className="space-y-4">
             <Input
               label="Judul Permasalahan"
-              placeholder="Contoh: Kendala Koreksi Data Ijazah / Pertanyaan Loker"
+              placeholder="Contoh: Kendala Pengisian Tracer / Pertanyaan Loker"
               value={ticketSubject}
               onChange={(e) => setTicketSubject(e.target.value)}
               required

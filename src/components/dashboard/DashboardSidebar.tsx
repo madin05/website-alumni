@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Home,
-  FileCheck,
   FileSpreadsheet,
   Briefcase,
   Users,
@@ -22,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 
 export type DashboardTab =
   | "beranda"
-  | "cek_ijazah"
   | "tracer_study"
   | "loker"
   | "alumni"
@@ -51,10 +49,6 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
       case "beranda":
         return (
           <Home className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
-        );
-      case "cek_ijazah":
-        return (
-          <FileCheck className="w-5 h-5 shrink-0 text-white/80 transition-colors" />
         );
       case "tracer_study":
         return (
@@ -122,35 +116,6 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
             fill="#2563eb"
             stroke="#2563eb"
             strokeWidth="2"
-          />
-        </svg>
-      );
-    case "cek_ijazah":
-      return (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          className="w-5 h-5 shrink-0"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path
-            d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
-            fill="white"
-            stroke="white"
-          />
-          <path d="M14 2v4a2 2 0 0 0 2 2h4" fill="#2563eb" stroke="#2563eb" />
-          <path
-            d="m9 15 2 2 4-4"
-            stroke="#2563eb"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
           />
         </svg>
       );
@@ -444,7 +409,6 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
 const ALUMNI_MENU_ITEMS = [
   { id: "beranda", label: "Beranda" },
   { id: "tracer_study", label: "Tracer Study" },
-  { id: "cek_ijazah", label: "Cek Ijazah" },
   { id: "loker", label: "Info Loker/Magang" },
   { id: "alumni", label: "Alumni" },
   { id: "helpdesk", label: "Helpdesk" },
@@ -453,7 +417,7 @@ const ALUMNI_MENU_ITEMS = [
 const ADMIN_MENU_ITEMS = [
   { id: "beranda", label: "Dashboard" },
   { id: "master_alumni", label: "Data Alumni" },
-  { id: "verifikasi", label: "Verifikasi" },
+  { id: "verifikasi", label: "Data Responden" },
   { id: "pesan", label: "Pesan Masuk" },
   { id: "kelola_berita", label: "Kelola Berita" },
   { id: "kelola_loker", label: "Kelola Loker" },

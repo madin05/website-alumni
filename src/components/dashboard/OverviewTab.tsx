@@ -14,6 +14,7 @@ import {
   ArrowRight,
   MapPin,
   Clock,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -106,7 +107,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
               <p className="stat-desc text-xs font-light text-slate-600 mt-1.5 transition-colors">
                 {isTracerDone
                   ? "Tervalidasi di sistem"
-                  : "Wajib diisi sebelum ambil ijazah"}
+                  : "Bantu survei penelusuran tamatan"}
               </p>
             </div>
 
@@ -128,9 +129,9 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             </div>
           </div>
 
-          {/* Stat Card 2: Status Ijazah */}
+          {/* Stat Card 2: Direktori Alumni */}
           <div
-            onClick={() => onNavigateTab("cek_ijazah")}
+            onClick={() => onNavigateTab("alumni")}
             className="uiverse-stat-card group"
             role="button"
             tabIndex={0}
@@ -140,25 +141,25 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
             <div className="card-content">
               <span className="stat-tag text-xs font-semibold text-slate-500 block mb-2 transition-colors">
-                Status Fisik Ijazah
+                Jaringan & Relasi
               </span>
               <h4 className="stat-heading text-lg sm:text-xl font-bold text-slate-900 leading-snug transition-colors">
-                Siap Diambil di TU
+                Direktori Alumni
               </h4>
               <p className="stat-desc text-xs font-light text-slate-600 mt-1.5 transition-colors">
-                No. Ijazah: M-SMK/24/0048291
+                Terhubung dengan rekan alumni SMK
               </p>
             </div>
 
             <div className="card-content mt-4 pt-3 border-t border-slate-200/60 group-hover:border-white/20 transition-colors">
               <div className="stat-action text-xs font-bold text-[#0d2346] flex items-center gap-1.5 transition-colors">
-                <span>Cek Alur Pengambilan</span>
+                <span>Eksplorasi Alumni</span>
                 <ArrowRight className="w-4 h-4" />
               </div>
             </div>
 
-            <div className="go-corner" title="Ijazah Alumni">
-              <GraduationCap className="go-icon" />
+            <div className="go-corner" title="Direktori Alumni">
+              <Users className="go-icon" />
             </div>
           </div>
 
@@ -177,7 +178,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                 Lowongan BKK Aktif
               </span>
               <h4 className="stat-heading text-lg sm:text-xl font-bold text-slate-900 leading-snug transition-colors">
-                28 Lowongan Baru
+                {jobList.length} Lowongan Baru
               </h4>
               <p className="stat-desc text-xs font-light text-slate-600 mt-1.5 transition-colors">
                 Kemitraan DUDI Tangerang Selatan & Jabodetabek

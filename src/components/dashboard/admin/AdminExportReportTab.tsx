@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAdminStore } from "@/store/adminStore";
 import { exportJsonToExcel } from "@/lib/excelExport";
+import { Toast } from "@/components/ui/Toast";
 import {
   FileSpreadsheet,
   Download,
@@ -43,46 +44,104 @@ export const AdminExportReportTab: React.FC = () => {
     if (selectedFormat === "ditjen_vokasi") {
       filename = `export_tracer_vokasi_smk_sasmita2_${settings.targetYear}.xlsx`;
       sheetName = "Tracer Study Vokasi";
-      dataRows = respondents.map((r) => {
+      
+      const getSpektrum = (jurusan: string) => {
+        if (jurusan.includes('Komputer') || jurusan.includes('TKJ')) {
+          return { prog: 'Teknik Komputer dan Informatika', bid: 'Teknologi Informasi dan Komunikasi' };
+        }
+        if (jurusan.includes('Listrik') || jurusan.includes('TITL')) {
+          return { prog: 'Teknik Ketenagalistrikan', bid: 'Teknologi dan Rekayasa' };
+        }
+        if (jurusan.includes('Elektronika') || jurusan.includes('Industri')) {
+          return { prog: 'Teknik Elektronika', bid: 'Teknologi dan Rekayasa' };
+        }
+        if (jurusan.includes('Sepeda Motor') || jurusan.includes('TBSM')) {
+          return { prog: 'Teknik Otomotif', bid: 'Teknologi dan Rekayasa' };
+        }
+        if (jurusan.includes('Kendaraan Ringan') || jurusan.includes('TKRO')) {
+          return { prog: 'Teknik Otomotif', bid: 'Teknologi dan Rekayasa' };
+        }
+        return { prog: 'Teknik Mesin', bid: 'Teknologi dan Rekayasa' };
+      };
+
+      const getStatusLabel = (st: string) => {
+        switch (st) {
+          case 'KERJA': return 'Bekerja';
+          case 'KULIAH': return 'Melanjutkan Studi';
+          case 'WIRAUSAHA': return 'Wirausaha';
+          case 'KERJA_KULIAH': return 'Melanjutkan Studi sambil Bekerja';
+          case 'WIRAUSAHA_KULIAH': return 'Melanjutkan Studi sambil Berwirausaha';
+          case 'BELUM_KERJA': return 'Belum Bekerja / Mencari Kerja';
+          default: return st || 'Lainnya';
+        }
+      };
+
+      dataRows = respondents.map((r, idx) => {
         const payload = r.fullPayload;
+        const identitas = payload.identitas;
         const kerja = payload.detail_kerja;
         const kuliah = payload.detail_kuliah;
         const usaha = payload.detail_usaha;
+        const spektrum = getSpektrum(r.jurusan);
 
-        const instansi =
-          kerja?.nama_perusahaan ||
-          kuliah?.nama_kampus ||
-          usaha?.nama_usaha ||
-          (r.statusKegiatan === "BELUM_KERJA" ? "Belum Bekerja" : "-");
+        const keselarasanKerja = kerja?.kesesuaian_jurusan
+          ? (kerja.kesesuaian_jurusan === 'Sangat sesuai' || kerja.kesesuaian_jurusan === 'Sesuai' || kerja.kesesuaian_jurusan === 'SANGAT_SESUAI' || kerja.kesesuaian_jurusan === 'SESUAI' ? 'Selaras' : 'Tidak Selaras')
+          : '-';
 
-        const jabatan =
-          kerja?.jabatan || kuliah?.program_studi || usaha?.bidang_usaha || "-";
-
-        const kesesuaian =
-          kerja?.kesesuaian_jurusan || usaha?.kesesuaian_kompetensi || "-";
-        const gaji = kerja?.kisaran_penghasilan || "-";
-        const atasan = kerja?.nama_atasan || "-";
-        const kontakAtasan = kerja?.kontak_atasan || "-";
+        const keselarasanUsaha = usaha?.kesesuaian_kompetensi
+          ? (usaha.kesesuaian_kompetensi === 'Sangat berkaitan' || usaha.kesesuaian_kompetensi === 'Berkaitan' ? 'Selaras' : 'Tidak Selaras')
+          : '-';
 
         return {
-          "ID Submisi": r.submissionId,
+          No: idx + 1,
           NISN: r.nisn,
-          NIK: r.nik,
-          "Nama Lengkap": r.nama,
-          "Program Keahlian (Jurusan)": r.jurusan,
+          Nama: r.nama,
+          "Nama Sekolah": settings.namaSekolah || "SMKS SASMITA JAYA 2",
+          NPSN: settings.npsn || "20603287",
+          "Status Sekolah": "Swasta",
           "Tahun Lulus": r.tahunLulus,
-          "Status Kegiatan": r.statusKegiatan,
-          "Masa Tunggu": payload.masa_tunggu || "-",
-          "Nama Perusahaan / Kampus / Usaha": instansi,
-          "Jabatan / Program Studi": jabatan,
-          "Kesesuaian Kompetensi": kesesuaian,
-          "Rentang Penghasilan": gaji,
-          "Nama Atasan / HRD": atasan,
-          "Kontak Atasan / HRD": kontakAtasan,
-          "No. WhatsApp Alumni": r.noWhatsapp,
-          "Email Alumni": r.email,
-          "Tanggal Kirim": r.submittedAt,
-          "Status Verifikasi": r.verificationStatus,
+          "Komp. Keahlian": r.jurusan,
+          "Prog. Keahlian": spektrum.prog,
+          "Bid. Keahlian": spektrum.bid,
+          "Lama Program (Tahun)": 3,
+          "Prov. SMK": "Prov. Banten",
+          "Kab/Kota": "Kota Tangerang Selatan",
+          Usia: identitas?.usia || 20,
+          "Jenis Kelamin": (identitas?.jenis_kelamin as string) === 'Perempuan' || (identitas?.jenis_kelamin as string) === 'P' ? 'P' : 'L',
+          "Status Menikah": identitas?.status_menikah || "Belum Menikah",
+          "Prov. Dimisili": identitas?.provinsi_domisili || "Prov. Banten",
+          "Kota Domisili": identitas?.kota_domisili || "Kota Tangerang Selatan",
+          "E-mail": r.email,
+          "No HP": r.noWhatsapp,
+          "Status Aktifitas Lulusan": getStatusLabel(r.statusKegiatan),
+          Keterangan: kerja?.keterangan_kerja || (usaha ? "Berusaha/berwirausaha sendiri tanpa dibantu orang lain" : "-"),
+          "Masa Tunggu Bekerja(bulan)": payload.masa_tunggu || "0",
+          "Sertifikat Komp.": kerja?.nama_sertifikat || (kerja?.jenis_sertifikat === 'BNSP' ? "LSP BNSP" : "-"),
+          "Jabatan (Bekerja)": kerja?.jabatan || "-",
+          "Nama Tempat Kerja": kerja?.nama_perusahaan || "-",
+          "Provinsi Kerja": kerja ? (kerja.lokasi_pekerjaan === 'LUAR_NEGERI' ? "Luar Negeri" : (kerja.provinsi_kerja || "Prov. Banten")) : "-",
+          "Kota Kerja": kerja?.kota_kerja || kerja?.kota_kabupaten || (kerja ? (kerja.lokasi_pekerjaan === 'LUAR_NEGERI' ? "-" : "Kota Tangerang Selatan") : "-"),
+          "Negara Kerja": kerja ? (kerja.lokasi_pekerjaan === 'LUAR_NEGERI' ? (kerja.negara_kerja || "Luar Negeri") : "Indonesia") : "-",
+          "Keselarasan Kerja": keselarasanKerja,
+          "Provinsi Usaha": usaha?.provinsi_usaha || (usaha ? "Prov. Banten" : "-"),
+          "Kota Usaha": usaha?.kota_usaha || (usaha ? "Kota Tangerang Selatan" : "-"),
+          "Negara Usaha": usaha ? "Indonesia" : "-",
+          "Bidang Usaha": usaha?.bidang_usaha || usaha?.kategori_usaha || "-",
+          "Jenis Usaha": usaha?.jenis_usaha || (usaha ? "Jasa" : "-"),
+          "Keselarasan Usaha": keselarasanUsaha,
+          "Nama Produk Usaha": usaha?.nama_produk_usaha || usaha?.bidang_usaha || "-",
+          "Jenjang Pendidikan": kuliah?.jenjang ? (kuliah.jenjang.startsWith('S') || kuliah.jenjang.startsWith('D') ? `${kuliah.jenjang.slice(0, 1)}-${kuliah.jenjang.slice(1)}` : kuliah.jenjang) : "-",
+          "Nama Perguruan Tinggi": kuliah?.nama_kampus || "-",
+          "Nama Prodi": kuliah?.program_studi || "-",
+          "Keselarasan Studi Lanjut": kuliah?.keselarasan_studi || (kuliah ? "Selaras" : "-"),
+          "Pendapatan Bekerja (UMP)": kerja?.pendapatan_ump || (kerja ? "Sama dengan atau lebih dari UMP" : "-"),
+          "Pendapatan Bekerja (UMK)": kerja?.pendapatan_umk || (kerja ? "Kurang dari UMK" : "-"),
+          "Pendapatan Wirausaha (UMP)": usaha?.pendapatan_ump || (usaha ? "Kurang dari UMP" : "-"),
+          "Pendapatan Wirausaha (UMK)": usaha?.pendapatan_umk || (usaha ? "Kurang dari UMK" : "-"),
+          "Pendapatan Studi Sambil Bekerja (UMP)": r.statusKegiatan === "KERJA_KULIAH" ? (kerja?.pendapatan_ump || "Sama dengan atau lebih dari UMP") : "-",
+          "Pendapatan Studi Sambil Bekerja (UMK)": r.statusKegiatan === "KERJA_KULIAH" ? (kerja?.pendapatan_umk || "Kurang dari UMK") : "-",
+          "Pendapatan Studi Sambil Berwirausaha (UMP)": r.statusKegiatan === "WIRAUSAHA_KULIAH" ? (usaha?.pendapatan_ump || "Kurang dari UMP") : "-",
+          "Pendapatan Studi Sambil Berwirausaha (UMK)": r.statusKegiatan === "WIRAUSAHA_KULIAH" ? (usaha?.pendapatan_umk || "Kurang dari UMK") : "-",
         };
       });
     } else if (selectedFormat === "master_lengkap") {
@@ -128,7 +187,9 @@ export const AdminExportReportTab: React.FC = () => {
             r.statusKegiatan === "WIRAUSAHA_KULIAH",
         ).length;
         const usaha = resp.filter(
-          (r) => r.statusKegiatan === "WIRAUSAHA",
+          (r) =>
+            r.statusKegiatan === "WIRAUSAHA" ||
+            r.statusKegiatan === "WIRAUSAHA_KULIAH",
         ).length;
         const belum = resp.filter(
           (r) => r.statusKegiatan === "BELUM_KERJA",
@@ -205,7 +266,7 @@ export const AdminExportReportTab: React.FC = () => {
 
         const kesesuaian =
           kerja?.kesesuaian_jurusan || usaha?.kesesuaian_kompetensi || "-";
-        const gaji = kerja?.kisaran_penghasilan || "-";
+        const gaji = kerja?.kisaran_penghasilan || kerja?.pendapatan_umk || kerja?.pendapatan_ump || usaha?.pendapatan_umk || usaha?.pendapatan_ump || "-";
         const atasan = kerja?.nama_atasan || "-";
         const kontakAtasan = kerja?.kontak_atasan || "-";
 
@@ -848,12 +909,11 @@ export const AdminExportReportTab: React.FC = () => {
       </div>
 
       {/* Toast Alert */}
-      {downloadSuccess && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 pointer-events-none animate-in slide-in-from-bottom duration-200">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>{downloadSuccess}</span>
-        </div>
-      )}
+      <Toast
+        message={downloadSuccess}
+        onClose={() => setDownloadSuccess("")}
+        type="success"
+      />
     </>
   );
 };

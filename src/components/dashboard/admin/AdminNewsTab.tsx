@@ -15,6 +15,7 @@ import {
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
+import { Toast } from "@/components/ui/Toast";
 import { AdminNewsEditor, CATEGORIES } from "./AdminNewsEditor";
 
 const SolidNewspaperIcon: React.FC<{ className?: string }> = ({
@@ -117,14 +118,11 @@ export const AdminNewsTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 bg-[#0d2346] text-white rounded-xl shadow-xl flex items-center gap-3 border border-slate-700 animate-in slide-in-from-bottom-5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span className="text-xs sm:text-sm font-semibold">
-            {toastMessage}
-          </span>
-        </div>
-      )}
+      <Toast
+        message={toastMessage}
+        onClose={() => setToastMessage("")}
+        type="success"
+      />
 
       {/* VIEW 1: DEDICATED EDITOR PAGE */}
       {viewMode === "editor" ? (

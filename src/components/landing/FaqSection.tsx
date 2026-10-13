@@ -21,7 +21,7 @@ export const FaqSection: React.FC = () => {
             Pertanyaan yang Sering Diajukan
           </h2>
           <p className="mt-2 text-sm text-slate-600">
-            Informasi seputar Tracer Study, status ijazah, dan
+            Informasi seputar Tracer Study, data alumni, dan
             layanan BKK
           </p>
         </div>

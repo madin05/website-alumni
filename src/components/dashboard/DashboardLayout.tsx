@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DashboardSidebar, DashboardTab } from './DashboardSidebar';
 import { DashboardHeader } from './DashboardHeader';
 import { OverviewTab } from './OverviewTab';
-import { CekIjazahTab } from './CekIjazahTab';
 import { LokerTab } from './LokerTab';
 import { AlumniTab } from './AlumniTab';
 import { HelpdeskTab } from './HelpdeskTab';
@@ -26,7 +25,6 @@ import { AdminSettingsTab } from './admin/AdminSettingsTab';
 
 import {
   OverviewTabSkeleton,
-  CekIjazahTabSkeleton,
   LokerTabSkeleton,
   AlumniTabSkeleton,
   HelpdeskTabSkeleton,
@@ -42,7 +40,6 @@ import {
 
 const VALID_TABS: DashboardTab[] = [
   'beranda',
-  'cek_ijazah',
   'tracer_study',
   'loker',
   'alumni',
@@ -311,10 +308,6 @@ export const DashboardLayout: React.FC = () => {
                     onSelectJob={handleSelectJobFromOverview}
                   />
                 )
-              )}
-
-              {activeTab === 'cek_ijazah' && (
-                isTabLoading ? <CekIjazahTabSkeleton /> : <CekIjazahTab />
               )}
 
               {activeTab === 'tracer_study' && (

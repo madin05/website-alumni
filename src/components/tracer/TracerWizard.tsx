@@ -260,7 +260,7 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
                     onClick={onBackToOverview}
                     variant="outline"
                     size="md"
-                    className="w-full sm:w-auto"
+                    className="w-full sm  :w-auto"
                   >
                     <span>Kembali ke Dashboard</span>
                   </Button>

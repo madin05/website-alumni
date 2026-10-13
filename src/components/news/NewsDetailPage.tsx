@@ -63,7 +63,7 @@ export const NewsDetailPage: React.FC = () => {
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
             <Link
-              to="/#berita"
+              to="/berita"
               className="hover:text-blue-600 transition-colors"
             >
               Berita

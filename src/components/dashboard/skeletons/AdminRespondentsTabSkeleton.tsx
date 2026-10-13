@@ -6,7 +6,7 @@ export const AdminRespondentsTabSkeleton: React.FC = () => {
     <div
       className="space-y-5"
       aria-busy="true"
-      aria-label="Memuat verifikasi kuesioner..."
+      aria-label="Memuat data responden kuesioner..."
     >
       {/* Header Banner */}
       <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white rounded-xl border border-slate-200 shadow-xs">

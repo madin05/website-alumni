@@ -5,8 +5,8 @@ import { ArrowRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
   const [loginMethod, setLoginMethod] = useState<"nisn" | "nik">("nisn");
-  const [identifier, setIdentifier] = useState("0061234567");
-  const [password, setPassword] = useState("123456");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,7 +22,7 @@ export const LoginPage: React.FC = () => {
 
   const handleLoginMethodChange = (method: "nisn" | "nik") => {
     setLoginMethod(method);
-    setIdentifier(method === "nisn" ? "0061234567" : "3274012304050001");
+    setIdentifier("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -233,8 +233,8 @@ export const LoginPage: React.FC = () => {
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder={
                     loginMethod === "nisn"
-                      ? "0061234567"
-                      : "3274012304050001"
+                      ? "NISN"
+                      : "NIK"
                   }
                   className="material-input"
                   required

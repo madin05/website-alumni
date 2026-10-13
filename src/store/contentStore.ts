@@ -87,8 +87,17 @@ export const useContentStore = create<ContentState>()(
       },
     }),
     {
-      name: 'tracer_study_content_store',
-      version: 1,
+      name: 'tracer_study_content_store_v3',
+      version: 2,
+      migrate: (persistedState: any, version: number) => {
+        if (!persistedState || version < 2) {
+          return {
+            newsList: MOCK_NEWS,
+            jobList: MOCK_JOBS,
+          };
+        }
+        return persistedState;
+      },
     }
   )
 );

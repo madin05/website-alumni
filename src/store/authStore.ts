@@ -18,15 +18,15 @@ interface AuthState {
 
 const DEFAULT_MOCK_USER: UserSession = {
   id: 'usr-001',
-  nisn: '0051234567',
-  nama: 'Ahmad Dani',
-  email: 'ahmaddani@example.com',
+  nisn: '0077935331',
+  nama: 'Abil Alfad Jaelani',
+  email: 'abil12@gmail.com',
   role: 'alumni',
-  jurusan: 'Teknik Komputer dan Jaringan',
-  tahun_lulus: 2024,
+  jurusan: 'Teknik Instalasi Tenaga Listrik',
+  tahun_lulus: 2025,
   tracerStatus: 'SUDAH',
-  submissionId: '2026102498',
-  submittedAt: '2026-09-26T13:38:16Z',
+  submissionId: '2026101001',
+  submittedAt: '2026-09-01T08:00:00Z',
   jenisKelamin: 'L',
 };
 

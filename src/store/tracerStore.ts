@@ -228,12 +228,12 @@ export const useTracerStore = create<TracerFormState>()(
             recipientRole: 'admin_bkk',
             subject: `Pengajuan Tracer Study Baru (${submissionId})`,
             preview: `${payload.identitas.nama_lengkap} (${payload.identitas.jurusan}) telah menyelesaikan pengisian kuesioner tracer study.`,
-            body: `Alumni ${payload.identitas.nama_lengkap} (NISN: ${payload.identitas.nisn}) telah mengirimkan formulir Tracer Study dengan ID ${submissionId}. Status kegiatan: ${payload.status_kegiatan}. Silakan periksa kelengkapan data di menu Verifikasi Isian.`,
+            body: `Alumni ${payload.identitas.nama_lengkap} (NISN: ${payload.identitas.nisn}) telah mengirimkan formulir Tracer Study dengan ID ${submissionId}. Status kegiatan: ${payload.status_kegiatan}. Silakan periksa data kuesioner di menu Data Responden.`,
             category: 'tracer_submission',
             submissionId,
             actionUrl: {
               tab: 'verifikasi',
-              label: 'Buka di Verifikasi Isian',
+              label: 'Buka di Data Responden',
             },
           });
         } catch {

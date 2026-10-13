@@ -15,6 +15,7 @@ import { useMailStore, MailItem } from "@/store/mailStore";
 import { useAuthStore } from "@/store/authStore";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { Toast } from "@/components/ui/Toast";
 import { createPortal } from "react-dom";
 
 const SolidMailIcon: React.FC<{ className?: string }> = ({
@@ -179,14 +180,11 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
   return (
     <div className="space-y-5 sm:space-y-6">
       {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 p-3 sm:p-4 bg-[#0d2346] text-white rounded-xl shadow-xl flex items-center gap-3 border border-slate-700 animate-in slide-in-from-bottom-5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span className="text-xs sm:text-sm font-semibold">
-            {toastMessage}
-          </span>
-        </div>
-      )}
+      <Toast
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
+        type="success"
+      />
 
       {/* Header Banner */}
       <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -242,7 +240,7 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
               {tracerCount}
             </p>
             <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-              Siap diverifikasi
+              Tercatat di sistem
             </p>
           </div>
         </div>
@@ -555,7 +553,9 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
                           onClick={() => handleAction(selectedMailForModal)}
                           className="text-xs font-semibold text-[#0d2346] hover:underline inline-flex items-center gap-1 cursor-pointer self-start sm:self-auto"
                         >
-                          <span>Buka Verifikasi</span>
+                          <span>
+                            {selectedMailForModal.actionUrl.label || "Buka Data Responden"}
+                          </span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       )}
