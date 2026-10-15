@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAdminStore, MasterAlumniRecord } from "@/store/adminStore";
-import { JurusanSMK } from "@/types/tracer";
 import { AdminImportModal } from "./AdminImportModal";
 import {
-  Users,
   Search,
-  Plus,
   Upload,
   Download,
   CheckCircle2,
@@ -18,6 +15,7 @@ import { Input } from "@/components/ui/Input";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Pagination } from "@/components/ui/Pagination";
+import { downloadAlumniTemplate } from "@/lib/alumniCsv";
 
 const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3.5" }) => (
   <svg
@@ -62,8 +60,7 @@ const JURUSAN_OPTIONS = [
 ];
 
 export const AdminMasterAlumniTab: React.FC = () => {
-  const { masterAlumni, deleteMasterAlumni, settings } =
-    useAdminStore();
+  const { masterAlumni, deleteMasterAlumni } = useAdminStore();
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "SUDAH" | "BELUM">(
@@ -74,23 +71,10 @@ export const AdminMasterAlumniTab: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [deleteConfirmAlumni, setDeleteConfirmAlumni] =
     useState<MasterAlumniRecord | null>(null);
-
-  // Add Single Alumni Form State
-  const [newNisn, setNewNisn] = useState("");
-  const [newNik, setNewNik] = useState("");
-  const [newNama, setNewNama] = useState("");
-  const [newJurusan, setNewJurusan] = useState<JurusanSMK>(
-    "Teknik Komputer dan Jaringan",
-  );
-  const [newTahun, setNewTahun] = useState(2024);
-  const [newNoWa, setNewNoWa] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [addError, setAddError] = useState("");
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -144,69 +128,8 @@ export const AdminMasterAlumniTab: React.FC = () => {
   ).length;
 
   const handleDownloadTemplate = () => {
-    const headers = "nisn,nik,nama,jurusan,tahun_lulus,no_wa,email\n";
-    const sampleRows = [
-      "0051234567,3674012345670001,Ahmad Dani,Teknik Komputer dan Jaringan,2024,081298765432,ahmaddani@example.com",
-      "0052345678,3674012345670002,Budi Santoso,Teknik Pemesinan,2024,081311223344,budisantoso@example.com",
-    ].join("\n");
-
-    const blob = new Blob([headers + sampleRows], {
-      type: "text/csv;charset=utf-8;",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "template_data_alumni_smk_sasmita2.csv");
-    link.style.position = "fixed";
-    link.style.top = "-9999px";
-    link.style.left = "-9999px";
-    link.style.opacity = "0";
-    link.style.pointerEvents = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    downloadAlumniTemplate("csv");
     showToast("Format CSV berhasil diunduh.");
-  };
-
-  const handleCreateSingle = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAddError("");
-
-    if (!newNisn.trim() || !newNama.trim()) {
-      setAddError("NISN dan Nama Lengkap wajib diisi.");
-      return;
-    }
-
-    const payload: Record<string, unknown> = {
-      nisn: newNisn.trim(),
-      nama: newNama.trim(),
-      jurusan: newJurusan,
-      tahunLulus: Number(newTahun) || 2024,
-    };
-
-    if (newNik.trim()) payload.nik = newNik.trim();
-    if (newNoWa.trim()) payload.noWhatsapp = newNoWa.trim();
-    if (newEmail.trim()) payload.email = newEmail.trim();
-
-    try {
-      const { adminMasterAlumniApi } = await import("@/services/adminService");
-      const created = await adminMasterAlumniApi.create(payload as any);
-
-      if (created.success) {
-        showToast(`Data siswa ${newNama} berhasil ditambahkan.`);
-        setIsAddModalOpen(false);
-        setNewNisn("");
-        setNewNik("");
-        setNewNama("");
-        setNewNoWa("");
-        setNewEmail("");
-      } else {
-        setAddError(created.message || "Gagal menambahkan data siswa.");
-      }
-    } catch (err: any) {
-      setAddError(err.message || "Terjadi kesalahan saat menambahkan data.");
-    }
   };
 
   const generateWaLink = (alumni: MasterAlumniRecord) => {
@@ -220,7 +143,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
     );
     return `https://wa.me/${cleanNumber}?text=${text}`;
   };
- 
+
   return (
     <>
       <div className="space-y-5">
@@ -245,18 +168,10 @@ export const AdminMasterAlumniTab: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsImportModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shrink-0"
-            >
-              <Upload className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-              <span>Impor Berkas</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsAddModalOpen(true)}
               className="px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
             >
-              <Plus className="w-3.5 h-3.5 shrink-0" />
-              <span>Tambah Siswa</span>
+              <Upload className="w-3.5 h-3.5 shrink-0" />
+              <span>Impor Berkas</span>
             </button>
           </div>
         </div>
@@ -468,149 +383,18 @@ export const AdminMasterAlumniTab: React.FC = () => {
       <AdminImportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
-        onSuccess={(count) =>
-          showToast(`Berhasil menambahkan ${count} data siswa ke basis data.`)
-        }
+        onSuccess={(count, detail) => {
+          const extra = [
+            detail?.duplicateCount ? `${detail.duplicateCount} duplikat dilewati` : '',
+            detail?.invalidCount ? `${detail.invalidCount} baris tidak valid dilewati` : '',
+          ]
+            .filter(Boolean)
+            .join(', ');
+          showToast(
+            `Berhasil menambahkan ${count} data siswa ke basis data${extra ? ` (${extra})` : ''}.`,
+          );
+        }}
       />
-
-      {/* Add Single Alumni Modal */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl border border-slate-200 overflow-hidden">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <h3 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-2">
-                <Plus className="w-4 h-4 text-slate-700" />
-                <span>Tambah Data Siswa Lulusan</span>
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsAddModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form
-              onSubmit={handleCreateSingle}
-              className="p-5 space-y-3.5 text-xs"
-            >
-              {addError && (
-                <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 font-semibold">
-                  {addError}
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
-                    Nomor Induk Siswa Nasional (NISN)*
-                  </label>
-                  <input
-                    required
-                    maxLength={10}
-                    placeholder="Contoh: 0051234567"
-                    value={newNisn}
-                    onChange={(e) => setNewNisn(e.target.value)}
-                    className="w-full p-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
-                  />
-                </div>
-                <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
-                    Nomor Induk Kependudukan (NIK)
-                  </label>
-                  <input
-                    maxLength={16}
-                    placeholder="Contoh: 3674012345670001"
-                    value={newNik}
-                    onChange={(e) => setNewNik(e.target.value)}
-                    className="w-full p-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="font-semibold text-slate-700 block mb-1">
-                  Nama Lengkap Siswa*
-                </label>
-                <input
-                  required
-                  placeholder="Contoh: Muhammad Rizki"
-                  value={newNama}
-                  onChange={(e) => setNewNama(e.target.value)}
-                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold text-slate-700 block mb-1 text-xs">
-                    Program Keahlian
-                  </label>
-                  <CustomSelect
-                    options={JURUSAN_OPTIONS.filter((j) => j.value !== "ALL")}
-                    value={newJurusan}
-                    onChange={(val) => setNewJurusan(val as JurusanSMK)}
-                    triggerSize="sm"
-                  />
-                </div>
-                <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
-                    Tahun Kelulusan
-                  </label>
-                  <input
-                    type="number"
-                    value={newTahun}
-                    onChange={(e) => setNewTahun(Number(e.target.value))}
-                    className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
-                    Nomor WhatsApp
-                  </label>
-                  <input
-                    placeholder="Contoh: 081298765432"
-                    value={newNoWa}
-                    onChange={(e) => setNewNoWa(e.target.value)}
-                    className="w-full p-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
-                  />
-                </div>
-                <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
-                    Alamat Email
-                  </label>
-                  <input
-                    placeholder="Contoh: alumni@example.com"
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddModalOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold cursor-pointer hover:bg-slate-50"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#0d2346] hover:bg-[#163868] text-white font-semibold shadow-xs cursor-pointer"
-                >
-                  Simpan Data
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Custom Delete Confirmation Modal */}
       <ConfirmModal

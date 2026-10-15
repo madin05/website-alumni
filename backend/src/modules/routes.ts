@@ -8,7 +8,7 @@ import { newsRoutes, publicNewsRoutes } from './news/routes';
 import { messagesRoutes, publicMessagesRoutes } from './messages/routes';
 import { ijazahRoutes, publicIjazahRoutes } from './ijazah/routes';
 import { settingsRoutes } from './settings/routes';
-import { reportsRoutes } from './reports/routes';
+import { publicReportsRoutes, reportsRoutes } from './reports/routes';
 import { AuthPayload } from '../core/middleware/auth.js';
 
 export async function routes(app: FastifyInstance) {
@@ -21,6 +21,7 @@ export async function routes(app: FastifyInstance) {
   await app.register(publicNewsRoutes);
   await app.register(publicMessagesRoutes);
   await app.register(publicIjazahRoutes);
+  await app.register(publicReportsRoutes);
 
   // Protected routes (require authentication)
   await app.register(async function (protectedApp) {

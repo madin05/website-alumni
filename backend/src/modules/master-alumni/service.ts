@@ -1,8 +1,67 @@
 import { prisma } from '../../config/prisma.js';
 import { HttpError } from '../../core/utils/errors.js';
-import { MasterAlumniCreateInput, MasterAlumniUpdateInput, ImportCsvInput, ListQueryInput } from './schemas.js';
+import { MasterAlumniCreateInput, MasterAlumniUpdateInput, ImportCsvInput, ListQueryInput, masterAlumniCreateSchema } from './schemas.js';
 import { TracerStatus } from '@prisma/client';
 import { hashPassword } from '../../core/utils/password.js';
+
+// Field tambahan format Dapodik yang boleh diisi admin (string)
+const DAPODIK_TEXT_FIELDS = [
+  'jenisKelamin',
+  'namaSekolah',
+  'npsn',
+  'statusSekolah',
+  'kompKeahlian',
+  'progKeahlian',
+  'bidKeahlian',
+  'provinsiSmk',
+  'kabKotaSmk',
+  'statusMenikah',
+  'provinsiDomisili',
+  'kotaDomisili',
+  'noHp',
+  'statusAktivitas',
+  'keterangan',
+  'sertifikatKompetensi',
+  'jabatanKerja',
+  'namaTempatKerja',
+  'provinsiKerja',
+  'kotaKerja',
+  'negaraKerja',
+  'keselarasanKerja',
+  'provinsiUsaha',
+  'kotaUsaha',
+  'negaraUsaha',
+  'bidangUsaha',
+  'jenisUsaha',
+  'keselarasanUsaha',
+  'namaProdukUsaha',
+  'jenjangPendidikan',
+  'namaPerguruanTinggi',
+  'namaProdi',
+  'keselarasanStudi',
+  'pendapatanBekerjaUmp',
+  'pendapatanBekerjaUmk',
+  'pendapatanWirausahaUmp',
+  'pendapatanWirausahaUmk',
+  'pendapatanStudiSambilBekerjaUmp',
+  'pendapatanStudiSambilBekerjaUmk',
+  'pendapatanStudiSambilBerwirausahaUmp',
+  'pendapatanStudiSambilBerwirausahaUmk',
+] as const;
+
+// Field tambahan format Dapodik yang numerik
+const DAPODIK_NUMBER_FIELDS = ['lamaProgram', 'usia', 'masaTungguKerja'] as const;
+
+function mapDapodikFields(input: Record<string, any>, data: Record<string, any>) {
+  for (const field of DAPODIK_TEXT_FIELDS) {
+    const value = input[field];
+    if (typeof value === 'string' && value.trim() !== '') data[field] = value.trim();
+  }
+  for (const field of DAPODIK_NUMBER_FIELDS) {
+    const value = input[field];
+    if (value !== undefined && value !== null && !Number.isNaN(Number(value))) data[field] = Number(value);
+  }
+}
 
 async function mapCreateInput(input: MasterAlumniCreateInput) {
   const defaultPassword = input.nisn || 'alumni123';
@@ -22,6 +81,7 @@ async function mapCreateInput(input: MasterAlumniCreateInput) {
   if (input.nik && input.nik.trim()) data.nik = input.nik.trim();
   if (input.noWhatsapp && input.noWhatsapp.trim()) data.noWhatsApp = input.noWhatsapp.trim();
   if (input.email && input.email.trim()) data.email = input.email.trim();
+  mapDapodikFields(input as unknown as Record<string, any>, data);
 
   return data;
 }
@@ -35,6 +95,7 @@ function mapUpdateInput(input: MasterAlumniUpdateInput) {
   if (input.jurusan) data.jurusan = input.jurusan;
   if (input.tahunLulus) data.tahunLulus = input.tahunLulus;
   if (input.noWhatsapp) data.noWhatsApp = input.noWhatsapp;
+  mapDapodikFields(input as unknown as Record<string, any>, data);
   return data;
 }
 
@@ -162,8 +223,28 @@ export async function importMasterAlumni(input: ImportCsvInput) {
   const { records, skipDuplicates } = input;
   let imported = 0;
   let duplicates = 0;
+  let invalid = 0;
+  const errors: Array<{ nisn: string; messages: string[] }> = [];
 
-  for (const record of records) {
+  for (const rawRecord of records) {
+    // Validasi tiap baris secara terpisah: baris bermasalah dilewati,
+    // tidak menggagalkan seluruh batch impor.
+    const parsed = masterAlumniCreateSchema.safeParse(rawRecord);
+    if (!parsed.success) {
+      invalid++;
+      const recordData = (rawRecord || {}) as Record<string, unknown>;
+      const messages = parsed.error.issues.map((issue) => {
+        const path = issue.path.join('.');
+        return path ? `${path}: ${issue.message}` : issue.message;
+      });
+      errors.push({
+        nisn: typeof recordData.nisn === 'string' ? recordData.nisn : '-',
+        messages,
+      });
+      continue;
+    }
+
+    const record = parsed.data;
     try {
       await createMasterAlumni(record);
       imported++;
@@ -172,12 +253,16 @@ export async function importMasterAlumni(input: ImportCsvInput) {
         duplicates++;
         if (!skipDuplicates) throw err;
       } else {
-        throw err;
+        invalid++;
+        errors.push({
+          nisn: record.nisn,
+          messages: [err instanceof Error ? err.message : 'Gagal menyimpan data'],
+        });
       }
     }
   }
 
-  return { importedCount: imported, duplicateCount: duplicates };
+  return { importedCount: imported, duplicateCount: duplicates, invalidCount: invalid, errors: errors.slice(0, 25) };
 }
 
 export async function getStats() {
@@ -227,6 +312,49 @@ function selectFields() {
     pekerjaan: true,
     kota: true,
     kampus: true,
+    namaSekolah: true,
+    npsn: true,
+    statusSekolah: true,
+    kompKeahlian: true,
+    progKeahlian: true,
+    bidKeahlian: true,
+    lamaProgram: true,
+    provinsiSmk: true,
+    kabKotaSmk: true,
+    usia: true,
+    statusMenikah: true,
+    provinsiDomisili: true,
+    kotaDomisili: true,
+    noHp: true,
+    statusAktivitas: true,
+    keterangan: true,
+    masaTungguKerja: true,
+    sertifikatKompetensi: true,
+    jabatanKerja: true,
+    namaTempatKerja: true,
+    provinsiKerja: true,
+    kotaKerja: true,
+    negaraKerja: true,
+    keselarasanKerja: true,
+    provinsiUsaha: true,
+    kotaUsaha: true,
+    negaraUsaha: true,
+    bidangUsaha: true,
+    jenisUsaha: true,
+    keselarasanUsaha: true,
+    namaProdukUsaha: true,
+    jenjangPendidikan: true,
+    namaPerguruanTinggi: true,
+    namaProdi: true,
+    keselarasanStudi: true,
+    pendapatanBekerjaUmp: true,
+    pendapatanBekerjaUmk: true,
+    pendapatanWirausahaUmp: true,
+    pendapatanWirausahaUmk: true,
+    pendapatanStudiSambilBekerjaUmp: true,
+    pendapatanStudiSambilBekerjaUmk: true,
+    pendapatanStudiSambilBerwirausahaUmp: true,
+    pendapatanStudiSambilBerwirausahaUmk: true,
     createdAt: true,
     updatedAt: true,
   };

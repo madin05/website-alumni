@@ -8,3 +8,10 @@ export const reportQuerySchema = z.object({
 });
 
 export type ReportQueryInput = z.infer<typeof reportQuerySchema>;
+
+export const publicKeterserapanQuerySchema = z.object({
+  tahunLulus: z.coerce.number().int().optional(),
+  jurusan: z.string().optional(),
+});
+
+export type PublicKeterserapanQuery = z.infer<typeof publicKeterserapanQuerySchema>;

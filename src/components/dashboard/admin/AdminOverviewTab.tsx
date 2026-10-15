@@ -1,8 +1,7 @@
 import React from "react";
 import { useAdminStore } from "@/store/adminStore";
-import {
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { STANDARD_JURUSAN, jurusanCode } from "@/lib/reportStats";
 
 const SolidUsersIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4 text-[#0d2346]" }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -82,34 +81,46 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
     (r) => r.statusKegiatan === "BELUM_KERJA",
   ).length;
 
-  // Jurusan distribution with unified theme styling
-  const jurusanList = [
-    { code: "TKJ", name: "Teknik Komputer dan Jaringan" },
-    { code: "TPM", name: "Teknik Pemesinan" },
-    { code: "TITL", name: "Teknik Instalasi Tenaga Listrik" },
-    { code: "EL", name: "Teknik Elektronika Industri" },
-    { code: "TKRO", name: "Teknik Kendaraan Ringan Otomotif" },
-    { code: "TBSM", name: "Teknik dan Bisnis Sepeda Motor" },
-  ];
+  // Jurusan distribution: mengikuti program keahlian yang benar-benar ada
+  // pada data alumni (bukan daftar tetap), urutan mengikuti jurusan standar
+  // sekolah lalu jurusan di luar daftar standar secara alfabetis.
+  const jurusanStats = React.useMemo(() => {
+    const distinctJurusan = Array.from(
+      new Set(masterAlumni.map((a) => String(a.jurusan)).filter(Boolean)),
+    );
 
-  const jurusanStats = jurusanList.map((j) => {
-    const totalInJurusan = masterAlumni.filter((a) =>
-      a.jurusan.includes(j.name),
-    ).length;
-    const filledInJurusan = masterAlumni.filter(
-      (a) => a.jurusan.includes(j.name) && a.statusTracer === "SUDAH",
-    ).length;
-    const percent =
-      totalInJurusan > 0
-        ? Math.round((filledInJurusan / totalInJurusan) * 100)
-        : 0;
-    return {
-      ...j,
-      total: totalInJurusan,
-      filled: filledInJurusan,
-      percent,
-    };
-  });
+    const orderedJurusan = [
+      ...STANDARD_JURUSAN.filter((j) => distinctJurusan.includes(j)),
+      ...distinctJurusan
+        .filter((j) => !STANDARD_JURUSAN.includes(j))
+        .sort((a, b) => a.localeCompare(b, "id-ID")),
+    ];
+
+    return orderedJurusan.map((jurusan) => {
+      const inJurusan = masterAlumni.filter((a) => a.jurusan === jurusan);
+      const total = inJurusan.length;
+      const filled = inJurusan.filter((a) => a.statusTracer === "SUDAH").length;
+
+      return {
+        code: jurusanCode(jurusan),
+        name: jurusan,
+        total,
+        filled,
+        percent: total > 0 ? Math.round((filled / total) * 100) : 0,
+      };
+    });
+  }, [masterAlumni]);
+
+  // Rentang angkatan yang benar-benar ada pada data alumni
+  const angkatanLabel = React.useMemo(() => {
+    const years = Array.from(
+      new Set(masterAlumni.map((a) => a.tahunLulus).filter(Boolean)),
+    ).sort((a, b) => a - b);
+
+    if (years.length === 0) return `Angkatan ${settings.targetYear}`;
+    if (years.length === 1) return `Angkatan ${years[0]}`;
+    return `Angkatan ${years[0]} - ${years[years.length - 1]}`;
+  }, [masterAlumni, settings.targetYear]);
 
   const recentSubmissions = respondents.slice(0, 5);
 
@@ -297,7 +308,7 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
               </p>
             </div>
             <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold">
-              Angkatan {settings.targetYear}
+              {angkatanLabel}
             </span>
           </div>
 

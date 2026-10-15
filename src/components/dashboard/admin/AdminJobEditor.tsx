@@ -7,8 +7,10 @@ import {
   MapPin,
   Clock,
   Calendar,
+  AlertTriangle,
 } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
+import { errorList, validateJobInput } from "@/utils/contentValidation";
 
 export const JURUSAN_OPTIONS: JurusanSMK[] = [
   "Teknik Komputer dan Jaringan",
@@ -42,7 +44,7 @@ export interface AdminJobEditorProps {
     requirements: string[];
   }) => void;
   onCancel: () => void;
-  showToast: (msg: string) => void;
+  showToast: (msg: string, type?: "success" | "error") => void;
 }
 
 export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
@@ -93,25 +95,48 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
     }
   };
 
+  // Persyaratan di-parse per baris; jika kosong pakai default agar validasi
+  // backend (minimal 1) tetap terpenuhi.
+  const parsedRequirements = requirementsText
+    .split("\n")
+    .map((r) => r.trim())
+    .filter((r) => r.length > 0);
+  const requirements =
+    parsedRequirements.length > 0
+      ? parsedRequirements
+      : ["Lulusan SMK Sasmita Jaya 2"];
+
+  // Validasi real-time (aturan sama dengan backend) — lowongan tidak bisa
+  // dipublikasikan selama masih ada bagian yang belum memenuhi syarat.
+  const errors = validateJobInput({
+    title,
+    company,
+    location,
+    salary,
+    type,
+    targetMajors,
+    deadline,
+    contactPerson,
+    description,
+    requirements,
+  });
+  const isValid = Object.keys(errors).length === 0;
+  const [attempted, setAttempted] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const showFieldError = (field: string) =>
+    (attempted || touched[field]) && errors[field];
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim() || !company.trim() || !description.trim()) {
+    if (!isValid) {
+      setAttempted(true);
       showToast(
-        "Harap lengkapi judul posisi, nama perusahaan, dan deskripsi pekerjaan.",
+        `Loker belum bisa dipublikasikan: ${errorList(errors).join(" ")}`,
+        "error",
       );
       return;
     }
-
-    if (targetMajors.length === 0) {
-      showToast("Harap pilih minimal satu jurusan target.");
-      return;
-    }
-
-    const requirements = requirementsText
-      .split("\n")
-      .map((r) => r.trim())
-      .filter((r) => r.length > 0);
 
     onSave({
       title: title.trim(),
@@ -124,8 +149,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
       contactPerson: contactPerson.trim(),
       isBkkPartner,
       description: description.trim(),
-      requirements:
-        requirements.length > 0 ? requirements : ["Lulusan SMK Sasmita Jaya 2"],
+      requirements,
     });
   };
 
@@ -164,7 +188,17 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-5 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-bold shadow-xs transition active:scale-95 cursor-pointer"
+            disabled={!isValid}
+            title={
+              isValid
+                ? undefined
+                : `Belum bisa dipublikasikan: ${errorList(errors).join(" ")}`
+            }
+            className={`px-5 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs transition active:scale-95 ${
+              isValid
+                ? "bg-[#0d2346] hover:bg-[#163868] cursor-pointer"
+                : "bg-slate-300 cursor-not-allowed"
+            }`}
           >
             {editingJob ? "Simpan Perubahan Loker" : "Publikasikan Lowongan"}
           </button>
@@ -175,36 +209,98 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Form Column (8 cols) */}
         <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          {/* Peringatan Validasi */}
+          {!isValid && (
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5">
+              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-rose-800">
+                  Loker belum bisa dipublikasikan — masih ada{" "}
+                  {errorList(errors).length} bagian yang belum memenuhi syarat.
+                </p>
+                <ul className="list-disc list-inside space-y-0.5">
+                  {errorList(errors).map((msg) => (
+                    <li key={msg} className="text-[11px] text-rose-700">
+                      {msg}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
           {/* Field 1: Posisi & Perusahaan */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
-                Posisi / Judul Pekerjaan{" "}
-                <span className="text-rose-500">*</span>
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-slate-900">
+                  Posisi / Judul Pekerjaan{" "}
+                  <span className="text-rose-500">*</span>
+                </label>
+                <span
+                  className={`text-[11px] font-normal ${
+                    title.trim().length < 3
+                      ? "text-rose-500 font-semibold"
+                      : "text-slate-400"
+                  }`}
+                >
+                  min. 3 karakter
+                </span>
+              </div>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, title: true }))}
                 placeholder="Contoh: Junior Network Administrator"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium focus:ring-2 focus:outline-none transition bg-slate-50/50 ${
+                  showFieldError("title")
+                    ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
+                    : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
+                }`}
                 required
               />
+              {showFieldError("title") && (
+                <p className="text-[11px] font-semibold text-rose-600">
+                  {errors.title}
+                </p>
+              )}
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
-                Nama Perusahaan / Instansi{" "}
-                <span className="text-rose-500">*</span>
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-slate-900">
+                  Nama Perusahaan / Instansi{" "}
+                  <span className="text-rose-500">*</span>
+                </label>
+                <span
+                  className={`text-[11px] font-normal ${
+                    company.trim().length < 2
+                      ? "text-rose-500 font-semibold"
+                      : "text-slate-400"
+                  }`}
+                >
+                  min. 2 karakter
+                </span>
+              </div>
               <input
                 type="text"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, company: true }))}
                 placeholder="Contoh: PT Solusi Teknologi Nusantara"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium focus:ring-2 focus:outline-none transition bg-slate-50/50 ${
+                  showFieldError("company")
+                    ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
+                    : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
+                }`}
                 required
               />
+              {showFieldError("company") && (
+                <p className="text-[11px] font-semibold text-rose-600">
+                  {errors.company}
+                </p>
+              )}
             </div>
           </div>
 
@@ -218,9 +314,19 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, location: true }))}
                 placeholder="Contoh: Tangerang Selatan"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-medium focus:ring-2 focus:outline-none transition bg-slate-50/50 ${
+                  showFieldError("location")
+                    ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
+                    : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
+                }`}
               />
+              {showFieldError("location") && (
+                <p className="text-[11px] font-semibold text-rose-600">
+                  {errors.location}
+                </p>
+              )}
             </div>
 
             <CustomSelect
@@ -247,16 +353,37 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           {/* Field 3: Deadline & Kontak */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
-                Batas Akhir Pendaftaran (Deadline)
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-slate-900">
+                  Batas Akhir Pendaftaran (Deadline)
+                </label>
+                <span
+                  className={`text-[11px] font-normal ${
+                    !errors.deadline || !attempted
+                      ? "text-slate-400"
+                      : "text-rose-500 font-semibold"
+                  }`}
+                >
+                  contoh: 30 Okt 2026
+                </span>
+              </div>
               <input
                 type="text"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, deadline: true }))}
                 placeholder="Contoh: 30 Okt 2026"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-medium focus:ring-2 focus:outline-none transition bg-slate-50/50 ${
+                  showFieldError("deadline")
+                    ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
+                    : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
+                }`}
               />
+              {showFieldError("deadline") && (
+                <p className="text-[11px] font-semibold text-rose-600">
+                  {errors.deadline}
+                </p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -267,9 +394,19 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 type="text"
                 value={contactPerson}
                 onChange={(e) => setContactPerson(e.target.value)}
+                onBlur={() => setTouched((t) => ({ ...t, contactPerson: true }))}
                 placeholder="Email HRD atau kontak WA BKK"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-medium focus:ring-2 focus:outline-none transition bg-slate-50/50 ${
+                  showFieldError("contactPerson")
+                    ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
+                    : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
+                }`}
               />
+              {showFieldError("contactPerson") && (
+                <p className="text-[11px] font-semibold text-rose-600">
+                  {errors.contactPerson}
+                </p>
+              )}
             </div>
           </div>
 
@@ -315,6 +452,12 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
               </button>
             </div>
 
+            {showFieldError("targetMajors") && (
+              <p className="text-[11px] font-semibold text-rose-600">
+                {errors.targetMajors}
+              </p>
+            )}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-4 bg-slate-50/80 rounded-xl border border-slate-200">
               {JURUSAN_OPTIONS.map((major) => {
                 const isChecked = targetMajors.includes(major);
@@ -342,17 +485,38 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
 
           {/* Field 6: Deskripsi Pekerjaan */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900">
-              Deskripsi Pekerjaan <span className="text-rose-500">*</span>
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-900">
+                Deskripsi Pekerjaan <span className="text-rose-500">*</span>
+              </label>
+              <span
+                className={`text-[11px] font-normal ${
+                  description.trim().length < 10
+                    ? "text-rose-500 font-semibold"
+                    : "text-slate-400"
+                }`}
+              >
+                {description.trim().length}/10 karakter min.
+              </span>
+            </div>
             <textarea
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              onBlur={() => setTouched((t) => ({ ...t, description: true }))}
               placeholder="Jelaskan ruang lingkup peran utama, tanggung jawab operasional, dan gambaran tugas harian..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
+              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm focus:ring-2 focus:outline-none transition bg-slate-50/50 leading-relaxed ${
+                showFieldError("description")
+                  ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
+                  : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
+              }`}
               required
             />
+            {showFieldError("description") && (
+              <p className="text-[11px] font-semibold text-rose-600">
+                {errors.description}
+              </p>
+            )}
           </div>
 
           {/* Field 7: Persyaratan & Kualifikasi */}

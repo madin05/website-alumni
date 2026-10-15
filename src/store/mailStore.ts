@@ -29,6 +29,7 @@ export interface MailItem {
 
 interface MailState {
   mails: MailItem[];
+  fetchError: string | null;
   markAsRead: (id: string) => void;
   markAllAsRead: (role: 'admin_bkk' | 'alumni', userNisn?: string) => void;
   deleteMail: (id: string) => void;
@@ -192,119 +193,130 @@ const INITIAL_MAILS: MailItem[] = [
   },
 ];
 
+// ... (kode MailItem, MailState, dan INITIAL_MAILS sebelumnya tetap sama)
+
 export const useMailStore = create<MailState>()(
   (set, get) => ({
-    mails: INITIAL_MAILS,
+    // Menggabungkan INITIAL_MAILS dari 'main' dan fetchError dari 'pr-1'
+    mails: INITIAL_MAILS, 
+    fetchError: null,
 
-      markAsRead: (id: string) => {
-        set((state) => ({
-          mails: state.mails.map((m) =>
-            m.id === id ? { ...m, isRead: true } : m
-          ),
-        }));
+    markAsRead: (id: string) => {
+      set((state) => ({
+        mails: state.mails.map((m) =>
+          m.id === id ? { ...m, isRead: true } : m
+        ),
+      }));
 
-        if (!id.startsWith('mail-0') && !id.startsWith('mail-usr-')) {
-          import('@/services/adminService').then(({ adminMessagesApi }) => {
-            adminMessagesApi.updateStatus(id, 'RESOLVED').catch((err) => {
-              console.warn('[MailStore] Backend mark read sync fallback:', err);
-            });
+      if (!id.startsWith('mail-0') && !id.startsWith('mail-usr-')) {
+        import('@/services/adminService').then(({ adminMessagesApi }) => {
+          adminMessagesApi.updateStatus(id, 'RESOLVED').catch((err) => {
+            console.warn('[MailStore] Backend mark read sync fallback:', err);
           });
-        }
-      },
+        });
+      }
+    },
 
-      markAllAsRead: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {
-        set((state) => ({
-          mails: state.mails.map((m) => {
-            if (role === 'admin_bkk' && m.recipientRole === 'admin_bkk') {
-              return { ...m, isRead: true };
-            }
-            if (
-              role === 'alumni' &&
-              (m.recipientRole === 'all' ||
-                (m.recipientRole === 'alumni' &&
-                  (!m.recipientNisn || m.recipientNisn === userNisn)))
-            ) {
-              return { ...m, isRead: true };
-            }
-            return m;
-          }),
-        }));
-      },
-
-      deleteMail: (id: string) => {
-        set((state) => ({
-          mails: state.mails.filter((m) => m.id !== id),
-        }));
-
-        if (!id.startsWith('mail-0') && !id.startsWith('mail-usr-')) {
-          import('@/services/adminService').then(({ adminMessagesApi }) => {
-            adminMessagesApi.delete(id).catch((err) => {
-              console.warn('[MailStore] Backend delete message sync fallback:', err);
-            });
-          });
-        }
-      },
-
-      addMail: (mailData) => {
-        const newMail: MailItem = {
-          ...mailData,
-          id: `mail-${Date.now()}`,
-          createdAt: new Date().toISOString(),
-          isRead: false,
-        };
-        set((state) => ({
-          mails: [newMail, ...state.mails],
-        }));
-      },
-
-      getMailsForUser: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {
-        const allMails = get().mails;
-        if (role === 'admin_bkk') {
-          return allMails.filter((m) => m.recipientRole === 'admin_bkk');
-        }
-        return allMails.filter(
-          (m) =>
-            m.recipientRole === 'all' ||
-            (m.recipientRole === 'alumni' &&
-              (!m.recipientNisn || m.recipientNisn === userNisn))
-        );
-      },
-
-      getUnreadCount: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {
-        const userMails = get().getMailsForUser(role, userNisn);
-        return userMails.filter((m) => !m.isRead).length;
-      },
-
-      fetchMailsFromBackend: async () => {
-        try {
-          const { adminMessagesApi } = await import('@/services/adminService');
-          const res = await adminMessagesApi.list({ limit: 50 });
-          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
-            const mapped: MailItem[] = res.data.map((item: any) => ({
-              id: item.id,
-              senderName: item.nama || item.alumni?.namaLengkap || 'Pengirim',
-              senderRole: item.alumniId ? 'alumni' : 'system',
-              senderEmail: item.email || '',
-              senderNisn: item.alumni?.nisn,
-              senderMajor: item.alumni?.jurusan,
-              senderGradYear: item.alumni?.tahunLulus,
-              senderAvatarGender: /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(item.nama) ? 'P' : 'L',
-              recipientRole: 'admin_bkk',
-              subject: item.subject,
-              preview: item.message?.slice(0, 90) + (item.message?.length > 90 ? '...' : ''),
-              body: item.message,
-              category: 'inquiry',
-              createdAt: item.createdAt || new Date().toISOString(),
-              isRead: item.status !== 'UNREAD',
-            }));
-
-            set({ mails: mapped });
-            return true;
+    markAllAsRead: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {
+      set((state) => ({
+        mails: state.mails.map((m) => {
+          if (role === 'admin_bkk' && m.recipientRole === 'admin_bkk') {
+            return { ...m, isRead: true };
           }
-        } catch (err) {
-          console.warn('[MailStore] Fetch messages from backend fallback:', err);
+          if (
+            role === 'alumni' &&
+            (m.recipientRole === 'all' ||
+              (m.recipientRole === 'alumni' &&
+                (!m.recipientNisn || m.recipientNisn === userNisn)))
+          ) {
+            return { ...m, isRead: true };
+          }
+          return m;
+        }),
+      }));
+    },
+
+    deleteMail: (id: string) => {
+      set((state) => ({
+        mails: state.mails.filter((m) => m.id !== id),
+      }));
+
+      if (!id.startsWith('mail-0') && !id.startsWith('mail-usr-')) {
+        import('@/services/adminService').then(({ adminMessagesApi }) => {
+          adminMessagesApi.delete(id).catch((err) => {
+            console.warn('[MailStore] Backend delete message sync fallback:', err);
+          });
+        });
+      }
+    },
+
+    addMail: (mailData) => {
+      const newMail: MailItem = {
+        ...mailData,
+        id: `mail-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        isRead: false,
+      };
+      set((state) => ({
+        mails: [newMail, ...state.mails],
+      }));
+    },
+
+    getMailsForUser: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {
+      const allMails = get().mails;
+      if (role === 'admin_bkk') {
+        return allMails.filter((m) => m.recipientRole === 'admin_bkk');
+      }
+      return allMails.filter(
+        (m) =>
+          m.recipientRole === 'all' ||
+          (m.recipientRole === 'alumni' &&
+            (!m.recipientNisn || m.recipientNisn === userNisn))
+      );
+    },
+
+    getUnreadCount: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {
+      const userMails = get().getMailsForUser(role, userNisn);
+      return userMails.filter((m) => !m.isRead).length;
+    },
+
+    fetchMailsFromBackend: async () => {
+      set({ fetchError: null });
+      try {
+        const { adminMessagesApi } = await import('@/services/adminService');
+        const res = await adminMessagesApi.list({ limit: 50 });
+        if (res && res.data && Array.isArray(res.data)) {
+          const mapped: MailItem[] = res.data.map((item: any) => ({
+            id: item.id,
+            senderName: item.nama || item.alumni?.namaLengkap || 'Pengirim',
+            senderRole: item.alumniId ? 'alumni' : 'system',
+            senderEmail: item.email || '',
+            senderNisn: item.alumni?.nisn,
+            senderMajor: item.alumni?.jurusan,
+            senderGradYear: item.alumni?.tahunLulus,
+            senderAvatarGender: /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(item.nama) ? 'P' : 'L',
+            recipientRole: 'admin_bkk',
+            subject: item.subject,
+            preview: item.message?.slice(0, 90) + (item.message?.length > 90 ? '...' : ''),
+            body: item.message,
+            category: 'inquiry',
+            createdAt: item.createdAt || new Date().toISOString(),
+            isRead: item.status !== 'UNREAD',
+          }));
+
+          set({ mails: mapped });
+          return true;
         }
-        return false;
-      },
-    })
+      } catch (err) {
+        console.warn('[MailStore] Fetch messages from backend fallback:', err);
+        set({
+          fetchError:
+            err instanceof Error
+              ? err.message
+              : 'Gagal memuat pesan dari server.',
+        });
+      }
+      return false;
+    },
+  })
 );

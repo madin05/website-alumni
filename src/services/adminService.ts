@@ -5,6 +5,41 @@ import { MailItem } from '@/store/mailStore';
 
 const API_BASE = (import.meta as any).env?.VITE_API_URL || '';
 
+// Access token hanya berlaku 15 menit. Jika kedaluwarsa saat admin sedang
+// membuka dashboard, request akan ditolak 401 dan data tidak termuat.
+// Helper di bawah memastikan token selalu disegarkan sebelum dipakai.
+
+function getTokenExpiry(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return typeof payload.exp === 'number' ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+function isTokenExpired(token: string | null, bufferMs = 60000): boolean {
+  if (!token) return false;
+  const exp = getTokenExpiry(token);
+  if (!exp) return false;
+  return Date.now() + bufferMs >= exp;
+}
+
+let refreshPromise: Promise<boolean> | null = null;
+
+async function ensureFreshAccessToken(): Promise<string | null> {
+  const { accessToken, refreshAccessToken } = useAuthStore.getState();
+  if (!isTokenExpired(accessToken)) return accessToken;
+
+  if (!refreshPromise) {
+    refreshPromise = refreshAccessToken().finally(() => {
+      refreshPromise = null;
+    });
+  }
+  const refreshed = await refreshPromise;
+  return refreshed ? useAuthStore.getState().accessToken : accessToken;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   message?: string;
@@ -18,8 +53,8 @@ export interface ApiResponse<T> {
   errors?: Record<string, string[]>;
 }
 
-async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const { accessToken } = useAuthStore.getState();
+async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}, isRetry = false): Promise<T> {
+  const freshToken = await ensureFreshAccessToken();
   const base = API_BASE || '';
 
   const isDeleteNoBody = options.method === 'DELETE' && (!options.body || options.body === '');
@@ -29,11 +64,8 @@ async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Pr
     ...(options.headers as Record<string, string>),
   };
 
-  if (accessToken && !headers['Authorization']) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
-    console.log('[AdminService] fetchWithAuth - Authorization header set');
-  } else {
-    console.log('[AdminService] fetchWithAuth - NO accessToken or already has Authorization');
+  if (freshToken) {
+    headers['Authorization'] = `Bearer ${freshToken}`;
   }
 
   const res = await fetch(`${base}${endpoint}`, {
@@ -41,6 +73,16 @@ async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Pr
     headers,
     credentials: 'include',
   });
+
+  // Token ditolak (mis. kedaluwarsa tepat sebelum request dikirim):
+  // segarkan sekali lalu ulangi request.
+  if (res.status === 401 && !isRetry && !endpoint.includes('/auth/')) {
+    const refreshed = await useAuthStore.getState().refreshAccessToken();
+    if (refreshed) {
+      return fetchWithAuth<T>(endpoint, options, true);
+    }
+    console.warn('[AdminService] Sesi kedaluwarsa dan gagal diperbarui, silakan login ulang.');
+  }
 
   if (!res.ok) {
     const errorJson = await res.json().catch(() => ({ message: `HTTP ${res.status}: ${res.statusText}` }));
@@ -120,6 +162,49 @@ export const adminMasterAlumniApi = {
     tahunLulus: number;
     noWhatsapp?: string;
     email?: string;
+    namaSekolah?: string;
+    npsn?: string;
+    statusSekolah?: string;
+    kompKeahlian?: string;
+    progKeahlian?: string;
+    bidKeahlian?: string;
+    lamaProgram?: number | string;
+    provinsiSmk?: string;
+    kabKotaSmk?: string;
+    usia?: number | string;
+    statusMenikah?: string;
+    provinsiDomisili?: string;
+    kotaDomisili?: string;
+    noHp?: string;
+    statusAktivitas?: string;
+    keterangan?: string;
+    masaTungguKerja?: number | string;
+    sertifikatKompetensi?: string;
+    jabatanKerja?: string;
+    namaTempatKerja?: string;
+    provinsiKerja?: string;
+    kotaKerja?: string;
+    negaraKerja?: string;
+    keselarasanKerja?: string;
+    provinsiUsaha?: string;
+    kotaUsaha?: string;
+    negaraUsaha?: string;
+    bidangUsaha?: string;
+    jenisUsaha?: string;
+    keselarasanUsaha?: string;
+    namaProdukUsaha?: string;
+    jenjangPendidikan?: string;
+    namaPerguruanTinggi?: string;
+    namaProdi?: string;
+    keselarasanStudi?: string;
+    pendapatanBekerjaUmp?: string;
+    pendapatanBekerjaUmk?: string;
+    pendapatanWirausahaUmp?: string;
+    pendapatanWirausahaUmk?: string;
+    pendapatanStudiSambilBekerjaUmp?: string;
+    pendapatanStudiSambilBekerjaUmk?: string;
+    pendapatanStudiSambilBerwirausahaUmp?: string;
+    pendapatanStudiSambilBerwirausahaUmk?: string;
   }) {
     return fetchWithAuth<ApiResponse<any>>('/api/v1/master-alumni', {
       method: 'POST',
@@ -135,6 +220,49 @@ export const adminMasterAlumniApi = {
     tahunLulus: number;
     noWhatsapp: string;
     email: string;
+    namaSekolah: string;
+    npsn: string;
+    statusSekolah: string;
+    kompKeahlian: string;
+    progKeahlian: string;
+    bidKeahlian: string;
+    lamaProgram: number;
+    provinsiSmk: string;
+    kabKotaSmk: string;
+    usia: number;
+    statusMenikah: string;
+    provinsiDomisili: string;
+    kotaDomisili: string;
+    noHp: string;
+    statusAktivitas: string;
+    keterangan: string;
+    masaTungguKerja: number;
+    sertifikatKompetensi: string;
+    jabatanKerja: string;
+    namaTempatKerja: string;
+    provinsiKerja: string;
+    kotaKerja: string;
+    negaraKerja: string;
+    keselarasanKerja: string;
+    provinsiUsaha: string;
+    kotaUsaha: string;
+    negaraUsaha: string;
+    bidangUsaha: string;
+    jenisUsaha: string;
+    keselarasanUsaha: string;
+    namaProdukUsaha: string;
+    jenjangPendidikan: string;
+    namaPerguruanTinggi: string;
+    namaProdi: string;
+    keselarasanStudi: string;
+    pendapatanBekerjaUmp: string;
+    pendapatanBekerjaUmk: string;
+    pendapatanWirausahaUmp: string;
+    pendapatanWirausahaUmk: string;
+    pendapatanStudiSambilBekerjaUmp: string;
+    pendapatanStudiSambilBekerjaUmk: string;
+    pendapatanStudiSambilBerwirausahaUmp: string;
+    pendapatanStudiSambilBerwirausahaUmk: string;
   }>) {
     return fetchWithAuth<ApiResponse<any>>(`/api/v1/master-alumni/${id}`, {
       method: 'PUT',
@@ -149,7 +277,12 @@ export const adminMasterAlumniApi = {
   },
 
   async importCsv(records: any[], skipDuplicates = true) {
-    return fetchWithAuth<ApiResponse<{ importedCount: number; duplicateCount: number; errors: any[] }>>('/api/v1/master-alumni/import', {
+    return fetchWithAuth<ApiResponse<{
+      importedCount: number;
+      duplicateCount: number;
+      invalidCount: number;
+      errors: Array<{ nisn: string; messages: string[] }>;
+    }>>('/api/v1/master-alumni/import', {
       method: 'POST',
       body: JSON.stringify({ records, skipDuplicates }),
     });
@@ -470,8 +603,7 @@ export const adminSettingsApi = {
 // ----------------------------------------------------
 // 7. Reports & Overview Dashboard API
 // ----------------------------------------------------
-export const adminReportsApi = {
-  async getDashboardStats() {
+export const adminReportsApi = {  async getDashboardStats() {
     return fetchWithAuth<ApiResponse<{
       totalAlumni: number;
       totalSubmissions: number;
@@ -513,5 +645,29 @@ export const adminReportsApi = {
     const base = API_BASE || '';
     const queryString = query.toString() ? `?${query.toString()}` : '';
     return `${base}/api/v1/reports/tracer-study/export${queryString}`;
+  },
+};
+
+// ----------------------------------------------------
+// 8. Public Report API (halaman laporan & landing, tanpa perlu login)
+// ----------------------------------------------------
+export const publicReportApi = {
+  /** Statistik keterserapan lulusan langsung dari basis data. */
+  async getKeterserapan(params?: { jurusan?: string; tahunLulus?: number }) {
+    const query = new URLSearchParams();
+    if (params?.jurusan && params.jurusan !== 'ALL') query.append('jurusan', params.jurusan);
+    if (params?.tahunLulus) query.append('tahunLulus', params.tahunLulus.toString());
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+
+    const res = await fetch(`${API_BASE}/api/v1/public/reports/keterserapan${queryString}`, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!res.ok) {
+      const errorJson = await res.json().catch(() => ({}));
+      throw new Error(errorJson.message || `Gagal mengambil statistik (HTTP ${res.status})`);
+    }
+
+    return await res.json();
   },
 };
