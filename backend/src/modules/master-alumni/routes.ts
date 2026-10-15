@@ -71,6 +71,8 @@ export async function masterAlumniRoutes(app: FastifyInstance) {
   }, async (request, reply) => {
     const body = request.body as z.infer<typeof importCsvSchema>;
     const result = await service.importMasterAlumni(body);
-    return reply.send(successResponse(result, `Import selesai: ${result.importedCount} ditambahkan, ${result.duplicateCount} duplikat diabaikan`));
+    const summary = `Import selesai: ${result.importedCount} ditambahkan, ${result.duplicateCount} duplikat diabaikan`;
+    const invalidInfo = result.invalidCount > 0 ? `, ${result.invalidCount} baris tidak valid dilewati` : '';
+    return reply.send(successResponse(result, summary + invalidInfo));
   });
 }

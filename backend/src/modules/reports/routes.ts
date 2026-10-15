@@ -1,12 +1,23 @@
 import { FastifyInstance } from 'fastify';
 import { authorize } from '../../core/middleware/auth.js';
 import { validateQuery } from '../../core/middleware/validate.js';
-import { reportQuerySchema } from './schemas.js';
+import { reportQuerySchema, publicKeterserapanQuerySchema } from './schemas.js';
 import * as service from './service.js';
 import { successResponse } from '../../core/utils/response.js';
 import { z } from 'zod';
 
 type ReportQuery = z.infer<typeof reportQuerySchema>;
+
+/** Route publik: statistik keterserapan lulusan untuk halaman laporan (tanpa login). */
+export async function publicReportsRoutes(app: FastifyInstance) {
+  app.get('/public/reports/keterserapan', {
+    preHandler: validateQuery(publicKeterserapanQuerySchema),
+  }, async (request, reply) => {
+    const query = request.query as z.infer<typeof publicKeterserapanQuerySchema>;
+    const data = await service.getKeterserapan(query);
+    return reply.send(successResponse(data, 'Statistik keterserapan lulusan berhasil diambil'));
+  });
+}
 
 export async function reportsRoutes(app: FastifyInstance) {
   app.get('/reports/dashboard', { preHandler: authorize('ADMIN_BKK') }, async (request, reply) => {

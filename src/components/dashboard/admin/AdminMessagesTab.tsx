@@ -45,6 +45,7 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     markAllAsRead,
     deleteMail,
     fetchMailsFromBackend,
+    fetchError,
   } = useMailStore();
 
   const role = user?.role === "admin_bkk" ? "admin_bkk" : "alumni";
@@ -202,17 +203,43 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
           </h1>
         </div>
 
-        {unreadCount > 0 && (
+        <div className="flex items-center gap-2">
+          {unreadCount > 0 && (
+            <button
+              type="button"
+              onClick={handleMarkAllRead}
+              className="px-3.5 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+            >
+              <CheckCheck className="w-3.5 h-3.5" />
+              <span>Tandai Semua Dibaca</span>
+            </button>
+          )}
           <button
             type="button"
-            onClick={handleMarkAllRead}
-            className="px-3.5 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+            onClick={() => fetchMailsFromBackend()}
+            className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shrink-0"
+            title="Muat ulang pesan dari server"
           >
-            <CheckCheck className="w-3.5 h-3.5" />
-            <span>Tandai Semua Dibaca</span>
+            <span>Muat Ulang</span>
           </button>
-        )}
+        </div>
       </div>
+
+      {/* Backend Connection Error Banner */}
+      {fetchError && (
+        <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <p className="text-xs font-semibold text-amber-800">
+            Gagal memuat pesan dari database server: {fetchError}
+          </p>
+          <button
+            type="button"
+            onClick={() => fetchMailsFromBackend()}
+            className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition cursor-pointer shrink-0"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      )}
 
       {/* 3 Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
@@ -334,11 +361,22 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
                 <Inbox className="w-6 h-6" />
               </div>
               <p className="text-sm font-bold text-slate-700">
-                Tidak ada pesan yang cocok
+                {fetchError ? 'Pesan gagal dimuat dari server' : 'Tidak ada pesan yang cocok'}
               </p>
               <p className="text-xs text-slate-400 mt-0.5">
-                Coba sesuaikan kata kunci pencarian atau filter kategori.
+                {fetchError
+                  ? 'Periksa koneksi server lalu tekan "Muat Ulang" untuk mencoba kembali.'
+                  : 'Coba sesuaikan kata kunci pencarian atau filter kategori.'}
               </p>
+              {fetchError && (
+                <button
+                  type="button"
+                  onClick={() => fetchMailsFromBackend()}
+                  className="mt-3 px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold transition cursor-pointer"
+                >
+                  Muat Ulang Pesan
+                </button>
+              )}
             </div>
           ) : (
             filteredMails.map((mail) => (

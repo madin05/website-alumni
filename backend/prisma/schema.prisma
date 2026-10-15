@@ -8,25 +8,83 @@ datasource db {
 }
 
 model Alumni {
-  id           String             @id @default(cuid())
-  nisn         String             @unique @db.VarChar(10)
-  nik          String?            @unique @db.VarChar(16)
-  namaLengkap  String             @db.VarChar(100)
-  email        String?            @unique @db.VarChar(100)
+  id           String       @id @default(cuid())
+  nisn         String       @unique @db.VarChar(10)
+  nik          String?      @unique @db.VarChar(16)
+  namaLengkap  String       @db.VarChar(100)
+  email        String?      @unique @db.VarChar(100)
   passwordHash String
-  jurusan      String             @db.VarChar(50)
+  jurusan      String       @db.VarChar(50)
   tahunMasuk   Int
   tahunLulus   Int
-  noWhatsApp   String?            @db.VarChar(20)
-  role         Role               @default(ALUMNI)
-  tracerStatus TracerStatus       @default(BELUM)
-  submissionId String?            @unique @db.VarChar(20)
+  noWhatsApp   String?      @db.VarChar(20)
+  role         Role         @default(ALUMNI)
+  tracerStatus TracerStatus @default(BELUM)
+  submissionId String?      @unique @db.VarChar(20)
   submittedAt  DateTime?
-  jenisKelamin String?            @db.VarChar(1)
+  jenisKelamin String?      @db.VarChar(1)
   avatarUrl    String?
-  pekerjaan    String?            @db.VarChar(100)
-  kota         String?            @db.VarChar(100)
-  kampus       String?            @db.VarChar(100)
+  pekerjaan    String?      @db.VarChar(100)
+  kota         String?      @db.VarChar(100)
+  kampus       String?      @db.VarChar(100)
+
+  // Data Sekolah Asal (format Dapodik)
+  namaSekolah   String? @db.VarChar(150)
+  npsn          String? @db.VarChar(20)
+  statusSekolah String? @db.VarChar(20)
+  kompKeahlian  String? @db.VarChar(100)
+  progKeahlian  String? @db.VarChar(100)
+  bidKeahlian   String? @db.VarChar(100)
+  lamaProgram   Int?
+  provinsiSmk   String? @db.VarChar(100)
+  kabKotaSmk    String? @db.VarChar(100)
+
+  // Data Pribadi & Domisili
+  usia             Int?
+  statusMenikah    String? @db.VarChar(30)
+  provinsiDomisili String? @db.VarChar(100)
+  kotaDomisili     String? @db.VarChar(100)
+  noHp             String? @db.VarChar(20)
+
+  // Status Aktivitas Lulusan
+  statusAktivitas      String? @db.VarChar(50)
+  keterangan           String? @db.Text
+  masaTungguKerja      Int?
+  sertifikatKompetensi String? @db.VarChar(50)
+
+  // Data Bekerja
+  jabatanKerja     String? @db.VarChar(100)
+  namaTempatKerja  String? @db.VarChar(150)
+  provinsiKerja    String? @db.VarChar(100)
+  kotaKerja        String? @db.VarChar(100)
+  negaraKerja      String? @db.VarChar(100)
+  keselarasanKerja String? @db.VarChar(50)
+
+  // Data Wirausaha
+  provinsiUsaha    String? @db.VarChar(100)
+  kotaUsaha        String? @db.VarChar(100)
+  negaraUsaha      String? @db.VarChar(100)
+  bidangUsaha      String? @db.VarChar(100)
+  jenisUsaha       String? @db.VarChar(50)
+  keselarasanUsaha String? @db.VarChar(50)
+  namaProdukUsaha  String? @db.VarChar(150)
+
+  // Data Studi Lanjut
+  jenjangPendidikan   String? @db.VarChar(20)
+  namaPerguruanTinggi String? @db.VarChar(150)
+  namaProdi           String? @db.VarChar(100)
+  keselarasanStudi    String? @db.VarChar(50)
+
+  // Pendapatan (UMP / UMK)
+  pendapatanBekerjaUmp                 String? @db.VarChar(50)
+  pendapatanBekerjaUmk                 String? @db.VarChar(50)
+  pendapatanWirausahaUmp               String? @db.VarChar(50)
+  pendapatanWirausahaUmk               String? @db.VarChar(50)
+  pendapatanStudiSambilBekerjaUmp      String? @db.VarChar(50)
+  pendapatanStudiSambilBekerjaUmk      String? @db.VarChar(50)
+  pendapatanStudiSambilBerwirausahaUmp String? @db.VarChar(50)
+  pendapatanStudiSambilBerwirausahaUmk String? @db.VarChar(50)
+
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   applications JobApplication[]

@@ -62,11 +62,6 @@ interface AdminState {
   settings: AdminSettings;
 
   // Actions
-  importMasterAlumni: (records: Omit<MasterAlumniRecord, 'id' | 'createdAt' | 'statusTracer'>[]) => {
-    importedCount: number;
-    duplicateCount: number;
-  };
-  addSingleMasterAlumni: (record: Omit<MasterAlumniRecord, 'id' | 'createdAt' | 'statusTracer'>) => Promise<{ success: boolean; message?: string }>;
   deleteMasterAlumni: (id: string) => void;
   updateMasterAlumni: (id: string, updates: Partial<MasterAlumniRecord>) => void;
 
@@ -1683,82 +1678,6 @@ export const useAdminStore = create<AdminState>()(
     respondents: [],
     settings: DEFAULT_SETTINGS,
 
-      importMasterAlumni: (records) => {
-        const currentList = get().masterAlumni;
-        const currentNisns = new Set(currentList.map((a) => a.nisn.trim()));
-        let importedCount = 0;
-        let duplicateCount = 0;
-
-        const newEntries: MasterAlumniRecord[] = [];
-
-        records.forEach((rec, idx) => {
-          const cleanNisn = (rec.nisn || '').trim();
-          if (!cleanNisn) return;
-
-          if (currentNisns.has(cleanNisn)) {
-            duplicateCount++;
-          } else {
-            currentNisns.add(cleanNisn);
-            importedCount++;
-            newEntries.push({
-              ...rec,
-              id: `mst-imp-${Date.now()}-${idx}`,
-              statusTracer: 'BELUM',
-              createdAt: new Date().toISOString(),
-            });
-          }
-        });
-
-        if (newEntries.length > 0) {
-          set({ masterAlumni: [...newEntries, ...currentList] });
-          import('@/services/adminService').then(({ adminMasterAlumniApi }) => {
-            adminMasterAlumniApi.importCsv(records, true).catch((err) => {
-              console.warn('[AdminStore] Backend import CSV sync fallback:', err);
-            });
-          });
-        }
-
-        return { importedCount, duplicateCount };
-      },
-
-addSingleMasterAlumni: async (record) => {
-        try {
-          const { adminMasterAlumniApi } = await import('@/services/adminService');
-          const created = await adminMasterAlumniApi.create({
-            nisn: record.nisn,
-            nik: record.nik || undefined,
-            nama: record.nama.trim(),
-            jurusan: record.jurusan,
-            tahunLulus: record.tahunLulus,
-            noWhatsapp: record.noWhatsapp || undefined,
-            email: record.email || undefined,
-          });
-
-          if (created.success) {
-            const newRecord = {
-              id: `mst-single-${Date.now()}`,
-              nisn: record.nisn,
-              nik: record.nik || '',
-              nama: record.nama.trim(),
-              jurusan: record.jurusan,
-              tahunLulus: record.tahunLulus,
-              noWhatsapp: record.noWhatsapp || '',
-              email: record.email || '',
-              statusTracer: 'BELUM',
-              createdAt: new Date().toISOString(),
-            };
-            set((state) => ({
-              masterAlumni: [newRecord as MasterAlumniRecord, ...state.masterAlumni],
-            }));
-            return { success: true };
-          } else {
-            return { success: false, message: created.message };
-          }
-        } catch (err: any) {
-          return { success: false, message: err.message || 'Terjadi kesalahan jaringan' };
-        }
-      },
-
       deleteMasterAlumni: (id) => {
         import('@/services/adminService').then(({ adminMasterAlumniApi }) => {
           adminMasterAlumniApi.delete(id).then((res) => {
@@ -1908,10 +1827,30 @@ addSingleMasterAlumni: async (record) => {
 fetchMasterAlumniFromBackend: async () => {
         try {
           const { adminMasterAlumniApi } = await import('@/services/adminService');
-          const res = await adminMasterAlumniApi.listPublic({ limit: 100 });
-          const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? (res as any) : null);
-          if (list) {
-            const mapped: MasterAlumniRecord[] = list.map((item: any) => ({
+
+          const limit = 100;
+          const collected: any[] = [];
+          let page = 1;
+          let total = Infinity;
+
+          while (collected.length < total) {
+            const res = await adminMasterAlumniApi.listPublic({ page, limit });
+            const list = Array.isArray(res?.data)
+              ? res.data
+              : Array.isArray(res)
+                ? (res as any)
+                : null;
+
+            if (!list) break;
+
+            collected.push(...list);
+            total = Number(res?.meta?.total ?? collected.length);
+            if (list.length < limit) break;
+            page++;
+          }
+
+          if (collected.length > 0) {
+            const mapped: MasterAlumniRecord[] = collected.map((item: any) => ({
               id: item.id || `mst-${item.nisn}`,
               nisn: item.nisn,
               nik: item.nik || '',

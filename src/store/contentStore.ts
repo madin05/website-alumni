@@ -2,35 +2,73 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { NewsItem, JobVacancy } from '@/types/tracer';
 import { MOCK_NEWS, MOCK_JOBS } from '@/lib/mockData';
+import {
+  FieldErrors,
+  errorList,
+  parseIndonesianDate,
+  validateJobInput,
+  validateNewsInput,
+} from '@/utils/contentValidation';
 
 interface ContentState {
   newsList: NewsItem[];
   jobList: JobVacancy[];
+  newsFetchError: string | null;
 
-  // News Actions
-  addNews: (news: Omit<NewsItem, 'id'>) => NewsItem;
-  updateNews: (id: string, updates: Partial<NewsItem>) => void;
-  deleteNews: (id: string) => void;
+  // News Actions — mengembalikan true bila tersimpan di server
+  addNews: (news: Omit<NewsItem, 'id'>) => Promise<boolean>;
+  updateNews: (id: string, updates: Partial<NewsItem>) => Promise<boolean>;
+  deleteNews: (id: string) => Promise<boolean>;
   resetNewsToDefault: () => void;
   fetchNewsFromBackend: () => Promise<boolean>;
 
-  // Job Vacancy Actions
-  addJob: (job: Omit<JobVacancy, 'id'>) => JobVacancy;
-  updateJob: (id: string, updates: Partial<JobVacancy>) => void;
-  deleteJob: (id: string) => void;
+  // Job Vacancy Actions — mengembalikan true bila tersimpan di server
+  addJob: (job: Omit<JobVacancy, 'id'>) => Promise<boolean>;
+  updateJob: (id: string, updates: Partial<JobVacancy>) => Promise<boolean>;
+  deleteJob: (id: string) => Promise<boolean>;
   resetJobsToDefault: () => void;
   fetchJobsFromBackend: () => Promise<boolean>;
 
   syncAllContentFromBackend: () => Promise<void>;
 }
 
+/** Buat error lengkap dengan daftar pesan (untuk toast/warning). */
+function validationError(
+  title: string,
+  errors: FieldErrors,
+): Error & { fieldErrors: string[] } {
+  const messages = errorList(errors);
+  const err = new Error(
+    messages.length > 1
+      ? `${title}: ${messages.length} bagian belum memenuhi syarat. ${messages.join(' ')}`
+      : `${title} ${messages[0]}`,
+  ) as Error & { fieldErrors: string[] };
+  err.fieldErrors = messages;
+  return err;
+}
+
 export const useContentStore = create<ContentState>()(
   (set, get) => ({
     newsList: [],
     jobList: [],
+    newsFetchError: null,
 
       // News Actions
-      addNews: (newsData) => {
+      addNews: async (newsData) => {
+        // 1. Validasi DULU — kalau ada bagian yang tidak memenuhi syarat,
+        //    jangan tambah ke local state DAN jangan kirim ke server.
+        const errors = validateNewsInput({
+          title: newsData.title,
+          excerpt: newsData.excerpt,
+          content: newsData.content,
+          category: newsData.category,
+          author: newsData.author,
+          readTime: newsData.readTime,
+        });
+        if (Object.keys(errors).length > 0) {
+          throw validationError('Berita belum bisa dipublikasikan.', errors);
+        }
+
         const newNews: NewsItem = {
           ...newsData,
           id: `news-${Date.now()}`,
@@ -39,53 +77,75 @@ export const useContentStore = create<ContentState>()(
           newsList: [newNews, ...state.newsList],
         }));
 
-        import('@/services/adminService').then(({ adminNewsApi }) => {
-          adminNewsApi.create({
-            title: newsData.title,
-            excerpt: newsData.excerpt,
-            content: newsData.content,
-            category: newsData.category,
-            date: newsData.date ? new Date(newsData.date).toISOString() : new Date().toISOString(),
-            readTime: newsData.readTime || '3 min baca',
-            imageUrl: newsData.imageUrl,
-            author: newsData.author || 'Admin BKK',
+        // 2. Sinkron ke server; kalau gagal, ROLLBACK (hapus dari local state)
+        try {
+          const { adminNewsApi } = await import('@/services/adminService');
+          await adminNewsApi.create({
+            title: newNews.title,
+            excerpt: newNews.excerpt,
+            content: newNews.content,
+            category: newNews.category,
+            date: parseIndonesianDate(newsData.date).toISOString(),
+            readTime: newNews.readTime || '3 min read',
+            imageUrl: newNews.imageUrl,
+            author: newNews.author || 'Admin BKK',
             isPublished: true,
-          }).catch((err) => {
-            console.warn('[ContentStore] Backend news create sync fallback:', err);
           });
-        });
-
-        return newNews;
+        } catch (err) {
+          console.warn('[ContentStore] Backend news create sync fallback:', err);
+          set((state) => ({
+            newsList: state.newsList.filter((item) => item.id !== newNews.id),
+          }));
+          throw err;
+        }
+        return true;
       },
 
-      updateNews: (id, updates) => {
+      updateNews: async (id, updates) => {
+        // Simpan snapshot untuk kemungkinan rollback kalau server menolak
+        const previous = get().newsList;
         set((state) => ({
           newsList: state.newsList.map((item) =>
             item.id === id ? { ...item, ...updates } : item
           ),
         }));
 
-        if (!id.startsWith('news-mock-') && !id.startsWith('news-0')) {
-          import('@/services/adminService').then(({ adminNewsApi }) => {
-            adminNewsApi.update(id, updates as any).catch((err) => {
-              console.warn('[ContentStore] Backend news update sync fallback:', err);
-            });
-          });
+        // Sinkron ke server; kalau gagal, ROLLBACK perubahan lokal
+        try {
+          if (!id.startsWith('news-mock-') && !id.startsWith('news-0')) {
+            const { adminNewsApi } = await import('@/services/adminService');
+            const payload: Record<string, unknown> = { ...updates };
+            if (typeof payload.date === 'string') {
+              payload.date = parseIndonesianDate(payload.date as string).toISOString();
+            }
+            await adminNewsApi.update(id, payload as any);
+          }
+        } catch (err) {
+          console.warn('[ContentStore] Backend news update sync fallback:', err);
+          set({ newsList: previous });
+          throw err;
         }
+        return true;
       },
 
-      deleteNews: (id) => {
+      deleteNews: async (id) => {
+        // Simpan item lama dulu untuk kemungkinan rollback
+        const previous = get().newsList;
         set((state) => ({
           newsList: state.newsList.filter((item) => item.id !== id),
         }));
 
-        if (!id.startsWith('news-mock-') && !id.startsWith('news-0')) {
-          import('@/services/adminService').then(({ adminNewsApi }) => {
-            adminNewsApi.delete(id).catch((err) => {
-              console.warn('[ContentStore] Backend news delete sync fallback:', err);
-            });
-          });
+        try {
+          if (!id.startsWith('news-mock-') && !id.startsWith('news-0')) {
+            const { adminNewsApi } = await import('@/services/adminService');
+            await adminNewsApi.delete(id);
+          }
+        } catch (err) {
+          console.warn('[ContentStore] Backend news delete sync fallback:', err);
+          set({ newsList: previous });
+          throw err;
         }
+        return true;
       },
 
       resetNewsToDefault: () => {
@@ -93,10 +153,11 @@ export const useContentStore = create<ContentState>()(
       },
 
       fetchNewsFromBackend: async () => {
+        set({ newsFetchError: null });
         try {
           const { adminNewsApi } = await import('@/services/adminService');
           const res = await adminNewsApi.list({ limit: 50 });
-          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          if (res && res.data && Array.isArray(res.data)) {
             const mapped: NewsItem[] = res.data.map((item: any) => ({
               id: item.id,
               title: item.title,
@@ -114,12 +175,36 @@ export const useContentStore = create<ContentState>()(
           }
         } catch (err) {
           console.warn('[ContentStore] Fetch news from backend fallback:', err);
+          set({
+            newsFetchError:
+              err instanceof Error
+                ? err.message
+                : 'Gagal memuat berita dari server.',
+          });
         }
         return false;
       },
 
       // Job Vacancy Actions
-      addJob: (jobData) => {
+      addJob: async (jobData) => {
+        // 1. Validasi DULU — kalau ada bagian yang tidak memenuhi syarat,
+        //    jangan tambah ke local state DAN jangan kirim ke server.
+        const errors = validateJobInput({
+          title: jobData.title,
+          company: jobData.company,
+          location: jobData.location,
+          salary: jobData.salary,
+          type: jobData.type,
+          targetMajors: jobData.targetMajors,
+          deadline: jobData.deadline,
+          contactPerson: jobData.contactPerson,
+          description: jobData.description,
+          requirements: jobData.requirements,
+        });
+        if (Object.keys(errors).length > 0) {
+          throw validationError('Loker belum bisa dipublikasikan.', errors);
+        }
+
         const newJob: JobVacancy = {
           ...jobData,
           id: `job-${Date.now()}`,
@@ -128,96 +213,75 @@ export const useContentStore = create<ContentState>()(
           jobList: [newJob, ...state.jobList],
         }));
 
-        import('@/services/adminService').then(({ adminJobsApi }) => {
-          const parseIndonesianDate = (dateStr: string): Date => {
-            const monthMap: Record<string, number> = {
-              'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
-              'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11,
-              'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
-              'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
-            };
-            const parts = dateStr.trim().split(' ');
-            if (parts.length === 3) {
-              const day = parseInt(parts[0], 10);
-              const month = monthMap[parts[1]] ?? 0;
-              const year = parseInt(parts[2], 10);
-              return new Date(year, month, day);
-            }
-            const d = new Date(dateStr);
-            return isNaN(d.getTime()) ? new Date(Date.now() + 30 * 86400000) : d;
-          };
-
-          adminJobsApi.create({
-            title: jobData.title,
-            company: jobData.company,
+        // 2. Sinkron ke server; kalau gagal, ROLLBACK (hapus dari local state)
+        try {
+          const { adminJobsApi } = await import('@/services/adminService');
+          await adminJobsApi.create({
+            title: newJob.title,
+            company: newJob.company,
             companyLogo: jobData.companyLogo,
-            location: jobData.location,
-            type: jobData.type,
-            salary: jobData.salary,
+            location: newJob.location,
+            type: newJob.type,
+            salary: newJob.salary,
             targetMajors: jobData.targetMajors as any,
-            deadline: jobData.deadline ? parseIndonesianDate(jobData.deadline).toISOString() : new Date(Date.now() + 30 * 86400000).toISOString(),
-            description: jobData.description,
-            requirements: jobData.requirements,
-            contactPerson: jobData.contactPerson,
-            isBkkPartner: jobData.isBkkPartner,
-          }).catch((err) => {
-            console.warn('[ContentStore] Backend job create sync fallback:', err);
+            deadline: parseIndonesianDate(jobData.deadline).toISOString(),
+            description: newJob.description,
+            requirements: newJob.requirements,
+            contactPerson: newJob.contactPerson,
+            isBkkPartner: newJob.isBkkPartner,
           });
-        });
-
-        return newJob;
+        } catch (err) {
+          console.warn('[ContentStore] Backend job create sync fallback:', err);
+          set((state) => ({
+            jobList: state.jobList.filter((job) => job.id !== newJob.id),
+          }));
+          throw err;
+        }
+        return true;
       },
 
-      updateJob: (id, updates) => {
+      updateJob: async (id, updates) => {
         set((state) => ({
           jobList: state.jobList.map((job) =>
             job.id === id ? { ...job, ...updates } : job
           ),
         }));
 
-        if (!id.startsWith('job-mock-') && !id.startsWith('job-0')) {
-          import('@/services/adminService').then(({ adminJobsApi }) => {
-            const parseIndonesianDate = (dateStr: string): Date => {
-              const monthMap: Record<string, number> = {
-                'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'Mei': 4, 'Jun': 5,
-                'Jul': 6, 'Agu': 7, 'Sep': 8, 'Okt': 9, 'Nov': 10, 'Des': 11,
-                'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
-                'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
-              };
-              const parts = dateStr.trim().split(' ');
-              if (parts.length === 3) {
-                const day = parseInt(parts[0], 10);
-                const month = monthMap[parts[1]] ?? 0;
-                const year = parseInt(parts[2], 10);
-                return new Date(year, month, day);
-              }
-              const d = new Date(dateStr);
-              return isNaN(d.getTime()) ? new Date(Date.now() + 30 * 86400000) : d;
-            };
-
-            const payload = { ...updates };
-            if (payload.deadline) {
+        // Sinkron ke server; kalau gagal, lempar error (tab tangani toast)
+        try {
+          if (!id.startsWith('job-mock-') && !id.startsWith('job-0')) {
+            const { adminJobsApi } = await import('@/services/adminService');
+            const payload: Record<string, unknown> = { ...updates };
+            if (typeof payload.deadline === 'string') {
               payload.deadline = parseIndonesianDate(payload.deadline as string).toISOString();
             }
-            adminJobsApi.update(id, payload as any).catch((err) => {
-              console.warn('[ContentStore] Backend job update sync fallback:', err);
-            });
-          });
+            await adminJobsApi.update(id, payload as any);
+          }
+        } catch (err) {
+          console.warn('[ContentStore] Backend job update sync fallback:', err);
+          throw err;
         }
+        return true;
       },
 
-      deleteJob: (id) => {
+      deleteJob: async (id) => {
+        // Simpan daftar lama dulu untuk kemungkinan rollback
+        const previous = get().jobList;
         set((state) => ({
           jobList: state.jobList.filter((job) => job.id !== id),
         }));
 
-        if (!id.startsWith('job-mock-') && !id.startsWith('job-0')) {
-          import('@/services/adminService').then(({ adminJobsApi }) => {
-            adminJobsApi.delete(id).catch((err) => {
-              console.warn('[ContentStore] Backend job delete sync fallback:', err);
-            });
-          });
+        try {
+          if (!id.startsWith('job-mock-') && !id.startsWith('job-0')) {
+            const { adminJobsApi } = await import('@/services/adminService');
+            await adminJobsApi.delete(id);
+          }
+        } catch (err) {
+          console.warn('[ContentStore] Backend job delete sync fallback:', err);
+          set({ jobList: previous });
+          throw err;
         }
+        return true;
       },
 
       resetJobsToDefault: () => {
@@ -228,7 +292,7 @@ export const useContentStore = create<ContentState>()(
         try {
           const { adminJobsApi } = await import('@/services/adminService');
           const res = await adminJobsApi.listPublic({ limit: 50 });
-          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          if (res && res.data && Array.isArray(res.data)) {
             const mapped: JobVacancy[] = res.data.map((item: any) => ({
               id: item.id,
               title: item.title,

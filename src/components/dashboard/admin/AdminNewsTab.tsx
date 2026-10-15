@@ -10,6 +10,7 @@ import {
   Clock,
   User,
   CheckCircle2,
+  AlertTriangle,
   ArrowUpRight,
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
@@ -31,7 +32,7 @@ const SolidNewspaperIcon: React.FC<{ className?: string }> = ({
 );
 
 export const AdminNewsTab: React.FC = () => {
-  const { newsList, addNews, updateNews, deleteNews, fetchNewsFromBackend } = useContentStore();
+  const { newsList, addNews, updateNews, deleteNews, fetchNewsFromBackend, newsFetchError } = useContentStore();
 
   const [viewMode, setViewMode] = useState<"list" | "editor">("list");
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,10 +48,12 @@ export const AdminNewsTab: React.FC = () => {
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
 
-  const showToast = (msg: string) => {
+  const showToast = (msg: string, type: "success" | "error" = "success") => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(""), 3500);
+    setToastType(type);
+    setTimeout(() => setToastMessage(""), 5000);
   };
 
   const handleOpenEditor = (news: NewsItem | null) => {
@@ -59,7 +62,7 @@ export const AdminNewsTab: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSaveNews = (data: {
+  const handleSaveNews = async (data: {
     title: string;
     category: NewsItem["category"];
     author: string;
@@ -74,26 +77,43 @@ export const AdminNewsTab: React.FC = () => {
       year: "numeric",
     });
 
-    if (editingNews) {
-      updateNews(editingNews.id, {
-        ...data,
-      });
-      showToast("Berita berhasil diperbarui dan dipublikasikan!");
-    } else {
-      addNews({
-        ...data,
-        date: todayStr,
-      });
-      showToast("Berita baru berhasil ditambahkan dan dipublikasikan!");
+    try {
+      if (editingNews) {
+        await updateNews(editingNews.id, { ...data });
+        showToast("Berita berhasil diperbarui dan dipublikasikan!");
+      } else {
+        await addNews({
+          ...data,
+          date: todayStr,
+        });
+        showToast("Berita baru berhasil ditambahkan dan dipublikasikan!");
+      }
+      setViewMode("list");
+    } catch (err) {
+      // Gagal tersimpan ke server (atau validasi belum lolos):
+      // tetap di halaman editor supaya bisa diperbaiki.
+      showToast(
+        err instanceof Error
+          ? err.message
+          : "Gagal menyimpan berita ke server. Silakan coba lagi.",
+        "error",
+      );
     }
-
-    setViewMode("list");
   };
 
-  const handleDelete = (id: string) => {
-    deleteNews(id);
+  const handleDelete = async (id: string) => {
     setDeleteConfirmId(null);
-    showToast("Berita berhasil dihapus dari sistem.");
+    try {
+      await deleteNews(id);
+      showToast("Berita berhasil dihapus dari sistem.");
+    } catch (err) {
+      showToast(
+        err instanceof Error
+          ? err.message
+          : "Gagal menghapus berita dari server.",
+        "error",
+      );
+    }
   };
 
   // Reset pagination when search query or filter changes
@@ -150,15 +170,41 @@ export const AdminNewsTab: React.FC = () => {
               </h1>
             </div>
 
-            <button
-              type="button"
-              onClick={() => handleOpenEditor(null)}
-              className="px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Buat Berita Baru</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => fetchNewsFromBackend()}
+                className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 shadow-xs transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                title="Muat ulang berita dari server"
+              >
+                <span>Muat Ulang</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleOpenEditor(null)}
+                className="px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Buat Berita Baru</span>
+              </button>
+            </div>
           </div>
+
+          {/* Backend Connection Error Banner */}
+          {newsFetchError && (
+            <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <p className="text-xs font-semibold text-amber-800">
+                Gagal memuat berita dari database server: {newsFetchError}
+              </p>
+              <button
+                type="button"
+                onClick={() => fetchNewsFromBackend()}
+                className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition cursor-pointer shrink-0"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          )}
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -241,15 +287,26 @@ export const AdminNewsTab: React.FC = () => {
           {/* News Card Grid */}
           {filteredNews.length === 0 ? (
             <div className="bg-white rounded-xl p-12 text-center border border-slate-200 shadow-xs space-y-3">
-              <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto">
                 <Search className="w-6 h-6" />
               </div>
               <h3 className="text-sm font-bold text-slate-800">
-                Tidak ada berita ditemukan
+                {newsFetchError ? 'Berita gagal dimuat dari server' : 'Tidak ada berita ditemukan'}
               </h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Coba sesuaikan kata kunci pencarian atau pilih kategori lain.
+                {newsFetchError
+                  ? 'Periksa koneksi server lalu tekan "Muat Ulang" untuk mencoba kembali.'
+                  : 'Coba sesuaikan kata kunci pencarian atau pilih kategori lain.'}
               </p>
+              {newsFetchError && (
+                <button
+                  type="button"
+                  onClick={() => fetchNewsFromBackend()}
+                  className="mt-2 px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold transition cursor-pointer"
+                >
+                  Muat Ulang Berita
+                </button>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 content-start min-h-[520px]">

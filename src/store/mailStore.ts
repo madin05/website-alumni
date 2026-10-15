@@ -29,6 +29,7 @@ export interface MailItem {
 
 interface MailState {
   mails: MailItem[];
+  fetchError: string | null;
   markAsRead: (id: string) => void;
   markAllAsRead: (role: 'admin_bkk' | 'alumni', userNisn?: string) => void;
   deleteMail: (id: string) => void;
@@ -195,6 +196,7 @@ const INITIAL_MAILS: MailItem[] = [
 export const useMailStore = create<MailState>()(
   (set, get) => ({
     mails: [],
+    fetchError: null,
 
       markAsRead: (id: string) => {
         set((state) => ({
@@ -276,10 +278,11 @@ export const useMailStore = create<MailState>()(
       },
 
       fetchMailsFromBackend: async () => {
+        set({ fetchError: null });
         try {
           const { adminMessagesApi } = await import('@/services/adminService');
           const res = await adminMessagesApi.list({ limit: 50 });
-          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          if (res && res.data && Array.isArray(res.data)) {
             const mapped: MailItem[] = res.data.map((item: any) => ({
               id: item.id,
               senderName: item.nama || item.alumni?.namaLengkap || 'Pengirim',
@@ -303,6 +306,12 @@ export const useMailStore = create<MailState>()(
           }
         } catch (err) {
           console.warn('[MailStore] Fetch messages from backend fallback:', err);
+          set({
+            fetchError:
+              err instanceof Error
+                ? err.message
+                : 'Gagal memuat pesan dari server.',
+          });
         }
         return false;
       },
