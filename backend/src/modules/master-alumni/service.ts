@@ -65,7 +65,7 @@ export async function createMasterAlumni(input: MasterAlumniCreateInput) {
   }
 
   return prisma.alumni.create({
-    data: await mapCreateInput(input),
+    data: (await mapCreateInput(input)) as any,
     select: selectFields(),
   });
 }
