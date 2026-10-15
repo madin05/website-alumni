@@ -129,7 +129,7 @@ async function main() {
       },
     });
   }
-  console.log('✅ Sample tracer submissions created (2 records)');
+  console.log('Sample tracer submissions created (2 records)');
 
   // 4. Create sample job vacancies
   const jobs = [
