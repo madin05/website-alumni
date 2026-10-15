@@ -113,8 +113,8 @@ async function main() {
           program_studi: 'Teknik Informatika',
           jenjang: 'S1',
           status_kuliah: 'Aktif',
-        } : Prisma.JsonNull,
-        detailUsaha: Prisma.JsonNull,
+        } : undefined,
+        detailUsaha: undefined,
         evaluasi: {
           skor_relevansi: 5,
           kompetensi_bermanfaat: ['Kompetensi teknis', 'Komunikasi', 'Kerja sama'],
