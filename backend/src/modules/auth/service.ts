@@ -63,7 +63,7 @@ export async function login(app: FastifyInstance, input: LoginInput) {
   const payload = {
     id: alumni.id,
     nisn: alumni.nisn,
-    email: alumni.email,
+    email: alumni.email || '',
     role: alumni.role,
   };
 
@@ -109,7 +109,7 @@ export async function register(app: FastifyInstance, input: RegisterInput) {
   const payload = {
     id: alumni.id,
     nisn: alumni.nisn,
-    email: alumni.email,
+    email: alumni.email || '',
     role: alumni.role,
   };
 
@@ -128,7 +128,7 @@ export async function refreshAccessToken(app: FastifyInstance, refreshToken: str
     const newPayload = {
       id: alumni.id,
       nisn: alumni.nisn,
-      email: alumni.email,
+      email: alumni.email || '',
       role: alumni.role,
     };
 

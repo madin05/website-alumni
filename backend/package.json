@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Backend API Tracer Study & BKK SMK Sasmita Jaya 2 Pamulang (Fastify + Prisma + MySQL)",
   "type": "module",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "prisma:generate": "prisma generate",

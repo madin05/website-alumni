@@ -7,7 +7,7 @@ import cookie from '@fastify/cookie';
 import staticFiles from '@fastify/static';
 import { env } from './config/env.js';
 import { errorHandler, notFoundHandler } from './core/middleware/errorHandler.js';
-import { routes } from './modules/routes';
+import { routes } from './modules/routes.js';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 

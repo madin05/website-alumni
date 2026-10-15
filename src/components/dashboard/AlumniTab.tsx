@@ -23,9 +23,9 @@ export const AlumniTab: React.FC = () => {
     setCurrentPage(1);
   }, [search, jurusanFilter]);
 
-  // Derive alumni list from master alumni in store (database)
+  // Combine master alumni from admin store with mock alumni
   const combinedAlumniList = useMemo(() => {
-    return (masterAlumni || []).map((m) => {
+    const fromAdmin = (masterAlumni || []).map((m) => {
       const resp = (respondents || []).find((r) => r.nisn === m.nisn || r.nik === m.nik);
       const isFemale = /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(m.nama);
 
@@ -56,6 +56,12 @@ export const AlumniTab: React.FC = () => {
         jenisKelamin: (isFemale ? 'P' : 'L') as 'L' | 'P',
       };
     });
+
+    // Merge without duplicates by name
+    const seenNames = new Set(fromAdmin.map((a) => a.nama.toLowerCase()));
+    const additionalMock = MOCK_ALUMNI_LIST.filter((a) => !seenNames.has(a.nama.toLowerCase()));
+
+    return [...fromAdmin, ...additionalMock];
   }, [masterAlumni, respondents]);
 
   const filteredAlumni = combinedAlumniList.filter((alumni) => {
