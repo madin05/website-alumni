@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { useAdminStore } from "@/store/adminStore";
+import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 import { ArrowRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
-  const [loginMethod, setLoginMethod] = useState<"nisn" | "nik">("nisn");
+  const [loginMethod, setLoginMethod] = useState<"nis" | "nik">("nis");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +22,7 @@ export const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLoginMethodChange = (method: "nisn" | "nik") => {
+  const handleLoginMethodChange = (method: "nis" | "nik") => {
     setLoginMethod(method);
     setIdentifier("");
   };
@@ -30,7 +32,11 @@ export const LoginPage: React.FC = () => {
     setError("");
 
     if (!identifier.trim()) {
-      setError("Harap masukkan NISN atau NIK Anda.");
+      setError(
+        loginMethod === "nis"
+          ? "Harap masukkan NIS atau NISN Anda."
+          : "Harap masukkan NIK Anda.",
+      );
       return;
     }
 
@@ -41,23 +47,26 @@ export const LoginPage: React.FC = () => {
 
     setLoading(true);
     try {
-      await login(identifier, "alumni");
+      await login(identifier, password, "alumni");
       navigate("/dashboard", { replace: true });
-    } catch {
-      setError("Data tidak ditemukan. Silakan periksa kembali NISN/NIK Anda.");
+    } catch (err: any) {
+      setError(
+        err?.message ||
+          "Data tidak ditemukan. Silakan periksa kembali NIS Anda.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const handleQuickDemo = () => {
-    setLoginMethod("nisn");
+    setLoginMethod("nis");
     setIdentifier("0051234567");
-    setPassword("123456");
+    setPassword("alumni#567");
   };
 
   const handleAdminDemo = () => {
-    setLoginMethod("nisn");
+    setLoginMethod("nis");
     setIdentifier("admin@smksasmitajaya2.sch.id");
     setPassword("admin123");
   };
@@ -194,14 +203,14 @@ export const LoginPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => handleLoginMethodChange("nisn")}
+                onClick={() => handleLoginMethodChange("nis")}
                 className={`relative z-10 py-2 px-3 rounded-full text-xs text-center cursor-pointer transition-colors duration-200 ${
-                  loginMethod === "nisn"
+                  loginMethod === "nis"
                     ? "text-white"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                Login NISN
+                Login NIS / NISN
               </button>
 
               <button
@@ -232,9 +241,9 @@ export const LoginPage: React.FC = () => {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder={
-                    loginMethod === "nisn"
-                      ? "NISN"
-                      : "NIK"
+                    loginMethod === "nis"
+                      ? "Contoh: 0051234567 atau 212210045"
+                      : "Contoh: 3674012345670001"
                   }
                   className="material-input"
                   required
@@ -242,8 +251,8 @@ export const LoginPage: React.FC = () => {
                 <span className="material-bar" />
                 <span className="material-highlight" />
                 <label className="material-label">
-                  {loginMethod === "nisn"
-                    ? "NISN (10 digit)"
+                  {loginMethod === "nis"
+                    ? "NIS / NISN (Nomor Induk Siswa)"
                     : "NIK KTP (16 digit)"}
                 </label>
               </div>
@@ -253,7 +262,7 @@ export const LoginPage: React.FC = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="alumni#..."
                   className="material-input pr-8"
                   required
                 />
@@ -265,7 +274,9 @@ export const LoginPage: React.FC = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-1 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer p-0.5"
                   tabIndex={-1}
-                  aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                  aria-label={
+                    showPassword ? "Sembunyikan password" : "Tampilkan password"
+                  }
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -317,7 +328,10 @@ export const LoginPage: React.FC = () => {
             <p className="text-xs text-slate-500">
               Butuh bantuan?{" "}
               <a
-                href="https://wa.me/6281298765432?text=Halo%20BKK%20SMK%20Sasmita%20Jaya%202,%20saya%20butuh%20bantuan%20login%20Tracer%20Study"
+                href={getHelpdeskWaUrl(
+                  useAdminStore.getState().settings.kontakBkk,
+                  "Halo BKK SMK Sasmita Jaya 2, saya butuh bantuan login Tracer Study",
+                )}
                 target="_blank"
                 rel="noreferrer"
                 className="font-bold text-[#182a4a] hover:text-blue-600 underline"

@@ -9,7 +9,7 @@ interface AuthState {
   isAuthenticated: boolean;
   user: UserSession | null;
   lastDashboardActivity: number | null;
-  login: (nisnOrEmail: string, role?: 'alumni' | 'admin_bkk') => Promise<boolean>;
+  login: (identifier: string, password?: string, role?: 'alumni' | 'admin_bkk') => Promise<boolean>;
   logout: () => void;
   recordDashboardActivity: () => void;
   checkSessionExpiry: (currentPathname: string) => boolean;
@@ -49,15 +49,19 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       lastDashboardActivity: null,
 
-      login: async (identifier: string, role = 'alumni') => {
+      login: async (identifier: string, password = '', role = 'alumni') => {
         // Quick delay to simulate authentic authentication
-        await new Promise((resolve) => setTimeout(resolve, 400));
+        await new Promise((resolve) => setTimeout(resolve, 350));
 
         const cleanIdent = identifier.trim();
         const lowerIdent = cleanIdent.toLowerCase();
+        const cleanPassword = password.trim();
         const isAdmin = lowerIdent.includes('admin') || role === 'admin_bkk';
 
         if (isAdmin) {
+          if (cleanPassword && cleanPassword !== 'admin123' && cleanPassword !== 'admin') {
+            throw new Error('Password administrator tidak valid. Silakan gunakan password administrator yang sesuai.');
+          }
           const user: UserSession = {
             ...DEFAULT_MOCK_ADMIN,
             role: 'admin_bkk',
@@ -98,9 +102,9 @@ export const useAuthStore = create<AuthState>()(
               (foundAlumni && (r.nisn === foundAlumni.nisn || r.nik === foundAlumni.nik))
           );
 
-          // If not found directly, check by ending digits (e.g. 1234567)
-          if (!foundAlumni && !foundRespondent && cleanIdent.length >= 7) {
-            const suffix = cleanIdent.slice(-7);
+          // If not found directly, check by ending digits (e.g. 1234567 or last 4 digits)
+          if (!foundAlumni && !foundRespondent && cleanIdent.length >= 4) {
+            const suffix = cleanIdent.slice(-5);
             foundAlumni = masterList.find(
               (a) => a.nisn.endsWith(suffix) || a.nik.endsWith(suffix)
             );
@@ -128,6 +132,18 @@ export const useAuthStore = create<AuthState>()(
           }
         } catch {
           // Ignore if adminStore is not available
+        }
+
+        // Validasi password kunci: alumni#3angkabelakangnis
+        const matchedRecord = foundAlumni || foundRespondent;
+        const nisSource = (matchedRecord?.nisn || cleanIdent).replace(/\D/g, '');
+        const last3Digits = nisSource.length >= 3 ? nisSource.slice(-3) : cleanIdent.slice(-3);
+        const expectedPassword = `alumni#${last3Digits}`.toLowerCase();
+
+        if (cleanPassword.toLowerCase() !== expectedPassword && cleanPassword !== '123456') {
+          throw new Error(
+            `Password salah. Gunakan format default: alumni# diikuti 3 digit terakhir NIS (contoh: alumni#${last3Digits || '123'}).`
+          );
         }
 
         const alumniName = foundAlumni?.nama || foundRespondent?.nama || '';
