@@ -645,7 +645,7 @@ export const ReportDetailPage: React.FC = () => {
                     Wirausaha
                   </th>
                   <th className="py-3 px-3 text-center rounded-r-xl whitespace-nowrap">
-                    Belum Kerja
+                    Belum Bekerja
                   </th>
                 </tr>
               </thead>
@@ -924,7 +924,7 @@ export const ReportDetailPage: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-md bg-slate-300 shrink-0" />
                       <span className="font-semibold text-slate-800">
-                        Belum Kerja / Cari Kerja
+                        Belum Bekerja / Cari Kerja
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 sm:gap-2 font-bold">

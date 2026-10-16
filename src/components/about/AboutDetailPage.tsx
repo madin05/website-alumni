@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { useAdminStore } from "@/store/adminStore";
+import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import {
@@ -478,7 +480,10 @@ export const AboutDetailPage: React.FC = () => {
                 hubungi tim Helpdesk kami.
               </p>
               <a
-                href="https://wa.me/6281298765432?text=Halo%20Helpdesk%20Tracer%20Study%20SMK%20Sasmita%20Jaya%202"
+                href={getHelpdeskWaUrl(
+                  useAdminStore.getState().settings.kontakBkk,
+                  "Halo Helpdesk Tracer Study SMK Sasmita Jaya 2"
+                )}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition shadow-xs"

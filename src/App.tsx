@@ -24,8 +24,11 @@ export const App: React.FC = () => {
       <ScrollToTopOrHash />
 
       <Routes>
-        {/* Landing Page: Publicly accessible homepage */}
-        <Route path="/" element={<LandingPage />} />
+        {/* Landing Page: Guest Only (Redirect to /dashboard if already in session) */}
+        <Route
+          path="/"
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />}
+        />
 
         {/* Dedicated Login Page - Guest Only: If already logged in, redirect directly to /dashboard */}
         <Route

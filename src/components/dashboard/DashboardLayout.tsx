@@ -11,6 +11,7 @@ import { TracerWizard } from '@/components/tracer/TracerWizard';
 import { generateTracerReceiptPdf } from '@/lib/pdfGenerator';
 import { useTracerStore } from '@/store/tracerStore';
 import { useAuthStore } from '@/store/authStore';
+import { useAdminStore } from '@/store/adminStore';
 import { JobVacancy } from '@/types/tracer';
 
 // Admin Tabs
@@ -64,6 +65,22 @@ export const DashboardLayout: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  // History Trap: Cegah tombol Back browser keluar dari Dashboard saat sesi aktif
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    window.history.pushState(null, '', window.location.href);
+
+    const handlePopState = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isAuthenticated]);
+
   const isAdmin = user?.role === 'admin_bkk';
 
   const tabParam = (searchParams.get('tab') as DashboardTab) || 'beranda';
@@ -112,28 +129,62 @@ export const DashboardLayout: React.FC = () => {
 
   // Direct PDF Download tanpa preview modal
   const handleDirectDownloadReceipt = () => {
-    const { identitas, status_kegiatan, lastSubmissionId, lastSubmittedAt } = useTracerStore.getState();
+    const tracerState = useTracerStore.getState();
     const currentUser = useAuthStore.getState().user;
+    const adminState = useAdminStore.getState();
 
-    const regId = lastSubmissionId || currentUser?.submissionId || '2026102498';
-    const activeIdent = identitas?.nama_lengkap
-      ? identitas
-      : {
-          nama_lengkap: currentUser?.nama || 'Ahmad Dani',
-          nisn: currentUser?.nisn || '0051234567',
-          nik: currentUser?.nik || '3674012345670001',
-          jurusan: currentUser?.jurusan || ('Teknik Komputer dan Jaringan' as any),
-          tahun_lulus: currentUser?.tahun_lulus || 2024,
-          tahun_masuk: (currentUser?.tahun_lulus || 2024) - 3,
-          no_whatsapp: '081298765432',
-          email: currentUser?.email || 'alumni@example.com',
-        };
+    // Guard: hanya bisa unduh jika memang sudah mengisi tracer study
+    const isTracerDone =
+      tracerState.isSubmitted ||
+      currentUser?.tracerStatus === 'SUDAH' ||
+      (currentUser as any)?.statusTracer === 'SUDAH';
+
+    if (!isTracerDone) {
+      return;
+    }
+
+    // Cari data responden di admin store jika cocok dengan user yang sedang login
+    const matchedRespondent = adminState.respondents?.find(
+      (r) =>
+        (currentUser?.nisn && r.nisn.trim() === currentUser.nisn.trim()) ||
+        (currentUser?.nik && r.nik.trim() === currentUser.nik.trim()) ||
+        (currentUser?.nama && r.nama.toLowerCase() === currentUser.nama.toLowerCase())
+    );
+
+    const regId =
+      currentUser?.submissionId ||
+      matchedRespondent?.submissionId ||
+      tracerState.lastSubmissionId ||
+      '2026102498';
+
+    // Prioritaskan 100% data akun profil user yang sedang login agar tidak tertukar dengan dummy/stale data
+    const activeIdent = {
+      nama_lengkap: currentUser?.nama || matchedRespondent?.nama || tracerState.identitas?.nama_lengkap || 'Alumni Sasmita',
+      nisn: currentUser?.nisn || matchedRespondent?.nisn || tracerState.identitas?.nisn || '-',
+      nik: currentUser?.nik || matchedRespondent?.nik || tracerState.identitas?.nik || '-',
+      jurusan: (currentUser?.jurusan || matchedRespondent?.jurusan || tracerState.identitas?.jurusan || 'Teknik Komputer dan Jaringan') as any,
+      tahun_lulus: currentUser?.tahun_lulus || matchedRespondent?.tahunLulus || tracerState.identitas?.tahun_lulus || 2025,
+      tahun_masuk: (currentUser?.tahun_lulus ? currentUser.tahun_lulus - 3 : matchedRespondent?.tahunLulus ? matchedRespondent.tahunLulus - 3 : tracerState.identitas?.tahun_masuk) || 2022,
+      no_whatsapp: (currentUser as any)?.noWhatsapp || (currentUser as any)?.no_whatsapp || matchedRespondent?.noWhatsapp || tracerState.identitas?.no_whatsapp || '-',
+      email: currentUser?.email || matchedRespondent?.email || tracerState.identitas?.email || '-',
+    };
+
+    const statusKegiatan =
+      matchedRespondent?.statusKegiatan ||
+      tracerState.status_kegiatan ||
+      'KERJA';
+
+    const submittedAt =
+      currentUser?.submittedAt ||
+      matchedRespondent?.submittedAt ||
+      tracerState.lastSubmittedAt ||
+      new Date().toISOString();
 
     generateTracerReceiptPdf({
       submissionId: regId,
       identitas: activeIdent,
-      statusKegiatan: status_kegiatan || 'KERJA',
-      submittedAt: lastSubmittedAt || currentUser?.submittedAt || new Date().toISOString(),
+      statusKegiatan,
+      submittedAt,
     });
   };
 
@@ -323,6 +374,7 @@ export const DashboardLayout: React.FC = () => {
                   <LokerTab
                     selectedJobFromOverview={selectedJob}
                     onClearSelectedJob={() => setSelectedJob(null)}
+                    onNavigateTab={(tab) => setActiveTab(tab)}
                   />
                 )
               )}

@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Send, HelpCircle, ChevronDown } from "lucide-react";
+import { useAdminStore } from "@/store/adminStore";
+import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 
 export const HelpdeskTab: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -60,12 +62,15 @@ export const HelpdeskTab: React.FC = () => {
                   Pelayanan Senin - Jumat (08.00 - 16.00)
                 </p>
                 <a
-                  href="https://wa.me/6281298765432"
+                  href={getHelpdeskWaUrl(
+                    useAdminStore.getState().settings.kontakBkk,
+                    "Halo BKK SMK Sasmita Jaya 2, saya butuh informasi layanan alumni"
+                  )}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-block pt-1 text-xs font-bold text-slate-800 hover:underline"
                 >
-                  +62 812-9876-5432
+                  {useAdminStore.getState().settings.kontakBkk || "+62 812-9876-5432"}
                 </a>
               </div>
             </div>

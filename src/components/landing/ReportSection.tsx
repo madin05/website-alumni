@@ -392,7 +392,7 @@ export const ReportSection: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
                     <span className="font-semibold text-slate-800">
-                      Belum Kerja
+                      Belum Bekerja
                     </span>
                   </div>
                   <span className="font-bold text-slate-900">

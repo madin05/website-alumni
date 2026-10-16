@@ -56,6 +56,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  const isTracerDone = isSubmitted || user?.tracerStatus === 'SUDAH' || (user as any)?.statusTracer === 'SUDAH';
+
   // Close dropdown when tapping/clicking outside
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
@@ -146,7 +148,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 <p className="text-slate-400 text-[11px] truncate">{user?.email || 'admin@smksasmitajaya2.sch.id'}</p>
               </div>
 
-              {user?.role !== 'admin_bkk' && (
+              {user?.role !== 'admin_bkk' && isTracerDone && (
                 <div className="py-1">
                   <button
                     onClick={() => {

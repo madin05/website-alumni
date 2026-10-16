@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useContentStore } from "@/store/contentStore";
 import { useAuthStore } from "@/store/authStore";
+import { useAdminStore } from "@/store/adminStore";
+import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import {
@@ -270,7 +272,10 @@ export const NewsDetailPage: React.FC = () => {
                 2 untuk informasi lebih lanjut.
               </p>
               <a
-                href="https://wa.me/6281298765432?text=Halo%20Helpdesk%20SMK%20Sasmita%20Jaya%202"
+                href={getHelpdeskWaUrl(
+                  useAdminStore.getState().settings.kontakBkk,
+                  "Halo Helpdesk SMK Sasmita Jaya 2"
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-xs font-bold text-emerald-600 hover:text-emerald-700"
