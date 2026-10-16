@@ -5,8 +5,8 @@ import { ArrowRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
   const [loginMethod, setLoginMethod] = useState<"nisn" | "nik">("nisn");
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
+  const [identifier, setIdentifier] = useState("0061234567");
+  const [password, setPassword] = useState("123456");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -22,8 +22,8 @@ export const LoginPage: React.FC = () => {
 
   const handleLoginMethodChange = (method: "nisn" | "nik") => {
     setLoginMethod(method);
-    setIdentifier("");
-    setPassword("");
+    setIdentifier(method === "nisn" ? "0061234567" : "3274012304050001");
+    setPassword("123456");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,7 +120,7 @@ export const LoginPage: React.FC = () => {
           <div className="relative z-10">
             <div className="flex items-center gap-3 group">
               <img
-                src="/logo-smk.png"
+                src="/favicon.png"
                 alt="Logo SMK Sasmita Jaya 2"
                 className="w-10 h-10 object-contain drop-shadow-md"
               />
@@ -278,7 +278,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 px-6 rounded-xl bg-[#182945] hover:bg-[#122038] text-white font-medium text-sm tracking-wide shadow-md cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2 transition-all active:scale-[0.99] !mt-8"
+                className="w-full py-3.5 px-6 rounded-xl bg-[#182945] hover:bg-[#122038] text-white font-medium text-sm tracking-wide shadow-md cursor-pointer disabled:opacity-75 flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
               >
                 {loading ? (
                   <span>Memproses...</span>

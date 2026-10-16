@@ -113,8 +113,8 @@ async function main() {
           program_studi: 'Teknik Informatika',
           jenjang: 'S1',
           status_kuliah: 'Aktif',
-        } : Prisma.JsonNull,
-        detailUsaha: Prisma.JsonNull,
+        } : undefined,
+        detailUsaha: undefined,
         evaluasi: {
           skor_relevansi: 5,
           kompetensi_bermanfaat: ['Kompetensi teknis', 'Komunikasi', 'Kerja sama'],
@@ -129,7 +129,7 @@ async function main() {
       },
     });
   }
-  console.log('✅ Sample tracer submissions created (2 records)');
+  console.log('Sample tracer submissions created (2 records)');
 
   // 4. Create sample job vacancies
   const jobs = [
