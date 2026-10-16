@@ -153,96 +153,13 @@ export const useAuthStore = create<AuthState>()(
           if (err.message && /HTTP (400|401|403|422)/i.test(err.message)) {
             return false;
           }
-          console.warn('[AuthStore] Backend login unreachable, falling back to local simulation:', err);
+          console.warn('[AuthStore] Backend login unreachable:', err);
         }
 
-        // Local Simulation Fallback (Staging compatibility)
-        const lowerIdent = cleanIdent.toLowerCase();
-        const isAdmin = lowerIdent.includes('admin') || lowerIdent === '0000000000';
-
-        if (isAdmin) {
-          const user: UserSession = {
-            id: 'adm-001',
-            nisn: '0000000000',
-            nama: 'Admin BKK Sasmita',
-            email: cleanIdent.includes('@') ? cleanIdent : 'admin@smksasmitajaya2.sch.id',
-            role: 'admin_bkk',
-            jurusan: 'Pengelola BKK & Tracer Study',
-            tahun_lulus: 2020,
-            tracerStatus: 'SUDAH',
-            jenisKelamin: 'L',
-          };
-          set({
-            isAuthenticated: true,
-            user,
-            lastDashboardActivity: Date.now(),
-          });
-          return true;
-        }
-
-        let user: UserSession;
-        try {
-          const { useAdminStore } = await import('./adminStore');
-          const adminState = useAdminStore.getState();
-          const found = (adminState.masterAlumni || []).find(
-            (m) => m.nisn === cleanIdent || m.nik === cleanIdent || m.email.toLowerCase() === lowerIdent
-          );
-          if (found) {
-            const resp = (adminState.respondents || []).find((r) => r.nisn === found.nisn || r.nik === found.nik);
-            user = {
-              id: found.id || `usr-${found.nisn}`,
-              nisn: found.nisn,
-              nik: found.nik,
-              nama: found.nama,
-              email: found.email,
-              noWhatsapp: found.noWhatsapp,
-              role: 'alumni',
-              jurusan: found.jurusan,
-              tahun_lulus: found.tahunLulus,
-              tracerStatus: resp ? 'SUDAH' : found.statusTracer,
-              submissionId: resp?.submissionId || found.submissionId,
-              submittedAt: resp?.submittedAt || found.submittedAt,
-              jenisKelamin: /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(found.nama) ? 'P' : 'L',
-            };
-          } else {
-            const isNisn = /^\d{10}$/.test(cleanIdent);
-            const isNik = /^\d{16}$/.test(cleanIdent);
-            user = {
-              id: `usr-${Date.now()}`,
-              nisn: isNisn ? cleanIdent : '0051234567',
-              nik: isNik ? cleanIdent : '3274012304050001',
-              email: cleanIdent.includes('@') ? cleanIdent : 'alumni@smksasmitajaya2.sch.id',
-              nama: 'Ahmad Dani',
-              role: 'alumni',
-              jurusan: 'Teknik Komputer dan Jaringan',
-              tahun_lulus: 2024,
-              tracerStatus: 'SUDAH',
-              submissionId: '2026102498',
-              submittedAt: new Date().toISOString(),
-              jenisKelamin: 'L',
-            };
-          }
-        } catch {
-          user = {
-            id: `usr-${Date.now()}`,
-            nisn: cleanIdent,
-            email: 'alumni@smksasmitajaya2.sch.id',
-            nama: 'Alumni Sasmita',
-            role: 'alumni',
-            jurusan: 'Teknik Komputer dan Jaringan',
-            tahun_lulus: 2024,
-            tracerStatus: 'BELUM',
-            jenisKelamin: 'L',
-          };
-        }
-
-        set({
-          isAuthenticated: true,
-          user,
-          lastDashboardActivity: Date.now(),
-        });
-        await syncWithTracerStore(user);
-        return true;
+        // Tidak ada fallback lokal: login hanya berhasil jika backend memverifikasi
+        // password yang benar. Jangan buat user samaran karena itu menyebabkan
+        // login bisa dilakukan dengan password apapun.
+        return false;
       },
 
       logout: async () => {
