@@ -50,12 +50,8 @@ export async function login(app: FastifyInstance, input: LoginInput) {
     throw HttpError.unauthorized('NISN/Email atau password salah');
   }
 
-  // Check password: try stored hash first, then default pattern (alumni + last 3 digits of NISN)
-  let valid = await verifyPassword(password, alumni.passwordHash);
-  if (!valid) {
-    const defaultPassword = generateDefaultPassword(alumni.nisn);
-    valid = password === defaultPassword;
-  }
+  // Check password: hanya hash yang tersimpan di database yang diterima
+  const valid = await verifyPassword(password, alumni.passwordHash);
   if (!valid) {
     throw HttpError.unauthorized('NISN/Email atau password salah');
   }
