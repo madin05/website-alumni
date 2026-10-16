@@ -4,8 +4,10 @@ import { useContentStore } from "@/store/contentStore";
 import { useAuthStore } from "@/store/authStore";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { NewsItem } from "@/types/tracer";
 import {
   ArrowLeft,
+  AlertCircle,
   Calendar,
   Clock,
   User,
@@ -21,20 +23,58 @@ import {
 
 export const NewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const newsId = id ?? "";
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
   const { newsList } = useContentStore();
   const [copied, setCopied] = useState(false);
-
-  const newsItem = newsList.find((item) => item.id === id) || newsList[0];
-  const relatedNews = newsList.filter((item) => item.id !== newsItem?.id).slice(
-    0,
-    3,
-  );
+  const [news, setNews] = useState<NewsItem | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadNews = async () => {
+      setIsLoading(true);
+      setNotFound(false);
+
+      try {
+        // Jika sudah ada di content store (mis. dari dashboard), gunakan langsung
+        const existing = newsList.find((item) => item.id === id);
+        if (existing) {
+          setNews(existing as NewsItem);
+          setIsLoading(false);
+          return;
+        }
+
+        // Ambil dari API publik (tidak perlu login)
+        const { adminNewsApi } = await import("@/services/adminService");
+        const res = await adminNewsApi.getPublic(newsId);
+        const data = (res?.data ?? res) as NewsItem | undefined;
+        if (!data) {
+          setNotFound(true);
+        } else {
+          setNews(data);
+        }
+      } catch (err: any) {
+        setNotFound(true);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    loadNews();
+    return () => {
+      cancelled = true;
+    };
+  }, [newsId, newsList]);
+
+  const relatedNews = newsList.filter((item) => item.id !== news?.id).slice(0, 3);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -44,10 +84,48 @@ export const NewsDetailPage: React.FC = () => {
 
   const handleShareWa = () => {
     const text = encodeURIComponent(
-      `${newsItem.title} - Baca selengkapnya di Portal Berita SMK Sasmita Jaya 2: ${window.location.href}`,
+      `${news!.title} - Baca selengkapnya di Portal Berita SMK Sasmita Jaya 2: ${window.location.href}`,
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
+          <p className="text-slate-600 text-sm">Memuat berita...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+        <div className="flex flex-col items-center gap-4 p-6 text-center">
+          <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-900">Berita tidak ditemukan</h2>
+          <p className="text-slate-600">
+            Berita yang Anda cari tidak tersedia atau telah dihapus.
+          </p>
+          <Link
+            to="/"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-md bg-[#0d2346] text-white text-sm font-semibold hover:bg-[#122038] transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Kembali ke Beranda</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!news) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans text-slate-800">
@@ -70,7 +148,7 @@ export const NewsDetailPage: React.FC = () => {
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
             <span className="font-semibold text-slate-700">
-              {newsItem.category}
+              {news.category}
             </span>
           </nav>
         </div>
@@ -86,29 +164,29 @@ export const NewsDetailPage: React.FC = () => {
               <span className="text-slate-300">•</span>
               <span className="inline-flex items-center gap-1.5 text-xs text-slate-500">
                 <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                {newsItem.date}
+                {news.date}
               </span>
               <span className="text-slate-300">•</span>
               <span className="inline-flex items-center gap-1.5 text-xs text-slate-500">
                 <Clock className="w-3.5 h-3.5 text-slate-400" />
-                {newsItem.readTime}
+                {news.readTime}
               </span>
             </div>
 
             {/* Article Headline */}
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-6">
-              {newsItem.title}
+              {news.title}
             </h1>
 
             {/* Author & Share Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-slate-100">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm">
-                  {newsItem.author.charAt(0)}
+                  {news.author.charAt(0)}
                 </div>
                 <div>
                   <p className="text-xs font-bold text-slate-900 leading-none">
-                    {newsItem.author}
+                    {news.author}
                   </p>
                   <p className="text-[11px] text-slate-400 mt-1">
                     Redaksi SMK Sasmita Jaya 2 Pamulang
@@ -153,8 +231,8 @@ export const NewsDetailPage: React.FC = () => {
             {/* Featured Image */}
             <div className="mb-8 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80">
               <img
-                src={newsItem.imageUrl}
-                alt={newsItem.title}
+                src={news.imageUrl}
+                alt={news.title}
                 className="w-full h-auto max-h-[440px] object-cover"
               />
               <div className="p-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 italic">
@@ -165,10 +243,10 @@ export const NewsDetailPage: React.FC = () => {
             {/* Article Body */}
             <div className="prose max-w-none text-slate-700 text-sm sm:text-base leading-relaxed space-y-5">
               <p className="text-base sm:text-lg font-medium text-slate-800 leading-relaxed border-l-4 border-blue-900 pl-4 py-1 bg-blue-50/40 rounded-r-xl">
-                {newsItem.excerpt}
+                {news.excerpt}
               </p>
 
-              {newsItem.content.split("\n\n").map((para, pIdx) => (
+              {news.content.split("\n\n").map((para, pIdx) => (
                 <p key={pIdx} className="leading-relaxed">
                   {para.trim()}
                 </p>
@@ -190,7 +268,7 @@ export const NewsDetailPage: React.FC = () => {
                 {[
                   "Tracer Study",
                   "SMK Sasmita Jaya 2",
-                  newsItem.category,
+                  news.category,
                   "Alumni",
                 ].map((tag, tIdx) => (
                   <span

@@ -231,6 +231,13 @@ export const useMailStore = create<MailState>()(
             return m;
           }),
         }));
+
+        // Simpan status bacaan ke backend agar tetap tercatat setelah refresh
+        import('@/services/adminService').then(({ adminMessagesApi }) => {
+          adminMessagesApi.markAllAsRead().catch((err) => {
+            console.warn('[MailStore] Backend mark all as read sync fallback:', err);
+          });
+        });
       },
 
       deleteMail: (id: string) => {

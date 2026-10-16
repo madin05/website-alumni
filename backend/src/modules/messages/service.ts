@@ -88,3 +88,14 @@ export async function getMessageStats() {
 
   return { total, unread, followUp, resolved };
 }
+
+export async function markAllMessagesAsRead(resolvedBy = 'Admin BKK') {
+  return prisma.supportTicket.updateMany({
+    where: { status: 'UNREAD' },
+    data: {
+      status: 'RESOLVED',
+      resolvedAt: new Date(),
+      resolvedBy,
+    },
+  });
+}

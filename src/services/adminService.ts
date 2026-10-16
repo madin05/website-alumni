@@ -376,6 +376,17 @@ export const adminNewsApi = {
     return fetchWithAuth<ApiResponse<any>>(`/api/v1/news/${id}`);
   },
 
+  /** Detail berita untuk publik (tidak perlu login). */
+  async getPublic(id: string) {
+    const base = API_BASE || '';
+    const res = await fetch(`${base}/api/v1/public/news/${id}`);
+    if (!res.ok) {
+      const errorJson = await res.json().catch(() => ({}));
+      throw new Error(errorJson.message || `Gagal memuat berita (HTTP ${res.status})`);
+    }
+    return await res.json();
+  },
+
   async create(data: {
     title: string;
     excerpt: string;
@@ -565,6 +576,13 @@ export const adminMessagesApi = {
   async delete(id: string) {
     return fetchWithAuth<ApiResponse<null>>(`/api/v1/messages/${id}`, {
       method: 'DELETE',
+    });
+  },
+
+  /** Tandai semua pesan sebagai telah dibaca (admin). */
+  async markAllAsRead() {
+    return fetchWithAuth<ApiResponse<any>>('/api/v1/messages/read-all', {
+      method: 'PUT',
     });
   },
 
