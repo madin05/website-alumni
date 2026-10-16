@@ -167,6 +167,7 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
                         ...detail_kerja,
                         lokasi_pekerjaan: 'DALAM_NEGERI',
                         negara_kerja: 'Indonesia',
+                        provinsi_kerja: detail_kerja?.provinsi_kerja === 'Luar Negeri' ? '' : detail_kerja?.provinsi_kerja,
                       });
                     }}
                     className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
@@ -199,14 +200,12 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
               <>
                 <Input
                   label="Provinsi Tempat Bekerja"
-                  placeholder="Contoh : Prov. Banten"
                   value={detail_kerja?.provinsi_kerja || ''}
                   onChange={(e) => handleKerjaChange('provinsi_kerja', e.target.value)}
                 />
 
                 <Input
                   label="Kota / Kab Tempat Bekerja"
-                  placeholder="Contoh : Kota Tangerang Selatan"
                   value={detail_kerja?.kota_kerja || detail_kerja?.kota_kabupaten || ''}
                   onChange={(e) => {
                     updateDetailKerja({
@@ -221,7 +220,6 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
               <>
                 <Input
                   label="Negara Tempat Bekerja"
-                  placeholder="Contoh : Jepang, Jerman, Malaysia, Korea Selatan"
                   value={detail_kerja?.negara_kerja || ''}
                   onChange={(e) => handleKerjaChange('negara_kerja', e.target.value)}
                   requiredStar
@@ -229,7 +227,6 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
 
                 <Input
                   label="Kota / Wilayah di Luar Negeri"
-                  placeholder="Contoh : Tokyo, Osaka, Berlin, Kuala Lumpur"
                   value={detail_kerja?.kota_kerja || detail_kerja?.kota_kabupaten || ''}
                   onChange={(e) => {
                     updateDetailKerja({

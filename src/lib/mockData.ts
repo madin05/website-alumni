@@ -641,6 +641,10 @@ export const MOCK_JOBS: JobVacancy[] = [
     ],
     contactPerson: "bkk-it@smksasmitajaya2.sch.id",
     isBkkPartner: true,
+    applyType: "email",
+    emailAddress: "recruitment@solusiteknologi.co.id",
+    emailSubject: "Lamaran Pekerjaan - Junior Network Administrator - [Nama Alumni]",
+    clickCount: 19,
   },
   {
     id: "job-2",
@@ -664,6 +668,10 @@ export const MOCK_JOBS: JobVacancy[] = [
     ],
     contactPerson: "recruitment@astramotor-partner.id",
     isBkkPartner: true,
+    applyType: "whatsapp",
+    whatsappNumber: "6281298765432",
+    whatsappTemplate: "Halo Tim Rekrutmen PT Astra Motor Sasmita, saya alumni SMK Sasmita Jaya 2 berminat mendaftar untuk posisi Service Advisor & Teknisi Roda Dua. Berikut lampiran identitas dan portofolio keahlian saya.",
+    clickCount: 32,
   },
   {
     id: "job-3",
@@ -684,6 +692,11 @@ export const MOCK_JOBS: JobVacancy[] = [
     ],
     contactPerson: "hrd@astra-otoparts-career.id",
     isBkkPartner: true,
+    applyType: "walk_in",
+    locationAddress: "Kawasan Industri KIIC Lot C-3, Jl. Permata Raya No. 12, Karawang Barat, Jawa Barat 41361",
+    walkInSchedule: "Senin s/d Kamis, Pukul 08.00 - 11.00 WIB (Pakaian kemeja putih, celana hitam bahan, membawa CV & portofolio cetak)",
+    mapsUrl: "https://maps.google.com/?q=Kawasan+Industri+KIIC+Karawang",
+    clickCount: 14,
   },
   {
     id: "job-4",
@@ -707,6 +720,9 @@ export const MOCK_JOBS: JobVacancy[] = [
     ],
     contactPerson: "bkk-kelistrikan@smksasmitajaya2.sch.id",
     isBkkPartner: true,
+    applyType: "external_url",
+    externalUrl: "https://career.pp.co.id/jobs/teknisi-listrik-gedung-2026",
+    clickCount: 27,
   },
   {
     id: "job-5",
@@ -730,6 +746,10 @@ export const MOCK_JOBS: JobVacancy[] = [
     ],
     contactPerson: "recruitment@panasonic-partner.id",
     isBkkPartner: true,
+    applyType: "whatsapp",
+    whatsappNumber: "6281311223344",
+    whatsappTemplate: "Halo HRD PT Panasonic Manufacturing Indonesia, saya alumni SMK Sasmita Jaya 2 jurusan Elektronika Industri bermaksud melamar untuk posisi Teknisi Maintenance Sensor PLC.",
+    clickCount: 41,
   },
 ];
 

@@ -17,6 +17,7 @@ interface ContentState {
   addJob: (job: Omit<JobVacancy, 'id'>) => JobVacancy;
   updateJob: (id: string, updates: Partial<JobVacancy>) => void;
   deleteJob: (id: string) => void;
+  trackJobClick: (id: string) => void;
   resetJobsToDefault: () => void;
 }
 
@@ -79,6 +80,14 @@ export const useContentStore = create<ContentState>()(
       deleteJob: (id) => {
         set((state) => ({
           jobList: state.jobList.filter((job) => job.id !== id),
+        }));
+      },
+
+      trackJobClick: (id: string) => {
+        set((state) => ({
+          jobList: state.jobList.map((job) =>
+            job.id === id ? { ...job, clickCount: (job.clickCount || 0) + 1 } : job
+          ),
         }));
       },
 

@@ -177,7 +177,9 @@ export interface UserSession {
   avatarUrl?: string;
 }
 
-// Loker & Magang
+// Loker & Magang (Model: Information Hub & Direct Referral)
+export type JobApplyType = 'walk_in' | 'whatsapp' | 'email' | 'external_url';
+
 export interface JobVacancy {
   id: string;
   title: string;
@@ -193,6 +195,17 @@ export interface JobVacancy {
   requirements: string[];
   contactPerson: string;
   isBkkPartner: boolean;
+  // Field dinamis untuk metode pendaftaran langsung ke mitra
+  applyType?: JobApplyType;
+  locationAddress?: string;     // Alamat lengkap / rute walk-in
+  walkInSchedule?: string;      // Hari dan jam kedatangan walk-in
+  mapsUrl?: string;             // Tautan Google Maps
+  whatsappNumber?: string;      // Nomor WhatsApp HRD (628...)
+  whatsappTemplate?: string;    // Template pesan WhatsApp
+  emailAddress?: string;        // Alamat email rekrutmen mitra
+  emailSubject?: string;        // Subjek email terformat
+  externalUrl?: string;         // Link formulir / portal karir resmi mitra
+  clickCount?: number;          // Metrik jumlah alumni yang berminat / klik
 }
 
 // Ijazah Tracking

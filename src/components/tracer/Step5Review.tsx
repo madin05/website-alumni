@@ -220,13 +220,23 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
           </p>
           <p>
             <span className="text-slate-500 font-medium">Status:</span>{" "}
-            {status_kegiatan === "KERJA_KULIAH"
-              ? "Kuliah & Kerja"
-              : status_kegiatan === "WIRAUSAHA_KULIAH"
-                ? "Kuliah & Wirausaha"
-                : status_kegiatan
-                  ? status_kegiatan.replace(/_/g, " ")
-                  : "-"}
+            <span className="font-semibold text-blue-700">
+              {status_kegiatan === "BELUM_KERJA"
+                ? "Belum Bekerja"
+                : status_kegiatan === "KERJA_KULIAH"
+                  ? "Kuliah & Kerja"
+                  : status_kegiatan === "WIRAUSAHA_KULIAH"
+                    ? "Kuliah & Wirausaha"
+                    : status_kegiatan === "KERJA"
+                      ? "Bekerja"
+                      : status_kegiatan === "KULIAH"
+                        ? "Kuliah"
+                        : status_kegiatan === "WIRAUSAHA"
+                          ? "Wirausaha"
+                          : status_kegiatan === "LAINNYA"
+                            ? "Lainnya"
+                            : "-"}
+            </span>
           </p>
         </div>
       </div>
