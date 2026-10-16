@@ -234,19 +234,6 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
                 <span>Data Responden ({respondents.length} Masuk)</span>
               </button>
             </div>
-
-            {/* Tombol Sinkronisasi Data */}
-            <button
-              onClick={handleSyncNow}
-              disabled={isSyncing}
-              className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-semibold border border-white/25 transition active:scale-95 cursor-pointer flex items-center gap-2 disabled:opacity-50"
-              title="Sinkronkan data dengan database atau refresh cache lokal"
-            >
-              <RefreshCw
-                className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-sky-300" : "text-white"}`}
-              />
-              <span>{isSyncing ? "Menyinkronkan..." : "Sinkronkan Data"}</span>
-            </button>
           </div>
 
           {/* Notifikasi feedback sinkronisasi */}
