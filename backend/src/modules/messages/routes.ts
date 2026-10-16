@@ -78,6 +78,15 @@ export async function messagesRoutes(app: FastifyInstance) {
     return reply.send(successResponse(message, 'Status pesan berhasil diperbarui'));
   });
 
+  app.put('/messages/read-all', {
+    preHandler: [authorize('ADMIN_BKK')],
+  }, async (request, reply) => {
+    const user = request.user as { email?: string; nisn?: string } | undefined;
+    const resolvedBy = user?.email || user?.nisn || 'Admin BKK';
+    const result = await service.markAllMessagesAsRead(resolvedBy);
+    return reply.send(successResponse(result, 'Semua pesan ditandai telah dibaca'));
+  });
+
   app.delete('/messages/:id', {
     preHandler: [authorize('ADMIN_BKK'), validateParams(idParamSchema)],
   }, async (request, reply) => {
