@@ -148,19 +148,28 @@ export const Navbar: React.FC<NavbarProps> = () => {
       </header>
 
       {/* Standard Mobile & Tablet Sidebar Drawer & Dimmed Backdrop (Visible on < 1024px) */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden touch-none select-none overscroll-none">
-          {/* Backdrop Overlay */}
-          <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-300 touch-none select-none"
-            onClick={() => setMobileMenuOpen(false)}
-            onTouchMove={(e) => e.preventDefault()}
-            onWheel={(e) => e.preventDefault()}
-            aria-hidden="true"
-          />
+      <div
+        className={`fixed inset-0 z-50 lg:hidden touch-none select-none overscroll-none transition-all duration-300 ${
+          mobileMenuOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible delay-300'
+        }`}
+      >
+        {/* Backdrop Overlay */}
+        <div
+          className={`fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-300 touch-none select-none ${
+            mobileMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={() => setMobileMenuOpen(false)}
+          onTouchMove={(e) => e.preventDefault()}
+          onWheel={(e) => e.preventDefault()}
+          aria-hidden="true"
+        />
 
-          {/* Slide-in Sidebar Panel from Right */}
-          <aside className="fixed inset-y-0 right-0 z-50 w-[300px] max-w-[85vw] bg-white shadow-2xl flex flex-col justify-between p-5 sm:p-6 border-l border-slate-100 transform transition-transform duration-300 ease-in-out overflow-y-auto overscroll-contain">
+        {/* Slide-in Sidebar Panel from Left */}
+        <aside
+          className={`fixed inset-y-0 left-0 z-50 w-[300px] max-w-[85vw] bg-white shadow-2xl flex flex-col justify-between p-5 sm:p-6 border-r border-slate-100 transform transition-transform duration-300 ease-in-out overflow-y-auto overscroll-contain ${
+            mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
             
             {/* Top Header */}
             <div>
@@ -310,7 +319,6 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
           </aside>
         </div>
-      )}
     </>
   );
 };

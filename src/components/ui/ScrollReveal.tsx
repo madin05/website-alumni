@@ -6,6 +6,7 @@ interface ScrollRevealProps {
   threshold?: number;
   delay?: number;
   distance?: 'sm' | 'md' | 'lg';
+  once?: boolean;
 }
 
 export const ScrollReveal: React.FC<ScrollRevealProps> = ({
@@ -14,14 +15,27 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   threshold = 0.05,
   delay = 0,
   distance = 'md',
+  once = true,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const current = domRef.current;
+    if (!current) return;
+
+    if (once && isVisible) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          if (once) {
+            observer.unobserve(current);
+          }
+        } else if (!once) {
+          setIsVisible(false);
+        }
       },
       {
         threshold,
@@ -29,15 +43,12 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
       }
     );
 
-    const current = domRef.current;
-    if (current) {
-      observer.observe(current);
-    }
+    observer.observe(current);
 
     return () => {
-      if (current) observer.unobserve(current);
+      observer.unobserve(current);
     };
-  }, [threshold]);
+  }, [threshold, once, isVisible]);
 
   const distanceClasses = {
     sm: 'translate-y-8',
@@ -53,10 +64,10 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
         transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
         transitionDelay: `${delay}ms`,
       }}
-      className={`transition-all transform will-change-transform ${
+      className={`transition-all transform ${
         isVisible
           ? 'opacity-100 translate-y-0'
-          : `opacity-0 ${distanceClasses}`
+          : `opacity-0 ${distanceClasses} will-change-transform`
       } ${className}`}
     >
       {children}

@@ -6,7 +6,6 @@ import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 import { ArrowRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
-  const [loginMethod, setLoginMethod] = useState<"nis" | "nik">("nis");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,21 +21,12 @@ export const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLoginMethodChange = (method: "nis" | "nik") => {
-    setLoginMethod(method);
-    setIdentifier("");
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!identifier.trim()) {
-      setError(
-        loginMethod === "nis"
-          ? "Harap masukkan NIS atau NISN Anda."
-          : "Harap masukkan NIK Anda.",
-      );
+      setError("Harap masukkan NISN Anda.");
       return;
     }
 
@@ -52,7 +42,7 @@ export const LoginPage: React.FC = () => {
     } catch (err: any) {
       setError(
         err?.message ||
-          "Data tidak ditemukan. Silakan periksa kembali NIS Anda.",
+          "Data tidak ditemukan. Silakan periksa kembali NISN Anda.",
       );
     } finally {
       setLoading(false);
@@ -60,13 +50,11 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleQuickDemo = () => {
-    setLoginMethod("nis");
     setIdentifier("0051234567");
     setPassword("alumni#567");
   };
 
   const handleAdminDemo = () => {
-    setLoginMethod("nis");
     setIdentifier("admin@smksasmitajaya2.sch.id");
     setPassword("admin123");
   };
@@ -187,43 +175,9 @@ export const LoginPage: React.FC = () => {
 
             {/* Step Label & Title */}
             <div className="mb-5 sm:mb-6">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#182a4a] tracking-tight text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight text-center">
                 Selamat Datang
               </h2>
-            </div>
-
-            {/* Login Method Switcher with Smooth Slider */}
-            <div className="relative grid grid-cols-2 p-1 bg-slate-100/90 rounded-full border border-slate-200/90 mb-5 select-none">
-              {/* Sliding Pill Indicator */}
-              <div
-                className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-[#182a4a] rounded-full shadow-sm transition-transform duration-300 ease-out pointer-events-none ${
-                  loginMethod === "nik" ? "translate-x-full" : "translate-x-0"
-                }`}
-              />
-
-              <button
-                type="button"
-                onClick={() => handleLoginMethodChange("nis")}
-                className={`relative z-10 py-2 px-3 rounded-full text-xs text-center cursor-pointer transition-colors duration-200 ${
-                  loginMethod === "nis"
-                    ? "text-white"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                Login NIS / NISN
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleLoginMethodChange("nik")}
-                className={`relative z-10 py-2 px-3 rounded-full text-xs text-center cursor-pointer transition-colors duration-200 ${
-                  loginMethod === "nik"
-                    ? "text-white"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                Login NIK
-              </button>
             </div>
 
             {/* Error Message */}
@@ -240,20 +194,14 @@ export const LoginPage: React.FC = () => {
                   type="text"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder={
-                    loginMethod === "nis"
-                      ? "Contoh: 0051234567 atau 212210045"
-                      : "Contoh: 3674012345670001"
-                  }
+                  placeholder=""
                   className="material-input"
                   required
                 />
                 <span className="material-bar" />
                 <span className="material-highlight" />
                 <label className="material-label">
-                  {loginMethod === "nis"
-                    ? "NIS / NISN (Nomor Induk Siswa)"
-                    : "NIK KTP (16 digit)"}
+                  Username
                 </label>
               </div>
 
@@ -262,7 +210,7 @@ export const LoginPage: React.FC = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="alumni#..."
+                  placeholder=""
                   className="material-input pr-8"
                   required
                 />
@@ -311,14 +259,14 @@ export const LoginPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleQuickDemo}
-                className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 font-semibold text-[11px]"
+                className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 font-medium text-[11px]"
               >
                 Alumni (DEMO)
               </button>
               <button
                 type="button"
                 onClick={handleAdminDemo}
-                className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-[11px]"
+                className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium text-[11px]"
               >
                 Admin BKK
               </button>
@@ -334,7 +282,7 @@ export const LoginPage: React.FC = () => {
                 )}
                 target="_blank"
                 rel="noreferrer"
-                className="font-bold text-[#182a4a] hover:text-blue-600 underline"
+                className="font-medium text-slate-700 hover:text-blue-600 underline"
               >
                 Hubungi Helpdesk
               </a>
