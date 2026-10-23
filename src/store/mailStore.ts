@@ -177,7 +177,7 @@ const INITIAL_MAILS: MailItem[] = [
     senderEmail: 'admin@smksasmitajaya2.sch.id',
     recipientRole: 'alumni',
     recipientNisn: '0051234567',
-    subject: 'Verifikasi Berkas Kuesioner Disetujui (VALID)',
+    subject: 'Verifikasi Berkas Kuesioner Disetujui',
     preview: 'Kuesioner Tracer Study Anda (2026100001) telah berhasil diverifikasi oleh Tim BKK.',
     body: 'Selamat Ahmad Dani, pengajuan kuesioner Tracer Study Anda dengan nomor 2026100001 telah dinyatakan VALID dan lengkap oleh Admin BKK. Anda dapat mengunduh dan mencetak Bukti Tanda Terima Tracer Study resmi melalui menu profil akun Anda.',
     category: 'verification_update',

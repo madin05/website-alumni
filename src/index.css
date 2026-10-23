@@ -308,3 +308,25 @@
     background: transparent;
   }
 }
+
+/* Responsive Full Hero Viewport Height */
+.hero-viewport-height {
+  min-height: calc(100vh - 35px);
+  min-height: calc(100svh - 35px);
+  min-height: calc(100dvh - 35px);
+}
+
+@media (min-width: 640px) {
+  .hero-viewport-height {
+    min-height: calc(100vh - 45px);
+    min-height: calc(100svh - 45px);
+    min-height: calc(100dvh - 45px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-viewport-height {
+    min-height: 100vh;
+  }
+}
+

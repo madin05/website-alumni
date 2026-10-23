@@ -39,13 +39,13 @@ export const Footer: React.FC = () => {
           {/* School Address & Contacts (4 clean rows) */}
           <div className="flex flex-col items-center md:items-start text-xs text-slate-400 max-w-xs md:max-w-sm lg:max-w-md space-y-2 leading-relaxed mx-auto md:mx-0">
             {/* 1. Alamat */}
-            <div className="flex items-start gap-2.5 text-left w-full max-w-xs sm:max-w-sm md:max-w-md">
+            <a href="https://maps.app.goo.gl/z13uZMf2cELW7ucs8" target="_blank" className="flex items-start gap-2.5 text-left w-full max-w-xs sm:max-w-sm md:max-w-md hover:text-white transition-colors text-slate-300">
               <MapPin className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
               <span className="text-left">
                 Jl. Surya Kencana No. 1, Pamulang Barat, Kec. Pamulang, Kota
                 Tangerang Selatan, Banten 15417
               </span>
-            </div>
+            </a>
 
             {/* 2. Email */}
             <a

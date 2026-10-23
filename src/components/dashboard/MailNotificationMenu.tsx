@@ -1,11 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
 import {
   Mail,
   CheckCheck,
-  Trash2,
-  ExternalLink,
-  X,
   MessageSquare,
   FileCheck2,
   HelpCircle,
@@ -18,11 +14,43 @@ import { useMailStore, MailItem } from "@/store/mailStore";
 import { useAuthStore } from "@/store/authStore";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { useNavigate } from "react-router-dom";
+import { formatTimeAgo } from "@/lib/utils";
+import { MailDetailModal } from "./mail/MailDetailModal";
 
 interface MailNotificationMenuProps {
   onNavigateTab?: (tab: string, respondentId?: string) => void;
   onOpenReceipt?: () => void;
 }
+
+const getCategoryBadge = (category: MailItem["category"]) => {
+  switch (category) {
+    case "tracer_submission":
+      return {
+        label: "Isian Baru",
+        icon: FileCheck2,
+      };
+    case "verification_update":
+      return {
+        label: "Verifikasi",
+        icon: CheckCheck,
+      };
+    case "inquiry":
+      return {
+        label: "Pertanyaan",
+        icon: HelpCircle,
+      };
+    case "feedback":
+      return {
+        label: "Saran & Masukan",
+        icon: MessageSquare,
+      };
+    default:
+      return {
+        label: "Pemberitahuan",
+        icon: Mail,
+      };
+  }
+};
 
 export const MailNotificationMenu: React.FC<MailNotificationMenuProps> = ({
   onNavigateTab,
@@ -72,27 +100,6 @@ export const MailNotificationMenu: React.FC<MailNotificationMenuProps> = ({
     };
   }, [isOpen]);
 
-  // Lock body scroll and listen for Escape key when modal is open
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSelectedMail(null);
-      }
-    };
-
-    if (selectedMail) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [selectedMail]);
-
   const handleOpenMail = (mail: MailItem) => {
     markAsRead(mail.id);
     setIsOpen(false);
@@ -134,55 +141,6 @@ export const MailNotificationMenu: React.FC<MailNotificationMenuProps> = ({
       } else {
         navigate("/dashboard?tab=helpdesk");
       }
-    }
-  };
-
-  const formatTimeAgo = (dateStr: string) => {
-    try {
-      const date = new Date(dateStr);
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMins / 60);
-      const diffDays = Math.floor(diffHours / 24);
-
-      if (diffMins < 1) return "Baru saja";
-      if (diffMins < 60) return `${diffMins} mnt lalu`;
-      if (diffHours < 24) return `${diffHours} jam lalu`;
-      if (diffDays === 1) return "Kemarin";
-      return `${diffDays} hari lalu`;
-    } catch {
-      return dateStr;
-    }
-  };
-
-  const getCategoryBadge = (category: MailItem["category"]) => {
-    switch (category) {
-      case "tracer_submission":
-        return {
-          label: "Isian Baru",
-          icon: FileCheck2,
-        };
-      case "verification_update":
-        return {
-          label: "Verifikasi",
-          icon: CheckCheck,
-        };
-      case "inquiry":
-        return {
-          label: "Pertanyaan",
-          icon: HelpCircle,
-        };
-      case "feedback":
-        return {
-          label: "Saran & Masukan",
-          icon: MessageSquare,
-        };
-      default:
-        return {
-          label: "Pemberitahuan",
-          icon: Mail,
-        };
     }
   };
 
@@ -401,140 +359,15 @@ export const MailNotificationMenu: React.FC<MailNotificationMenuProps> = ({
         </>
       )}
 
-      {/* Mail Detail Modal - Rendered via Portal to break free from header stacking context */}
-      {selectedMail &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
-            onClick={() => setSelectedMail(null)}
-          >
-            <div
-              className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden my-auto animate-in zoom-in-95 duration-150"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header - Clean */}
-              <div className="p-4 sm:p-5 bg-white border-b border-slate-200 text-[#0d2346] flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-lg bg-slate-100 text-[#0d2346]">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm sm:text-base font-bold text-[#0d2346]">
-                      Detail Pesan Masuk
-                    </h3>
-                    <p className="text-[11px] text-slate-500">
-                      Diterima:{" "}
-                      {new Date(selectedMail.createdAt).toLocaleString(
-                        "id-ID",
-                        { dateStyle: "long", timeStyle: "short" },
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setSelectedMail(null)}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
-                  aria-label="Tutup"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Sender Meta Box */}
-              <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50/60">
-                <div className="flex items-start gap-3">
-                  <UserAvatar
-                    name={selectedMail.senderName}
-                    gender={selectedMail.senderAvatarGender}
-                    className="w-10 h-10 border border-slate-200 shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h4 className="text-sm font-bold text-slate-900">
-                        {selectedMail.senderName}
-                      </h4>
-                      {selectedMail.senderMajor && (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                          {selectedMail.senderMajor}{" "}
-                          {selectedMail.senderGradYear
-                            ? `(${selectedMail.senderGradYear})`
-                            : ""}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      {selectedMail.senderEmail}
-                      {selectedMail.senderNisn
-                        ? ` • NISN: ${selectedMail.senderNisn}`
-                        : ""}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Message Body */}
-              <div className="p-4 sm:p-5 space-y-3 max-h-[60vh] overflow-y-auto">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-                    SUBJEK PESAN
-                  </span>
-                  <h2 className="text-base font-bold text-[#0d2346] leading-snug">
-                    {selectedMail.subject}
-                  </h2>
-                </div>
-
-                {selectedMail.submissionId && (
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-200 text-xs font-semibold">
-                    <FileCheck2 className="w-3.5 h-3.5 text-[#0d2346]" />
-                    <span>
-                      ID Pengajuan Tracer:{" "}
-                      <strong>{selectedMail.submissionId}</strong>
-                    </span>
-                  </div>
-                )}
-
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-normal whitespace-pre-line">
-                  {selectedMail.body}
-                </div>
-              </div>
-
-              {/* Modal Actions */}
-              <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
-                <button
-                  onClick={() => {
-                    deleteMail(selectedMail.id);
-                    setSelectedMail(null);
-                  }}
-                  className="px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer flex items-center gap-1.5"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Hapus Pesan</span>
-                </button>
-
-                <div className="flex items-center gap-2">
-                  {selectedMail.actionUrl && (
-                    <button
-                      onClick={() => handleActionClick(selectedMail)}
-                      className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#0d2346] hover:bg-[#163868] shadow-xs transition cursor-pointer flex items-center gap-1.5"
-                    >
-                      <span>{selectedMail.actionUrl.label}</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => setSelectedMail(null)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-200 border border-slate-300 transition cursor-pointer"
-                  >
-                    Tutup
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>,
-          document.body,
-        )}
+      {/* Mail Detail Modal */}
+      {selectedMail && (
+        <MailDetailModal
+          mail={selectedMail}
+          onClose={() => setSelectedMail(null)}
+          onDelete={deleteMail}
+          onAction={handleActionClick}
+        />
+      )}
     </div>
   );
 };

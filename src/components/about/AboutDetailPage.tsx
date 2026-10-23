@@ -6,19 +6,50 @@ import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import {
-  BookOpen,
-  Award,
-  Users,
-  CheckCircle2,
-  ShieldCheck,
-  FileText,
   ArrowRight,
-  Sparkles,
   ChevronRight,
-  Building2,
   Headphones,
-  Check,
 } from "lucide-react";
+
+const ALUR_LANGKAH = [
+  {
+    step: 1,
+    title: "Validasi Identitas Alumni",
+    desc: "Memastikan nama lengkap, NIK, NISN, jurusan, angkatan kelulusan, dan nomor WhatsApp aktif.",
+    badgeBg: "bg-blue-900",
+  },
+  {
+    step: 2,
+    title: "Pemilihan Status Kegiatan Utama",
+    desc: "Memilih kategori: Bekerja, Melanjutkan Pendidikan (Kuliah), Wirausaha, atau Belum Bekerja / Mencari Kerja.",
+    badgeBg: "bg-blue-900",
+  },
+  {
+    step: 3,
+    title: "Rincian Informasi Profesi & Institusi",
+    desc: "Mengisi data instansi tempat bekerja/kampus/usaha serta tingkat kesesuaian dengan jurusan SMK.",
+    badgeBg: "bg-blue-900",
+  },
+  {
+    step: 4,
+    title: "Evaluasi Pembelajaran & Umpan Balik",
+    desc: "Memberikan rating skor relevansi materi sekolah serta saran untuk pengembangan fasilitas & kurikulum.",
+    badgeBg: "bg-blue-900",
+  },
+  {
+    step: 5,
+    title: "Finalisasi & Unduh Bukti Pengisian",
+    desc: "Memeriksa ringkasan isian dan mengunduh Tanda Bukti Resmi ber-QR Code untuk syarat pengambilan ijazah.",
+    badgeBg: "bg-emerald-600",
+  },
+];
+
+const HIGHLIGHT_STATS = [
+  { label: "Total Alumni Terdaftar", value: "3.500+ Orang" },
+  { label: "Tingkat Keterserapan Kerja", value: "87,5 %" },
+  { label: "Melanjutkan Kuliah", value: "12,5 %" },
+  { label: "Waktu Pengisian", value: "3 - 5 Menit" },
+];
 
 export const AboutDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -309,85 +340,31 @@ export const AboutDetailPage: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="w-7 h-7 rounded-full bg-blue-900 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                    1
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900">
-                      Validasi Identitas Alumni
-                    </h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Memastikan nama lengkap, NIK, NISN, jurusan, angkatan
-                      kelulusan, dan nomor WhatsApp aktif.
-                    </p>
+                {ALUR_LANGKAH.map((item) => (
+                  <div
+                    key={item.step}
+                    className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100"
+                  >
+                    <span
+                      className={`w-7 h-7 rounded-full ${item.badgeBg} text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5`}
+                    >
+                      {item.step}
+                    </span>
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900">
+                        {item.title}
+                      </h4>
+                      <p className="text-xs text-slate-600 mt-0.5">
+                        {item.desc}
+                      </p>
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="w-7 h-7 rounded-full bg-blue-900 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                    2
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900">
-                      Pemilihan Status Kegiatan Utama
-                    </h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Memilih kategori: Bekerja, Melanjutkan Pendidikan
-                      (Kuliah), Wirausaha, atau Belum Bekerja / Mencari Kerja.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="w-7 h-7 rounded-full bg-blue-900 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                    3
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900">
-                      Rincian Informasi Profesi & Institusi
-                    </h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Mengisi data instansi tempat bekerja/kampus/usaha serta
-                      tingkat kesesuaian dengan jurusan SMK.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="w-7 h-7 rounded-full bg-blue-900 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                    4
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900">
-                      Evaluasi Pembelajaran & Umpan Balik
-                    </h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Memberikan rating skor relevansi materi sekolah serta
-                      saran untuk pengembangan fasilitas & kurikulum.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
-                    5
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900">
-                      Finalisasi & Unduh Bukti Pengisian
-                    </h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Memeriksa ringkasan isian dan mengunduh Tanda Bukti Resmi
-                      ber-QR Code untuk syarat pengambilan ijazah.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </section>
 
             {/* Keamanan & Kerahasiaan Data */}
-            <div className="bg-blue-50/50 text-slate-900 p-6 sm:p-8 flex items-start gap-4 border border-x-1 blue-950">
+            <div className="bg-blue-50/50 text-slate-900 p-6 sm:p-8 flex items-start gap-4 border border-blue-900/10 rounded-xl">
               <div className="w-16 h-16 flex items-center justify-center shrink-0 p-2.5">
                 <img
                   src="/Shield.svg"
@@ -414,7 +391,7 @@ export const AboutDetailPage: React.FC = () => {
           <aside className="lg:col-span-4 space-y-6">
             {/* Action CTA Card */}
             <div className="p-6 space-y-4 text-center">
-              <div className="w-14 h-14 rounded-ful text-blue-900 flex items-center justify-center mx-auto shadow-xs">
+              <div className="w-14 h-14 rounded-full text-blue-900 flex items-center justify-center mx-auto shadow-xs">
                 <img
                   src="/icon-login-btn.svg"
                   alt="Isi Kuisioner"
@@ -450,22 +427,17 @@ export const AboutDetailPage: React.FC = () => {
             {/* Quick Summary Highlights */}
             <div className="bg-white rounded-md p-5 border border-slate-200 shadow-xs space-y-3">
               <div className="space-y-2.5 text-xs text-slate-600">
-                <div className="flex items-center justify-between">
-                  <span>Total Alumni Terdaftar</span>
-                  <span className="font-bold text-slate-900">3.500+ Orang</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Tingkat Keterserapan Kerja</span>
-                  <span className="font-bold text-slate-900">87,5 %</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Melanjutkan Kuliah</span>
-                  <span className="font-bold text-slate-900">12,5 %</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Waktu Pengisian</span>
-                  <span className="font-bold text-slate-900">3 - 5 Menit</span>
-                </div>
+                {HIGHLIGHT_STATS.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="flex items-center justify-between"
+                  >
+                    <span>{stat.label}</span>
+                    <span className="font-bold text-slate-900">
+                      {stat.value}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 

@@ -1,137 +1,14 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { MOCK_YEARLY_TRACER_DATA } from "@/lib/mockData";
-import { JurusanYearlyStat } from "@/types/tracer";
-import { CustomSelect } from "@/components/ui/CustomSelect";
-
-const JURUSAN_OPTIONS_MAP = [
-  { id: "ALL", name: "Semua Jurusan (Total Global)", code: "Semua" },
-  { id: "tpm", name: "Teknik Pemesinan (TPM)", code: "TPM" },
-  { id: "titl", name: "Teknik Instalasi Tenaga Listrik (TITL)", code: "TITL" },
-  { id: "el", name: "Teknik Elektronika Industri (EL)", code: "EL" },
-  { id: "tkro", name: "Teknik Kendaraan Ringan Otomotif (TKRO)", code: "TKRO" },
-  { id: "tbsm", name: "Teknik dan Bisnis Sepeda Motor (TBSM)", code: "TBSM" },
-  { id: "tkj", name: "Teknik Komputer dan Jaringan (TKJ)", code: "TKJ" },
-];
-
-const YEAR_OPTIONS = [
-  { value: "ALL", label: "Semua Tahun (Akumulatif 2022 - 2025)" },
-  { value: "2025", label: "Tahun Lulus 2025" },
-  { value: "2024", label: "Tahun Lulus 2024" },
-  { value: "2023", label: "Tahun Lulus 2023" },
-  { value: "2022", label: "Tahun Lulus 2022" },
-];
 
 export const ReportSection: React.FC = () => {
   const navigate = useNavigate();
 
-  // 1. Filter States (2 Dropdowns)
-  const [selectedYear, setSelectedYear] = useState<string>("ALL");
-  const [selectedJurusan, setSelectedJurusan] = useState<string>("ALL");
-
-  // Filter raw data by year
-  const rawFilteredByYear = useMemo(() => {
-    if (selectedYear === "ALL") {
-      return MOCK_YEARLY_TRACER_DATA;
-    }
-    const y = parseInt(selectedYear, 10);
-    return MOCK_YEARLY_TRACER_DATA.filter((item) => item.year === y);
-  }, [selectedYear]);
-
-  // Table Data Grouped by Jurusan (TPM, TITL, EL, TKRO, TBSM, TKJ)
-  const tableRows = useMemo(() => {
-    const majors: JurusanYearlyStat["jurusanId"][] = [
-      "tpm",
-      "titl",
-      "el",
-      "tkro",
-      "tbsm",
-      "tkj",
-    ];
-
-    return majors.map((jId) => {
-      const matching = rawFilteredByYear.filter(
-        (item) => item.jurusanId === jId,
-      );
-      const totalAlumni = matching.reduce(
-        (acc, curr) => acc + curr.totalAlumni,
-        0,
-      );
-      const mengisiTracer = matching.reduce(
-        (acc, curr) => acc + curr.mengisiTracer,
-        0,
-      );
-      const bekerja = matching.reduce((acc, curr) => acc + curr.bekerja, 0);
-      const kuliah = matching.reduce((acc, curr) => acc + curr.kuliah, 0);
-      const wirausaha = matching.reduce((acc, curr) => acc + curr.wirausaha, 0);
-      const belumKerja = matching.reduce(
-        (acc, curr) => acc + curr.belumKerja,
-        0,
-      );
-
-      const sample = matching[0] || {
-        jurusanCode: jId.toUpperCase(),
-        jurusanName: jId,
-      };
-
-      const tracerPercent =
-        totalAlumni > 0
-          ? ((mengisiTracer / totalAlumni) * 100).toFixed(1)
-          : "0";
-
-      return {
-        id: jId,
-        code: sample.jurusanCode,
-        name: sample.jurusanName,
-        totalAlumni,
-        mengisiTracer,
-        tracerPercent,
-        bekerja,
-        kuliah,
-        wirausaha,
-        belumKerja,
-      };
-    });
-  }, [rawFilteredByYear]);
-
-  // Total Summary Row
-  const totalSummary = useMemo(() => {
-    const totalAlumni = tableRows.reduce(
-      (acc, curr) => acc + curr.totalAlumni,
-      0,
-    );
-    const mengisiTracer = tableRows.reduce(
-      (acc, curr) => acc + curr.mengisiTracer,
-      0,
-    );
-    const bekerja = tableRows.reduce((acc, curr) => acc + curr.bekerja, 0);
-    const kuliah = tableRows.reduce((acc, curr) => acc + curr.kuliah, 0);
-    const wirausaha = tableRows.reduce((acc, curr) => acc + curr.wirausaha, 0);
-    const belumKerja = tableRows.reduce(
-      (acc, curr) => acc + curr.belumKerja,
-      0,
-    );
-    const tracerPercent =
-      totalAlumni > 0 ? ((mengisiTracer / totalAlumni) * 100).toFixed(1) : "0";
-
-    return {
-      totalAlumni,
-      mengisiTracer,
-      tracerPercent,
-      bekerja,
-      kuliah,
-      wirausaha,
-      belumKerja,
-    };
-  }, [tableRows]);
-
-  // Aggregated Stats for the 3 Charts
+  // Aggregated Stats for the 3 Charts (Akumulatif Global untuk Landing Page Preview)
   const chartStats = useMemo(() => {
-    const targetData = rawFilteredByYear.filter((item) => {
-      if (selectedJurusan === "ALL") return true;
-      return item.jurusanId === selectedJurusan;
-    });
+    const targetData = MOCK_YEARLY_TRACER_DATA;
 
     const totalResponden = targetData.reduce(
       (acc, curr) => acc + curr.mengisiTracer,
@@ -230,13 +107,7 @@ export const ReportSection: React.FC = () => {
         },
       },
     };
-  }, [rawFilteredByYear, selectedJurusan]);
-
-  const activeJurusanObj =
-    JURUSAN_OPTIONS_MAP.find((j) => j.id === selectedJurusan) ||
-    JURUSAN_OPTIONS_MAP[0];
-  const activeYearLabel =
-    YEAR_OPTIONS.find((y) => y.value === selectedYear)?.label || selectedYear;
+  }, []);
 
   return (
     <section id="laporan" className="relative py-16 sm:py-20 lg:py-24">
@@ -422,73 +293,22 @@ export const ReportSection: React.FC = () => {
               </div>
 
               <div className="space-y-3 mt-4 text-xs">
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Sangat Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.sangatSesuai.percent}%
-                    </span>
+                {[
+                  { label: "Sangat Sesuai", stat: chartStats.kesesuaian.sangatSesuai, barColor: "bg-[#182a4a]" },
+                  { label: "Sesuai", stat: chartStats.kesesuaian.sesuai, barColor: "bg-blue-600" },
+                  { label: "Kurang Sesuai", stat: chartStats.kesesuaian.kurangSesuai, barColor: "bg-slate-500" },
+                  { label: "Tidak Sesuai", stat: chartStats.kesesuaian.tidakSesuai, barColor: "bg-slate-300" },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <div className="flex justify-between font-semibold mb-1">
+                      <span className="text-slate-800">{item.label}</span>
+                      <span className="text-slate-900 font-bold">{item.stat.percent}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div className={`h-full ${item.barColor} rounded-full`} style={{ width: `${item.stat.percent}%` }} />
+                    </div>
                   </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#182a4a] rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.sangatSesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.sesuai.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-600 rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.sesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Kurang Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.kurangSesuai.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-500 rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.kurangSesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Tidak Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.tidakSesuai.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-300 rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.tidakSesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -503,81 +323,22 @@ export const ReportSection: React.FC = () => {
               </div>
 
               <div className="space-y-3 mt-2">
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Nasional / BUMN
-                    </span>
-                    <span className="font-extrabold text-[#182a4a]">
-                      {chartStats.skalaKerja.nasional.percent}%
-                    </span>
+                {[
+                  { label: "Nasional / BUMN", stat: chartStats.skalaKerja.nasional, barColor: "bg-[#182a4a]", valColor: "text-[#182a4a]" },
+                  { label: "Lokal / Wilayah", stat: chartStats.skalaKerja.lokal, barColor: "bg-blue-600", valColor: "text-slate-900" },
+                  { label: "Multinasional / Global", stat: chartStats.skalaKerja.multinasional, barColor: "bg-slate-600", valColor: "text-slate-900" },
+                  { label: "Wirausaha / Mandiri", stat: chartStats.skalaKerja.wirausaha, barColor: "bg-slate-400", valColor: "text-slate-900" },
+                ].map((item) => (
+                  <div key={item.label} className="p-2.5 text-xs">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-slate-800">{item.label}</span>
+                      <span className={`font-extrabold ${item.valColor}`}>{item.stat.percent}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div className={`h-full ${item.barColor} rounded-full`} style={{ width: `${item.stat.percent}%` }} />
+                    </div>
                   </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#182a4a] rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.nasional.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Lokal / Wilayah
-                    </span>
-                    <span className="font-extrabold text-slate-900">
-                      {chartStats.skalaKerja.lokal.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-600 rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.lokal.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Multinasional / Global
-                    </span>
-                    <span className="font-extrabold text-slate-900">
-                      {chartStats.skalaKerja.multinasional.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-600 rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.multinasional.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Wirausaha / Mandiri
-                    </span>
-                    <span className="font-extrabold text-slate-900">
-                      {chartStats.skalaKerja.wirausaha.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-400 rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.wirausaha.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

@@ -17,6 +17,7 @@ import { UserAvatar } from "@/components/ui/UserAvatar";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Toast } from "@/components/ui/Toast";
 import { createPortal } from "react-dom";
+import { formatTimeAgo } from "@/lib/utils";
 
 const SolidMailIcon: React.FC<{ className?: string }> = ({
   className = "w-5 h-5 text-[#0d2346]",
@@ -136,25 +137,6 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     setSelectedMailForModal(null);
     if (onNavigateTab) {
       onNavigateTab(mail.actionUrl.tab, mail.actionUrl.respondentId);
-    }
-  };
-
-  const formatTimeAgo = (dateStr: string) => {
-    try {
-      const date = new Date(dateStr);
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMins / 60);
-      const diffDays = Math.floor(diffHours / 24);
-
-      if (diffMins < 1) return "Baru saja";
-      if (diffMins < 60) return `${diffMins} mnt lalu`;
-      if (diffHours < 24) return `${diffHours} jam lalu`;
-      if (diffDays === 1) return "Kemarin";
-      return `${diffDays} hari lalu`;
-    } catch {
-      return dateStr;
     }
   };
 
