@@ -37,7 +37,13 @@ export const LoginPage: React.FC = () => {
 
     setLoading(true);
     try {
-      await login(identifier, password, "alumni");
+      const ok = await login(identifier, password, "alumni");
+      if (!ok) {
+        setError(
+          "NISN/Email atau password salah. Untuk akun alumni, gunakan NISN Anda sebagai password. Untuk Admin BKK, gunakan password Admin#12345.",
+        );
+        return;
+      }
       navigate("/dashboard", { replace: true });
     } catch (err: any) {
       setError(
@@ -50,13 +56,13 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleQuickDemo = () => {
-    setIdentifier("0051234567");
-    setPassword("alumni#567");
+    setIdentifier("3079145847");
+    setPassword("3079145847");
   };
 
   const handleAdminDemo = () => {
     setIdentifier("admin@smksasmitajaya2.sch.id");
-    setPassword("admin123");
+    setPassword("Admin#12345");
   };
 
   return (
