@@ -40,7 +40,7 @@ export const LoginPage: React.FC = () => {
       const ok = await login(identifier, password, "alumni");
       if (!ok) {
         setError(
-          "NISN/Email atau password salah. Untuk akun alumni, gunakan NISN Anda sebagai password. Untuk Admin BKK, gunakan password Admin#12345.",
+          "NISN/Email atau password salah. Format password alumni: alumni# + 3 digit terakhir NISN (contoh: alumni#847). Untuk Admin BKK, gunakan password Admin#12345.",
         );
         return;
       }
@@ -57,7 +57,7 @@ export const LoginPage: React.FC = () => {
 
   const handleQuickDemo = () => {
     setIdentifier("3079145847");
-    setPassword("3079145847");
+    setPassword("alumni#847");
   };
 
   const handleAdminDemo = () => {
@@ -239,6 +239,9 @@ export const LoginPage: React.FC = () => {
                   )}
                 </button>
               </div>
+              <p className="text-[11px] text-slate-500 text-left mt-1.5 pl-0.5">
+                Format password alumni: <span className="font-semibold text-slate-700">alumni#3digitnisn</span> (contoh: <code className="font-mono text-blue-700 font-bold">alumni#847</code>)
+              </p>
 
               {/* Submit Button */}
               <button
