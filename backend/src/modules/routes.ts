@@ -1,14 +1,14 @@
 import { FastifyInstance } from 'fastify';
-import { authRoutes } from './auth/routes';
-import { masterAlumniRoutes, publicMasterAlumniRoutes } from './master-alumni/routes';
-import { tracerStudyRoutes } from './tracer-study/routes';
-import { verificationRoutes } from './verification/routes';
-import { jobsRoutes, publicJobsRoutes } from './jobs/routes';
-import { newsRoutes, publicNewsRoutes } from './news/routes';
-import { messagesRoutes, publicMessagesRoutes } from './messages/routes';
-import { ijazahRoutes, publicIjazahRoutes } from './ijazah/routes';
-import { settingsRoutes } from './settings/routes';
-import { publicReportsRoutes, reportsRoutes } from './reports/routes';
+import { authRoutes } from './auth/routes.js';
+import { masterAlumniRoutes, publicMasterAlumniRoutes } from './master-alumni/routes.js';
+import { tracerStudyRoutes } from './tracer-study/routes.js';
+import { verificationRoutes } from './verification/routes.js';
+import { jobsRoutes, publicJobsRoutes } from './jobs/routes.js';
+import { newsRoutes, publicNewsRoutes } from './news/routes.js';
+import { messagesRoutes, publicMessagesRoutes } from './messages/routes.js';
+import { ijazahRoutes, publicIjazahRoutes } from './ijazah/routes.js';
+import { settingsRoutes } from './settings/routes.js';
+import { publicReportsRoutes, reportsRoutes } from './reports/routes.js';
 import { AuthPayload } from '../core/middleware/auth.js';
 
 export async function routes(app: FastifyInstance) {
