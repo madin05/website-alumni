@@ -12,6 +12,8 @@ import { generateTracerReceiptPdf } from '@/lib/pdfGenerator';
 import { useTracerStore } from '@/store/tracerStore';
 import { useAuthStore } from '@/store/authStore';
 import { useAdminStore } from '@/store/adminStore';
+import { useContentStore } from '@/store/contentStore';
+import { useMailStore } from '@/store/mailStore';
 import { JobVacancy } from '@/types/tracer';
 
 // Admin Tabs
@@ -82,6 +84,19 @@ export const DashboardLayout: React.FC = () => {
   }, [isAuthenticated]);
 
   const isAdmin = user?.role === 'admin_bkk';
+
+  // Muat data master alumni, responden, loker, berita & pesan langsung dari basis data backend VPS
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (isAdmin) {
+        useAdminStore.getState().syncAllFromBackend?.();
+        useContentStore.getState().syncAllContentFromBackend?.();
+        useMailStore.getState().fetchMailsFromBackend?.();
+      } else {
+        useContentStore.getState().syncAllContentFromBackend?.();
+      }
+    }
+  }, [isAuthenticated, isAdmin]);
 
   const tabParam = (searchParams.get('tab') as DashboardTab) || 'beranda';
   const activeTab: DashboardTab = VALID_TABS.includes(tabParam) ? tabParam : 'beranda';
