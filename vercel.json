@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://157.66.55.189:3001/api/:path*"
+      "destination": "https://tend-nikon-rows-mins.trycloudflare.com/api/:path*"
     },
     {
       "source": "/(.*)",
