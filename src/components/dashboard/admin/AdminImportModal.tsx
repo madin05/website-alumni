@@ -1,4 +1,7 @@
 import React, { useState, useRef } from 'react';
+import * as XLSX from 'xlsx';
+import { useAdminStore } from '@/store/adminStore';
+import { JurusanSMK } from '@/types/tracer';
 import {
   Upload,
   Download,
@@ -6,15 +9,8 @@ import {
   CheckCircle2,
   X,
   HelpCircle,
-  ClipboardList,
+  FileSpreadsheet,
 } from 'lucide-react';
-import {
-  ALUMNI_CSV_HEADERS,
-  ParsedAlumniRow,
-  downloadAlumniTemplate,
-  parseAlumniCsv,
-  readAlumniSpreadsheet,
-} from '@/lib/alumniCsv';
 
 const SolidFileSpreadsheetIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5 text-[#0d2346]" }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -26,7 +22,7 @@ const SolidFileSpreadsheetIcon: React.FC<{ className?: string }> = ({ className 
 interface AdminImportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (count: number, detail?: { duplicateCount?: number; invalidCount?: number }) => void;
+  onSuccess: (count: number) => void;
 }
 
 export const AdminImportModal: React.FC<AdminImportModalProps> = ({
@@ -34,84 +30,312 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { importMasterAlumni } = useAdminStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [fileName, setFileName] = useState<string>('');
-  const [parsedRows, setParsedRows] = useState<ParsedAlumniRow[]>([]);
+  const [parsedRows, setParsedRows] = useState<
+    Array<{
+      nisn: string;
+      nik: string;
+      nama: string;
+      jurusan: JurusanSMK;
+      tahunLulus: number;
+      noWhatsapp: string;
+      email: string;
+    }>
+  >([]);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [isReadingFile, setIsReadingFile] = useState<boolean>(false);
-  const [showColumns, setShowColumns] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
-  const processFile = async (file: File) => {
-    setFileName(file.name);
-    setParsedRows([]);
-    setErrorMessage('');
-    setIsReadingFile(true);
+  const sampleAlumniData = [
+    {
+      nisn: '0051234567',
+      nik: '3674012345670001',
+      nama: 'Ahmad Dani',
+      jurusan: 'Teknik Komputer dan Jaringan',
+      tahun_lulus: 2024,
+      no_wa: '081298765432',
+      email: 'ahmaddani@example.com',
+    },
+    {
+      nisn: '0052345678',
+      nik: '3674012345670002',
+      nama: 'Budi Santoso',
+      jurusan: 'Teknik Pemesinan',
+      tahun_lulus: 2024,
+      no_wa: '081311223344',
+      email: 'budisantoso@example.com',
+    },
+    {
+      nisn: '0053456789',
+      nik: '3674012345670003',
+      nama: 'Citra Dewi',
+      jurusan: 'Teknik Instalasi Tenaga Listrik',
+      tahun_lulus: 2024,
+      no_wa: '081233445566',
+      email: 'citradewi@example.com',
+    },
+    {
+      nisn: '0054567890',
+      nik: '3674012345670004',
+      nama: 'Dimas Pratama',
+      jurusan: 'Teknik Elektronika Industri',
+      tahun_lulus: 2024,
+      no_wa: '085711229988',
+      email: 'dimaspratama@example.com',
+    },
+    {
+      nisn: '0055678901',
+      nik: '3674012345670005',
+      nama: 'Eko Wahyudi',
+      jurusan: 'Teknik Kendaraan Ringan Otomotif',
+      tahun_lulus: 2024,
+      no_wa: '087811992233',
+      email: 'ekowahyudi@example.com',
+    },
+    {
+      nisn: '0056789012',
+      nik: '3674012345670006',
+      nama: 'Farhan Rizki',
+      jurusan: 'Teknik dan Bisnis Sepeda Motor',
+      tahun_lulus: 2024,
+      no_wa: '081299887766',
+      email: 'farhanrizki@example.com',
+    },
+  ];
 
+  const handleDownloadExcelTemplate = () => {
     try {
-      const csvText = await readAlumniSpreadsheet(file);
-      const result = parseAlumniCsv(csvText);
-
-      if (result.rows.length === 0) {
-        setErrorMessage(result.message || 'Berkas tidak dapat diproses.');
-        return;
-      }
-
-      setParsedRows(result.rows);
-      if (result.message) setErrorMessage(result.message);
-    } catch (err: any) {
-      console.error('[AdminImportModal] Gagal membaca berkas:', err);
-      setErrorMessage(err.message || 'Gagal membaca berkas. Pastikan berkas tidak rusak.');
-    } finally {
-      setIsReadingFile(false);
+      const ws = XLSX.utils.json_to_sheet(sampleAlumniData);
+      ws['!cols'] = [
+        { wch: 14 },
+        { wch: 20 },
+        { wch: 24 },
+        { wch: 36 },
+        { wch: 14 },
+        { wch: 16 },
+        { wch: 28 },
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Template Siswa');
+      XLSX.writeFile(wb, 'template_data_alumni_smk_sasmita2.xlsx');
+    } catch (e) {
+      console.error(e);
+      handleDownloadCsvTemplate();
     }
+  };
+
+  const handleDownloadCsvTemplate = () => {
+    const headers = 'nisn,nik,nama,jurusan,tahun_lulus,no_wa,email\n';
+    const sampleRows = sampleAlumniData
+      .map(
+        (r) =>
+          `${r.nisn},${r.nik},${r.nama},${r.jurusan},${r.tahun_lulus},${r.no_wa},${r.email}`
+      )
+      .join('\n');
+
+    const blob = new Blob([headers + sampleRows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'template_data_alumni_smk_sasmita2.csv');
+    link.style.position = 'fixed';
+    link.style.top = '-9999px';
+    link.style.left = '-9999px';
+    link.style.opacity = '0';
+    link.style.pointerEvents = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const mapJurusan = (raw: string): JurusanSMK => {
+    const lower = (raw || '').toLowerCase();
+    if (lower.includes('mesin') || lower.includes('tpm')) return 'Teknik Pemesinan';
+    if (lower.includes('listrik') || lower.includes('titl')) return 'Teknik Instalasi Tenaga Listrik';
+    if (lower.includes('elektronika') || lower.includes('industri') || lower.includes('tei')) return 'Teknik Elektronika Industri';
+    if (lower.includes('ringan') || lower.includes('tkro') || lower.includes('mobil')) return 'Teknik Kendaraan Ringan Otomotif';
+    if (lower.includes('motor') || lower.includes('tbsm') || lower.includes('sepeda')) return 'Teknik dan Bisnis Sepeda Motor';
+    if (lower.includes('komputer') || lower.includes('jaringan') || lower.includes('tkj')) return 'Teknik Komputer dan Jaringan';
+    return 'Teknik Komputer dan Jaringan';
+  };
+
+  const cleanIdString = (val: unknown): string => {
+    if (val === null || val === undefined) return '';
+    let str = String(val).trim().replace(/^['"]|['"]$/g, '');
+    if (/^[0-9]+(\.[0-9]+)?e\+[0-9]+$/i.test(str)) {
+      try {
+        str = BigInt(Math.floor(Number(val))).toString();
+      } catch {
+        // keep string
+      }
+    }
+    return str;
+  };
+
+  const parseWorkbookMatrix = (rawRows: unknown[][]) => {
+    setErrorMessage('');
+    const cleanRows = rawRows.filter(
+      (r) => Array.isArray(r) && r.some((c) => String(c ?? '').trim().length > 0)
+    );
+
+    if (cleanRows.length <= 1) {
+      setErrorMessage('Berkas tidak memiliki baris data atau isi berkas kosong.');
+      return;
+    }
+
+    let headerRowIndex = 0;
+    const colMap = {
+      nisn: 0,
+      nik: 1,
+      nama: 2,
+      jurusan: 3,
+      tahun: 4,
+      noWa: 5,
+      email: 6,
+    };
+
+    // Detect header row dynamically
+    for (let i = 0; i < Math.min(cleanRows.length, 6); i++) {
+      const row = cleanRows[i].map((c) => String(c ?? '').toLowerCase().trim());
+      const hasNisn = row.some((c) => c.includes('nisn'));
+      const hasNama = row.some((c) => c.includes('nama'));
+      if (hasNisn || hasNama) {
+        headerRowIndex = i;
+        row.forEach((colName, colIdx) => {
+          if (colName.includes('nisn')) colMap.nisn = colIdx;
+          else if (colName.includes('nik') || colName.includes('ktp')) colMap.nik = colIdx;
+          else if (colName.includes('nama')) colMap.nama = colIdx;
+          else if (
+            colName.includes('jurusan') ||
+            colName.includes('prodi') ||
+            colName.includes('kompetensi') ||
+            colName.includes('keahlian')
+          )
+            colMap.jurusan = colIdx;
+          else if (
+            colName.includes('tahun') ||
+            colName.includes('angkatan') ||
+            colName.includes('lulus')
+          )
+            colMap.tahun = colIdx;
+          else if (
+            colName.includes('wa') ||
+            colName.includes('hp') ||
+            colName.includes('telepon') ||
+            colName.includes('ponsel')
+          )
+            colMap.noWa = colIdx;
+          else if (colName.includes('email') || colName.includes('surel'))
+            colMap.email = colIdx;
+        });
+        break;
+      }
+    }
+
+    const dataRows = cleanRows.slice(headerRowIndex + 1);
+    const result: typeof parsedRows = [];
+
+    dataRows.forEach((row) => {
+      const getVal = (idx: number) => {
+        if (idx < 0 || idx >= row.length) return '';
+        const v = row[idx];
+        return v === null || v === undefined ? '' : String(v).trim();
+      };
+
+      const nisn = cleanIdString(getVal(colMap.nisn));
+      const nik = cleanIdString(getVal(colMap.nik));
+      const nama = getVal(colMap.nama);
+      const rawJurusan = getVal(colMap.jurusan);
+      const parsedTahun = parseInt(getVal(colMap.tahun), 10) || 2024;
+      const noWa = getVal(colMap.noWa) || '081200000000';
+      const email =
+        getVal(colMap.email) ||
+        `${nama.toLowerCase().replace(/[^a-z0-9]/g, '')}@example.com`;
+
+      if (nisn && nama) {
+        result.push({
+          nisn,
+          nik: nik || '3674000000000000',
+          nama,
+          jurusan: mapJurusan(rawJurusan),
+          tahunLulus: parsedTahun,
+          noWhatsapp: noWa,
+          email,
+        });
+      }
+    });
+
+    if (result.length === 0) {
+      setErrorMessage(
+        'Tidak ditemukan baris data yang valid. Pastikan kolom NISN dan Nama Lengkap terisi.'
+      );
+    } else {
+      setParsedRows(result);
+    }
+  };
+
+  const processFile = (file: File) => {
+    setFileName(file.name);
+    setErrorMessage('');
+    const reader = new FileReader();
+
+    reader.onload = (evt) => {
+      try {
+        const buffer = evt.target?.result as ArrayBuffer;
+        if (!buffer) return;
+
+        const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+        const firstSheetName = workbook.SheetNames[0];
+        if (!firstSheetName) {
+          setErrorMessage('Berkas tidak memiliki sheet data.');
+          return;
+        }
+
+        const worksheet = workbook.Sheets[firstSheetName];
+        const rawRows: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          defval: '',
+        });
+        parseWorkbookMatrix(rawRows);
+      } catch (err: unknown) {
+        console.error(err);
+        setErrorMessage(
+          'Gagal membaca berkas: Format berkas tidak didukung atau berkas rusak.'
+        );
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) processFile(file);
+    if (!file) return;
+    processFile(file);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
-    if (file) processFile(file);
+    if (!file) return;
+    processFile(file);
   };
 
-  const handleCommitImport = async () => {
-    if (parsedRows.length === 0 || isProcessing) return;
+  const handleCommitImport = () => {
+    if (parsedRows.length === 0) return;
 
     setIsProcessing(true);
-    setErrorMessage('');
-
-    try {
-      const { adminMasterAlumniApi } = await import('@/services/adminService');
-
-      const records = parsedRows.map((row) => row.dbFields);
-      const res = await adminMasterAlumniApi.importCsv(records, true);
-
-      if (!res.success || !res.data) {
-        setErrorMessage(res.message || 'Gagal menyimpan data ke basis data.');
-        return;
-      }
-
-      const { importedCount, duplicateCount, invalidCount } = res.data;
-
-      // Segarkan data dari basis data agar tabel langsung menampilkan hasil impor
-      const { useAdminStore } = await import('@/store/adminStore');
-      await useAdminStore.getState().fetchMasterAlumniFromBackend();
-
-      onSuccess(importedCount ?? records.length, { duplicateCount, invalidCount });
-      onClose();
-    } catch (err: any) {
-      console.error('[AdminImportModal] Import gagal:', err);
-      setErrorMessage(err.message || 'Terjadi kesalahan saat menyimpan data ke basis data.');
-    } finally {
+    setTimeout(() => {
+      const { importedCount } = importMasterAlumni(parsedRows);
       setIsProcessing(false);
-    }
+      onSuccess(importedCount);
+      onClose();
+    }, 350);
   };
 
   return (
@@ -143,65 +367,35 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
         {/* Modal Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
           {/* Instruction & Template Action */}
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 text-xs">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-start gap-2.5">
-                <HelpCircle className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
-                <div className="text-slate-700">
-                  <p className="font-semibold text-slate-800">
-                    Format Kolom: {ALUMNI_CSV_HEADERS.length} kolom (format ekspor Dapodik)
-                  </p>
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    Baris pertama wajib memakai header Dapodik. NISN wajib 10 digit dan
-                    Tahun Lulus wajib terisi; baris yang tidak valid akan dilewati otomatis.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <button
-                  onClick={() => downloadAlumniTemplate('csv')}
-                  className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 font-semibold border border-slate-200 shadow-xs transition flex items-center gap-1.5 cursor-pointer"
-                  title="Unduh template dalam format CSV"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Unduh CSV</span>
-                </button>
-                <button
-                  onClick={() => downloadAlumniTemplate('xlsx')}
-                  className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 font-semibold border border-slate-200 shadow-xs transition flex items-center gap-1.5 cursor-pointer"
-                  title="Unduh template dalam format Excel (XLSX)"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Unduh XLSX</span>
-                </button>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-start gap-2.5">
+              <HelpCircle className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+              <div className="text-slate-700">
+                <span className="font-semibold">Format Kolom:</span>{' '}
+                <code className="bg-slate-200/80 px-1.5 py-0.5 rounded text-slate-800 font-mono text-[11px]">
+                  nisn, nik, nama, jurusan, tahun_lulus, no_wa, email
+                </code>
               </div>
             </div>
-
-            {/* Rincian kolom (ringkas, tampil saat dibuka) */}
-            <div className="border-t border-slate-200 pt-3">
+            <div className="flex items-center gap-2 shrink-0">
               <button
-                onClick={() => setShowColumns((prev) => !prev)}
-                className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 hover:text-[#0d2346] transition cursor-pointer"
+                type="button"
+                onClick={handleDownloadExcelTemplate}
+                className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-800 font-semibold border border-slate-200 shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                title="Unduh format template Excel (.xlsx)"
               >
-                <ClipboardList className="w-3.5 h-3.5" />
-                <span>
-                  {showColumns ? 'Sembunyikan rincian kolom' : `Lihat rincian ${ALUMNI_CSV_HEADERS.length} kolom`}
-                </span>
+                <Download className="w-3.5 h-3.5 text-slate-600" />
+                <span>Format Excel (.xlsx)</span>
               </button>
-
-              {showColumns && (
-                <div className="flex flex-wrap gap-1 mt-2.5">
-                  {ALUMNI_CSV_HEADERS.map((column, idx) => (
-                    <span
-                      key={column}
-                      className="px-1.5 py-0.5 rounded bg-slate-200/70 text-slate-700 font-mono text-[10px] leading-4"
-                      title={`Kolom ke-${idx + 1}: ${column}`}
-                    >
-                      {column}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={handleDownloadCsvTemplate}
+                className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-600 font-medium border border-slate-200 shadow-xs transition flex items-center gap-1 cursor-pointer"
+                title="Unduh format CSV (.csv)"
+              >
+                <Download className="w-3.5 h-3.5 text-slate-500" />
+                <span>CSV</span>
+              </button>
             </div>
           </div>
 
@@ -215,7 +409,7 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept=".csv,.txt,.xlsx,.xls"
+              accept=".xlsx,.xls,.csv,.txt"
               className="hidden"
               onChange={handleFileUpload}
             />
@@ -224,14 +418,10 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
             </div>
             <div>
               <p className="text-xs sm:text-sm font-bold text-slate-800">
-                {isReadingFile
-                  ? 'Membaca berkas...'
-                  : fileName
-                    ? fileName
-                    : 'Pilih berkas CSV, XLSX, atau tarik berkas ke area ini'}
+                {fileName ? fileName : 'Pilih berkas Excel (.xlsx, .xls) / CSV atau tarik ke area ini'}
               </p>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Mendukung berkas CSV, TXT, dan Excel (.xlsx/.xls) hasil ekspor Dapodik
+                Mendukung berkas Excel (.xlsx, .xls) dan CSV hasil ekspor Dapodik
               </p>
             </div>
           </div>
@@ -294,7 +484,7 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
           </button>
           <button
             onClick={handleCommitImport}
-            disabled={parsedRows.length === 0 || isProcessing || isReadingFile}
+            disabled={parsedRows.length === 0 || isProcessing}
             className="px-5 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-2"
           >
             <CheckCircle2 className="w-4 h-4" />

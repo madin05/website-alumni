@@ -2,17 +2,10 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { MOCK_YEARLY_TRACER_DATA } from "@/lib/mockData";
+import { JurusanYearlyStat } from "@/types/tracer";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { ChevronRight, HelpCircle, Loader2, AlertCircle, RefreshCw } from "lucide-react";
-import {
-  EMPTY_KETERSERAPAN,
-  KeterserapanData,
-  aggregateRows,
-  buildChartStats,
-  buildJurusanTableRows,
-  filterByJurusanCode,
-  jurusanCode,
-} from "@/lib/reportStats";
+import { ChevronRight, HelpCircle } from "lucide-react";
 
 const JURUSAN_OPTIONS_MAP: { id: string; name: string; code: string }[] = [
   { id: "ALL", name: "Semua Jurusan", code: "Semua" },
@@ -23,15 +16,6 @@ const JURUSAN_OPTIONS_MAP: { id: string; name: string; code: string }[] = [
   { id: "tbsm", name: "Teknik dan Bisnis Sepeda Motor (TBSM)", code: "TBSM" },
   { id: "tkj", name: "Teknik Komputer dan Jaringan (TKJ)", code: "TKJ" },
 ];
-
-const JURUSAN_BY_CODE: Record<string, string> = {
-  TPM: "Teknik Pemesinan",
-  TITL: "Teknik Instalasi Tenaga Listrik",
-  EL: "Teknik Elektronika Industri",
-  TKRO: "Teknik Kendaraan Ringan Otomotif",
-  TBSM: "Teknik dan Bisnis Sepeda Motor",
-  TKJ: "Teknik Komputer dan Jaringan",
-};
 
 const YEAR_OPTIONS = [
   { value: "ALL", label: "Semua Tahun (2022 - 2025)" },
@@ -50,75 +34,212 @@ export const ReportDetailPage: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>("ALL");
   const [selectedJurusan, setSelectedJurusan] = useState<string>("ALL");
 
-  // 2. Statistik langsung dari basis data (bukan data contoh)
-  const [stats, setStats] = useState<KeterserapanData>(EMPTY_KETERSERAPAN);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadError, setLoadError] = useState<string>("");
-
-  useEffect(() => {
-    let isActive = true;
-
-    const fetchStats = async () => {
-      setIsLoading(true);
-      setLoadError("");
-
-      try {
-        const { publicReportApi } = await import("@/services/adminService");
-        const res = await publicReportApi.getKeterserapan({
-          tahunLulus: selectedYear === "ALL" ? undefined : Number(selectedYear),
-        });
-        if (!isActive) return;
-        setStats(res?.data ? res.data : EMPTY_KETERSERAPAN);
-      } catch (err: any) {
-        if (!isActive) return;
-        setLoadError(err.message || "Gagal memuat statistik dari basis data.");
-      } finally {
-        if (isActive) setIsLoading(false);
-      }
-    };
-
-    fetchStats();
-    return () => {
-      isActive = false;
-    };
+  // Filter raw data by year
+  const rawFilteredByYear = useMemo(() => {
+    if (selectedYear === "ALL") {
+      return MOCK_YEARLY_TRACER_DATA;
+    }
+    const y = parseInt(selectedYear, 10);
+    return MOCK_YEARLY_TRACER_DATA.filter((item) => item.year === y);
   }, [selectedYear]);
 
-  // 3. Rekap per jurusan (tabel bisa diklik untuk memfilter chart)
-  const tableRows = useMemo(
-    () =>
-      buildJurusanTableRows(stats.byJurusan).map((row) => ({
-        ...row,
-        id: jurusanCode(row.jurusan).toLowerCase(),
-      })),
-    [stats.byJurusan],
-  );
+  // Table Data Grouped by Jurusan (TPM, TITL, EL, TKRO, TBSM, TKJ)
+  const tableRows = useMemo(() => {
+    const majors: JurusanYearlyStat["jurusanId"][] = [
+      "tpm",
+      "titl",
+      "el",
+      "tkro",
+      "tbsm",
+      "tkj",
+    ];
 
+    return majors.map((jId) => {
+      const matching = rawFilteredByYear.filter(
+        (item) => item.jurusanId === jId,
+      );
+      const totalAlumni = matching.reduce(
+        (acc, curr) => acc + curr.totalAlumni,
+        0,
+      );
+      const mengisiTracer = matching.reduce(
+        (acc, curr) => acc + curr.mengisiTracer,
+        0,
+      );
+      const bekerja = matching.reduce((acc, curr) => acc + curr.bekerja, 0);
+      const kuliah = matching.reduce((acc, curr) => acc + curr.kuliah, 0);
+      const wirausaha = matching.reduce((acc, curr) => acc + curr.wirausaha, 0);
+      const belumKerja = matching.reduce(
+        (acc, curr) => acc + curr.belumKerja,
+        0,
+      );
+
+      const sample = matching[0] || {
+        jurusanCode: jId.toUpperCase(),
+        jurusanName: jId,
+      };
+
+      const tracerPercent =
+        totalAlumni > 0
+          ? ((mengisiTracer / totalAlumni) * 100).toFixed(1)
+          : "0";
+
+      return {
+        id: jId,
+        code: sample.jurusanCode,
+        name: sample.jurusanName,
+        totalAlumni,
+        mengisiTracer,
+        tracerPercent,
+        bekerja,
+        kuliah,
+        wirausaha,
+        belumKerja,
+      };
+    });
+  }, [rawFilteredByYear]);
+
+  // Total Summary Row
   const totalSummary = useMemo(() => {
-    const totalAlumni = tableRows.reduce((acc, curr) => acc + curr.totalAlumni, 0);
-    const mengisiTracer = tableRows.reduce((acc, curr) => acc + curr.mengisiTracer, 0);
+    const totalAlumni = tableRows.reduce(
+      (acc, curr) => acc + curr.totalAlumni,
+      0,
+    );
+    const mengisiTracer = tableRows.reduce(
+      (acc, curr) => acc + curr.mengisiTracer,
+      0,
+    );
     const bekerja = tableRows.reduce((acc, curr) => acc + curr.bekerja, 0);
     const kuliah = tableRows.reduce((acc, curr) => acc + curr.kuliah, 0);
     const wirausaha = tableRows.reduce((acc, curr) => acc + curr.wirausaha, 0);
-    const belumKerja = tableRows.reduce((acc, curr) => acc + curr.belumKerja, 0);
+    const belumKerja = tableRows.reduce(
+      (acc, curr) => acc + curr.belumKerja,
+      0,
+    );
+    const tracerPercent =
+      totalAlumni > 0 ? ((mengisiTracer / totalAlumni) * 100).toFixed(1) : "0";
 
     return {
       totalAlumni,
       mengisiTracer,
+      tracerPercent,
       bekerja,
       kuliah,
       wirausaha,
       belumKerja,
-      tracerPercent: totalAlumni > 0 ? ((mengisiTracer / totalAlumni) * 100).toFixed(1) : "0",
     };
   }, [tableRows]);
 
-  // 4. Chart mengikuti filter jurusan (klik baris tabel)
-  const chartStats = useMemo(
-    () => buildChartStats(aggregateRows(filterByJurusanCode(stats.byJurusan, selectedJurusan))),
-    [stats.byJurusan, selectedJurusan],
-  );
+  // Aggregated Stats for the 3 Charts (filtered by Year and Jurusan)
+  const chartStats = useMemo(() => {
+    const targetData = rawFilteredByYear.filter((item) => {
+      if (selectedJurusan === "ALL") return true;
+      return item.jurusanId === selectedJurusan;
+    });
 
-  // 5. Label filter aktif
+    const totalResponden = targetData.reduce(
+      (acc, curr) => acc + curr.mengisiTracer,
+      0,
+    );
+    const bekerja = targetData.reduce((acc, curr) => acc + curr.bekerja, 0);
+    const kuliah = targetData.reduce((acc, curr) => acc + curr.kuliah, 0);
+    const wirausaha = targetData.reduce((acc, curr) => acc + curr.wirausaha, 0);
+    const belumKerja = targetData.reduce(
+      (acc, curr) => acc + curr.belumKerja,
+      0,
+    );
+
+    // Kesesuaian
+    const sangatSesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.sangatSesuai,
+      0,
+    );
+    const sesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.sesuai,
+      0,
+    );
+    const kurangSesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.kurangSesuai,
+      0,
+    );
+    const tidakSesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.tidakSesuai,
+      0,
+    );
+
+    // Skala Kerja
+    const lokal = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.lokal,
+      0,
+    );
+    const nasional = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.nasional,
+      0,
+    );
+    const multinasional = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.multinasional,
+      0,
+    );
+    const skalaWirausaha = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.wirausaha,
+      0,
+    );
+
+    // Safe Percentage Helper
+    const calcPct = (num: number, denom: number) => {
+      if (!denom || denom === 0) return 0;
+      return parseFloat(((num / denom) * 100).toFixed(1));
+    };
+
+    const totalKesesuaian = sangatSesuai + sesuai + kurangSesuai + tidakSesuai;
+    const totalSkala = lokal + nasional + multinasional + skalaWirausaha;
+
+    return {
+      totalResponden,
+      aktivitas: {
+        bekerja: { count: bekerja, percent: calcPct(bekerja, totalResponden) },
+        kuliah: { count: kuliah, percent: calcPct(kuliah, totalResponden) },
+        wirausaha: {
+          count: wirausaha,
+          percent: calcPct(wirausaha, totalResponden),
+        },
+        belumKerja: {
+          count: belumKerja,
+          percent: calcPct(belumKerja, totalResponden),
+        },
+      },
+      kesesuaian: {
+        sangatSesuai: {
+          count: sangatSesuai,
+          percent: calcPct(sangatSesuai, totalKesesuaian),
+        },
+        sesuai: { count: sesuai, percent: calcPct(sesuai, totalKesesuaian) },
+        kurangSesuai: {
+          count: kurangSesuai,
+          percent: calcPct(kurangSesuai, totalKesesuaian),
+        },
+        tidakSesuai: {
+          count: tidakSesuai,
+          percent: calcPct(tidakSesuai, totalKesesuaian),
+        },
+        totalLinear: calcPct(sangatSesuai + sesuai, totalKesesuaian),
+      },
+      skalaKerja: {
+        lokal: { count: lokal, percent: calcPct(lokal, totalSkala) },
+        nasional: { count: nasional, percent: calcPct(nasional, totalSkala) },
+        multinasional: {
+          count: multinasional,
+          percent: calcPct(multinasional, totalSkala),
+        },
+        wirausaha: {
+          count: skalaWirausaha,
+          percent: calcPct(skalaWirausaha, totalSkala),
+        },
+      },
+    };
+  }, [rawFilteredByYear, selectedJurusan]);
+
+  // Selected Jurusan display title
   const activeJurusanObj =
     JURUSAN_OPTIONS_MAP.find((j) => j.id === selectedJurusan) ||
     JURUSAN_OPTIONS_MAP[0];
@@ -462,26 +583,6 @@ export const ReportDetailPage: React.FC = () => {
               {chartStats.totalResponden.toLocaleString("id-ID")} Orang
             </span>
           </div>
-
-          {/* Status data real dari basis data */}
-          <div className="mt-2 flex items-center justify-end">
-            {isLoading ? (
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-400">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                Memuat data dari basis data...
-              </span>
-            ) : loadError ? (
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-rose-600">
-                <AlertCircle className="w-3 h-3" />
-                {loadError}
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold">
-                <RefreshCw className="w-3 h-3" />
-                Data real dari basis data
-              </span>
-            )}
-          </div>
         </div>
 
         {/* 2. Tabel Rekapitulasi Data (Di Bawah Chart) */}
@@ -544,22 +645,11 @@ export const ReportDetailPage: React.FC = () => {
                     Wirausaha
                   </th>
                   <th className="py-3 px-3 text-center rounded-r-xl whitespace-nowrap">
-                    Belum Kerja
+                    Belum Bekerja
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {tableRows.length === 0 && (
-                  <tr>
-                    <td
-                      colSpan={8}
-                      className="py-8 px-4 text-center text-xs text-slate-500"
-                    >
-                      Belum ada data kuesioner pada periode ini. Statistik akan
-                      terisi otomatis setelah alumni mengisi tracer study.
-                    </td>
-                  </tr>
-                )}
                 {tableRows.map((row) => {
                   const isSelected = selectedJurusan === row.id;
                   return (
@@ -834,7 +924,7 @@ export const ReportDetailPage: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <span className="w-3 h-3 rounded-md bg-slate-300 shrink-0" />
                       <span className="font-semibold text-slate-800">
-                        Belum Kerja / Cari Kerja
+                        Belum Bekerja / Cari Kerja
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 sm:gap-2 font-bold">

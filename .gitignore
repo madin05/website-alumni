@@ -33,6 +33,7 @@ dist-ssr/
 build/
 .vite/
 *.local
+*.sql
 
 # Environment & Sensitive Credentials files
 .env
@@ -68,6 +69,21 @@ Thumbs.db
 # Agent / AI Scratch caches
 .agents/
 
+# Backend Isolation (Staging is Frontend Only)
+backend/
+
+# Sensitive Data Dumps & Spreadsheets
+*.xlsx
+*.xls
+*.csv
+*.sql
+*.sqlite
+*.db
+*.dump
+
+# Cloudflare & Secrets
+.cloudflared/
+
 # Documentation, Internal Scripts & Specs
 scripts/
 docs/
@@ -81,3 +97,5 @@ FLOW_VERIFIKASI_PELACAKAN_IJAZAH.md
 PRD.md
 TRACER_STUDY_WORKFLOW.md
 flow-dash-admin.md
+analisis_variabel_tracer_excel.md
+term_condition_privacy_policy.md

@@ -13,11 +13,7 @@ export const AlumniTab: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const { masterAlumni, respondents, fetchMasterAlumniFromBackend } = useAdminStore();
-
-  useEffect(() => {
-    fetchMasterAlumniFromBackend();
-  }, [fetchMasterAlumniFromBackend]);
+  const { masterAlumni, respondents } = useAdminStore();
 
   useEffect(() => {
     setCurrentPage(1);

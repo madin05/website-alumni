@@ -4,12 +4,16 @@ import { DetailKerja, DetailKuliah, DetailUsaha } from '@/types/tracer';
 import {
   STATUS_PEKERJAAN_OPTIONS,
   KESESUAIAN_KERJA_OPTIONS,
-  PENGHASILAN_OPTIONS,
   JENJANG_KULIAH_OPTIONS,
   STATUS_KULIAH_OPTIONS,
   LAMA_USAHA_OPTIONS,
   JUMLAH_KARYAWAN_OPTIONS,
   KESESUAIAN_USAHA_OPTIONS,
+  KETERANGAN_KERJA_OPTIONS,
+  JENIS_USAHA_OPTIONS,
+  KESELARASAN_STUDI_OPTIONS,
+  PENDAPATAN_UMP_OPTIONS,
+  PENDAPATAN_UMK_OPTIONS,
 } from '@/schemas/tracerSchema';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -78,6 +82,10 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
         setWarningModal('Mohon lengkapi jabatan / posisi pekerjaan.');
         return;
       }
+      if (detail_kerja?.lokasi_pekerjaan === 'LUAR_NEGERI' && !detail_kerja?.negara_kerja?.trim()) {
+        setWarningModal('Mohon sebutkan nama negara tempat bekerja di luar negeri.');
+        return;
+      }
     }
 
     if (isKuliah) {
@@ -142,13 +150,119 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
               onChange={(e) => handleKerjaChange('bidang_pekerjaan', e.target.value)}
             />
 
-            {/* Kota / Kabupaten Tempat Bekerja */}
-            <Input
-              label="Kota/kabupaten tempat bekerja"
-              placeholder="Contoh : Tangerang Selatan"
-              value={detail_kerja?.kota_kabupaten || ''}
-              onChange={(e) => handleKerjaChange('kota_kabupaten', e.target.value)}
-            />
+            {/* Lokasi Penempatan Kerja: Dalam Negeri vs Luar Negeri */}
+            <div className="sm:col-span-2 pt-2 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
+                Lokasi Tempat Bekerja:
+              </label>
+              <div className="flex flex-wrap items-center gap-6">
+                <label className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors">
+                  <input
+                    type="radio"
+                    name="lokasi_pekerjaan"
+                    value="DALAM_NEGERI"
+                    checked={(detail_kerja?.lokasi_pekerjaan || 'DALAM_NEGERI') === 'DALAM_NEGERI'}
+                    onChange={() => {
+                      updateDetailKerja({
+                        ...detail_kerja,
+                        lokasi_pekerjaan: 'DALAM_NEGERI',
+                        negara_kerja: 'Indonesia',
+                        provinsi_kerja: detail_kerja?.provinsi_kerja === 'Luar Negeri' ? '' : detail_kerja?.provinsi_kerja,
+                      });
+                    }}
+                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
+                  />
+                  <span>Di Dalam Negeri (Indonesia)</span>
+                </label>
+
+                <label className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors">
+                  <input
+                    type="radio"
+                    name="lokasi_pekerjaan"
+                    value="LUAR_NEGERI"
+                    checked={detail_kerja?.lokasi_pekerjaan === 'LUAR_NEGERI'}
+                    onChange={() => {
+                      updateDetailKerja({
+                        ...detail_kerja,
+                        lokasi_pekerjaan: 'LUAR_NEGERI',
+                        provinsi_kerja: 'Luar Negeri',
+                      });
+                    }}
+                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
+                  />
+                  <span>Di Luar Negeri</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Input Wilayah Lokasi Kerja (Tunggal & Tidak Dobel) */}
+            {(detail_kerja?.lokasi_pekerjaan || 'DALAM_NEGERI') === 'DALAM_NEGERI' ? (
+              <>
+                <Input
+                  label="Provinsi Tempat Bekerja"
+                  value={detail_kerja?.provinsi_kerja || ''}
+                  onChange={(e) => handleKerjaChange('provinsi_kerja', e.target.value)}
+                />
+
+                <Input
+                  label="Kota / Kab Tempat Bekerja"
+                  value={detail_kerja?.kota_kerja || detail_kerja?.kota_kabupaten || ''}
+                  onChange={(e) => {
+                    updateDetailKerja({
+                      ...detail_kerja,
+                      kota_kerja: e.target.value,
+                      kota_kabupaten: e.target.value,
+                    });
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <Input
+                  label="Negara Tempat Bekerja"
+                  value={detail_kerja?.negara_kerja || ''}
+                  onChange={(e) => handleKerjaChange('negara_kerja', e.target.value)}
+                  requiredStar
+                />
+
+                <Input
+                  label="Kota / Wilayah di Luar Negeri"
+                  value={detail_kerja?.kota_kerja || detail_kerja?.kota_kabupaten || ''}
+                  onChange={(e) => {
+                    updateDetailKerja({
+                      ...detail_kerja,
+                      kota_kerja: e.target.value,
+                      kota_kabupaten: e.target.value,
+                    });
+                  }}
+                />
+              </>
+            )}
+
+            {/* Status Hubungan Kerja / Kepegawaian (BPS) */}
+            <div className="sm:col-span-2 pt-2 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
+                Status hubungan kerja / ketenagakerjaan:
+              </label>
+              <div className="space-y-2">
+                {KETERANGAN_KERJA_OPTIONS.map((item) => {
+                  const isSelected = (detail_kerja?.keterangan_kerja || 'Buruh/karyawan/pegawai') === item;
+                  return (
+                    <label key={item} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
+                      <input
+                        type="radio"
+                        name="keterangan_kerja"
+                        value={item}
+                        checked={isSelected}
+                        onChange={() => handleKerjaChange('keterangan_kerja', item)}
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
+                      />
+                      <span>{item}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Status Pekerjaan */}
             <div className="sm:col-span-2 pt-2 border-t border-slate-100 space-y-3">
@@ -203,28 +317,58 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
               </div>
             </div>
 
-            {/* Kisaran Penghasilan Bulanan (Opsional) */}
-            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
-              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
-                Kisaran penghasilan per bulan <span className="text-slate-400 font-normal text-xs sm:text-sm">(opsional)</span>
-              </label>
-              <div className="flex flex-wrap items-center gap-5 sm:gap-6">
-                {PENGHASILAN_OPTIONS.map((gaji) => {
-                  const isSelected = detail_kerja?.kisaran_penghasilan === gaji;
-                  return (
-                    <label key={gaji} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
-                      <input
-                        type="radio"
-                        name="kisaran_penghasilan"
-                        value={gaji}
-                        checked={isSelected}
-                        onChange={() => handleKerjaChange('kisaran_penghasilan', gaji)}
-                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
-                      />
-                      <span>{gaji}</span>
-                    </label>
-                  );
-                })}
+            {/* Status Pendapatan Bulanan Relatif thd Standar UMP & UMK (Tanpa Nominal Rupiah) */}
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
+                  Status Pendapatan Rata-rata per Bulan:
+                </label>
+               
+              </div>
+
+              {/* Indikator Standar UMP & UMK Kemendikbud */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-3.5 sm:p-4 rounded-xl border border-slate-200/80">
+                <div className="space-y-2.5">
+                  <span className="block text-xs font-semibold text-slate-800">
+                    Penghasilan thd UMP Provinsi:
+                  </span>
+                  <div className="flex flex-col gap-2">
+                    {PENDAPATAN_UMP_OPTIONS.map((opt) => (
+                      <label key={opt} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700 cursor-pointer hover:text-blue-600 transition-colors">
+                        <input
+                          type="radio"
+                          name="kerja_pendapatan_ump"
+                          value={opt}
+                          checked={detail_kerja?.pendapatan_ump === opt}
+                          onChange={() => handleKerjaChange('pendapatan_ump', opt)}
+                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  <span className="block text-xs font-semibold text-slate-800">
+                    Penghasilan thd UMK Kota/Kab:
+                  </span>
+                  <div className="flex flex-col gap-2">
+                    {PENDAPATAN_UMK_OPTIONS.map((opt) => (
+                      <label key={opt} className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700 cursor-pointer hover:text-blue-600 transition-colors">
+                        <input
+                          type="radio"
+                          name="kerja_pendapatan_umk"
+                          value={opt}
+                          checked={detail_kerja?.pendapatan_umk === opt}
+                          onChange={() => handleKerjaChange('pendapatan_umk', opt)}
+                          className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -335,6 +479,31 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
                 })}
               </div>
             </div>
+
+            {/* Keselarasan Program Studi Kuliah dengan Kompetensi SMK */}
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-3">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
+                Apakah program studi perkuliahan selaras dengan kompetensi keahlian di SMK?
+              </label>
+              <div className="flex items-center gap-6">
+                {KESELARASAN_STUDI_OPTIONS.map((opt) => {
+                  const isSelected = (detail_kuliah?.keselarasan_studi || 'Selaras') === opt;
+                  return (
+                    <label key={opt} className="flex items-center gap-2.5 cursor-pointer text-sm text-slate-800 hover:text-blue-600 transition-colors leading-relaxed">
+                      <input
+                        type="radio"
+                        name="keselarasan_studi"
+                        value={opt}
+                        checked={isSelected}
+                        onChange={() => handleKuliahChange('keselarasan_studi', opt)}
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300 cursor-pointer shrink-0"
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -362,6 +531,54 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
               placeholder="Contoh : Otomotif / Servis Motor"
               value={detail_usaha?.bidang_usaha || ''}
               onChange={(e) => handleUsahaChange('bidang_usaha', e.target.value)}
+            />
+
+            {/* Nama Produk / Komoditas Usaha */}
+            <Input
+              label="Nama produk / komoditas usaha"
+              placeholder="Contoh : Penjualan Sparepart & Jasa Servis"
+              value={detail_usaha?.nama_produk_usaha || ''}
+              onChange={(e) => handleUsahaChange('nama_produk_usaha', e.target.value)}
+            />
+
+            {/* Jenis Usaha (Barang / Jasa / Barang & Jasa) */}
+            <div className="space-y-2">
+              <label className="block text-xs sm:text-sm font-semibold text-slate-800 leading-relaxed">
+                Jenis Usaha:
+              </label>
+              <div className="flex flex-wrap items-center gap-4 pt-1">
+                {JENIS_USAHA_OPTIONS.map((jenis) => {
+                  const isSelected = (detail_usaha?.jenis_usaha || 'Barang') === jenis;
+                  return (
+                    <label key={jenis} className="flex items-center gap-2 cursor-pointer text-sm text-slate-800 hover:text-blue-600">
+                      <input
+                        type="radio"
+                        name="jenis_usaha"
+                        value={jenis}
+                        checked={isSelected}
+                        onChange={() => handleUsahaChange('jenis_usaha', jenis)}
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300"
+                      />
+                      <span>{jenis}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Provinsi & Kota Lokasi Tempat Usaha */}
+            <Input
+              label="Provinsi Lokasi Usaha"
+              placeholder="Contoh : Prov. Banten"
+              value={detail_usaha?.provinsi_usaha || ''}
+              onChange={(e) => handleUsahaChange('provinsi_usaha', e.target.value)}
+            />
+
+            <Input
+              label="Kota / Kab Lokasi Usaha"
+              placeholder="Contoh : Kota Tangerang Selatan"
+              value={detail_usaha?.kota_usaha || ''}
+              onChange={(e) => handleUsahaChange('kota_usaha', e.target.value)}
             />
 
             {/* Lama Menjalankan Usaha */}
@@ -436,6 +653,52 @@ export const Step3Details: React.FC<Step3Props> = ({ onNext, onPrev }) => {
                     </label>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Indikator Pendapatan Wirausaha thd UMP & UMK */}
+            <div className="sm:col-span-2 pt-3 border-t border-slate-100 space-y-4">
+              <label className="block text-sm font-semibold text-slate-800 leading-relaxed">
+                Pendapatan Rata-rata Berwirausaha terhadap Standar Upah Daerah:
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-3.5 rounded-lg border border-slate-200/80">
+                <div className="space-y-2">
+                  <span className="block text-xs font-semibold text-slate-700">Pendapatan thd UMP Provinsi:</span>
+                  <div className="flex flex-col gap-1.5">
+                    {PENDAPATAN_UMP_OPTIONS.map((opt) => (
+                      <label key={opt} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:text-blue-600">
+                        <input
+                          type="radio"
+                          name="usaha_pendapatan_ump"
+                          value={opt}
+                          checked={detail_usaha?.pendapatan_ump === opt}
+                          onChange={() => handleUsahaChange('pendapatan_ump', opt)}
+                          className="w-3.5 h-3.5 text-blue-600 focus:ring-blue-500 border-slate-300"
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="block text-xs font-semibold text-slate-700">Pendapatan thd UMK Kota/Kab:</span>
+                  <div className="flex flex-col gap-1.5">
+                    {PENDAPATAN_UMK_OPTIONS.map((opt) => (
+                      <label key={opt} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer hover:text-blue-600">
+                        <input
+                          type="radio"
+                          name="usaha_pendapatan_umk"
+                          value={opt}
+                          checked={detail_usaha?.pendapatan_umk === opt}
+                          onChange={() => handleUsahaChange('pendapatan_umk', opt)}
+                          className="w-3.5 h-3.5 text-blue-600 focus:ring-blue-500 border-slate-300"
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

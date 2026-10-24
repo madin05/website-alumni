@@ -15,7 +15,9 @@ import { useMailStore, MailItem } from "@/store/mailStore";
 import { useAuthStore } from "@/store/authStore";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { Toast } from "@/components/ui/Toast";
 import { createPortal } from "react-dom";
+import { formatTimeAgo } from "@/lib/utils";
 
 const SolidMailIcon: React.FC<{ className?: string }> = ({
   className = "w-5 h-5 text-[#0d2346]",
@@ -44,16 +46,10 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     markAsRead,
     markAllAsRead,
     deleteMail,
-    fetchMailsFromBackend,
-    fetchError,
   } = useMailStore();
 
   const role = user?.role === "admin_bkk" ? "admin_bkk" : "alumni";
   const userNisn = user?.nisn;
-
-  React.useEffect(() => {
-    fetchMailsFromBackend();
-  }, [fetchMailsFromBackend]);
 
   const mails = getMailsForUser(role, userNisn);
   const unreadCount = getUnreadCount(role, userNisn);
@@ -144,25 +140,6 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     }
   };
 
-  const formatTimeAgo = (dateStr: string) => {
-    try {
-      const date = new Date(dateStr);
-      const now = new Date();
-      const diffMs = now.getTime() - date.getTime();
-      const diffMins = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMins / 60);
-      const diffDays = Math.floor(diffHours / 24);
-
-      if (diffMins < 1) return "Baru saja";
-      if (diffMins < 60) return `${diffMins} mnt lalu`;
-      if (diffHours < 24) return `${diffHours} jam lalu`;
-      if (diffDays === 1) return "Kemarin";
-      return `${diffDays} hari lalu`;
-    } catch {
-      return dateStr;
-    }
-  };
-
   const getCategoryLabel = (category: MailItem["category"]) => {
     switch (category) {
       case "tracer_submission":
@@ -185,14 +162,11 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
   return (
     <div className="space-y-5 sm:space-y-6">
       {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 p-3 sm:p-4 bg-[#0d2346] text-white rounded-xl shadow-xl flex items-center gap-3 border border-slate-700 animate-in slide-in-from-bottom-5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span className="text-xs sm:text-sm font-semibold">
-            {toastMessage}
-          </span>
-        </div>
-      )}
+      <Toast
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
+        type="success"
+      />
 
       {/* Header Banner */}
       <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -203,43 +177,17 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
           </h1>
         </div>
 
-        <div className="flex items-center gap-2">
-          {unreadCount > 0 && (
-            <button
-              type="button"
-              onClick={handleMarkAllRead}
-              className="px-3.5 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
-            >
-              <CheckCheck className="w-3.5 h-3.5" />
-              <span>Tandai Semua Dibaca</span>
-            </button>
-          )}
+        {unreadCount > 0 && (
           <button
             type="button"
-            onClick={() => fetchMailsFromBackend()}
-            className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shrink-0"
-            title="Muat ulang pesan dari server"
+            onClick={handleMarkAllRead}
+            className="px-3.5 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
           >
-            <span>Muat Ulang</span>
+            <CheckCheck className="w-3.5 h-3.5" />
+            <span>Tandai Semua Dibaca</span>
           </button>
-        </div>
+        )}
       </div>
-
-      {/* Backend Connection Error Banner */}
-      {fetchError && (
-        <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <p className="text-xs font-semibold text-amber-800">
-            Gagal memuat pesan dari database server: {fetchError}
-          </p>
-          <button
-            type="button"
-            onClick={() => fetchMailsFromBackend()}
-            className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold transition cursor-pointer shrink-0"
-          >
-            Coba Lagi
-          </button>
-        </div>
-      )}
 
       {/* 3 Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
@@ -274,7 +222,7 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
               {tracerCount}
             </p>
             <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-              Siap diverifikasi
+              Tercatat di sistem
             </p>
           </div>
         </div>
@@ -361,22 +309,11 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
                 <Inbox className="w-6 h-6" />
               </div>
               <p className="text-sm font-bold text-slate-700">
-                {fetchError ? 'Pesan gagal dimuat dari server' : 'Tidak ada pesan yang cocok'}
+                Tidak ada pesan yang cocok
               </p>
               <p className="text-xs text-slate-400 mt-0.5">
-                {fetchError
-                  ? 'Periksa koneksi server lalu tekan "Muat Ulang" untuk mencoba kembali.'
-                  : 'Coba sesuaikan kata kunci pencarian atau filter kategori.'}
+                Coba sesuaikan kata kunci pencarian atau filter kategori.
               </p>
-              {fetchError && (
-                <button
-                  type="button"
-                  onClick={() => fetchMailsFromBackend()}
-                  className="mt-3 px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold transition cursor-pointer"
-                >
-                  Muat Ulang Pesan
-                </button>
-              )}
             </div>
           ) : (
             filteredMails.map((mail) => (
@@ -598,7 +535,9 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
                           onClick={() => handleAction(selectedMailForModal)}
                           className="text-xs font-semibold text-[#0d2346] hover:underline inline-flex items-center gap-1 cursor-pointer self-start sm:self-auto"
                         >
-                          <span>Buka Verifikasi</span>
+                          <span>
+                            {selectedMailForModal.actionUrl.label || "Buka Data Responden"}
+                          </span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       )}

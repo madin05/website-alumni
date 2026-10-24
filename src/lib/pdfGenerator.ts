@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { IdentitasAlumni } from '@/types/tracer';
+import { YAYASAN_LOGO_BASE64, SMK_LOGO_BASE64 } from './pdfAssets';
 
 interface GenerateReceiptPdfParams {
   submissionId: string;
@@ -50,56 +51,73 @@ export const generateTracerReceiptPdf = ({
 
   // Format tanggal formal Indonesia
   const dateObj = submittedAt ? new Date(submittedAt) : new Date();
-  const optionsDate: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  };
-  const tanggalSurat = dateObj.toLocaleDateString('id-ID', optionsDate);
-  const waktuPengisian = dateObj.toLocaleString('id-ID', {
-    dateStyle: 'long',
-    timeStyle: 'short',
-  }) + ' WIB';
+  const waktuPengisian =
+    dateObj.toLocaleString('id-ID', {
+      dateStyle: 'long',
+      timeStyle: 'short',
+    }) + ' WIB';
 
   // 1. KOP SURAT FORMAL RESMI
+  // Gambar Logo Resmi (Yayasan di sisi kiri, SMK Sasmita Jaya 2 di sisi kanan)
+  try {
+    doc.addImage(YAYASAN_LOGO_BASE64, 'PNG', margin, 15, 23, 23);
+  } catch (e) {
+    console.warn('Failed to add Yayasan logo to PDF:', e);
+  }
+
+  try {
+    doc.addImage(SMK_LOGO_BASE64, 'PNG', pageWidth - margin - 23, 15, 23, 23);
+  } catch (e) {
+    console.warn('Failed to add SMK logo to PDF:', e);
+  }
+
   doc.setFont('times', 'bold');
   doc.setFontSize(11);
   doc.setTextColor(0, 0, 0);
-  doc.text('YAYASAN SASMITA JAYA', pageWidth / 2, 17, { align: 'center' });
+  doc.text('YAYASAN SASMITA JAYA', pageWidth / 2, 16, { align: 'center' });
 
   doc.setFont('times', 'bold');
-  doc.setFontSize(14);
-  doc.text('SMK SASMITA JAYA 2 PAMULANG', pageWidth / 2, 23, { align: 'center' });
+  doc.setFontSize(13);
+  doc.text('SMK SASMITA JAYA 2 (LABSCHOOL UNPAM)', pageWidth / 2, 21.5, { align: 'center' });
+
+  doc.setFont('times', 'bold');
+  doc.setFontSize(8.5);
+  doc.text('AKREDITASI : A', pageWidth / 2, 26, { align: 'center' });
 
   doc.setFont('times', 'normal');
-  doc.setFontSize(8.5);
-  doc.text(
-    'STATUS AKREDITASI "A" (UNGGUL) | NPSN: 20607839 | NSS: 322280305012',
-    pageWidth / 2,
-    27.5,
-    { align: 'center' }
-  );
   doc.setFontSize(8);
   doc.text(
-    'Jl. Surya Kencana No. 1, Pamulang Barat, Kec. Pamulang, Kota Tangerang Selatan, Banten 15417',
+    'NSS : 322020417010, NDS : 42040005, NPSN : 20603287',
     pageWidth / 2,
-    31.5,
+    30,
+    { align: 'center' }
+  );
+  doc.text(
+    'Jl. Surya Kencana No. 1 Kelurahan Pamulang Barat, Kecamatan Pamulang',
+    pageWidth / 2,
+    33.5,
     { align: 'center' }
   );
   doc.setFontSize(7.5);
   doc.text(
-    'Telp: (021) 7402661 | Website: https://smksasmitajaya2.sch.id | Email: bkk@smksasmitajaya2.sch.id',
+    'Kota Tangerang Selatan, Provinsi Banten. Kode Pos : 15417, Telp. : (021) 7427375',
     pageWidth / 2,
-    35.5,
+    37,
+    { align: 'center' }
+  );
+  doc.text(
+    'e-mail : sasmitajaya2pml@gmail.com - website : smk2sasmitajaya.sch.id',
+    pageWidth / 2,
+    40.5,
     { align: 'center' }
   );
 
   // Garis Ganda Kop Surat
   doc.setDrawColor(0, 0, 0);
   doc.setLineWidth(0.8);
-  doc.line(margin, 38.5, pageWidth - margin, 38.5);
+  doc.line(margin, 43.5, pageWidth - margin, 43.5);
   doc.setLineWidth(0.2);
-  doc.line(margin, 39.7, pageWidth - margin, 39.7);
+  doc.line(margin, 44.7, pageWidth - margin, 44.7);
 
   // Strict Numeric Only Registration ID [YYYYMM####] (contoh: 2026102498)
   const numericOnly = (submissionId || '').replace(/\D/g, '');
@@ -109,7 +127,7 @@ export const generateTracerReceiptPdf = ({
   doc.setFont('times', 'bold');
   doc.setFontSize(12);
   doc.setTextColor(0, 0, 0);
-  doc.text('SURAT KETERANGAN BUKTI PENGISIAN TRACER STUDY', pageWidth / 2, 49, {
+  doc.text('SURAT KETERANGAN BUKTI PENGISIAN TRACER STUDY', pageWidth / 2, 53.5, {
     align: 'center',
   });
 
@@ -117,11 +135,11 @@ export const generateTracerReceiptPdf = ({
   const titleText = 'SURAT KETERANGAN BUKTI PENGISIAN TRACER STUDY';
   const titleWidth = doc.getTextWidth(titleText);
   doc.setLineWidth(0.4);
-  doc.line((pageWidth - titleWidth) / 2, 50, (pageWidth + titleWidth) / 2, 50);
+  doc.line((pageWidth - titleWidth) / 2, 54.5, (pageWidth + titleWidth) / 2, 54.5);
 
   doc.setFont('times', 'normal');
   doc.setFontSize(10);
-  doc.text(`Nomor Registrasi: ${cleanRegistrationId}`, pageWidth / 2, 55.5, {
+  doc.text(`Nomor Registrasi: ${cleanRegistrationId}`, pageWidth / 2, 60, {
     align: 'center',
   });
 
@@ -129,11 +147,11 @@ export const generateTracerReceiptPdf = ({
   doc.setFont('times', 'normal');
   doc.setFontSize(10);
   const openingText =
-    'Yang bertanda tangan di bawah ini, Koordinator Bursa Kerja Khusus (BKK) SMK Sasmita Jaya 2 Pamulang menerangkan bahwa alumni berikut:';
-  doc.text(openingText, margin, 65, { maxWidth: contentWidth });
+    'Bursa Kerja Khusus (BKK) SMK Sasmita Jaya 2 menerangkan bahwa alumni berikut:';
+  doc.text(openingText, margin, 69, { maxWidth: contentWidth });
 
   // 4. RINCIAN DATA ALUMNI (TABEL / FORMAT FORMAL TITIK DUA SEJAJAR)
-  const yTableStart = 72;
+  const yTableStart = 76;
   const colLabelX = margin + 4;
   const colColonX = margin + 54;
   const colValueX = margin + 58;
@@ -182,53 +200,13 @@ export const generateTracerReceiptPdf = ({
 
   currentY += 10;
   const p2 =
-    'Surat keterangan ini merupakan dokumen resmi yang diterbitkan secara elektronik oleh Sistem Informasi Alumni SMK Sasmita Jaya 2 dan dapat dipergunakan sebagai salah satu syarat verifikasi administrasi pengambilan Ijazah asli serta Sertifikat Uji Kompetensi Keahlian (BNSP).';
+    'Surat keterangan ini merupakan dokumen resmi yang diterbitkan secara elektronik oleh Sistem Informasi Alumni SMK Sasmita Jaya 2 dan dapat dipergunakan sebagai salah satu syarat verifikasi administrasi pengambilan Ijazah asli.';
   doc.text(p2, margin, currentY, { maxWidth: contentWidth, align: 'justify' });
 
   currentY += 12;
   const p3 =
     'Demikian surat keterangan bukti pengisian ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.';
   doc.text(p3, margin, currentY, { maxWidth: contentWidth, align: 'justify' });
-
-  // 6. BAGIAN TANDA TANGAN & PENGESAHAN RESMI
-  const ySign = currentY + 14;
-  const colRightX = pageWidth - margin - 65;
-
-  doc.setFont('times', 'normal');
-  doc.setFontSize(10);
-  doc.text(`Pamulang, ${tanggalSurat}`, colRightX, ySign);
-  doc.text('Mengetahui,', colRightX, ySign + 5);
-  doc.text('Koordinator BKK SMK Sasmita Jaya 2,', colRightX, ySign + 10);
-
-  // Garis Tanda Tangan
-  doc.setDrawColor(0, 0, 0);
-  doc.setLineWidth(0.4);
-  doc.line(colRightX, ySign + 38, colRightX + 58, ySign + 38);
-
-  // Baca data ketua BKK dari pengaturan jika tersedia
-  let ketuaBkk = 'Ahmad Fauzi, S.Pd., M.Kom.';
-  let nipKetuaBkk = 'NIP. 19840219 200902 1 002';
-  try {
-    const rawStorage = localStorage.getItem('tracer_study_admin_sasmita2');
-    if (rawStorage) {
-      const parsed = JSON.parse(rawStorage);
-      if (parsed?.state?.settings?.ketuaBkk) {
-        ketuaBkk = parsed.state.settings.ketuaBkk;
-      }
-      if (parsed?.state?.settings?.nipKetuaBkk) {
-        nipKetuaBkk = `NIP. ${parsed.state.settings.nipKetuaBkk.replace(/^NIP\.?\s*/i, '')}`;
-      }
-    }
-  } catch {
-    // ignore
-  }
-
-  doc.setFont('times', 'bold');
-  doc.setFontSize(10);
-  doc.text(ketuaBkk, colRightX, ySign + 42.5);
-  doc.setFont('times', 'normal');
-  doc.setFontSize(8.5);
-  doc.text(nipKetuaBkk, colRightX, ySign + 46.5);
 
   // 7. FOOTER / CATATAN KAKI RESMI
   const yFooter = 275;

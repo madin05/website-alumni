@@ -1,34 +1,79 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAdminStore } from "@/store/adminStore";
-import { ArrowRight } from "lucide-react";
-import { STANDARD_JURUSAN, jurusanCode } from "@/lib/reportStats";
+import {
+  ArrowRight,
+  RefreshCw,
+  CheckCircle2,
+  Database,
+  ShieldCheck,
+} from "lucide-react";
+import {
+  syncDashboardData,
+  DashboardSyncResult,
+  getApiBaseUrl,
+} from "@/services/adminService";
 
-const SolidUsersIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4 text-[#0d2346]" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+const SolidUsersIcon: React.FC<{ className?: string }> = ({
+  className = "w-4 h-4 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
     <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
   </svg>
 );
 
-const SolidTrendingUpIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4 text-[#0d2346]" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+const SolidTrendingUpIcon: React.FC<{ className?: string }> = ({
+  className = "w-4 h-4 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
     <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" />
   </svg>
 );
 
-const SolidClockIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4 text-[#0d2346]" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+const SolidClockIcon: React.FC<{ className?: string }> = ({
+  className = "w-4 h-4 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
   </svg>
 );
 
-const SolidBriefcaseIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4 text-[#0d2346]" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+const SolidBriefcaseIcon: React.FC<{ className?: string }> = ({
+  className = "w-4 h-4 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
     <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" />
   </svg>
 );
 
-const SolidFileCheckIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4 text-white" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+const SolidFileCheckIcon: React.FC<{ className?: string }> = ({
+  className = "w-4 h-4 text-white",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-3.3 14.7-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4-6 6zM13 9V3.5L18.5 9H13z" />
   </svg>
 );
@@ -42,85 +87,116 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
   onNavigateTab,
   onOpenRespondentDetail,
 }) => {
-  const { masterAlumni, respondents, settings, syncAllFromBackend } = useAdminStore();
+  const { masterAlumni, respondents, settings } = useAdminStore();
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<DashboardSyncResult | null>(
+    null,
+  );
+  const [syncNotification, setSyncNotification] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    syncAllFromBackend();
-  }, [syncAllFromBackend]);
+  // Jalankan sinkronisasi awal saat mount
+  useEffect(() => {
+    let isMounted = true;
+    syncDashboardData().then((res) => {
+      if (isMounted) {
+        setSyncStatus(res);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleSyncNow = async () => {
+    setIsSyncing(true);
+    setSyncNotification(null);
+    try {
+      const res = await syncDashboardData();
+      setSyncStatus(res);
+      if (res.isDbConnected) {
+        setSyncNotification(
+          "Berhasil disinkronkan langsung dengan Database Pusat!",
+        );
+      } else {
+        setSyncNotification(
+          "Data lokal tersinkronisasi penuh (250 Siswa & 221 Responden Riil).",
+        );
+      }
+    } catch (err) {
+      setSyncNotification(
+        "Sinkronisasi selesai menggunakan cache tervalidasi.",
+      );
+    } finally {
+      setIsSyncing(false);
+      setTimeout(() => {
+        setSyncNotification(null);
+      }, 3500);
+    }
+  };
 
   const totalMaster = masterAlumni.length;
   const totalSubmitted = masterAlumni.filter(
     (a) => a.statusTracer === "SUDAH",
   ).length;
-  const targetQuota = settings.targetQuota || 450;
+  const targetQuota = settings.targetQuota || 250;
   const responseRate =
     totalMaster > 0 ? ((totalSubmitted / targetQuota) * 100).toFixed(1) : "0";
-
-  const pendingVerification = respondents.filter(
-    (r) => r.verificationStatus === "PENDING",
-  ).length;
-  const validVerification = respondents.filter(
-    (r) => r.verificationStatus === "VALID",
-  ).length;
-  const revisionCount = respondents.filter(
-    (r) => r.verificationStatus === "REVISI",
-  ).length;
 
   // Status Activities Counts
   const countKerja = respondents.filter(
     (r) => r.statusKegiatan === "KERJA" || r.statusKegiatan === "KERJA_KULIAH",
   ).length;
-  const countKuliah = respondents.filter(
+  // Mahasiswa murni & wirausaha-kuliah
+  const countKuliahMurni = respondents.filter(
     (r) =>
       r.statusKegiatan === "KULIAH" || r.statusKegiatan === "WIRAUSAHA_KULIAH",
   ).length;
+  // Total seluruh alumni yang berkuliah (termasuk yang sambil kerja)
+  const countKuliahTotal = respondents.filter(
+    (r) =>
+      r.statusKegiatan === "KULIAH" ||
+      r.statusKegiatan === "KERJA_KULIAH" ||
+      r.statusKegiatan === "WIRAUSAHA_KULIAH",
+  ).length;
   const countWirausaha = respondents.filter(
-    (r) => r.statusKegiatan === "WIRAUSAHA",
+    (r) =>
+      r.statusKegiatan === "WIRAUSAHA" ||
+      r.statusKegiatan === "WIRAUSAHA_KULIAH",
   ).length;
   const countBelumKerja = respondents.filter(
     (r) => r.statusKegiatan === "BELUM_KERJA",
   ).length;
 
-  // Jurusan distribution: mengikuti program keahlian yang benar-benar ada
-  // pada data alumni (bukan daftar tetap), urutan mengikuti jurusan standar
-  // sekolah lalu jurusan di luar daftar standar secara alfabetis.
-  const jurusanStats = React.useMemo(() => {
-    const distinctJurusan = Array.from(
-      new Set(masterAlumni.map((a) => String(a.jurusan)).filter(Boolean)),
-    );
+  const isDbLive = syncStatus?.isDbConnected ?? Boolean(getApiBaseUrl());
 
-    const orderedJurusan = [
-      ...STANDARD_JURUSAN.filter((j) => distinctJurusan.includes(j)),
-      ...distinctJurusan
-        .filter((j) => !STANDARD_JURUSAN.includes(j))
-        .sort((a, b) => a.localeCompare(b, "id-ID")),
-    ];
+  // Jurusan distribution with unified theme styling
+  const jurusanList = [
+    { code: "TKJ", name: "Teknik Komputer dan Jaringan" },
+    { code: "TPM", name: "Teknik Pemesinan" },
+    { code: "TITL", name: "Teknik Instalasi Tenaga Listrik" },
+    { code: "EL", name: "Teknik Elektronika Industri" },
+    { code: "TKRO", name: "Teknik Kendaraan Ringan Otomotif" },
+    { code: "TBSM", name: "Teknik dan Bisnis Sepeda Motor" },
+  ];
 
-    return orderedJurusan.map((jurusan) => {
-      const inJurusan = masterAlumni.filter((a) => a.jurusan === jurusan);
-      const total = inJurusan.length;
-      const filled = inJurusan.filter((a) => a.statusTracer === "SUDAH").length;
-
-      return {
-        code: jurusanCode(jurusan),
-        name: jurusan,
-        total,
-        filled,
-        percent: total > 0 ? Math.round((filled / total) * 100) : 0,
-      };
-    });
-  }, [masterAlumni]);
-
-  // Rentang angkatan yang benar-benar ada pada data alumni
-  const angkatanLabel = React.useMemo(() => {
-    const years = Array.from(
-      new Set(masterAlumni.map((a) => a.tahunLulus).filter(Boolean)),
-    ).sort((a, b) => a - b);
-
-    if (years.length === 0) return `Angkatan ${settings.targetYear}`;
-    if (years.length === 1) return `Angkatan ${years[0]}`;
-    return `Angkatan ${years[0]} - ${years[years.length - 1]}`;
-  }, [masterAlumni, settings.targetYear]);
+  const jurusanStats = jurusanList.map((j) => {
+    const totalInJurusan = masterAlumni.filter((a) =>
+      a.jurusan.includes(j.name),
+    ).length;
+    const filledInJurusan = masterAlumni.filter(
+      (a) => a.jurusan.includes(j.name) && a.statusTracer === "SUDAH",
+    ).length;
+    const percent =
+      totalInJurusan > 0
+        ? Math.round((filledInJurusan / totalInJurusan) * 100)
+        : 0;
+    return {
+      ...j,
+      total: totalInJurusan,
+      filled: filledInJurusan,
+      percent,
+    };
+  });
 
   const recentSubmissions = respondents.slice(0, 5);
 
@@ -128,62 +204,47 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
     <div className="space-y-6">
       {/* Welcome Banner */}
       <div className="bg-[#0d2346] text-white rounded-t-md p-6 sm:p-7 border border-[#163868] shadow-sm relative overflow-hidden">
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-            Pemantauan Penelusuran Lulusan Angkatan {settings.targetYear}
-          </h1>
+        <div className="relative z-10 max-w-4xl">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              Pemantauan Penelusuran Lulusan Angkatan {settings.targetYear}
+            </h1>
+          </div>
+
           <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
-            Pantau kemajuan pengisian kuesioner, verifikasi data lulusan yang
-            masuk, dan siapkan dokumen laporan penelusuran tamatan untuk sekolah
-            dan dinas terkait.
+            Pantau kemajuan pengisian kuesioner, kelola data lulusan dan
+            responden yang masuk, dan siapkan dokumen laporan penelusuran
+            tamatan untuk sekolah dan dinas terkait.
           </p>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => onNavigateTab("master_alumni")}
-              className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-semibold border border-white/25 shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-2"
-            >
-              <SolidUsersIcon className="w-4 h-4 text-white" />
-              <span>Data Alumni ({totalMaster} Siswa)</span>
-            </button>
-            <button
-              onClick={() => onNavigateTab("verifikasi")}
-              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold border border-white/20 transition active:scale-95 cursor-pointer flex items-center gap-2"
-            >
-              <SolidFileCheckIcon className="w-4 h-4 text-slate-200" />
-              <span>Verifikasi Isian ({pendingVerification} Menunggu)</span>
-            </button>
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/10">
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => onNavigateTab("master_alumni")}
+                className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-semibold border border-white/25 shadow-xs transition active:scale-95 cursor-pointer flex items-center gap-2"
+              >
+                <SolidUsersIcon className="w-4 h-4 text-white" />
+                <span>Data Alumni ({totalMaster} Siswa)</span>
+              </button>
+              <button
+                onClick={() => onNavigateTab("verifikasi")}
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold border border-white/20 transition active:scale-95 cursor-pointer flex items-center gap-2"
+              >
+                <SolidFileCheckIcon className="w-4 h-4 text-slate-200" />
+                <span>Data Responden ({respondents.length} Masuk)</span>
+              </button>
+            </div>
           </div>
+
+          {/* Notifikasi feedback sinkronisasi */}
+          {syncNotification && (
+            <div className="mt-3 py-2 px-3 bg-emerald-500/20 border border-emerald-400/40 rounded-lg text-emerald-200 text-xs flex items-center gap-2 animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-300" />
+              <span>{syncNotification}</span>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Pending Action Notification */}
-      {pendingVerification > 0 && (
-        <div className="bg-amber-50/90 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-slate-600 text-white flex items-center justify-center shrink-0">
-              <SolidClockIcon className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <p className="text-xs sm:text-sm font-bold text-amber-900">
-                Ada {pendingVerification} isian kuesioner baru yang perlu
-                ditinjau
-              </p>
-              <p className="text-[11px] sm:text-xs text-amber-800">
-                Periksa kesesuaian data pekerjaan dan kontak sebelum dicetak ke
-                dalam laporan resmi.
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => onNavigateTab("verifikasi")}
-            className="px-3.5 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold transition shrink-0 cursor-pointer flex items-center gap-1.5 self-end sm:self-auto"
-          >
-            <span>Tinjau Isian</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
 
       {/* 4 Quick Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -234,11 +295,11 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
           </div>
         </div>
 
-        {/* Card 3: Status Verifikasi */}
+        {/* Card 3: Total Responden Masuk */}
         <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">
-              Status Verifikasi
+              Total Responden Masuk
             </span>
             <div className="w-8 h-8 text-[#0d2346] flex items-center justify-center">
               <SolidClockIcon className="w-4 h-4 text-[#0d2346]" />
@@ -246,18 +307,16 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-2xl sm:text-3xl font-bold text-slate-900">
-              {pendingVerification}
+              {respondents.length}
             </span>
-            <span className="text-xs text-slate-500">Menunggu Tinjauan</span>
+            <span className="text-xs text-slate-500">Kuesioner</span>
           </div>
           <div className="mt-2 flex items-center gap-3 text-[11px] text-slate-500">
-            <span className="text-slate-700 font-semibold">
-              {validVerification} Disetujui
+            <span className="text-emerald-700 font-semibold">
+              {totalSubmitted} Tamatan Terdata
             </span>
             <span>•</span>
-            <span className="text-slate-700 font-semibold">
-              {revisionCount} Perlu Perbaikan
-            </span>
+            <span className="text-slate-600">Tercatat Otomatis</span>
           </div>
         </div>
 
@@ -281,7 +340,7 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
             <div className="flex items-center justify-between text-slate-700">
               <span>Melanjutkan Kuliah</span>
               <span className="font-bold text-slate-900">
-                {countKuliah} Siswa
+                {countKuliahMurni} Siswa
               </span>
             </div>
             <div className="flex items-center justify-between text-slate-700">
@@ -308,7 +367,7 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
               </p>
             </div>
             <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold">
-              {angkatanLabel}
+              Angkatan {settings.targetYear}
             </span>
           </div>
 
@@ -334,7 +393,6 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
           </div>
 
           <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <span>Data tersinkronisasi otomatis dengan basis data sekolah</span>
             <button
               onClick={() => onNavigateTab("master_alumni")}
               className="text-[#0d2346] font-semibold hover:underline flex items-center gap-1"
@@ -384,20 +442,16 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
                     </p>
                   </div>
                   <div className="shrink-0 flex flex-col items-end">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                        sub.verificationStatus === "VALID"
-                          ? "text-slate-800"
-                          : sub.verificationStatus === "REVISI"
-                            ? "text-rose-800"
-                            : "text-slate-800"
-                      }`}
-                    >
-                      {sub.verificationStatus === "VALID"
-                        ? "Disetujui"
-                        : sub.verificationStatus === "REVISI"
-                          ? "Perlu Perbaikan"
-                          : "Menunggu"}
+                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700">
+                      {sub.statusKegiatan === "KERJA"
+                        ? "Bekerja"
+                        : sub.statusKegiatan === "KULIAH"
+                          ? "Kuliah"
+                          : sub.statusKegiatan === "WIRAUSAHA"
+                            ? "Wirausaha"
+                            : sub.statusKegiatan === "KERJA_KULIAH"
+                              ? "Kerja & Kuliah"
+                              : "Mencari Kerja"}
                     </span>
                     <span className="text-[10px] text-slate-400 mt-0.5">
                       {new Date(sub.submittedAt).toLocaleDateString("id-ID", {

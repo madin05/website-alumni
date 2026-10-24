@@ -19,6 +19,7 @@ export const STATUS_KEGIATAN_OPTIONS = [
   { value: 'KULIAH', label: 'Melanjutkan kuliah', desc: 'Melanjutkan studi perguruan tinggi (D3, D4, S1)' },
   { value: 'WIRAUSAHA', label: 'Berwirausaha', desc: 'Membuka usaha mandiri / menjalankan bisnis' },
   { value: 'KERJA_KULIAH', label: 'Kuliah & Kerja', desc: 'Menjalani perkuliahan sekaligus bekerja' },
+  { value: 'WIRAUSAHA_KULIAH', label: 'Kuliah & Wirausaha', desc: 'Menjalani perkuliahan sekaligus berwirausaha / membuka bisnis' },
   { value: 'BELUM_KERJA', label: 'Belum bekerja', desc: 'Sedang mencari pekerjaan / persiapan' },
   { value: 'LAINNYA', label: 'Lainnya', desc: 'Aktivitas di luar kategori di atas' },
 ] as const;
@@ -29,6 +30,40 @@ export const MASA_TUNGGU_OPTIONS = [
   '6–12 bulan',
   '> 12 bulan',
   'Belum mendapatkan pekerjaan',
+] as const;
+
+export const STATUS_MENIKAH_OPTIONS = [
+  'Belum Menikah',
+  'Menikah',
+] as const;
+
+export const KETERANGAN_KERJA_OPTIONS = [
+  'Buruh/karyawan/pegawai',
+  'Pekerja bebas (tidak punya majikan tetap)',
+  'Berusaha/berwirausaha sendiri tanpa dibantu orang lain',
+  'Membantu menjalankan usaha/wirausaha keluarga dan tidak dibayar',
+  'Berusaha/berwirausaha dengan dibantu pekerja tak dibayar',
+] as const;
+
+export const JENIS_USAHA_OPTIONS = [
+  'Barang',
+  'Jasa',
+  'Barang Dan Jasa',
+] as const;
+
+export const KESELARASAN_STUDI_OPTIONS = [
+  'Selaras',
+  'Tidak Selaras',
+] as const;
+
+export const PENDAPATAN_UMP_OPTIONS = [
+  'Sama dengan atau lebih dari UMP',
+  'Kurang dari UMP',
+] as const;
+
+export const PENDAPATAN_UMK_OPTIONS = [
+  'Sama dengan atau lebih dari UMK',
+  'Kurang dari UMK',
 ] as const;
 
 export const STATUS_PEKERJAAN_OPTIONS = [
@@ -135,7 +170,7 @@ export const KESESUAIAN_JURUSAN_OPTIONS = [
   { value: 'TIDAK', label: 'Tidak Sesuai' },
 ] as const;
 
-// Step 1: Identitas Schema (Items 1-8)
+// Step 1: Identitas Schema (Items 1-8 + Satpen extensions)
 export const step1Schema = z
   .object({
     nama_lengkap: z
@@ -171,6 +206,19 @@ export const step1Schema = z
     jenis_kelamin: z
       .enum(['Laki-laki', 'Perempuan'])
       .optional(),
+    status_menikah: z
+      .string()
+      .optional(),
+    usia: z
+      .number()
+      .optional()
+      .nullable(),
+    provinsi_domisili: z
+      .string()
+      .optional(),
+    kota_domisili: z
+      .string()
+      .optional(),
   })
   .refine((data) => data.tahun_lulus >= data.tahun_masuk, {
     message: 'Tahun lulus tidak boleh lebih awal dari tahun masuk',
@@ -193,7 +241,7 @@ export const step2Schema = z.object({
   masa_tunggu: z.string().optional(),
 });
 
-// Detail Kerja Schema (Items 11-17)
+// Detail Kerja Schema (Items 11-17 + Satpen extensions)
 export const detailKerjaSchema = z.object({
   nama_perusahaan: z.string().min(2, 'Nama perusahaan/instansi wajib diisi'),
   jabatan: z.string().min(2, 'Jabatan/posisi pekerjaan wajib diisi'),
@@ -209,18 +257,26 @@ export const detailKerjaSchema = z.object({
   tanggal_mulai_kerja: z.string().optional(),
   jenis_sertifikat: z.string().optional(),
   nama_sertifikat: z.string().optional(),
+  lokasi_pekerjaan: z.string().optional(),
+  negara_kerja: z.string().optional(),
+  keterangan_kerja: z.string().optional(),
+  provinsi_kerja: z.string().optional(),
+  kota_kerja: z.string().optional(),
+  pendapatan_ump: z.string().optional(),
+  pendapatan_umk: z.string().optional(),
 });
 
-// Detail Kuliah Schema (Items 18-21)
+// Detail Kuliah Schema (Items 18-21 + Satpen extensions)
 export const detailKuliahSchema = z.object({
   nama_kampus: z.string().min(2, 'Nama perguruan tinggi wajib diisi'),
   program_studi: z.string().min(2, 'Program studi wajib diisi'),
   jenjang: z.string(),
   status_kuliah: z.string().optional(),
   alamat_kampus: z.string().optional(),
+  keselarasan_studi: z.string().optional(),
 });
 
-// Detail Usaha Schema (Items 22-26)
+// Detail Usaha Schema (Items 22-26 + Satpen extensions)
 export const detailUsahaSchema = z.object({
   nama_usaha: z.string().min(2, 'Nama/usaha yang dijalankan wajib diisi'),
   bidang_usaha: z.string().optional(),
@@ -230,6 +286,13 @@ export const detailUsahaSchema = z.object({
   kategori_usaha: z.string().optional(),
   alamat_usaha: z.string().optional(),
   tanggal_mulai_usaha: z.string().optional(),
+  provinsi_usaha: z.string().optional(),
+  kota_usaha: z.string().optional(),
+  negara_usaha: z.string().optional(),
+  jenis_usaha: z.string().optional(),
+  nama_produk_usaha: z.string().optional(),
+  pendapatan_ump: z.string().optional(),
+  pendapatan_umk: z.string().optional(),
 });
 
 // Step 4: Evaluasi Schema (Items 27-30)

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useAdminStore } from '@/store/adminStore';
+import React, { useState } from "react";
+import { useAdminStore } from "@/store/adminStore";
 import {
   Save,
   RotateCcw,
@@ -7,8 +7,9 @@ import {
   Calendar,
   UserCheck,
   Building,
-} from 'lucide-react';
-import { ConfirmModal } from '@/components/ui/ConfirmModal';
+} from "lucide-react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { Toast } from "@/components/ui/Toast";
 
 const SolidSettingsIcon: React.FC<{ className?: string }> = ({
   className = "w-5 h-5 text-[#0d2346]",
@@ -24,33 +25,27 @@ const SolidSettingsIcon: React.FC<{ className?: string }> = ({
 );
 
 export const AdminSettingsTab: React.FC = () => {
-  const { settings, updateSettings, resetToDefaultData, fetchSettingsFromBackend } = useAdminStore();
+  const { settings, updateSettings, resetToDefaultData } = useAdminStore();
 
   const [formData, setFormData] = useState({ ...settings });
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [showResetModal, setShowResetModal] = useState(false);
-
-  React.useEffect(() => {
-    fetchSettingsFromBackend().then(() => {
-      setFormData({ ...useAdminStore.getState().settings });
-    });
-  }, [fetchSettingsFromBackend]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3500);
+    setTimeout(() => setToastMessage(""), 3500);
   };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     updateSettings(formData);
-    showToast('Pengaturan sistem dan profil pelaporan berhasil disimpan.');
+    showToast("Pengaturan sistem dan profil pelaporan berhasil disimpan.");
   };
 
   const handleConfirmReset = () => {
     resetToDefaultData();
     setFormData({ ...useAdminStore.getState().settings });
-    showToast('Data berhasil dikembalikan ke kondisi awal demo.');
+    showToast("Data berhasil dikembalikan ke kondisi awal demo.");
     setShowResetModal(false);
   };
 
@@ -77,258 +72,276 @@ export const AdminSettingsTab: React.FC = () => {
             onSubmit={handleSave}
             className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-7 space-y-6"
           >
-          {/* Section 1: Target Kuota & Periode */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  Target Sasaran & Periode Pengisian
-                </h3>
-                <p className="text-[11px] text-slate-400">
-                  Konfigurasi jumlah target alumni dan rentang waktu pengisian tracer study.
-                </p>
+            {/* Section 1: Target Kuota & Periode */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                    Target Sasaran & Periode Pengisian
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Konfigurasi jumlah target alumni dan rentang waktu pengisian
+                    tracer study.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Target Jumlah Alumni (Siswa)
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.targetQuota}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        targetQuota: Number(e.target.value),
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                  <span className="text-[10px] text-slate-400 block">
+                    Dasar perhitungan persentase partisipasi tracer study.
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Tahun Kelulusan Sasaran
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.targetYear}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        targetYear: Number(e.target.value),
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                  <span className="text-[10px] text-slate-400 block">
+                    Tahun kelulusan alumni yang menjadi fokus pengumpulan data.
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Tanggal Mulai Pengisian
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.periodStart}
+                    onChange={(e) =>
+                      setFormData({ ...formData, periodStart: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Tanggal Batas Pengisian
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.periodEnd}
+                    onChange={(e) =>
+                      setFormData({ ...formData, periodEnd: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Target Jumlah Alumni (Siswa)
-                </label>
-                <input
-                  type="number"
-                  value={formData.targetQuota}
-                  onChange={(e) =>
-                    setFormData({ ...formData, targetQuota: Number(e.target.value) })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-                <span className="text-[10px] text-slate-400 block">
-                  Dasar perhitungan persentase partisipasi tracer study.
-                </span>
+            {/* Section 2: Penandatangan Laporan Resmi */}
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                    Nama Pejabat Penandatangan Laporan Resmi
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Data ini dicantumkan pada bagian pengesahan berkas ekspor
+                    laporan PDF.
+                  </p>
+                </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Tahun Kelulusan Sasaran
-                </label>
-                <input
-                  type="number"
-                  value={formData.targetYear}
-                  onChange={(e) =>
-                    setFormData({ ...formData, targetYear: Number(e.target.value) })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-                <span className="text-[10px] text-slate-400 block">
-                  Tahun kelulusan alumni yang menjadi fokus pengumpulan data.
-                </span>
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Nama Kepala Sekolah
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.kepalaSekolah}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        kepalaSekolah: e.target.value,
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Tanggal Mulai Pengisian
-                </label>
-                <input
-                  type="date"
-                  value={formData.periodStart}
-                  onChange={(e) =>
-                    setFormData({ ...formData, periodStart: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    NIP Kepala Sekolah
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.nipKepalaSekolah}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        nipKepalaSekolah: e.target.value,
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Tanggal Batas Pengisian
-                </label>
-                <input
-                  type="date"
-                  value={formData.periodEnd}
-                  onChange={(e) =>
-                    setFormData({ ...formData, periodEnd: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
-            </div>
-          </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Nama Ketua Bursa Kerja Khusus (BKK)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.ketuaBkk}
+                    onChange={(e) =>
+                      setFormData({ ...formData, ketuaBkk: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
 
-          {/* Section 2: Penandatangan Laporan Resmi */}
-          <div className="space-y-4 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  Nama Pejabat Penandatangan Laporan Resmi
-                </h3>
-                <p className="text-[11px] text-slate-400">
-                  Data ini dicantumkan pada bagian pengesahan berkas ekspor laporan PDF.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Nama Kepala Sekolah
-                </label>
-                <input
-                  type="text"
-                  value={formData.kepalaSekolah}
-                  onChange={(e) =>
-                    setFormData({ ...formData, kepalaSekolah: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  NIP Kepala Sekolah
-                </label>
-                <input
-                  type="text"
-                  value={formData.nipKepalaSekolah}
-                  onChange={(e) =>
-                    setFormData({ ...formData, nipKepalaSekolah: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Nama Ketua Bursa Kerja Khusus (BKK)
-                </label>
-                <input
-                  type="text"
-                  value={formData.ketuaBkk}
-                  onChange={(e) =>
-                    setFormData({ ...formData, ketuaBkk: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  NIP / NUPTK Ketua BKK
-                </label>
-                <input
-                  type="text"
-                  value={formData.nipKetuaBkk}
-                  onChange={(e) =>
-                    setFormData({ ...formData, nipKetuaBkk: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
-            </div>  
-          </div>
-
-          {/* Section 3: Identitas Sekolah & Kontak Layanan */}
-          <div className="space-y-4 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900">
-                  Identitas Sekolah & Kontak Layanan
-                </h3>
-                <p className="text-[11px] text-slate-400">
-                  Informasi resmi lembaga untuk kop surat dan layanan alumni.
-                </p>
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    NIP / NUPTK Ketua BKK
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.nipKetuaBkk}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nipKetuaBkk: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-mono focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Nama Sekolah
-                </label>
-                <input
-                  type="text"
-                  value={formData.namaSekolah}
-                  onChange={(e) =>
-                    setFormData({ ...formData, namaSekolah: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
+            {/* Section 3: Identitas Sekolah & Kontak Layanan */}
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <div>
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                    Identitas Sekolah & Kontak Layanan
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Informasi resmi lembaga untuk kop surat dan layanan alumni.
+                  </p>
+                </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  NPSN (Nomor Pokok Sekolah Nasional)
-                </label>
-                <input
-                  type="text"
-                  value={formData.npsn}
-                  onChange={(e) =>
-                    setFormData({ ...formData, npsn: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Nama Sekolah
+                  </label>
+                  <input
+                    disabled
+                    type="text"
+                    value={formData.namaSekolah}
+                    onChange={(e) =>
+                      setFormData({ ...formData, namaSekolah: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-gray-300 border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white cursor-not-allowed"
+                  />
+                </div>
 
-              <div className="sm:col-span-2 space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Alamat Lengkap Sekolah (Untuk Kop Surat)
-                </label>
-                <input
-                  type="text"
-                  value={formData.alamatSekolah}
-                  onChange={(e) =>
-                    setFormData({ ...formData, alamatSekolah: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
-              </div>
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    NPSN (Nomor Pokok Sekolah Nasional)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.npsn}
+                    onChange={(e) =>
+                      setFormData({ ...formData, npsn: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
 
-              <div className="sm:col-span-2 space-y-1">
-                <label className="block text-xs font-bold text-slate-900">
-                  Nomor Kontak WhatsApp Layanan Alumni
-                </label>
-                <input
-                  type="text"
-                  value={formData.kontakBkk}
-                  onChange={(e) =>
-                    setFormData({ ...formData, kontakBkk: e.target.value })
-                  }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                />
+                <div className="sm:col-span-2 space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Alamat Lengkap Sekolah (Untuk Kop Surat)
+                  </label>
+                  <input
+                    disabled
+                    type="text"
+                    value={formData.alamatSekolah}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        alamatSekolah: e.target.value,
+                      })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-gray-300 border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white cursor-not-allowed"
+                  />
+                </div>
+
+                <div className="sm:col-span-2 space-y-1">
+                  <label className="block text-xs font-bold text-slate-900">
+                    Nomor Kontak WhatsApp Layanan Alumni
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.kontakBkk}
+                    onChange={(e) =>
+                      setFormData({ ...formData, kontakBkk: e.target.value })
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-5 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={handleReset}
-              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs sm:text-sm font-medium transition flex items-center gap-2 cursor-pointer border border-slate-200"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>Kembalikan ke Data Awal Demo</span>
-            </button>
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-5 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleReset}
+                className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs sm:text-sm font-medium transition flex items-center gap-2 cursor-pointer border border-slate-200"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>Kembalikan ke Data Awal Demo</span>
+              </button>
 
-            <button
-              type="submit"
-              className="px-6 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 flex items-center gap-2 cursor-pointer"
-            >
-              <Save className="w-4 h-4 text-slate-300" />
-              <span>Simpan Pengaturan</span>
-            </button>
-          </div>
-        </form>
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 flex items-center gap-2 cursor-pointer"
+              >
+                <Save className="w-4 h-4 text-slate-300" />
+                <span>Simpan Pengaturan</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
 
       {/* Toast Alert */}
-      {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0d2346] text-white text-xs sm:text-sm font-normal px-4 py-3 shadow-xl flex items-center gap-2 pointer-events-none transition-all duration-200 border border-slate-700">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      <Toast
+        message={toastMessage}
+        onClose={() => setToastMessage("")}
+        type="success"
+      />
 
       {/* Custom System Confirmation Modal */}
       <ConfirmModal

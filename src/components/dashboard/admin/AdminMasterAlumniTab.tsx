@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
+import * as XLSX from "xlsx";
 import { useAdminStore, MasterAlumniRecord } from "@/store/adminStore";
+import { JurusanSMK } from "@/types/tracer";
 import { AdminImportModal } from "./AdminImportModal";
+import { exportJsonToExcel } from "@/lib/excelExport";
 import {
+  Users,
   Search,
+  Plus,
   Upload,
   Download,
   CheckCircle2,
@@ -10,14 +15,22 @@ import {
   Trash2,
   ArrowUp,
   ArrowDown,
+  Eye,
+  X,
+  Phone,
+  Mail,
+  FileSpreadsheet,
+  GraduationCap,
 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Pagination } from "@/components/ui/Pagination";
-import { downloadAlumniTemplate } from "@/lib/alumniCsv";
+import { Toast } from "@/components/ui/Toast";
 
-const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3.5" }) => (
+const WhatsAppIcon: React.FC<{ className?: string }> = ({
+  className = "w-3.5 h-3.5",
+}) => (
   <svg
     viewBox="0 0 24 24"
     fill="currentColor"
@@ -28,8 +41,15 @@ const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = "w-3.5 h-3
   </svg>
 );
 
-const SolidUsersIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5 text-[#0d2346]" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+const SolidUsersIcon: React.FC<{ className?: string }> = ({
+  className = "w-5 h-5 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
     <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
   </svg>
 );
@@ -60,7 +80,8 @@ const JURUSAN_OPTIONS = [
 ];
 
 export const AdminMasterAlumniTab: React.FC = () => {
-  const { masterAlumni, deleteMasterAlumni } = useAdminStore();
+  const { masterAlumni, deleteMasterAlumni, addSingleMasterAlumni, settings } =
+    useAdminStore();
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "SUDAH" | "BELUM">(
@@ -71,10 +92,25 @@ export const AdminMasterAlumniTab: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [deleteConfirmAlumni, setDeleteConfirmAlumni] =
     useState<MasterAlumniRecord | null>(null);
+  const [selectedPreviewAlumni, setSelectedPreviewAlumni] =
+    useState<MasterAlumniRecord | null>(null);
+
+  // Add Single Alumni Form State
+  const [newNisn, setNewNisn] = useState("");
+  const [newNik, setNewNik] = useState("");
+  const [newNama, setNewNama] = useState("");
+  const [newJurusan, setNewJurusan] = useState<JurusanSMK>(
+    "Teknik Komputer dan Jaringan",
+  );
+  const [newTahun, setNewTahun] = useState(2024);
+  const [newNoWa, setNewNoWa] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [addError, setAddError] = useState("");
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -117,7 +153,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
   const totalPages = Math.ceil(sortedAlumni.length / itemsPerPage);
   const paginatedAlumni = sortedAlumni.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const countSudah = masterAlumni.filter(
@@ -128,8 +164,166 @@ export const AdminMasterAlumniTab: React.FC = () => {
   ).length;
 
   const handleDownloadTemplate = () => {
-    downloadAlumniTemplate("csv");
-    showToast("Format CSV berhasil diunduh.");
+    const sampleRows = [
+      {
+        nisn: "0051234567",
+        nik: "3674012345670001",
+        nama: "Ahmad Dani",
+        jurusan: "Teknik Komputer dan Jaringan",
+        tahun_lulus: 2024,
+        no_wa: "081298765432",
+        email: "ahmaddani@example.com",
+      },
+      {
+        nisn: "0052345678",
+        nik: "3674012345670002",
+        nama: "Budi Santoso",
+        jurusan: "Teknik Pemesinan",
+        tahun_lulus: 2024,
+        no_wa: "081311223344",
+        email: "budisantoso@example.com",
+      },
+      {
+        nisn: "0053456789",
+        nik: "3674012345670003",
+        nama: "Citra Dewi",
+        jurusan: "Teknik Instalasi Tenaga Listrik",
+        tahun_lulus: 2024,
+        no_wa: "081233445566",
+        email: "citradewi@example.com",
+      },
+      {
+        nisn: "0054567890",
+        nik: "3674012345670004",
+        nama: "Dimas Pratama",
+        jurusan: "Teknik Elektronika Industri",
+        tahun_lulus: 2024,
+        no_wa: "085711229988",
+        email: "dimaspratama@example.com",
+      },
+      {
+        nisn: "0055678901",
+        nik: "3674012345670005",
+        nama: "Eko Wahyudi",
+        jurusan: "Teknik Kendaraan Ringan Otomotif",
+        tahun_lulus: 2024,
+        no_wa: "087811992233",
+        email: "ekowahyudi@example.com",
+      },
+      {
+        nisn: "0056789012",
+        nik: "3674012345670006",
+        nama: "Farhan Rizki",
+        jurusan: "Teknik dan Bisnis Sepeda Motor",
+        tahun_lulus: 2024,
+        no_wa: "081299887766",
+        email: "farhanrizki@example.com",
+      },
+    ];
+
+    try {
+      const ws = XLSX.utils.json_to_sheet(sampleRows);
+      ws["!cols"] = [
+        { wch: 14 },
+        { wch: 20 },
+        { wch: 24 },
+        { wch: 36 },
+        { wch: 14 },
+        { wch: 16 },
+        { wch: 28 },
+      ];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Template Siswa");
+      XLSX.writeFile(wb, "template_data_alumni_smk_sasmita2.xlsx");
+      showToast("Format template Excel (.xlsx) berhasil diunduh.");
+    } catch {
+      const headers = "nisn,nik,nama,jurusan,tahun_lulus,no_wa,email\n";
+      const csvContent = sampleRows
+        .map(
+          (r) =>
+            `${r.nisn},${r.nik},${r.nama},${r.jurusan},${r.tahun_lulus},${r.no_wa},${r.email}`
+        )
+        .join("\n");
+      const blob = new Blob([headers + csvContent], {
+        type: "text/csv;charset=utf-8;",
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "template_data_alumni_smk_sasmita2.csv");
+      link.style.position = "fixed";
+      link.style.top = "-9999px";
+      link.style.left = "-9999px";
+      link.style.opacity = "0";
+      link.style.pointerEvents = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast("Format template CSV berhasil diunduh.");
+    }
+  };
+
+  const handleExportExcel = () => {
+    if (masterAlumni.length === 0) {
+      showToast("Tidak ada data siswa untuk diekspor.");
+      return;
+    }
+
+    const listToExport = filteredAlumni.length > 0 ? filteredAlumni : masterAlumni;
+    const exportData = listToExport.map((item, index) => ({
+      No: index + 1,
+      NISN: item.nisn,
+      NIK: item.nik,
+      "Nama Lengkap": item.nama,
+      "Program Keahlian": item.jurusan,
+      "Tahun Kelulusan": item.tahunLulus,
+      "No. WhatsApp": item.noWhatsapp,
+      Email: item.email,
+      "Status Pengisian Tracer":
+        item.statusTracer === "SUDAH" ? "Sudah Mengisi" : "Belum Mengisi",
+    }));
+
+    exportJsonToExcel(
+      exportData,
+      `data_siswa_lulusan_smk_sasmita2_${new Date().getFullYear()}`,
+      { sheetName: "Data Siswa Lulusan" }
+    );
+    showToast(`Berhasil mengekspor ${exportData.length} data siswa ke Excel (.xlsx).`);
+  };
+
+  const handleCreateSingle = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddError("");
+
+    if (!newNisn.trim() || !newNama.trim()) {
+      setAddError("NISN dan Nama Lengkap wajib diisi.");
+      return;
+    }
+
+    const success = addSingleMasterAlumni({
+      nisn: newNisn.trim(),
+      nik: newNik.trim() || "3674000000000000",
+      nama: newNama.trim(),
+      jurusan: newJurusan,
+      tahunLulus: Number(newTahun) || 2024,
+      noWhatsapp: newNoWa.trim() || "081200000000",
+      email:
+        newEmail.trim() ||
+        `${newNama.toLowerCase().replace(/\s+/g, "")}@example.com`,
+    });
+
+    if (success) {
+      showToast(`Data siswa ${newNama} berhasil ditambahkan.`);
+      setIsAddModalOpen(false);
+      setNewNisn("");
+      setNewNik("");
+      setNewNama("");
+      setNewNoWa("");
+      setNewEmail("");
+    } else {
+      setAddError("NISN ini sudah terdaftar di basis data.");
+    }
   };
 
   const generateWaLink = (alumni: MasterAlumniRecord) => {
@@ -137,9 +331,8 @@ export const AdminMasterAlumniTab: React.FC = () => {
     const cleanNumber = rawNumber.startsWith("0")
       ? "62" + rawNumber.slice(1)
       : rawNumber;
-    const siteOrigin = typeof window !== "undefined" ? window.location.origin : "https://smksasmitajaya2.sch.id";
     const text = encodeURIComponent(
-`Halo *${alumni.nama}* (Alumni ${alumni.jurusan} Angkatan ${alumni.tahunLulus}),\n\nKami dari Bursa Kerja Khusus SMK Sasmita Jaya 2 Pamulang mengingatkan Anda untuk mengisi kuesioner penelusuran lulusan (tracer study).\n\nSilakan masuk menggunakan NISN: *${alumni.nisn}* melalui halaman login:\n${siteOrigin}/login\n\nTerima kasih atas bantuan dan kerja sama Anda.`,
+      `Halo *${alumni.nama}* (Alumni ${alumni.jurusan} Angkatan ${alumni.tahunLulus}),\n\nKami dari Bursa Kerja Khusus SMK Sasmita Jaya 2 Pamulang mengingatkan Anda untuk mengisi kuesioner penelusuran lulusan (tracer study).\n\nSilakan masuk menggunakan NISN: *${alumni.nisn}* melalui halaman login:\nhttps://tracerstudy-sasmita2.sch.id/login\n\nTerima kasih atas bantuan dan kerja sama Anda.`,
     );
     return `https://wa.me/${cleanNumber}?text=${text}`;
   };
@@ -159,18 +352,28 @@ export const AdminMasterAlumniTab: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto shrink-0">
             <button
               type="button"
+              onClick={handleExportExcel}
+              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Ekspor seluruh data siswa lulusan ke berkas Excel (.xlsx)"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-slate-700 shrink-0" />
+              <span>Ekspor Excel (.xlsx)</span>
+            </button>
+            <button
+              type="button"
               onClick={handleDownloadTemplate}
               className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer shrink-0"
+              title="Unduh format template Excel (.xlsx) untuk impor data"
             >
               <Download className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-              <span>Unduh Format</span>
+              <span>Unduh Format (.xlsx)</span>
             </button>
             <button
               type="button"
               onClick={() => setIsImportModalOpen(true)}
-              className="px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shrink-0"
             >
-              <Upload className="w-3.5 h-3.5 shrink-0" />
+              <Upload className="w-3.5 h-3.5 text-slate-600 shrink-0" />
               <span>Impor Berkas</span>
             </button>
           </div>
@@ -243,12 +446,13 @@ export const AdminMasterAlumniTab: React.FC = () => {
             <table className="w-full text-left text-[11px]">
               <thead className="bg-[#0d2346] text-white text-[11px]">
                 <tr>
-                  <th className="py-2.5 px-3 font-semibold">NISN dan NIK</th>
                   <th className="py-2.5 px-3 font-semibold">
                     <button
                       type="button"
                       onClick={() => {
-                        setNameSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+                        setNameSortOrder((prev) =>
+                          prev === "asc" ? "desc" : "asc",
+                        );
                       }}
                       className="inline-flex items-center gap-1 hover:text-white transition cursor-pointer select-none group"
                       title={
@@ -265,17 +469,28 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       )}
                     </button>
                   </th>
-                  <th className="py-2.5 px-3 font-semibold">Program Keahlian</th>
-                  <th className="py-2.5 px-3 font-semibold">Nomor WhatsApp</th>
-                  <th className="py-2.5 px-3 font-semibold">Status Pengisian</th>
-                  <th className="py-2.5 px-3 font-semibold text-center">No. Registrasi</th>
-                  <th className="py-2.5 px-3 font-semibold text-center">Tindakan</th>
+                  <th className="py-2.5 px-3 font-semibold">NISN</th>
+                  <th className="py-2.5 px-3 font-semibold">
+                    Program Keahlian
+                  </th>
+                  <th className="py-2.5 px-3 font-semibold text-center">
+                    Preview
+                  </th>
+                  <th className="py-2.5 px-3 font-semibold text-center">
+                    Pengingat
+                  </th>
+                  <th className="py-2.5 px-3 font-semibold text-center">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-[11px]">
                 {paginatedAlumni.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="p-6 text-center text-slate-500 text-xs">
+                    <td
+                      colSpan={6}
+                      className="p-6 text-center text-slate-500 text-xs"
+                    >
                       Tidak ada data siswa yang cocok dengan pencarian atau
                       filter yang dipilih.
                     </td>
@@ -286,60 +501,61 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       key={alumni.id}
                       className="hover:bg-slate-50 transition"
                     >
-                      <td className="py-2.5 px-3 font-mono">
-                        <div className="font-semibold text-slate-900 text-[11px]">
-                          {alumni.nisn}
-                        </div>
-                        <div className="text-[9.5px] text-slate-400">
-                          {alumni.nik}
-                        </div>
-                      </td>
+                      {/* 1. Nama Lengkap */}
                       <td className="py-2.5 px-3">
-                        <div className="font-semibold text-slate-900 text-[11px]">
+                        <div className="font-semibold text-slate-900 text-xs">
                           {alumni.nama}
                         </div>
-                        <div className="text-[9.5px] text-slate-400 truncate max-w-[180px]">
-                          {alumni.email}
-                        </div>
                       </td>
+
+                      {/* 2. NISN */}
+                      <td className="py-2.5 px-3 font-mono">
+                        <span className="font-semibold text-slate-900 text-xs">
+                          {alumni.nisn}
+                        </span>
+                      </td>
+
+                      {/* 3. Program Keahlian */}
                       <td className="py-2.5 px-3">
-                        <div className="text-slate-800 text-[11px]">{alumni.jurusan}</div>
-                        <div className="text-[9.5px] text-slate-400">
+                        <div className="text-slate-800 font-medium text-xs">
+                          {alumni.jurusan}
+                        </div>
+                        <div className="text-[10px] text-slate-400">
                           Lulusan Tahun {alumni.tahunLulus}
                         </div>
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-700 text-[11px]">
-                        {alumni.noWhatsapp}
+
+                      {/* 4. Preview */}
+                      <td className="py-2.5 px-3 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPreviewAlumni(alumni)}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-slate-700 hover:text-[#0d2346] hover:bg-slate-100 text-[11px] font-semibold cursor-pointer shadow-2xs border border-slate-200 transition"
+                          title="Buka data lengkap siswa"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Lihat</span>
+                        </button>
                       </td>
-                      <td className="py-2.5 px-3">
-                        {alumni.statusTracer === "SUDAH" ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 font-semibold text-slate-800 text-[10px]">
-                            <span>Sudah Mengisi</span>
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 font-semibold text-slate-800 text-[10px]">
-                            <span>Belum Mengisi</span>
-                          </span>
-                        )}
-                      </td>
+
+                      {/* 5. Pengingat WA */}
                       <td className="py-2.5 px-3 text-center">
                         {alumni.statusTracer === "BELUM" ? (
                           <a
                             href={generateWaLink(alumni)}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition shadow-xs cursor-pointer text-[9.5px]"
-                            title="Kirim pesan pengingat ke nomor WhatsApp alumni"
+                            className="inline-flex items-center justify-center p-1.5 rounded-md text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition cursor-pointer"
+                            title="Kirim pengingat WhatsApp"
                           >
-                            <WhatsAppIcon className="w-3 h-3 shrink-0" />
-                            <span>Kirim Pengingat</span>
+                            <WhatsAppIcon className="w-3.5 h-3.5" />
                           </a>
                         ) : (
-                          <span className="text-[11px] text-slate-700 font-mono font-semibold">
-                            {alumni.submissionId || "-"}
-                          </span>
+                          <span className="text-slate-300 text-xs">-</span>
                         )}
                       </td>
+
+                      {/* 6. Aksi (Hapus) */}
                       <td className="py-2.5 px-3 text-center">
                         <button
                           type="button"
@@ -383,18 +599,382 @@ export const AdminMasterAlumniTab: React.FC = () => {
       <AdminImportModal
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
-        onSuccess={(count, detail) => {
-          const extra = [
-            detail?.duplicateCount ? `${detail.duplicateCount} duplikat dilewati` : '',
-            detail?.invalidCount ? `${detail.invalidCount} baris tidak valid dilewati` : '',
-          ]
-            .filter(Boolean)
-            .join(', ');
-          showToast(
-            `Berhasil menambahkan ${count} data siswa ke basis data${extra ? ` (${extra})` : ''}.`,
-          );
-        }}
+        onSuccess={(count) =>
+          showToast(`Berhasil menambahkan ${count} data siswa ke basis data.`)
+        }
       />
+
+      {/* Add Single Alumni Modal */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl border border-slate-200 overflow-hidden">
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <h3 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                <Plus className="w-4 h-4 text-slate-700" />
+                <span>Tambah Data Siswa Lulusan</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsAddModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              onSubmit={handleCreateSingle}
+              className="p-5 space-y-3.5 text-xs"
+            >
+              {addError && (
+                <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 font-semibold">
+                  {addError}
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-700 block mb-1">
+                    Nomor Induk Siswa Nasional (NISN)*
+                  </label>
+                  <input
+                    required
+                    maxLength={10}
+                    placeholder="Contoh: 0051234567"
+                    value={newNisn}
+                    onChange={(e) => setNewNisn(e.target.value)}
+                    className="w-full p-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-700 block mb-1">
+                    Nomor Induk Kependudukan (NIK)
+                  </label>
+                  <input
+                    maxLength={16}
+                    placeholder="Contoh: 3674012345670001"
+                    value={newNik}
+                    onChange={(e) => setNewNik(e.target.value)}
+                    className="w-full p-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold text-slate-700 block mb-1">
+                  Nama Lengkap Siswa*
+                </label>
+                <input
+                  required
+                  placeholder="Contoh: Muhammad Rizki"
+                  value={newNama}
+                  onChange={(e) => setNewNama(e.target.value)}
+                  className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-700 block mb-1 text-xs">
+                    Program Keahlian
+                  </label>
+                  <CustomSelect
+                    options={JURUSAN_OPTIONS.filter((j) => j.value !== "ALL")}
+                    value={newJurusan}
+                    onChange={(val) => setNewJurusan(val as JurusanSMK)}
+                    triggerSize="sm"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-700 block mb-1">
+                    Tahun Kelulusan
+                  </label>
+                  <input
+                    type="number"
+                    value={newTahun}
+                    onChange={(e) => setNewTahun(Number(e.target.value))}
+                    className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-700 block mb-1">
+                    Nomor WhatsApp
+                  </label>
+                  <input
+                    placeholder="Contoh: 081298765432"
+                    value={newNoWa}
+                    onChange={(e) => setNewNoWa(e.target.value)}
+                    className="w-full p-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-700 block mb-1">
+                    Alamat Email
+                  </label>
+                  <input
+                    placeholder="Contoh: alumni@example.com"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d2346] focus:border-[#0d2346]"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-3.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold cursor-pointer hover:bg-slate-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 rounded-lg bg-[#0d2346] hover:bg-[#163868] text-white font-semibold shadow-xs cursor-pointer"
+                >
+                  Simpan Data
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Preview Data Lengkap Siswa */}
+      {selectedPreviewAlumni && (
+        <div className="fixed inset-0 z-50 bg-white sm:bg-slate-950/60 sm:backdrop-blur-xs sm:flex sm:items-center sm:justify-center sm:p-4 md:sm:p-6 animate-in fade-in duration-150 overflow-hidden">
+          <div className="bg-white w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-2xl rounded-none shadow-none sm:shadow-2xl sm:border sm:border-slate-200/90 overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="px-4 py-3.5 sm:px-6 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                  <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm sm:text-lg text-slate-900 leading-snug tracking-tight">
+                    Preview Data Lengkap Siswa
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-500 leading-normal mt-0.5">
+                    Data pokok alumni SMKS Sasmita Jaya 2
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedPreviewAlumni(null)}
+                className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                title="Tutup"
+                aria-label="Tutup Preview"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 p-4 sm:p-6 space-y-3.5 sm:space-y-5 overflow-y-auto overscroll-contain">
+              {/* Profile Card Header */}
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-bold text-slate-900 text-base sm:text-xl leading-snug tracking-tight">
+                    {selectedPreviewAlumni.nama}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed mt-0.5">
+                    {selectedPreviewAlumni.jurusan}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-200/80 text-slate-700 tracking-wide">
+                    Angkatan {selectedPreviewAlumni.tahunLulus}
+                  </span>
+                  {selectedPreviewAlumni.statusTracer === "SUDAH" ? (
+                    <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 flex items-center gap-1.5 border border-emerald-200/60">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Sudah Mengisi Tracer</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-1.5 border border-amber-200/60">
+                      <Clock className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Belum Mengisi Tracer</span>
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Section 1: Identitas Pokok Siswa */}
+              <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5 sm:space-y-4">
+                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Identitas Pokok
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5">
+                  {/* NISN */}
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-medium text-slate-500 block leading-normal">
+                      Nomor Induk Siswa (NISN)
+                    </span>
+                    <span className="font-mono font-bold text-slate-900 text-sm sm:text-base tracking-wide block leading-snug">
+                      {selectedPreviewAlumni.nisn}
+                    </span>
+                  </div>
+
+                  {/* NIK */}
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-medium text-slate-500 block leading-normal">
+                      Nomor Induk Kependudukan (NIK)
+                    </span>
+                    <span className="font-mono font-bold text-slate-900 text-sm sm:text-base tracking-wide block leading-snug">
+                      {selectedPreviewAlumni.nik || "-"}
+                    </span>
+                  </div>
+
+                  {/* Program Keahlian */}
+                  <div className="sm:col-span-2 pt-2.5 border-t border-slate-100 space-y-0.5">
+                    <span className="text-xs font-medium text-slate-500 block leading-normal">
+                      Program Keahlian / Jurusan
+                    </span>
+                    <span className="font-semibold text-slate-900 text-sm sm:text-base leading-relaxed block tracking-normal">
+                      {selectedPreviewAlumni.jurusan}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Section 2: Kontak & Komunikasi */}
+              <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5 sm:space-y-4">
+                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Kontak & Komunikasi
+                </h5>
+
+                {/* Nomor WhatsApp */}
+                <div className="flex items-center justify-between gap-3 pt-0.5">
+                  <div className="min-w-0 flex-1 pr-2 space-y-0.5">
+                    <span className="text-xs font-medium text-slate-500 block leading-normal">
+                      Nomor WhatsApp
+                    </span>
+                    <span className="font-mono font-bold text-slate-900 text-xs sm:text-sm tracking-wide flex items-center gap-1.5 leading-snug">
+                      <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span>{selectedPreviewAlumni.noWhatsapp || "-"}</span>
+                    </span>
+                  </div>
+                  {selectedPreviewAlumni.noWhatsapp && (
+                    <a
+                      href={`https://wa.me/${
+                        selectedPreviewAlumni.noWhatsapp
+                          .replace(/\D/g, "")
+                          .startsWith("0")
+                          ? "62" +
+                            selectedPreviewAlumni.noWhatsapp
+                              .replace(/\D/g, "")
+                              .slice(1)
+                          : selectedPreviewAlumni.noWhatsapp.replace(/\D/g, "")
+                      }`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs border border-emerald-200/80 transition active:scale-95 shadow-2xs shrink-0"
+                    >
+                      <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Chat WA</span>
+                    </a>
+                  )}
+                </div>
+
+                {/* Email */}
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                  <div className="min-w-0 flex-1 pr-2 space-y-0.5">
+                    <span className="text-xs font-medium text-slate-500 block leading-normal">
+                      Alamat Email
+                    </span>
+                    <span className="font-semibold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 leading-snug tracking-normal break-all">
+                      <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span>{selectedPreviewAlumni.email || "-"}</span>
+                    </span>
+                  </div>
+                  {selectedPreviewAlumni.email && (
+                    <a
+                      href={`mailto:${selectedPreviewAlumni.email}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition shrink-0 active:scale-95"
+                    >
+                      <Mail className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Kirim Email</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Section 3: Informasi Tracer Study */}
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5 sm:space-y-3">
+                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Status Kuesioner Tracer
+                </h5>
+                {selectedPreviewAlumni.statusTracer === "SUDAH" ? (
+                  <div className="space-y-2 text-xs sm:text-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 leading-relaxed">
+                      <span className="text-slate-500 font-medium">
+                        No. Registrasi / Submisi:
+                      </span>
+                      <span className="font-mono font-bold text-slate-900 tracking-wide">
+                        {selectedPreviewAlumni.submissionId || "-"}
+                      </span>
+                    </div>
+                    {selectedPreviewAlumni.submittedAt && (
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 leading-relaxed pt-2 border-t border-slate-200/60">
+                        <span className="text-slate-500 font-medium">
+                          Waktu Pengisian:
+                        </span>
+                        <span className="text-slate-800 font-medium">
+                          {new Date(
+                            selectedPreviewAlumni.submittedAt,
+                          ).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-2.5 text-slate-600 text-xs sm:text-sm leading-relaxed">
+                    <Clock className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                    <p>
+                      Alumni ini belum menyelesaikan pengisian kuesioner
+                      penelusuran tamatan.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 sm:px-6 sm:py-4 border-t border-slate-200 bg-white sm:bg-slate-50 shrink-0">
+              <div className="flex items-center justify-end gap-2.5 sm:gap-3">
+                {selectedPreviewAlumni.statusTracer === "BELUM" && (
+                  <a
+                    href={generateWaLink(selectedPreviewAlumni)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 text-center cursor-pointer"
+                  >
+                    <WhatsAppIcon className="w-4 h-4" />
+                    <span>Kirim Pengingat WA</span>
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setSelectedPreviewAlumni(null)}
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold tracking-wide transition active:scale-95 cursor-pointer shadow-xs text-center"
+                >
+                  Tutup Preview
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Custom Delete Confirmation Modal */}
       <ConfirmModal
@@ -405,11 +985,18 @@ export const AdminMasterAlumniTab: React.FC = () => {
         message={
           deleteConfirmAlumni
             ? `Apakah Anda yakin ingin menghapus data siswa ${deleteConfirmAlumni.nama} (NISN: ${deleteConfirmAlumni.nisn}) dari master alumni?`
-            : ''
+            : ""
         }
         confirmText="Ya, Hapus Data"
         cancelText="Batal"
         type="danger"
+      />
+
+      {/* Toast Notification */}
+      <Toast
+        message={toastMessage}
+        onClose={() => setToastMessage("")}
+        type="success"
       />
     </>
   );

@@ -1,105 +1,119 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2, AlertCircle, RefreshCw } from "lucide-react";
-import { CustomSelect } from "@/components/ui/CustomSelect";
-import {
-  EMPTY_KETERSERAPAN,
-  KeterserapanData,
-  availableJurusan,
-  buildChartStats,
-  jurusanCode,
-  jurusanShortName,
-} from "@/lib/reportStats";
-
-const YEAR_OPTIONS = [
-  { value: "ALL", label: "Semua Tahun (Akumulatif)" },
-  { value: "2025", label: "Tahun Lulus 2025" },
-  { value: "2024", label: "Tahun Lulus 2024" },
-  { value: "2023", label: "Tahun Lulus 2023" },
-  { value: "2022", label: "Tahun Lulus 2022" },
-];
-
-const ALL_JURUSAN_OPTION = { value: "ALL", label: "Semua Jurusan (Total Global)" };
+import { ArrowRight } from "lucide-react";
+import { MOCK_YEARLY_TRACER_DATA } from "@/lib/mockData";
 
 export const ReportSection: React.FC = () => {
   const navigate = useNavigate();
 
-  // 1. Filter States (2 Dropdown)
-  const [selectedYear, setSelectedYear] = useState<string>("ALL");
-  const [selectedJurusan, setSelectedJurusan] = useState<string>("ALL");
+  // Aggregated Stats for the 3 Charts (Akumulatif Global untuk Landing Page Preview)
+  const chartStats = useMemo(() => {
+    const targetData = MOCK_YEARLY_TRACER_DATA;
 
-  // 2. Statistik langsung dari basis data (bukan data contoh)
-  const [stats, setStats] = useState<KeterserapanData>(EMPTY_KETERSERAPAN);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadError, setLoadError] = useState<string>("");
+    const totalResponden = targetData.reduce(
+      (acc, curr) => acc + curr.mengisiTracer,
+      0,
+    );
+    const bekerja = targetData.reduce((acc, curr) => acc + curr.bekerja, 0);
+    const kuliah = targetData.reduce((acc, curr) => acc + curr.kuliah, 0);
+    const wirausaha = targetData.reduce((acc, curr) => acc + curr.wirausaha, 0);
+    const belumKerja = targetData.reduce(
+      (acc, curr) => acc + curr.belumKerja,
+      0,
+    );
 
-  useEffect(() => {
-    let isActive = true;
+    const sangatSesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.sangatSesuai,
+      0,
+    );
+    const sesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.sesuai,
+      0,
+    );
+    const kurangSesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.kurangSesuai,
+      0,
+    );
+    const tidakSesuai = targetData.reduce(
+      (acc, curr) => acc + curr.kesesuaian.tidakSesuai,
+      0,
+    );
 
-    const fetchStats = async () => {
-      setIsLoading(true);
-      setLoadError("");
+    const lokal = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.lokal,
+      0,
+    );
+    const nasional = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.nasional,
+      0,
+    );
+    const multinasional = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.multinasional,
+      0,
+    );
+    const skalaWirausaha = targetData.reduce(
+      (acc, curr) => acc + curr.skalaKerja.wirausaha,
+      0,
+    );
 
-      try {
-        const { publicReportApi } = await import("@/services/adminService");
-        const res = await publicReportApi.getKeterserapan({
-          jurusan: selectedJurusan === "ALL" ? undefined : selectedJurusan,
-          tahunLulus: selectedYear === "ALL" ? undefined : Number(selectedYear),
-        });
-        if (!isActive) return;
-        setStats(res?.data ? res.data : EMPTY_KETERSERAPAN);
-      } catch (err: any) {
-        if (!isActive) return;
-        setLoadError(err.message || "Gagal memuat statistik dari basis data.");
-      } finally {
-        if (isActive) setIsLoading(false);
-      }
+    const calcPct = (num: number, denom: number) => {
+      if (!denom || denom === 0) return 0;
+      return parseFloat(((num / denom) * 100).toFixed(1));
     };
 
-    fetchStats();
-    return () => {
-      isActive = false;
+    const totalKesesuaian = sangatSesuai + sesuai + kurangSesuai + tidakSesuai;
+    const totalSkala = lokal + nasional + multinasional + skalaWirausaha;
+
+    return {
+      totalResponden,
+      aktivitas: {
+        bekerja: { count: bekerja, percent: calcPct(bekerja, totalResponden) },
+        kuliah: { count: kuliah, percent: calcPct(kuliah, totalResponden) },
+        wirausaha: {
+          count: wirausaha,
+          percent: calcPct(wirausaha, totalResponden),
+        },
+        belumKerja: {
+          count: belumKerja,
+          percent: calcPct(belumKerja, totalResponden),
+        },
+      },
+      kesesuaian: {
+        sangatSesuai: {
+          count: sangatSesuai,
+          percent: calcPct(sangatSesuai, totalKesesuaian),
+        },
+        sesuai: { count: sesuai, percent: calcPct(sesuai, totalKesesuaian) },
+        kurangSesuai: {
+          count: kurangSesuai,
+          percent: calcPct(kurangSesuai, totalKesesuaian),
+        },
+        tidakSesuai: {
+          count: tidakSesuai,
+          percent: calcPct(tidakSesuai, totalKesesuaian),
+        },
+        totalLinear: calcPct(sangatSesuai + sesuai, totalKesesuaian),
+      },
+      skalaKerja: {
+        lokal: { count: lokal, percent: calcPct(lokal, totalSkala) },
+        nasional: { count: nasional, percent: calcPct(nasional, totalSkala) },
+        multinasional: {
+          count: multinasional,
+          percent: calcPct(multinasional, totalSkala),
+        },
+        wirausaha: {
+          count: skalaWirausaha,
+          percent: calcPct(skalaWirausaha, totalSkala),
+        },
+      },
     };
-  }, [selectedJurusan, selectedYear]);
-
-  // Pilihan jurusan & tahun mengikuti data yang benar-benar ada di basis data
-  const jurusanOptions = useMemo(() => {
-    const list = availableJurusan(stats.byJurusan).map((j) => ({
-      value: j,
-      label: `${jurusanCode(j)} - ${jurusanShortName(j)}`,
-    }));
-    return [ALL_JURUSAN_OPTION, ...list];
-  }, [stats.byJurusan]);
-
-  const yearOptions = useMemo(() => {
-    const years = Array.from(new Set(stats.byJurusan.map((row) => row.tahunLulus)))
-      .sort((a, b) => b - a)
-      .map((y) => ({ value: String(y), label: `Tahun Lulus ${y}` }));
-    if (years.length === 0) return YEAR_OPTIONS;
-    return [{ value: "ALL", label: "Semua Tahun (Akumulatif)" }, ...years];
-  }, [stats.byJurusan]);
-
-  // Data chart (persentase dihitung dari jumlah responden basis data)
-  const chartStats = useMemo(() => buildChartStats(stats), [stats]);
-
-  const formattedUpdated = useMemo(() => {
-    if (!stats.perbaruPada) return "";
-    const date = new Date(stats.perbaruPada);
-    if (Number.isNaN(date.getTime())) return "";
-    return date.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  }, [stats.perbaruPada]);
-
-  const activeYearLabel = yearOptions.find((y) => y.value === selectedYear)?.label || selectedYear;
+  }, []);
 
   return (
     <section id="laporan" className="relative py-16 sm:py-20 lg:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#182a4a] tracking-tight">
             Statistik Keterserapan Lulusan
           </h2>
@@ -108,59 +122,6 @@ export const ReportSection: React.FC = () => {
             pendidikan tinggi, dan wirausaha mandiri yang diperbarui secara
             berkala.
           </p>
-
-          {/* Filter Jurusan & Tahun */}
-          <div className="mt-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-            <div className="w-full sm:w-72">
-              <CustomSelect
-                options={jurusanOptions}
-                value={selectedJurusan}
-                onChange={(v) => setSelectedJurusan(v)}
-                triggerSize="sm"
-              />
-            </div>
-            <div className="w-full sm:w-56">
-              <CustomSelect
-                options={yearOptions}
-                value={selectedYear}
-                onChange={(v) => setSelectedYear(v)}
-                triggerSize="sm"
-              />
-            </div>
-          </div>
-
-          {/* Status data real dari basis data */}
-          <div className="mt-3 flex items-center justify-center">
-            {isLoading ? (
-              <span className="inline-flex items-center gap-1.5 text-xs text-slate-500">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Memuat data dari basis data...
-              </span>
-            ) : loadError ? (
-              <span className="inline-flex items-center gap-1.5 text-xs text-rose-600">
-                <AlertCircle className="w-3.5 h-3.5" />
-                {loadError}
-              </span>
-            ) : (
-              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
-                <span className="inline-flex items-center gap-1 font-semibold text-emerald-600">
-                  <RefreshCw className="w-3 h-3" />
-                  Data real dari basis data
-                </span>
-                <span className="text-slate-300">|</span>
-                <span>
-                  {stats.totalResponden} responden dari {stats.totalAlumni} alumni
-                  ({stats.responseRate}% partisipasi)
-                </span>
-                {formattedUpdated && (
-                  <>
-                    <span className="text-slate-300">|</span>
-                    <span>Diperbarui {formattedUpdated}</span>
-                  </>
-                )}
-              </span>
-            )}
-          </div>
         </div>
 
         {/* 2. Tiga Chart Inti (Baku Standar Tracer Yayasan) */}
@@ -302,7 +263,7 @@ export const ReportSection: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
                     <span className="font-semibold text-slate-800">
-                      Belum Kerja
+                      Belum Bekerja
                     </span>
                   </div>
                   <span className="font-bold text-slate-900">
@@ -332,73 +293,22 @@ export const ReportSection: React.FC = () => {
               </div>
 
               <div className="space-y-3 mt-4 text-xs">
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Sangat Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.sangatSesuai.percent}%
-                    </span>
+                {[
+                  { label: "Sangat Sesuai", stat: chartStats.kesesuaian.sangatSesuai, barColor: "bg-[#182a4a]" },
+                  { label: "Sesuai", stat: chartStats.kesesuaian.sesuai, barColor: "bg-blue-600" },
+                  { label: "Kurang Sesuai", stat: chartStats.kesesuaian.kurangSesuai, barColor: "bg-slate-500" },
+                  { label: "Tidak Sesuai", stat: chartStats.kesesuaian.tidakSesuai, barColor: "bg-slate-300" },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <div className="flex justify-between font-semibold mb-1">
+                      <span className="text-slate-800">{item.label}</span>
+                      <span className="text-slate-900 font-bold">{item.stat.percent}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div className={`h-full ${item.barColor} rounded-full`} style={{ width: `${item.stat.percent}%` }} />
+                    </div>
                   </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#182a4a] rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.sangatSesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.sesuai.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-600 rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.sesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Kurang Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.kurangSesuai.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-500 rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.kurangSesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-semibold mb-1">
-                    <span className="text-slate-800">Tidak Sesuai</span>
-                    <span className="text-slate-900 font-bold">
-                      {chartStats.kesesuaian.tidakSesuai.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-300 rounded-full"
-                      style={{
-                        width: `${chartStats.kesesuaian.tidakSesuai.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -413,81 +323,22 @@ export const ReportSection: React.FC = () => {
               </div>
 
               <div className="space-y-3 mt-2">
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Nasional / BUMN
-                    </span>
-                    <span className="font-extrabold text-[#182a4a]">
-                      {chartStats.skalaKerja.nasional.percent}%
-                    </span>
+                {[
+                  { label: "Nasional / BUMN", stat: chartStats.skalaKerja.nasional, barColor: "bg-[#182a4a]", valColor: "text-[#182a4a]" },
+                  { label: "Lokal / Wilayah", stat: chartStats.skalaKerja.lokal, barColor: "bg-blue-600", valColor: "text-slate-900" },
+                  { label: "Multinasional / Global", stat: chartStats.skalaKerja.multinasional, barColor: "bg-slate-600", valColor: "text-slate-900" },
+                  { label: "Wirausaha / Mandiri", stat: chartStats.skalaKerja.wirausaha, barColor: "bg-slate-400", valColor: "text-slate-900" },
+                ].map((item) => (
+                  <div key={item.label} className="p-2.5 text-xs">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-slate-800">{item.label}</span>
+                      <span className={`font-extrabold ${item.valColor}`}>{item.stat.percent}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div className={`h-full ${item.barColor} rounded-full`} style={{ width: `${item.stat.percent}%` }} />
+                    </div>
                   </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[#182a4a] rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.nasional.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Lokal / Wilayah
-                    </span>
-                    <span className="font-extrabold text-slate-900">
-                      {chartStats.skalaKerja.lokal.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-blue-600 rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.lokal.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Multinasional / Global
-                    </span>
-                    <span className="font-extrabold text-slate-900">
-                      {chartStats.skalaKerja.multinasional.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-600 rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.multinasional.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-2.5 text-xs">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-slate-800">
-                      Wirausaha / Mandiri
-                    </span>
-                    <span className="font-extrabold text-slate-900">
-                      {chartStats.skalaKerja.wirausaha.percent}%
-                    </span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-400 rounded-full"
-                      style={{
-                        width: `${chartStats.skalaKerja.wirausaha.percent}%`,
-                      }}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

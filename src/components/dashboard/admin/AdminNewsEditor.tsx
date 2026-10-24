@@ -9,13 +9,8 @@ import {
   Calendar,
   Clock,
   User,
-  AlertTriangle,
 } from "lucide-react";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import {
-  errorList,
-  validateNewsInput,
-} from "@/utils/contentValidation";
 
 export const CATEGORIES = [
   "Semua",
@@ -63,7 +58,7 @@ export interface AdminNewsEditorProps {
     content: string;
   }) => void;
   onCancel: () => void;
-  showToast: (msg: string, type?: "success" | "error") => void;
+  showToast: (msg: string) => void;
 }
 
 export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
@@ -85,22 +80,6 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
   const [uploadedFileSize, setUploadedFileSize] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Validasi real-time (aturan sama dengan backend) — berita tidak bisa
-  // dipublikasikan selama masih ada bagian yang belum memenuhi syarat.
-  const errors = validateNewsInput({
-    title,
-    excerpt,
-    content,
-    category,
-    author,
-    readTime,
-  });
-  const isValid = Object.keys(errors).length === 0;
-  const [attempted, setAttempted] = useState(false);
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const showFieldError = (field: string) =>
-    (attempted || touched[field]) && errors[field];
 
   const handleFileProcess = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -154,12 +133,8 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isValid) {
-      setAttempted(true);
-      showToast(
-        `Berita belum bisa dipublikasikan: ${errorList(errors).join(" ")}`,
-        "error",
-      );
+    if (!title.trim() || !excerpt.trim() || !content.trim()) {
+      showToast("Harap lengkapi judul, ringkasan, dan isi berita.");
       return;
     }
 
@@ -208,17 +183,7 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={!isValid}
-            title={
-              isValid
-                ? undefined
-                : "Lengkapi semua bagian yang belum memenuhi syarat minimal terlebih dahulu."
-            }
-            className={`px-5 py-2 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs transition active:scale-95 ${
-              isValid
-                ? "bg-[#0d2346] hover:bg-[#163868] cursor-pointer"
-                : "bg-slate-300 cursor-not-allowed"
-            }`}
+            className="px-5 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-bold shadow-xs transition active:scale-95 cursor-pointer"
           >
             {editingNews ? "Simpan Perubahan" : "Publikasikan Berita"}
           </button>
@@ -229,54 +194,19 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Form Column (8 cols) */}
         <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
-          {/* Peringatan Validasi */}
-          {!isValid && (
-            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="text-xs font-bold text-rose-800">
-                  Berita belum bisa dipublikasikan — masih ada{" "}
-                  {errorList(errors).length} bagian yang belum memenuhi syarat.
-                </p>
-                <ul className="list-disc list-inside space-y-0.5">
-                  {errorList(errors).map((msg) => (
-                    <li key={msg} className="text-[11px] text-rose-700">
-                      {msg}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          )}
-
           {/* Field 1: Judul Berita */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-slate-900">
-                Judul Berita / Pengumuman <span className="text-rose-500">*</span>
-              </label>
-              <span className="text-[11px] font-normal text-slate-400">
-                maks. 200 karakter
-              </span>
-            </div>
+            <label className="block text-xs font-bold text-slate-900">
+              Judul Berita / Pengumuman <span className="text-rose-500">*</span>
+            </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              onBlur={() => setTouched((t) => ({ ...t, title: true }))}
               placeholder="Contoh: Kunjungan Industri PT Toyota Motor Manufacturing Indonesia Batch 2"
-              className={`w-full px-3.5 py-2.5 rounded-xl border bg-slate-50/50 text-xs sm:text-sm font-medium focus:ring-2 focus:outline-none transition ${
-                showFieldError("title")
-                  ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
-                  : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
-              }`}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               required
             />
-            {showFieldError("title") && (
-              <p className="text-[11px] font-semibold text-rose-600">
-                {errors.title}
-              </p>
-            )}
           </div>
 
           {/* Field 2: Kategori, Penulis & Estimasi Baca */}
@@ -300,19 +230,9 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, author: true }))}
                 placeholder="Contoh: Tim Humas BKK"
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-medium focus:ring-2 focus:outline-none transition bg-slate-50/50 ${
-                  showFieldError("author")
-                    ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
-                    : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
-                }`}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
-              {showFieldError("author") && (
-                <p className="text-[11px] font-semibold text-rose-600">
-                  {errors.author}
-                </p>
-              )}
             </div>
 
             <div className="space-y-1.5">
@@ -323,19 +243,9 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
                 type="text"
                 value={readTime}
                 onChange={(e) => setReadTime(e.target.value)}
-                onBlur={() => setTouched((t) => ({ ...t, readTime: true }))}
                 placeholder="Contoh: 3 min read"
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-medium focus:ring-2 focus:outline-none transition bg-slate-50/50 ${
-                  showFieldError("readTime")
-                    ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
-                    : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
-                }`}
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
-              {showFieldError("readTime") && (
-                <p className="text-[11px] font-semibold text-rose-600">
-                  {errors.readTime}
-                </p>
-              )}
             </div>
           </div>
 
@@ -479,35 +389,18 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
               <label className="block text-xs font-bold text-slate-900">
                 Ringkasan Singkat (Excerpt) <span className="text-rose-500">*</span>
               </label>
-              <span
-                className={`text-[11px] font-normal ${
-                  excerpt.trim().length < 10
-                    ? "text-rose-500 font-semibold"
-                    : "text-slate-400"
-                }`}
-              >
-                {excerpt.trim().length}/10 karakter min. — tampil pada kartu
-                berita di halaman utama
+              <span className="text-[11px] text-slate-400 font-normal">
+                Tampil pada kartu berita di halaman utama
               </span>
             </div>
             <textarea
               rows={2}
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
-              onBlur={() => setTouched((t) => ({ ...t, excerpt: true }))}
               placeholder="Ringkasan 1-2 kalimat untuk preview berita..."
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium focus:ring-2 focus:outline-none transition resize-y bg-slate-50/50 ${
-                showFieldError("excerpt")
-                  ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
-                  : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
-              }`}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white resize-y"
               required
             />
-            {showFieldError("excerpt") && (
-              <p className="text-[11px] font-semibold text-rose-600">
-                {errors.excerpt}
-              </p>
-            )}
           </div>
 
           {/* Field 5: Isi Lengkap Berita */}
@@ -516,35 +409,18 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
               <label className="block text-xs font-bold text-slate-900">
                 Isi Lengkap Berita (Paragraf) <span className="text-rose-500">*</span>
               </label>
-              <span
-                className={`text-[11px] font-normal ${
-                  content.trim().length < 20
-                    ? "text-rose-500 font-semibold"
-                    : "text-slate-400"
-                }`}
-              >
-                {content.trim().length}/20 karakter min. — tekan Enter dua kali
-                untuk membuat paragraf baru
+              <span className="text-[11px] text-slate-400 font-normal">
+                Tekan Enter dua kali untuk membuat paragraf baru
               </span>
             </div>
             <textarea
               rows={9}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              onBlur={() => setTouched((t) => ({ ...t, content: true }))}
               placeholder="Tuliskan isi berita lengkap di sini..."
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-medium focus:ring-2 focus:outline-none transition resize-y leading-relaxed bg-slate-50/50 ${
-                showFieldError("content")
-                  ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500/10 bg-white"
-                  : "border-slate-200 focus:border-[#0d2346] focus:ring-[#0d2346]/10 focus:bg-white"
-              }`}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white resize-y leading-relaxed"
               required
             />
-            {showFieldError("content") && (
-              <p className="text-[11px] font-semibold text-rose-600">
-                {errors.content}
-              </p>
-            )}
           </div>
 
           {/* Submit & Cancel Actions */}
@@ -559,17 +435,7 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={!isValid}
-              title={
-                isValid
-                  ? undefined
-                  : `Belum bisa dipublikasikan: ${errorList(errors).join(" ")}`
-              }
-              className={`px-6 py-2.5 rounded-xl text-white text-xs sm:text-sm font-bold shadow-xs transition active:scale-95 ${
-                isValid
-                  ? "bg-[#0d2346] hover:bg-[#163868] cursor-pointer"
-                  : "bg-slate-300 cursor-not-allowed"
-              }`}
+              className="px-6 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-bold shadow-xs transition active:scale-95 cursor-pointer"
             >
               {editingNews ? "Simpan Perubahan" : "Publikasikan Berita"}
             </button>

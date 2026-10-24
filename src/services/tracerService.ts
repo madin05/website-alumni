@@ -1,6 +1,5 @@
 import { TracerSubmissionPayload, SubmissionResponse } from '@/types/tracer';
 import { completeTracerFormSchema } from '@/schemas/tracerSchema';
-import { useAuthStore } from '@/store/authStore';
 
 /**
  * Service to handle Tracer Study submission adhering to PRD Section 5.1
@@ -30,60 +29,40 @@ export async function submitTracerStudy(
     };
   }
 
-  const { accessToken } = useAuthStore.getState();
-
+  // If real API endpoint exists in env, we can fetch, otherwise perform standard mock response
   try {
-    const res = await fetch('/api/v1/tracer-study', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-      credentials: 'include',
-      body: JSON.stringify(payload),
-    });
-    return await res.json();
+    const apiBaseUrl = (import.meta as any).env?.VITE_API_URL;
+    if (apiBaseUrl) {
+      const res = await fetch(`${apiBaseUrl}/api/v1/tracer-study`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      return await res.json();
+    }
   } catch (err) {
     console.warn('Backend server not reachable, falling back to client simulation:', err);
-
-    // Standard Mock Server Response matching PRD 5.1
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
-    const now = new Date();
-    const year = now.getFullYear().toString();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const randomSeq = Math.floor(1000 + Math.random() * 9000).toString();
-    const submissionId = `${year}${month}${randomSeq}`;
-
-    const response: SubmissionResponse = {
-      success: true,
-      message: 'Data tracer study berhasil disimpan. Terima kasih atas partisipasi Anda.',
-      data: {
-        submission_id: submissionId,
-        submitted_at: now.toISOString(),
-      },
-    };
-
-    return response;
   }
-}
 
-export async function getMySubmission(): Promise<SubmissionResponse> {
-  const { accessToken } = useAuthStore.getState();
+  // Standard Mock Server Response matching PRD 5.1
+  await new Promise((res) => setTimeout(res, 600));
 
-  try {
-    const res = await fetch('/api/v1/tracer-study/me', {
-      headers: {
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-      credentials: 'include',
-    });
-    return await res.json();
-  } catch (err) {
-    console.error('Get my submission failed:', err);
-    return {
-      success: false,
-      message: 'Gagal mengambil riwayat pengisian.',
-    };
-  }
+  const now = new Date();
+  const year = now.getFullYear().toString();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const randomSeq = Math.floor(1000 + Math.random() * 9000).toString();
+  const submissionId = `${year}${month}${randomSeq}`;
+
+  const response: SubmissionResponse = {
+    success: true,
+    message: 'Data tracer study berhasil disimpan. Terima kasih atas partisipasi Anda.',
+    data: {
+      submission_id: submissionId,
+      submitted_at: now.toISOString(),
+    },
+  };
+
+  return response;
 }

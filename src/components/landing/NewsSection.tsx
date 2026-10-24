@@ -70,7 +70,7 @@ export const NewsSection: React.FC = () => {
         {newsList.length > 0 && (
           <div className="mt-12 text-right">
             <button
-              onClick={() => navigate(`/berita/${newsList[0].id}`)}
+              onClick={() => navigate("/berita")}
               className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 hover:text-blue-600 transition-colors cursor-pointer"
             >
               <span>Lihat Semua</span>

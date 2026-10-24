@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DashboardSidebar, DashboardTab } from './DashboardSidebar';
 import { DashboardHeader } from './DashboardHeader';
 import { OverviewTab } from './OverviewTab';
-import { CekIjazahTab } from './CekIjazahTab';
 import { LokerTab } from './LokerTab';
 import { AlumniTab } from './AlumniTab';
 import { HelpdeskTab } from './HelpdeskTab';
@@ -13,8 +12,6 @@ import { generateTracerReceiptPdf } from '@/lib/pdfGenerator';
 import { useTracerStore } from '@/store/tracerStore';
 import { useAuthStore } from '@/store/authStore';
 import { useAdminStore } from '@/store/adminStore';
-import { useContentStore } from '@/store/contentStore';
-import { useMailStore } from '@/store/mailStore';
 import { JobVacancy } from '@/types/tracer';
 
 // Admin Tabs
@@ -29,7 +26,6 @@ import { AdminSettingsTab } from './admin/AdminSettingsTab';
 
 import {
   OverviewTabSkeleton,
-  CekIjazahTabSkeleton,
   LokerTabSkeleton,
   AlumniTabSkeleton,
   HelpdeskTabSkeleton,
@@ -45,7 +41,6 @@ import {
 
 const VALID_TABS: DashboardTab[] = [
   'beranda',
-  'cek_ijazah',
   'tracer_study',
   'loker',
   'alumni',
@@ -61,9 +56,6 @@ const VALID_TABS: DashboardTab[] = [
 
 export const DashboardLayout: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore();
-  const { syncAllFromBackend } = useAdminStore();
-  const { syncAllContentFromBackend } = useContentStore();
-  const { fetchMailsFromBackend } = useMailStore();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -73,21 +65,23 @@ export const DashboardLayout: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const isAdmin = user?.role === 'admin_bkk';
-
-  // Automatically fetch fresh data from backend when admin enters dashboard
+  // History Trap: Cegah tombol Back browser keluar dari Dashboard saat sesi aktif
   useEffect(() => {
-    if (isAuthenticated) {
-      // Always sync content (jobs, news) for all authenticated users
-      syncAllContentFromBackend();
-      fetchMailsFromBackend();
-      
-      // Admin-only sync
-      if (isAdmin) {
-        syncAllFromBackend();
-      }
-    }
-  }, [isAuthenticated, isAdmin, syncAllFromBackend, syncAllContentFromBackend, fetchMailsFromBackend]);
+    if (!isAuthenticated) return;
+
+    window.history.pushState(null, '', window.location.href);
+
+    const handlePopState = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isAuthenticated]);
+
+  const isAdmin = user?.role === 'admin_bkk';
 
   const tabParam = (searchParams.get('tab') as DashboardTab) || 'beranda';
   const activeTab: DashboardTab = VALID_TABS.includes(tabParam) ? tabParam : 'beranda';
@@ -135,28 +129,62 @@ export const DashboardLayout: React.FC = () => {
 
   // Direct PDF Download tanpa preview modal
   const handleDirectDownloadReceipt = () => {
-    const { identitas, status_kegiatan, lastSubmissionId, lastSubmittedAt } = useTracerStore.getState();
+    const tracerState = useTracerStore.getState();
     const currentUser = useAuthStore.getState().user;
+    const adminState = useAdminStore.getState();
 
-    const regId = lastSubmissionId || currentUser?.submissionId || '2026102498';
-    const activeIdent = identitas?.nama_lengkap
-      ? identitas
-      : {
-          nama_lengkap: currentUser?.nama || 'Ahmad Dani',
-          nisn: currentUser?.nisn || '0051234567',
-          nik: currentUser?.nik || '3674012345670001',
-          jurusan: currentUser?.jurusan || ('Teknik Komputer dan Jaringan' as any),
-          tahun_lulus: currentUser?.tahun_lulus || 2024,
-          tahun_masuk: (currentUser?.tahun_lulus || 2024) - 3,
-          no_whatsapp: '081298765432',
-          email: currentUser?.email || 'alumni@example.com',
-        };
+    // Guard: hanya bisa unduh jika memang sudah mengisi tracer study
+    const isTracerDone =
+      tracerState.isSubmitted ||
+      currentUser?.tracerStatus === 'SUDAH' ||
+      (currentUser as any)?.statusTracer === 'SUDAH';
+
+    if (!isTracerDone) {
+      return;
+    }
+
+    // Cari data responden di admin store jika cocok dengan user yang sedang login
+    const matchedRespondent = adminState.respondents?.find(
+      (r) =>
+        (currentUser?.nisn && r.nisn.trim() === currentUser.nisn.trim()) ||
+        (currentUser?.nik && r.nik.trim() === currentUser.nik.trim()) ||
+        (currentUser?.nama && r.nama.toLowerCase() === currentUser.nama.toLowerCase())
+    );
+
+    const regId =
+      currentUser?.submissionId ||
+      matchedRespondent?.submissionId ||
+      tracerState.lastSubmissionId ||
+      '2026102498';
+
+    // Prioritaskan 100% data akun profil user yang sedang login agar tidak tertukar dengan dummy/stale data
+    const activeIdent = {
+      nama_lengkap: currentUser?.nama || matchedRespondent?.nama || tracerState.identitas?.nama_lengkap || 'Alumni Sasmita',
+      nisn: currentUser?.nisn || matchedRespondent?.nisn || tracerState.identitas?.nisn || '-',
+      nik: currentUser?.nik || matchedRespondent?.nik || tracerState.identitas?.nik || '-',
+      jurusan: (currentUser?.jurusan || matchedRespondent?.jurusan || tracerState.identitas?.jurusan || 'Teknik Komputer dan Jaringan') as any,
+      tahun_lulus: currentUser?.tahun_lulus || matchedRespondent?.tahunLulus || tracerState.identitas?.tahun_lulus || 2025,
+      tahun_masuk: (currentUser?.tahun_lulus ? currentUser.tahun_lulus - 3 : matchedRespondent?.tahunLulus ? matchedRespondent.tahunLulus - 3 : tracerState.identitas?.tahun_masuk) || 2022,
+      no_whatsapp: (currentUser as any)?.noWhatsapp || (currentUser as any)?.no_whatsapp || matchedRespondent?.noWhatsapp || tracerState.identitas?.no_whatsapp || '-',
+      email: currentUser?.email || matchedRespondent?.email || tracerState.identitas?.email || '-',
+    };
+
+    const statusKegiatan =
+      matchedRespondent?.statusKegiatan ||
+      tracerState.status_kegiatan ||
+      'KERJA';
+
+    const submittedAt =
+      currentUser?.submittedAt ||
+      matchedRespondent?.submittedAt ||
+      tracerState.lastSubmittedAt ||
+      new Date().toISOString();
 
     generateTracerReceiptPdf({
       submissionId: regId,
       identitas: activeIdent,
-      statusKegiatan: status_kegiatan || 'KERJA',
-      submittedAt: lastSubmittedAt || currentUser?.submittedAt || new Date().toISOString(),
+      statusKegiatan,
+      submittedAt,
     });
   };
 
@@ -201,21 +229,19 @@ export const DashboardLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-100 flex">
       {/* Sidebar with Blue 900 scheme & Collapse Support */}
-      <div className="print:hidden">
-        <DashboardSidebar
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          isMobileOpen={isMobileOpen}
-          setIsMobileOpen={setIsMobileOpen}
-          isCollapsed={isCollapsed}
-          setIsCollapsed={handleToggleCollapse}
-        />
-      </div>
+      <DashboardSidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isMobileOpen={isMobileOpen}
+        setIsMobileOpen={setIsMobileOpen}
+        isCollapsed={isCollapsed}
+        setIsCollapsed={handleToggleCollapse}
+      />
 
       {/* Mobile Backdrop Overlay - Fully blocks touches, scrolls, & interactions outside sidebar */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-slate-950/60 z-40 lg:hidden backdrop-blur-xs transition-opacity duration-300 touch-none select-none overscroll-none print:hidden"
+          className="fixed inset-0 bg-slate-950/60 z-40 lg:hidden backdrop-blur-xs transition-opacity duration-300 touch-none select-none overscroll-none"
           onClick={() => setIsMobileOpen(false)}
           onTouchMove={(e) => e.preventDefault()}
           onWheel={(e) => e.preventDefault()}
@@ -225,35 +251,34 @@ export const DashboardLayout: React.FC = () => {
 
       {/* Main Content Area - Smooth dynamic padding without layout shift */}
       <div
-        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out print:pl-0 ${
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
           isCollapsed ? 'lg:pl-20' : 'lg:pl-64'
         }`}
       >
-        {/* Header & Breadcrumb for screen only */}
-        <div className="print:hidden">
-          <DashboardHeader
-            onToggleMobileMenu={() => setIsMobileOpen(!isMobileOpen)}
-            onOpenReceipt={handleDirectDownloadReceipt}
-            onNavigateTab={(tab, respondentId) => {
-              if (respondentId) {
-                setSelectedRespondentId(respondentId);
-              }
-              setActiveTab(tab as DashboardTab);
-            }}
-          />
+        {/* Header */}
+        <DashboardHeader
+          onToggleMobileMenu={() => setIsMobileOpen(!isMobileOpen)}
+          onOpenReceipt={handleDirectDownloadReceipt}
+          onNavigateTab={(tab, respondentId) => {
+            if (respondentId) {
+              setSelectedRespondentId(respondentId);
+            }
+            setActiveTab(tab as DashboardTab);
+          }}
+        />
 
-          <DashboardBreadcrumb
-            activeTab={activeTab}
-            isAdmin={isAdmin}
-            onNavigateHome={() => {
-              setSelectedRespondentId(null);
-              setActiveTab('beranda');
-            }}
-          />
-        </div>
+        {/* Dynamic Breadcrumb Navigation for all pages except Dashboard */}
+        <DashboardBreadcrumb
+          activeTab={activeTab}
+          isAdmin={isAdmin}
+          onNavigateHome={() => {
+            setSelectedRespondentId(null);
+            setActiveTab('beranda');
+          }}
+        />
 
         {/* Dynamic Tab Body */}
-        <main className="p-3.5 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto print:p-0 print:max-w-none">
+        <main className="p-3.5 sm:p-6 lg:p-8 flex-1 max-w-7xl w-full mx-auto">
           {/* ADMIN VIEW */}
           {isAdmin ? (
             <>
@@ -336,10 +361,6 @@ export const DashboardLayout: React.FC = () => {
                 )
               )}
 
-              {activeTab === 'cek_ijazah' && (
-                isTabLoading ? <CekIjazahTabSkeleton /> : <CekIjazahTab />
-              )}
-
               {activeTab === 'tracer_study' && (
                 <div className="-mx-4 -my-4 sm:-mx-8 sm:-my-8">
                   <TracerWizard onBackToOverview={() => setActiveTab('beranda')} />
@@ -353,6 +374,7 @@ export const DashboardLayout: React.FC = () => {
                   <LokerTab
                     selectedJobFromOverview={selectedJob}
                     onClearSelectedJob={() => setSelectedJob(null)}
+                    onNavigateTab={(tab) => setActiveTab(tab)}
                   />
                 )
               )}

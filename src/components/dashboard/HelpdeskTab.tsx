@@ -4,13 +4,10 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Send, HelpCircle, ChevronDown } from "lucide-react";
-
-import { useMailStore } from "@/store/mailStore";
-import { useAuthStore } from "@/store/authStore";
+import { useAdminStore } from "@/store/adminStore";
+import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 
 export const HelpdeskTab: React.FC = () => {
-  const { user } = useAuthStore();
-  const { addMail } = useMailStore();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketSubject, setTicketSubject] = useState("");
   const [ticketMessage, setTicketMessage] = useState("");
@@ -22,44 +19,12 @@ export const HelpdeskTab: React.FC = () => {
     if (!ticketSubject.trim() || !ticketMessage.trim()) return;
 
     setSubmittedTicket(true);
-
-    addMail({
-      senderName: user?.nama || "Alumni Sasmita",
-      senderRole: "alumni",
-      senderEmail: user?.email || "alumni@smksasmitajaya2.sch.id",
-      senderNisn: user?.nisn,
-      senderMajor: user?.jurusan,
-      senderGradYear: user?.tahun_lulus,
-      senderAvatarGender: user?.jenisKelamin === "P" ? "P" : "L",
-      recipientRole: "admin_bkk",
-      subject: ticketSubject.trim(),
-      preview: ticketMessage.trim().slice(0, 80) + (ticketMessage.length > 80 ? "..." : ""),
-      body: ticketMessage.trim(),
-      category: "inquiry",
-    });
-
-    try {
-      fetch("/api/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nama: user?.nama || "Alumni Sasmita",
-          email: user?.email || "alumni@smksasmitajaya2.sch.id",
-          noWhatsApp: user?.noWhatsapp || "081298765432",
-          subject: ticketSubject.trim(),
-          message: ticketMessage.trim(),
-        }),
-      }).catch(() => {});
-    } catch {
-      // ignore backend error
-    }
-
     setTimeout(() => {
       setSubmittedTicket(false);
       setTicketSubject("");
       setTicketMessage("");
       setShowSuccessModal(true);
-    }, 400);
+    }, 800);
   };
 
   return (
@@ -97,12 +62,15 @@ export const HelpdeskTab: React.FC = () => {
                   Pelayanan Senin - Jumat (08.00 - 16.00)
                 </p>
                 <a
-                  href="https://wa.me/6281298765432"
+                  href={getHelpdeskWaUrl(
+                    useAdminStore.getState().settings.kontakBkk,
+                    "Halo BKK SMK Sasmita Jaya 2, saya butuh informasi layanan alumni"
+                  )}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-block pt-1 text-xs font-bold text-slate-800 hover:underline"
                 >
-                  +62 812-9876-5432
+                  {useAdminStore.getState().settings.kontakBkk || "+62 812-9876-5432"}
                 </a>
               </div>
             </div>
@@ -148,13 +116,10 @@ export const HelpdeskTab: React.FC = () => {
               </svg>
               <div className="space-y-1">
                 <h3 className="font-bold text-sm text-slate-900">
-                  Loket Fisik Tata Usaha
+                  Loket Tata Usaha
                 </h3>
-                <p className="text-xs text-slate-600">
-                  Gedung SMK Sasmita Jaya 2 Pamulang Barat
-                </p>
-                <span className="inline-block pt-1 text-xs font-bold text-slate-700">
-                  Loket Pelayanan Ijazah
+                <span className="inline-block text-xs text-slate-700">
+                  Ruang Tata Usaha
                 </span>
               </div>
             </div>
@@ -175,7 +140,7 @@ export const HelpdeskTab: React.FC = () => {
           <form onSubmit={handleTicketSubmit} className="space-y-4">
             <Input
               label="Judul Permasalahan"
-              placeholder="Contoh: Kendala Koreksi Data Ijazah / Pertanyaan Loker"
+              placeholder="Contoh: Kendala Pengisian Tracer / Pertanyaan Loker"
               value={ticketSubject}
               onChange={(e) => setTicketSubject(e.target.value)}
               required

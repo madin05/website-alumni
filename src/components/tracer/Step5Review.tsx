@@ -4,7 +4,6 @@ import { useAuthStore } from "@/store/authStore";
 import { TracerSubmissionPayload } from "@/types/tracer";
 import { submitTracerStudy } from "@/services/tracerService";
 import { Button } from "@/components/ui/Button";
-import confetti from "canvas-confetti";
 import { ArrowLeft } from "lucide-react";
 
 interface Step5Props {
@@ -43,6 +42,10 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
       no_whatsapp: identitas.no_whatsapp || "",
       email: identitas.email || "",
       jenis_kelamin: identitas.jenis_kelamin,
+      status_menikah: identitas.status_menikah,
+      usia: identitas.usia,
+      provinsi_domisili: identitas.provinsi_domisili,
+      kota_domisili: identitas.kota_domisili,
     },
     status_kegiatan: (status_kegiatan || "KERJA") as any,
     masa_tunggu: masa_tunggu,
@@ -89,19 +92,13 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
 
       if (response.success && response.data) {
         await submitTracer(payload);
-        updateUserTracerStatus('SUDAH', response.data.submission_id);
-
-        confetti({
-          particleCount: 80,
-          spread: 60,
-          origin: { y: 0.6 },
-        });
+        updateUserTracerStatus("SUDAH", response.data.submission_id);
 
         onSuccess(response.data.submission_id);
       } else {
         setSubmitError(
           response.message ||
-            'Gagal mengirim data ke server. Data Anda belum tersimpan, silakan coba lagi.'
+            "Terjadi kesalahan saat memproses data. Silakan periksa kembali formulir Anda.",
         );
       }
     } catch (err: any) {
@@ -223,11 +220,23 @@ export const Step5Review: React.FC<Step5Props> = ({ onPrev, onSuccess }) => {
           </p>
           <p>
             <span className="text-slate-500 font-medium">Status:</span>{" "}
-            {status_kegiatan === "KERJA_KULIAH"
-              ? "Kuliah & Kerja"
-              : status_kegiatan
-                ? status_kegiatan.replace(/_/g, " ")
-                : "-"}
+            <span className="font-semibold text-blue-700">
+              {status_kegiatan === "BELUM_KERJA"
+                ? "Belum Bekerja"
+                : status_kegiatan === "KERJA_KULIAH"
+                  ? "Kuliah & Kerja"
+                  : status_kegiatan === "WIRAUSAHA_KULIAH"
+                    ? "Kuliah & Wirausaha"
+                    : status_kegiatan === "KERJA"
+                      ? "Bekerja"
+                      : status_kegiatan === "KULIAH"
+                        ? "Kuliah"
+                        : status_kegiatan === "WIRAUSAHA"
+                          ? "Wirausaha"
+                          : status_kegiatan === "LAINNYA"
+                            ? "Lainnya"
+                            : "-"}
+            </span>
           </p>
         </div>
       </div>

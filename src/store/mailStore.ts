@@ -29,14 +29,12 @@ export interface MailItem {
 
 interface MailState {
   mails: MailItem[];
-  fetchError: string | null;
   markAsRead: (id: string) => void;
   markAllAsRead: (role: 'admin_bkk' | 'alumni', userNisn?: string) => void;
   deleteMail: (id: string) => void;
   addMail: (mail: Omit<MailItem, 'id' | 'createdAt' | 'isRead'>) => void;
   getMailsForUser: (role: 'admin_bkk' | 'alumni', userNisn?: string) => MailItem[];
   getUnreadCount: (role: 'admin_bkk' | 'alumni', userNisn?: string) => number;
-  fetchMailsFromBackend: () => Promise<boolean>;
 }
 
 const INITIAL_MAILS: MailItem[] = [
@@ -179,7 +177,7 @@ const INITIAL_MAILS: MailItem[] = [
     senderEmail: 'admin@smksasmitajaya2.sch.id',
     recipientRole: 'alumni',
     recipientNisn: '0051234567',
-    subject: 'Verifikasi Berkas Kuesioner Disetujui (VALID)',
+    subject: 'Verifikasi Berkas Kuesioner Disetujui',
     preview: 'Kuesioner Tracer Study Anda (2026100001) telah berhasil diverifikasi oleh Tim BKK.',
     body: 'Selamat Ahmad Dani, pengajuan kuesioner Tracer Study Anda dengan nomor 2026100001 telah dinyatakan VALID dan lengkap oleh Admin BKK. Anda dapat mengunduh dan mencetak Bukti Tanda Terima Tracer Study resmi melalui menu profil akun Anda.',
     category: 'verification_update',
@@ -194,9 +192,9 @@ const INITIAL_MAILS: MailItem[] = [
 ];
 
 export const useMailStore = create<MailState>()(
-  (set, get) => ({
-    mails: [],
-    fetchError: null,
+  persist(
+    (set, get) => ({
+      mails: INITIAL_MAILS,
 
       markAsRead: (id: string) => {
         set((state) => ({
@@ -204,14 +202,6 @@ export const useMailStore = create<MailState>()(
             m.id === id ? { ...m, isRead: true } : m
           ),
         }));
-
-        if (!id.startsWith('mail-0') && !id.startsWith('mail-usr-')) {
-          import('@/services/adminService').then(({ adminMessagesApi }) => {
-            adminMessagesApi.updateStatus(id, 'RESOLVED').catch((err) => {
-              console.warn('[MailStore] Backend mark read sync fallback:', err);
-            });
-          });
-        }
       },
 
       markAllAsRead: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {
@@ -231,27 +221,12 @@ export const useMailStore = create<MailState>()(
             return m;
           }),
         }));
-
-        // Simpan status bacaan ke backend agar tetap tercatat setelah refresh
-        import('@/services/adminService').then(({ adminMessagesApi }) => {
-          adminMessagesApi.markAllAsRead().catch((err) => {
-            console.warn('[MailStore] Backend mark all as read sync fallback:', err);
-          });
-        });
       },
 
       deleteMail: (id: string) => {
         set((state) => ({
           mails: state.mails.filter((m) => m.id !== id),
         }));
-
-        if (!id.startsWith('mail-0') && !id.startsWith('mail-usr-')) {
-          import('@/services/adminService').then(({ adminMessagesApi }) => {
-            adminMessagesApi.delete(id).catch((err) => {
-              console.warn('[MailStore] Backend delete message sync fallback:', err);
-            });
-          });
-        }
       },
 
       addMail: (mailData) => {
@@ -283,44 +258,18 @@ export const useMailStore = create<MailState>()(
         const userMails = get().getMailsForUser(role, userNisn);
         return userMails.filter((m) => !m.isRead).length;
       },
-
-      fetchMailsFromBackend: async () => {
-        set({ fetchError: null });
-        try {
-          const { adminMessagesApi } = await import('@/services/adminService');
-          const res = await adminMessagesApi.list({ limit: 50 });
-          if (res && res.data && Array.isArray(res.data)) {
-            const mapped: MailItem[] = res.data.map((item: any) => ({
-              id: item.id,
-              senderName: item.nama || item.alumni?.namaLengkap || 'Pengirim',
-              senderRole: item.alumniId ? 'alumni' : 'system',
-              senderEmail: item.email || '',
-              senderNisn: item.alumni?.nisn,
-              senderMajor: item.alumni?.jurusan,
-              senderGradYear: item.alumni?.tahunLulus,
-              senderAvatarGender: /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(item.nama) ? 'P' : 'L',
-              recipientRole: 'admin_bkk',
-              subject: item.subject,
-              preview: item.message?.slice(0, 90) + (item.message?.length > 90 ? '...' : ''),
-              body: item.message,
-              category: 'inquiry',
-              createdAt: item.createdAt || new Date().toISOString(),
-              isRead: item.status !== 'UNREAD',
-            }));
-
-            set({ mails: mapped });
-            return true;
-          }
-        } catch (err) {
-          console.warn('[MailStore] Fetch messages from backend fallback:', err);
-          set({
-            fetchError:
-              err instanceof Error
-                ? err.message
-                : 'Gagal memuat pesan dari server.',
-          });
+    }),
+    {
+      name: 'tracer_study_mail_store',
+      version: 3,
+      migrate: (persistedState: any, version: number) => {
+        if (!persistedState || version < 3 || !persistedState.mails) {
+          return {
+            mails: INITIAL_MAILS,
+          };
         }
-        return false;
+        return persistedState;
       },
-    })
+    }
+  )
 );

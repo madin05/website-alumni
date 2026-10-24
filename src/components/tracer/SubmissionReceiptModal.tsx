@@ -24,11 +24,6 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
   const numericReg = (submissionId || '').replace(/\D/g, '');
   const formattedRegId = numericReg.length >= 6 ? numericReg : '2026102498';
   const dateObj = lastSubmittedAt ? new Date(lastSubmittedAt) : new Date();
-  const tanggalSurat = dateObj.toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
   const waktuPengisian =
     dateObj.toLocaleString('id-ID', {
       dateStyle: 'long',
@@ -74,22 +69,49 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
           className="p-5 sm:p-8 rounded-lg bg-white border border-slate-300 text-left text-black shadow-xs space-y-4 print:border-none"
         >
           {/* KOP SURAT RESMI */}
-          <div className="text-center space-y-0.5 border-b-2 border-black pb-2">
-            <h3 className="text-xs sm:text-sm font-medium tracking-wider ">
-              Yayasan Sasmita Jaya
-            </h3>
-            <h2 className="text-sm sm:text-base font-extrabold ">
-              SMK Sasmita Jaya 2 Pamulang
-            </h2>
-            <p className="text-[10px] sm:text-[11px] text-slate-700">
-              STATUS AKREDITASI &quot;A&quot; (UNGGUL) | NPSN: 20607839 | NSS: 322280305012
-            </p>
-            <p className="text-[9px] sm:text-[10px] text-slate-600">
-              Jl. Surya Kencana No. 1, Pamulang Barat, Kec. Pamulang, Kota Tangerang Selatan, Banten 15417
-            </p>
-            <p className="text-[9px] sm:text-[10px] text-slate-600">
-              Telp: (021) 7402661 | Website: https://smksasmitajaya2.sch.id | Email: bkk@smksasmitajaya2.sch.id
-            </p>
+          <div className="flex items-center justify-between gap-2 sm:gap-4 border-b-2 border-black pb-2.5">
+            {/* Logo Yayasan Sasmita Jaya (Kiri) */}
+            <div className="shrink-0 w-12 sm:w-16 flex items-center justify-center">
+              <img
+                src="/logo-yayasan.png"
+                alt="Logo Yayasan Sasmita Jaya"
+                className="w-11 sm:w-14 h-auto object-contain"
+              />
+            </div>
+
+            {/* Teks Kop Surat Resmi (Tengah) */}
+            <div className="text-center flex-1 space-y-0.5">
+              <h3 className="text-xs sm:text-sm font-bold tracking-wider uppercase text-black">
+                YAYASAN SASMITA JAYA
+              </h3>
+              <h2 className="text-sm sm:text-base font-extrabold uppercase text-black tracking-tight">
+                SMK SASMITA JAYA 2 (LABSCHOOL UNPAM)
+              </h2>
+              <p className="text-[10px] sm:text-[11px] font-semibold text-black">
+                AKREDITASI : A
+              </p>
+              <p className="text-[8.5px] sm:text-[10px] text-slate-800">
+                NSS : 322020417010, NDS : 42040005, NPSN : 20603287
+              </p>
+              <p className="text-[8px] sm:text-[9.5px] text-slate-700 leading-tight">
+                Jl. Surya Kencana No. 1 Kelurahan Pamulang Barat, Kecamatan Pamulang
+              </p>
+              <p className="text-[8px] sm:text-[9.5px] text-slate-700 leading-tight">
+                Kota Tangerang Selatan, Provinsi Banten. Kode Pos : 15417, Telp. : (021) 7427375
+              </p>
+              <p className="text-[8px] sm:text-[9.5px] text-slate-700 leading-tight">
+                e-mail : sasmitajaya2pml@gmail.com - website : smk2sasmitajaya.sch.id
+              </p>
+            </div>
+
+            {/* Logo SMK Sasmita Jaya 2 (Kanan) */}
+            <div className="shrink-0 w-12 sm:w-16 flex items-center justify-center">
+              <img
+                src="/logo-emblem.png"
+                alt="Logo SMK Sasmita Jaya 2"
+                className="w-11 sm:w-14 h-auto object-contain"
+              />
+            </div>
           </div>
 
           {/* Garis Ganda Pembatas Kop */}
@@ -97,7 +119,7 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
 
           {/* JUDUL DOKUMEN & NOMOR REGISTRASI */}
           <div className="text-center pt-1 space-y-0.5">
-            <h4 className="font-medium text-xs sm:text-sm  underline">
+            <h4 className="font-bold text-xs sm:text-sm uppercase underline">
               Surat Keterangan Bukti Pengisian Tracer Study
             </h4>
             <p className="text-xs font-mono font-medium">
@@ -107,7 +129,7 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
 
           {/* KALIMAT PEMBUKA */}
           <p className="text-xs leading-relaxed text-justify">
-            Yang bertanda tangan di bawah ini, Koordinator Bursa Kerja Khusus (BKK) SMK Sasmita Jaya 2 Pamulang menerangkan bahwa alumni berikut:
+            Bursa Kerja Khusus (BKK) SMK Sasmita Jaya 2 menerangkan bahwa alumni berikut:
           </p>
 
           {/* TABEL DATA FORMAL TITIK DUA SEJAJAR */}
@@ -160,25 +182,11 @@ export const SubmissionReceiptModal: React.FC<SubmissionReceiptModalProps> = ({
               Telah menyelesaikan pengisian seluruh instrumen penelusuran tamatan (Tracer Study) Tahun Akademik 2025/2026 secara lengkap, sah, dan terdata pada pangkalan data sekolah.
             </p>
             <p>
-              Surat keterangan ini merupakan dokumen resmi yang diterbitkan secara elektronik oleh Sistem Informasi Alumni SMK Sasmita Jaya 2 dan dapat dipergunakan sebagai salah satu syarat verifikasi administrasi pengambilan Ijazah asli serta Sertifikat Uji Kompetensi Keahlian (BNSP).
+              Surat keterangan ini merupakan dokumen resmi yang diterbitkan secara elektronik oleh Sistem Informasi Alumni SMK Sasmita Jaya 2 dan dapat dipergunakan sebagai salah satu syarat verifikasi administrasi pengambilan Ijazah asli.
             </p>
             <p>
               Demikian surat keterangan bukti pengisian ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.
             </p>
-          </div>
-
-          {/* BAGIAN TANDA TANGAN & PENGESAHAN */}
-          <div className="pt-3 flex justify-end">
-            <div className="text-right text-xs space-y-0.5 min-w-[200px]">
-              <p>Pamulang, {tanggalSurat}</p>
-              <p>Mengetahui,</p>
-              <p className="font-semibold">Koordinator BKK SMK Sasmita Jaya 2,</p>
-              <div className="h-12 flex items-center justify-end">
-                <span className="text-[10px] text-slate-400 italic">[ Tanda Tangan & Cap Digital Terverifikasi ]</span>
-              </div>
-              <p className="font-medium underline">Ahmad Fauzi, S.Pd., M.Kom.</p>
-              <p className="text-[10px] text-slate-600">NIP. 19840219 200902 1 002</p>
-            </div>
           </div>
 
           {/* FOOTER VERIFIKASI */}

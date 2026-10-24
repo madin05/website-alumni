@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import { MOCK_FAQS } from "@/lib/mockData";
 import { ChevronDown } from "lucide-react";
+import { useAdminStore } from "@/store/adminStore";
+import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 
 export const FaqSection: React.FC = () => {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const kontakBkk = useAdminStore((state) => state.settings.kontakBkk);
+  const helpdeskUrl = getHelpdeskWaUrl(
+    kontakBkk,
+    "Halo Helpdesk Tracer Study SMK Sasmita Jaya 2, saya ingin bertanya"
+  );
 
   const toggle = (idx: number) => {
     setOpenIdx(openIdx === idx ? null : idx);
@@ -21,7 +28,7 @@ export const FaqSection: React.FC = () => {
             Pertanyaan yang Sering Diajukan
           </h2>
           <p className="mt-2 text-sm text-slate-600">
-            Informasi seputar Tracer Study, status ijazah, dan
+            Informasi seputar Tracer Study, data alumni, dan
             layanan BKK
           </p>
         </div>
@@ -75,7 +82,7 @@ export const FaqSection: React.FC = () => {
             </p>
           </div>
           <a
-            href="https://wa.me/6281298765432?text=Halo%20Helpdesk%20Tracer%20Study%20SMK%20Sasmita%20Jaya%202,%20saya%20ingin%20bertanya"
+            href={helpdeskUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-semibold text-xs transition shadow-md whitespace-nowrap active:scale-95 cursor-pointer w-full sm:w-auto"

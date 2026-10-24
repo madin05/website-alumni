@@ -52,7 +52,7 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
     }
   }, [isAuthenticated, navigate]);
 
-const stepParam = searchParams.get("step");
+  const stepParam = searchParams.get("step");
   const isTracerDone = isSubmitted || user?.tracerStatus === "SUDAH";
 
   // Synchronize step with URL search param so browser Back (<) and Forward (>) work seamlessly
@@ -260,7 +260,7 @@ const stepParam = searchParams.get("step");
                     onClick={onBackToOverview}
                     variant="outline"
                     size="md"
-                    className="w-full sm:w-auto"
+                    className="w-full sm  :w-auto"
                   >
                     <span>Kembali ke Dashboard</span>
                   </Button>

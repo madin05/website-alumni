@@ -2,20 +2,15 @@ import React, { useState } from "react";
 import {
   useAdminStore,
   RespondentRecord,
-  VerificationStatus,
 } from "@/store/adminStore";
 import { AdminRespondentDetailDrawer } from "./AdminRespondentDetailDrawer";
 import {
-  FileCheck,
   Search,
-  CheckCircle2,
-  AlertTriangle,
   Clock,
   Eye,
   Building,
   GraduationCap,
   Store,
-  Check,
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
@@ -76,25 +71,17 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
   initialSelectedId,
   onClearInitialSelectedId,
 }) => {
-  const { respondents, updateVerificationStatus, fetchRespondentsFromBackend } = useAdminStore();
+  const { respondents } = useAdminStore();
 
   const [search, setSearch] = useState("");
   const [jurusanFilter, setJurusanFilter] = useState("ALL");
   const [aktivitasFilter, setAktivitasFilter] = useState("ALL");
-  const [verificationFilter, setVerificationFilter] = useState<
-    "ALL" | VerificationStatus
-  >("ALL");
   const [selectedRespondent, setSelectedRespondent] =
     useState<RespondentRecord | null>(null);
   const [sortField, setSortField] = useState<SortField>("tanggal");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
-
-  // Fetch real database respondents on mount
-  React.useEffect(() => {
-    fetchRespondentsFromBackend();
-  }, [fetchRespondentsFromBackend]);
 
   // Handle initial auto-open if explicitly requested from overview, then clear it immediately
   React.useEffect(() => {
@@ -126,18 +113,19 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
       (aktivitasFilter === "KULIAH" &&
         (r.statusKegiatan === "KULIAH" ||
           r.statusKegiatan === "KERJA_KULIAH" ||
-          r.statusKegiatan === "WIRAUSAHA_KULIAH"));
+          r.statusKegiatan === "WIRAUSAHA_KULIAH")) ||
+      (aktivitasFilter === "WIRAUSAHA" &&
+        (r.statusKegiatan === "WIRAUSAHA" ||
+          r.statusKegiatan === "WIRAUSAHA_KULIAH")) ||
+      (aktivitasFilter === "BELUM_KERJA" &&
+        r.statusKegiatan === "BELUM_KERJA");
 
-    const matchVerification =
-      verificationFilter === "ALL" ||
-      r.verificationStatus === verificationFilter;
-
-    return matchSearch && matchJurusan && matchAktivitas && matchVerification;
+    return matchSearch && matchJurusan && matchAktivitas;
   });
 
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [search, jurusanFilter, aktivitasFilter, verificationFilter]);
+  }, [search, jurusanFilter, aktivitasFilter]);
 
   const sortedRespondents = [...filteredRespondents].sort((a, b) => {
     if (sortField === "nama") {
@@ -158,14 +146,22 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
     currentPage * itemsPerPage
   );
 
-  const countPending = respondents.filter(
-    (r) => r.verificationStatus === "PENDING",
+  const countKerja = respondents.filter(
+    (r) => r.statusKegiatan === "KERJA" || r.statusKegiatan === "KERJA_KULIAH",
   ).length;
-  const countValid = respondents.filter(
-    (r) => r.verificationStatus === "VALID",
+  const countKuliah = respondents.filter(
+    (r) =>
+      r.statusKegiatan === "KULIAH" ||
+      r.statusKegiatan === "KERJA_KULIAH" ||
+      r.statusKegiatan === "WIRAUSAHA_KULIAH",
   ).length;
-  const countRevisi = respondents.filter(
-    (r) => r.verificationStatus === "REVISI",
+  const countWirausaha = respondents.filter(
+    (r) =>
+      r.statusKegiatan === "WIRAUSAHA" ||
+      r.statusKegiatan === "WIRAUSAHA_KULIAH",
+  ).length;
+  const countBelumKerja = respondents.filter(
+    (r) => r.statusKegiatan === "BELUM_KERJA",
   ).length;
 
   const renderAktivitasBadge = (status: string) => {
@@ -192,11 +188,17 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
           </span>
         );
       case "WIRAUSAHA":
-      case "WIRAUSAHA_KULIAH":
         return (
           <span className="inline-flex items-center gap-1.5 font-medium text-slate-800">
             <Store className="w-3.5 h-3.5 text-slate-600" />
             <span>Wirausaha</span>
+          </span>
+        );
+      case "WIRAUSAHA_KULIAH":
+        return (
+          <span className="inline-flex items-center gap-1.5 font-medium text-slate-800">
+            <Store className="w-3.5 h-3.5 text-slate-600" />
+            <span>Kuliah & Wirausaha</span>
           </span>
         );
       default:
@@ -204,29 +206,6 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
           <span className="inline-flex items-center gap-1.5 font-medium text-slate-800">
             <Clock className="w-3.5 h-3.5 text-slate-600" />
             <span>Mencari Kerja</span>
-          </span>
-        );
-    }
-  };
-
-  const renderVerificationBadge = (status: VerificationStatus) => {
-    switch (status) {
-      case "VALID":
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 font-medium bg-slate-50 text-slate-800">
-            <span>Disetujui</span>
-          </span>
-        );
-      case "REVISI":
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 font-medium bg-rose-50 text-rose-800">
-            <span>Perlu Perbaikan</span>
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 font-medium bg-slate-50 text-slate-800">
-            <span>Menunggu Tinjauan</span>
           </span>
         );
     }
@@ -240,58 +219,75 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
           <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
             <SolidFileCheckIcon className="w-5 h-5 text-[#0d2346]" />
             <span>
-              Verifikasi Kuesioner Alumni
+              Data Responden Tracer Study
             </span>
           </h2>
+          <p className="text-xs text-slate-500 mt-1">
+            Daftar hasil pengisian kuesioner penelusuran tamatan yang tersimpan langsung di dalam sistem.
+          </p>
+        </div>
+        <div className="text-xs text-slate-600 font-medium bg-slate-50 px-3.5 py-1.5 rounded-lg border border-slate-200 shrink-0">
+          Total Masuk: <span className="font-bold text-slate-900">{respondents.length} Responden</span>
         </div>
       </div>
 
       {/* Filter Tabs & Search Bar */}
       <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-xs space-y-3">
-        {/* Verification Status Tabs */}
+        {/* Quick Activity Filter Tabs */}
         <div className="flex flex-wrap items-center gap-2 pb-2 border-b border-slate-100 text-xs">
           <button
-            onClick={() => setVerificationFilter("ALL")}
+            onClick={() => setAktivitasFilter("ALL")}
             className={`px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${
-              verificationFilter === "ALL"
+              aktivitasFilter === "ALL"
                 ? "bg-[#0d2346] text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            Semua Isian ({respondents.length})
+            Semua Responden ({respondents.length})
           </button>
           <button
-            onClick={() => setVerificationFilter("PENDING")}
+            onClick={() => setAktivitasFilter("KERJA")}
             className={`px-3 py-1.5 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
-              verificationFilter === "PENDING"
-                ? "bg-slate-700 text-white shadow-xs"
-                : "bg-slate-50 text-slate-800 hover:bg-slate-100 border border-slate-200/60"
+              aktivitasFilter === "KERJA"
+                ? "bg-slate-800 text-white shadow-xs"
+                : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
             }`}
           >
-            <Clock className="w-3.5 h-3.5" />
-            <span>Menunggu Tinjauan ({countPending})</span>
+            <Building className="w-3.5 h-3.5 text-white" />
+            <span>Bekerja ({countKerja})</span>
           </button>
           <button
-            onClick={() => setVerificationFilter("VALID")}
+            onClick={() => setAktivitasFilter("KULIAH")}
             className={`px-3 py-1.5 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
-              verificationFilter === "VALID"
-                ? "bg-slate-700 text-white shadow-xs"
-                : "bg-slate-50 text-slate-800 hover:bg-slate-100 border border-slate-200/60"
+              aktivitasFilter === "KULIAH"
+                ? "bg-slate-800 text-white shadow-xs"
+                : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
             }`}
           >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>Disetujui ({countValid})</span>
+            <GraduationCap className="w-3.5 h-3.5 text-white" />
+            <span>Kuliah ({countKuliah})</span>
           </button>
           <button
-            onClick={() => setVerificationFilter("REVISI")}
+            onClick={() => setAktivitasFilter("WIRAUSAHA")}
             className={`px-3 py-1.5 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
-              verificationFilter === "REVISI"
-                ? "bg-rose-700 text-white shadow-xs"
-                : "bg-rose-50 text-rose-800 hover:bg-rose-100 border border-rose-200/60"
+              aktivitasFilter === "WIRAUSAHA"
+                ? "bg-slate-800 text-white shadow-xs"
+                : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
             }`}
           >
-            <AlertTriangle className="w-3.5 h-3.5" />
-            <span>Perlu Perbaikan ({countRevisi})</span>
+            <Store className="w-3.5 h-3.5 text-white" />
+            <span>Wirausaha ({countWirausaha})</span>
+          </button>
+          <button
+            onClick={() => setAktivitasFilter("BELUM_KERJA")}
+            className={`px-3 py-1.5 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
+              aktivitasFilter === "BELUM_KERJA"
+                ? "bg-slate-800 text-white shadow-xs"
+                : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5 text-white" />
+            <span>Mencari Kerja ({countBelumKerja})</span>
           </button>
         </div>
 
@@ -348,7 +344,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                         : "Klik untuk mengurutkan Nama (A - Z)"
                     }
                   >
-                    <span>NISN & Nama Lengkap</span>
+                    <span>Nama</span>
                     {sortField === "nama" ? (
                       sortOrder === "asc" ? (
                         <ArrowUp className="w-3 h-3 text-slate-200" />
@@ -362,9 +358,6 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                 </th>
                 <th className="py-2.5 px-3 font-semibold">Jurusan & Angkatan</th>
                 <th className="py-2.5 px-3 font-semibold">Aktivitas Lulusan</th>
-                <th className="py-2.5 px-3 font-semibold">
-                  Instansi / Perusahaan / Usaha
-                </th>
                 <th className="py-2.5 px-3 font-semibold">
                   <button
                     type="button"
@@ -385,7 +378,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                         : "Klik untuk mengurutkan Tanggal Kirim"
                     }
                   >
-                    <span>Tanggal Kirim</span>
+                    <span>Tgl Kirim</span>
                     {sortField === "tanggal" ? (
                       sortOrder === "desc" ? (
                         <ArrowDown className="w-3 h-3 text-slate-200" />
@@ -397,16 +390,14 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                     )}
                   </button>
                 </th>
-                <th className="py-2.5 px-3 font-semibold">Status Verifikasi</th>
-                <th className="py-2.5 px-3 font-semibold text-center">Rincian</th>
-                <th className="py-2.5 px-3 font-semibold text-center">Tindakan</th>
+                <th className="py-2.5 px-3 font-semibold text-center">Detil Data</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 text-[11px]">
               {paginatedRespondents.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-6 text-center text-slate-500 text-xs">
-                    Tidak ditemukan data kuesioner yang sesuai dengan kriteria
+                  <td colSpan={5} className="p-6 text-center text-slate-500 text-xs">
+                    Tidak ditemukan data responden kuesioner yang sesuai dengan kriteria
                     pencarian.
                   </td>
                 </tr>
@@ -417,43 +408,38 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                     className="hover:bg-slate-50 transition cursor-pointer"
                     onClick={() => setSelectedRespondent(rsp)}
                   >
+                    {/* 1. Nama */}
                     <td className="py-2.5 px-3">
-                      <div className="font-semibold text-slate-900 text-[11px]">
+                      <div className="font-semibold text-slate-900 text-xs">
                         {rsp.nama}
                       </div>
-                      <div className="font-mono text-[9.5px] text-slate-500">
-                        {rsp.nisn}
-                      </div>
                     </td>
+
+                    {/* 2. Jurusan dan Angkatan */}
                     <td className="py-2.5 px-3">
-                      <div className="font-medium text-slate-800 text-[11px]">
+                      <div className="font-medium text-slate-800 text-xs">
                         {rsp.jurusan}
                       </div>
-                      <div className="text-[9.5px] text-slate-400">
+                      <div className="text-[10px] text-slate-400">
                         Angkatan {rsp.tahunLulus}
                       </div>
                     </td>
+
+                    {/* 3. Aktivitas Lulusan */}
                     <td className="py-2.5 px-3">
                       {renderAktivitasBadge(rsp.statusKegiatan)}
                     </td>
-                    <td className="py-2.5 px-3 max-w-[200px] truncate">
-                      <div className="font-medium text-slate-900 text-[11px] truncate">
-                        {rsp.instansiKampusUsaha}
-                      </div>
-                      <div className="text-[9.5px] text-slate-500 truncate">
-                        {rsp.jabatanProdiUsaha}
-                      </div>
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-500 font-mono text-[10px]">
+
+                    {/* 4. Tgl Kirim */}
+                    <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
                       {new Date(rsp.submittedAt).toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
                       })}
                     </td>
-                    <td className="py-2.5 px-3 text-[10px]">
-                      {renderVerificationBadge(rsp.verificationStatus)}
-                    </td>
+
+                    {/* 5. Detil Data */}
                     <td
                       className="py-2.5 px-3 text-center"
                       onClick={(e) => e.stopPropagation()}
@@ -461,36 +447,12 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                       <button
                         type="button"
                         onClick={() => setSelectedRespondent(rsp)}
-                        className="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition text-[10px] cursor-pointer shadow-2xs"
-                        title="Lihat rincian kuesioner"
+                        className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-slate-700 font-semibold transition text-[11px] cursor-pointer "
+                        title="Lihat detil data kuesioner"
                       >
-                        <Eye className="w-3 h-3 text-slate-600" />
-                        <span>Rincian</span>
+                        <Eye className="w-3.5 h-3.5 text-slate-700" />
+                        <span>Detil Data</span>
                       </button>
-                    </td>
-                    <td
-                      className="py-2.5 px-3 text-center"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {rsp.verificationStatus !== "VALID" ? (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            updateVerificationStatus(
-                              rsp.submissionId,
-                              "VALID",
-                            )
-                          }
-                          className="p-1 rounded bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-emerald-700 transition cursor-pointer inline-flex items-center justify-center shadow-2xs"
-                          title="Setujui data kuesioner"
-                        >
-                          <Check className="w-3.5 h-3.5" />
-                        </button>
-                      ) : (
-                        <span className="inline-flex items-center justify-center p-1 text-emerald-600" title="Sudah Terverifikasi">
-                          <Check className="w-3.5 h-3.5" />
-                        </span>
-                      )}
                     </td>
                   </tr>
                 ))
@@ -512,7 +474,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
         </div>
       </div>
 
-      {/* Detail & Verification Drawer */}
+      {/* Detail Questionnaire Drawer */}
       <AdminRespondentDetailDrawer
         respondent={selectedRespondent}
         onClose={() => {
@@ -523,3 +485,4 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
     </div>
   );
 };
+

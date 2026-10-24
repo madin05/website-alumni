@@ -56,7 +56,8 @@ export type MasaTunggu =
   | 'Kurang dari 1 bulan'
   | '1 - 3 bulan'
   | '3 - 6 bulan'
-  | 'Lebih dari 6 bulan';
+  | 'Lebih dari 6 bulan'
+  | string;
 
 export interface IdentitasAlumni {
   nama_lengkap: string; // 1
@@ -68,6 +69,10 @@ export interface IdentitasAlumni {
   no_whatsapp: string; // 6
   email: string; // 7
   jenis_kelamin?: 'Laki-laki' | 'Perempuan'; // 8
+  status_menikah?: 'Belum Menikah' | 'Menikah' | string;
+  usia?: number;
+  provinsi_domisili?: string;
+  kota_domisili?: string;
 }
 
 export interface DetailKerja {
@@ -78,7 +83,14 @@ export interface DetailKerja {
   status_pekerjaan?: 'Tetap' | 'Kontrak' | 'Freelance' | 'Magang' | string; // 15
   kesesuaian_jurusan: KesesuaianJurusan; // 16
   kisaran_penghasilan?: string; // 17 (opsional)
-  // Optional backward-compatible fields:
+  // Optional backward-compatible & Satpen fields:
+  lokasi_pekerjaan?: 'DALAM_NEGERI' | 'LUAR_NEGERI' | string;
+  negara_kerja?: string;
+  keterangan_kerja?: string;
+  provinsi_kerja?: string;
+  kota_kerja?: string;
+  pendapatan_ump?: 'Kurang dari UMP' | 'Sama dengan atau lebih dari UMP' | string;
+  pendapatan_umk?: 'Kurang dari UMK' | 'Sama dengan atau lebih dari UMK' | string;
   alamat_perusahaan?: string;
   nama_atasan?: string;
   kontak_atasan?: string;
@@ -94,6 +106,7 @@ export interface DetailKuliah {
   jenjang: JenjangKuliah | 'D3' | 'D4' | 'S1' | 'Lainnya'; // 20
   status_kuliah?: 'Aktif' | 'Lulus' | 'Tidak melanjutkan' | string; // 21
   alamat_kampus?: string;
+  keselarasan_studi?: 'Selaras' | 'Tidak Selaras' | 'Sangat sesuai' | 'Sesuai' | 'Kurang sesuai' | 'Tidak sesuai' | string;
 }
 
 export interface DetailUsaha {
@@ -105,6 +118,13 @@ export interface DetailUsaha {
   kesesuaian_kompetensi?: 'Sangat berkaitan' | 'Berkaitan' | 'Kurang berkaitan' | 'Tidak berkaitan' | string; // 26
   alamat_usaha?: string;
   tanggal_mulai_usaha?: string; // YYYY-MM
+  provinsi_usaha?: string;
+  kota_usaha?: string;
+  negara_usaha?: string;
+  jenis_usaha?: 'Barang' | 'Jasa' | 'Barang Dan Jasa' | string;
+  nama_produk_usaha?: string;
+  pendapatan_ump?: 'Kurang dari UMP' | 'Sama dengan atau lebih dari UMP' | string;
+  pendapatan_umk?: 'Kurang dari UMK' | 'Sama dengan atau lebih dari UMK' | string;
 }
 
 export interface EvaluasiPembelajaran {
@@ -145,7 +165,6 @@ export interface UserSession {
   nisn: string;
   nik?: string;
   nama: string;
-  namaLengkap?: string;
   email: string;
   noWhatsapp?: string;
   role: 'alumni' | 'admin_bkk';
@@ -156,17 +175,11 @@ export interface UserSession {
   submittedAt?: string;
   jenisKelamin?: 'L' | 'P' | 'Laki-laki' | 'Perempuan';
   avatarUrl?: string;
-  statusKegiatan?: StatusKegiatan;
-  instansi?: string;
-  jabatan?: string;
-  verificationStatus?: 'PENDING' | 'VALID' | 'REVISI';
-  verificationNote?: string;
-  detailKerja?: any;
-  detailKuliah?: any;
-  detailUsaha?: any;
 }
 
-// Loker & Magang
+// Loker & Magang (Model: Information Hub & Direct Referral)
+export type JobApplyType = 'walk_in' | 'whatsapp' | 'email' | 'external_url';
+
 export interface JobVacancy {
   id: string;
   title: string;
@@ -182,6 +195,17 @@ export interface JobVacancy {
   requirements: string[];
   contactPerson: string;
   isBkkPartner: boolean;
+  // Field dinamis untuk metode pendaftaran langsung ke mitra
+  applyType?: JobApplyType;
+  locationAddress?: string;     // Alamat lengkap / rute walk-in
+  walkInSchedule?: string;      // Hari dan jam kedatangan walk-in
+  mapsUrl?: string;             // Tautan Google Maps
+  whatsappNumber?: string;      // Nomor WhatsApp HRD (628...)
+  whatsappTemplate?: string;    // Template pesan WhatsApp
+  emailAddress?: string;        // Alamat email rekrutmen mitra
+  emailSubject?: string;        // Subjek email terformat
+  externalUrl?: string;         // Link formulir / portal karir resmi mitra
+  clickCount?: number;          // Metrik jumlah alumni yang berminat / klik
 }
 
 // Ijazah Tracking

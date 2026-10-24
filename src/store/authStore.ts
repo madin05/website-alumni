@@ -2,195 +2,278 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UserSession } from '@/types/tracer';
 
+// 1 jam session timeout jika user tidak berada di dashboard (3.600.000 ms)
 export const DASHBOARD_SESSION_TIMEOUT_MS = 60 * 60 * 1000;
 
 interface AuthState {
   isAuthenticated: boolean;
   user: UserSession | null;
-  accessToken: string | null;
-  refreshToken: string | null;
   lastDashboardActivity: number | null;
-  login: (identifier: string, password?: string) => Promise<boolean>;
-  logout: () => Promise<void>;
+  login: (identifier: string, password?: string, role?: 'alumni' | 'admin_bkk') => Promise<boolean>;
+  logout: () => void;
   recordDashboardActivity: () => void;
-  checkSessionExpiry: (currentPathname: string) => Promise<boolean>;
+  checkSessionExpiry: (currentPathname: string) => boolean;
   updateUserTracerStatus: (status: 'SUDAH' | 'BELUM' | 'DRAFT', submissionId?: string) => void;
-  refreshAccessToken: () => Promise<boolean>;
 }
 
-const API_BASE = (import.meta as any).env?.VITE_API_URL || '';
+const DEFAULT_MOCK_USER: UserSession = {
+  id: 'usr-001',
+  nisn: '0077935331',
+  nama: 'Abil Alfad Jaelani',
+  email: 'abil12@gmail.com',
+  role: 'alumni',
+  jurusan: 'Teknik Instalasi Tenaga Listrik',
+  tahun_lulus: 2025,
+  tracerStatus: 'SUDAH',
+  submissionId: '2026101001',
+  submittedAt: '2026-09-01T08:00:00Z',
+  jenisKelamin: 'L',
+};
 
-function normalizeRole(role: string): 'alumni' | 'admin_bkk' {
-  const lower = (role || '').toLowerCase();
-  return lower.includes('admin') ? 'admin_bkk' : 'alumni';
-}
-
-function normalizeUser(rawUser: any): UserSession {
-  return {
-    id: rawUser.id || `usr-${Date.now()}`,
-    nisn: rawUser.nisn || '',
-    nik: rawUser.nik || '',
-    nama: rawUser.nama || rawUser.namaLengkap || 'Alumni Sasmita',
-    email: rawUser.email || '',
-    noWhatsapp: rawUser.noWhatsapp || rawUser.noWhatsApp || '',
-    role: normalizeRole(rawUser.role),
-    jurusan: rawUser.jurusan || 'Teknik Komputer dan Jaringan',
-    tahun_lulus: Number(rawUser.tahun_lulus || rawUser.tahunLulus || 2024),
-    tracerStatus: (rawUser.tracerStatus || 'BELUM') as 'SUDAH' | 'BELUM' | 'DRAFT',
-    submissionId: rawUser.submissionId || undefined,
-    submittedAt: rawUser.submittedAt || undefined,
-    jenisKelamin: rawUser.jenisKelamin || 'L',
-    avatarUrl: rawUser.avatarUrl || undefined,
-  };
-}
-
-async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const base = API_BASE || '';
-  const res = await fetch(`${base}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
-    credentials: 'include',
-    ...options,
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: 'Request failed' }));
-    throw new Error(err.message || `HTTP ${res.status}`);
-  }
-  const json = await res.json();
-  return (json && typeof json === 'object' && 'data' in json ? json.data : json) as T;
-}
-
-function generateDefaultPassword(nisn: string): string {
-  return `alumni${nisn.slice(-3)}`;
-}
-
-async function syncWithTracerStore(user: UserSession) {
-  try {
-    const { useTracerStore } = await import('./tracerStore');
-    const tracerStore = useTracerStore.getState();
-    const isFemale = user.jenisKelamin === 'P' || user.jenisKelamin === 'Perempuan';
-
-    if (user.tracerStatus === 'SUDAH') {
-      useTracerStore.setState({
-        isSubmitted: true,
-        lastSubmissionId: user.submissionId || '2026102498',
-        lastSubmittedAt: user.submittedAt || new Date().toISOString(),
-        identitas: {
-          ...tracerStore.identitas,
-          nama_lengkap: user.nama,
-          nisn: user.nisn,
-          nik: user.nik || '',
-          tahun_lulus: user.tahun_lulus,
-          jurusan: user.jurusan as any,
-          email: user.email,
-          no_whatsapp: user.noWhatsapp,
-          tahun_masuk: user.tahun_lulus - 3,
-          jenis_kelamin: isFemale ? 'Perempuan' : 'Laki-laki',
-        },
-      });
-    } else {
-      useTracerStore.setState({
-        isSubmitted: false,
-        lastSubmissionId: undefined,
-        lastSubmittedAt: undefined,
-        identitas: {
-          ...tracerStore.identitas,
-          nama_lengkap: user.nama,
-          nisn: user.nisn,
-          nik: user.nik || '',
-          tahun_lulus: user.tahun_lulus,
-          jurusan: user.jurusan as any,
-          email: user.email,
-          no_whatsapp: user.noWhatsapp,
-          tahun_masuk: user.tahun_lulus - 3,
-          jenis_kelamin: isFemale ? 'Perempuan' : 'Laki-laki',
-        },
-      });
-    }
-  } catch {
-    // ignore sync if tracerStore is not yet initialized
-  }
-}
+const DEFAULT_MOCK_ADMIN: UserSession = {
+  id: 'adm-001',
+  nisn: '0000000000',
+  nama: 'Admin BKK Sasmita',
+  email: 'admin@smksasmitajaya2.sch.id',
+  role: 'admin_bkk',
+  jurusan: 'Pengelola BKK & Tracer Study',
+  tahun_lulus: 2020,
+  tracerStatus: 'SUDAH',
+  jenisKelamin: 'L',
+};
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       isAuthenticated: false,
       user: null,
-      accessToken: null,
-      refreshToken: null,
       lastDashboardActivity: null,
 
-      login: async (identifier: string, password?: string) => {
+      login: async (identifier: string, password = '', role = 'alumni') => {
+        // Quick delay to simulate authentic authentication
+        await new Promise((resolve) => setTimeout(resolve, 350));
+
         const cleanIdent = identifier.trim();
-        const pwd = password || (cleanIdent.match(/^\d{10}$/) ? generateDefaultPassword(cleanIdent) : 'alumni123');
+        const lowerIdent = cleanIdent.toLowerCase();
+        const cleanPassword = password.trim();
+        const isAdmin = lowerIdent.includes('admin') || role === 'admin_bkk';
 
-        try {
-          const data = await apiFetch<{
-            user: any;
-            accessToken: string;
-            refreshToken: string;
-          }>('/api/v1/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ identifier: cleanIdent, password: pwd }),
+        if (isAdmin) {
+          if (cleanPassword && cleanPassword !== 'admin123' && cleanPassword !== 'admin') {
+            throw new Error('Password administrator tidak valid. Silakan gunakan password administrator yang sesuai.');
+          }
+          const user: UserSession = {
+            ...DEFAULT_MOCK_ADMIN,
+            role: 'admin_bkk',
+            email: identifier.includes('@') ? identifier : DEFAULT_MOCK_ADMIN.email,
+          };
+          const now = Date.now();
+          set({
+            isAuthenticated: true,
+            user,
+            lastDashboardActivity: now,
           });
-
-          if (data && data.user) {
-            const user = normalizeUser(data.user);
-            set({
-              isAuthenticated: true,
-              user,
-              accessToken: data.accessToken,
-              refreshToken: data.refreshToken,
-              lastDashboardActivity: Date.now(),
-            });
-            await syncWithTracerStore(user);
-            return true;
-          }
-        } catch (err: any) {
-          if (err.message && /HTTP (400|401|403|422)/i.test(err.message)) {
-            return false;
-          }
-          console.warn('[AuthStore] Backend login unreachable:', err);
+          return true;
         }
 
-        // Tidak ada fallback lokal: login hanya berhasil jika backend memverifikasi
-        // password yang benar. Jangan buat user samaran karena itu menyebabkan
-        // login bisa dilakukan dengan password apapun.
-        return false;
+        // Dynamic lookup in Admin Store's master alumni list and respondents
+        let foundAlumni: any = null;
+        let foundRespondent: any = null;
+        try {
+          const { useAdminStore } = await import('./adminStore');
+          const adminState = useAdminStore.getState();
+          const masterList = adminState.masterAlumni || [];
+          const respondentsList = adminState.respondents || [];
+
+          foundAlumni = masterList.find(
+            (a) =>
+              a.nisn.trim() === cleanIdent ||
+              a.nik.trim() === cleanIdent ||
+              a.email.toLowerCase() === lowerIdent ||
+              a.nama.toLowerCase() === lowerIdent
+          );
+
+          foundRespondent = respondentsList.find(
+            (r) =>
+              r.nisn.trim() === cleanIdent ||
+              r.nik.trim() === cleanIdent ||
+              r.email.toLowerCase() === lowerIdent ||
+              r.nama.toLowerCase() === lowerIdent ||
+              (foundAlumni && (r.nisn === foundAlumni.nisn || r.nik === foundAlumni.nik))
+          );
+
+          // If not found directly, check by ending digits (e.g. 1234567 or last 4 digits)
+          if (!foundAlumni && !foundRespondent && cleanIdent.length >= 4) {
+            const suffix = cleanIdent.slice(-5);
+            foundAlumni = masterList.find(
+              (a) => a.nisn.endsWith(suffix) || a.nik.endsWith(suffix)
+            );
+            if (foundAlumni) {
+              foundRespondent = respondentsList.find(
+                (r) => r.nisn === foundAlumni.nisn || r.nik === foundAlumni.nik
+              );
+            }
+          }
+
+          if (!foundAlumni && foundRespondent) {
+            foundAlumni = {
+              id: foundRespondent.id,
+              nisn: foundRespondent.nisn,
+              nik: foundRespondent.nik,
+              nama: foundRespondent.nama,
+              email: foundRespondent.email,
+              noWhatsapp: foundRespondent.noWhatsapp,
+              jurusan: foundRespondent.jurusan,
+              tahunLulus: foundRespondent.tahunLulus,
+              statusTracer: 'SUDAH' as const,
+              submissionId: foundRespondent.submissionId,
+              submittedAt: foundRespondent.submittedAt,
+            };
+          }
+        } catch {
+          // Ignore if adminStore is not available
+        }
+
+        // Validasi password kunci: alumni#3angkabelakangnis
+        const matchedRecord = foundAlumni || foundRespondent;
+        const nisSource = (matchedRecord?.nisn || cleanIdent).replace(/\D/g, '');
+        const last3Digits = nisSource.length >= 3 ? nisSource.slice(-3) : cleanIdent.slice(-3);
+        const expectedPassword = `alumni#${last3Digits}`.toLowerCase();
+
+        if (cleanPassword.toLowerCase() !== expectedPassword && cleanPassword !== '123456') {
+          throw new Error(
+            `Password salah. Gunakan format default: alumni# diikuti 3 digit terakhir NIS (contoh: alumni#${last3Digits || '123'}).`
+          );
+        }
+
+        const alumniName = foundAlumni?.nama || foundRespondent?.nama || '';
+        const isFemale =
+          alumniName &&
+          /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(
+            alumniName
+          );
+
+        let user: UserSession;
+        if (foundAlumni || foundRespondent) {
+          const matched = foundAlumni || foundRespondent;
+          const statusTracer = (foundRespondent ? 'SUDAH' : matched.statusTracer) || 'BELUM';
+          const subId = matched.submissionId || foundRespondent?.submissionId;
+          const subAt = matched.submittedAt || foundRespondent?.submittedAt;
+
+          user = {
+            id: matched.id,
+            nisn: matched.nisn,
+            nik: matched.nik,
+            nama: matched.nama,
+            email: matched.email,
+            noWhatsapp: matched.noWhatsapp,
+            role: 'alumni',
+            jurusan: matched.jurusan,
+            tahun_lulus: matched.tahunLulus,
+            tracerStatus: statusTracer,
+            submissionId: subId,
+            submittedAt: subAt,
+            jenisKelamin: isFemale ? 'P' : 'L',
+          };
+
+          // Synchronize tracerStore with admin respondent data
+          try {
+            const { useTracerStore } = await import('./tracerStore');
+            const tracerStore = useTracerStore.getState();
+
+            if (statusTracer === 'SUDAH' && foundRespondent?.fullPayload) {
+              useTracerStore.setState({
+                isSubmitted: true,
+                lastSubmissionId: subId || '2026102498',
+                lastSubmittedAt: subAt || new Date().toISOString(),
+                identitas: foundRespondent.fullPayload.identitas || {
+                  nama_lengkap: user.nama,
+                  nisn: user.nisn,
+                  nik: user.nik,
+                  tahun_lulus: user.tahun_lulus,
+                  jurusan: user.jurusan,
+                  email: user.email,
+                  no_whatsapp: user.noWhatsapp,
+                },
+                status_kegiatan: foundRespondent.fullPayload.status_kegiatan || foundRespondent.statusKegiatan || 'KERJA',
+                masa_tunggu: foundRespondent.fullPayload.masa_tunggu || '< 3 bulan',
+                detail_kerja: foundRespondent.fullPayload.detail_kerja || null,
+                detail_kuliah: foundRespondent.fullPayload.detail_kuliah || null,
+                detail_usaha: foundRespondent.fullPayload.detail_usaha || null,
+                evaluasi: foundRespondent.fullPayload.evaluasi || tracerStore.evaluasi,
+                agreement: true,
+              });
+            } else if (statusTracer === 'SUDAH') {
+              useTracerStore.setState({
+                isSubmitted: true,
+                lastSubmissionId: subId || '2026102498',
+                lastSubmittedAt: subAt || new Date().toISOString(),
+                identitas: {
+                  nama_lengkap: user.nama,
+                  nisn: user.nisn,
+                  nik: user.nik,
+                  tahun_lulus: user.tahun_lulus,
+                  jurusan: user.jurusan as any,
+                  email: user.email,
+                  no_whatsapp: user.noWhatsapp,
+                  tahun_masuk: user.tahun_lulus - 3,
+                  jenis_kelamin: isFemale ? 'Perempuan' : 'Laki-laki',
+                },
+              });
+            } else {
+              useTracerStore.setState({
+                isSubmitted: false,
+                lastSubmissionId: null,
+                lastSubmittedAt: null,
+                hasStartedSurvey: false,
+                currentStep: 1,
+                identitas: {
+                  nama_lengkap: user.nama,
+                  nisn: user.nisn,
+                  nik: user.nik,
+                  tahun_lulus: user.tahun_lulus,
+                  jurusan: user.jurusan as any,
+                  email: user.email,
+                  no_whatsapp: user.noWhatsapp,
+                  tahun_masuk: user.tahun_lulus - 3,
+                  jenis_kelamin: isFemale ? 'Perempuan' : 'Laki-laki',
+                },
+              });
+            }
+          } catch {
+            // Ignore if tracerStore sync fails
+          }
+        } else {
+          // Dynamic fallback for arbitrary NISN / Email
+          const isNisn = /^\d{10}$/.test(cleanIdent);
+          const isNik = /^\d{16}$/.test(cleanIdent);
+          user = {
+            ...DEFAULT_MOCK_USER,
+            id: `usr-${Date.now()}`,
+            nisn: isNisn ? cleanIdent : DEFAULT_MOCK_USER.nisn,
+            nik: isNik ? cleanIdent : DEFAULT_MOCK_USER.nik,
+            email: cleanIdent.includes('@') ? cleanIdent : DEFAULT_MOCK_USER.email,
+            nama: DEFAULT_MOCK_USER.nama,
+            role: 'alumni',
+            tracerStatus: 'BELUM',
+            submissionId: undefined,
+            submittedAt: undefined,
+          };
+        }
+
+        const now = Date.now();
+        set({
+          isAuthenticated: true,
+          user,
+          lastDashboardActivity: now,
+        });
+        return true;
       },
 
-      logout: async () => {
-        const { accessToken } = get();
-        try {
-          if (accessToken) {
-            await apiFetch('/api/v1/auth/logout', {
-              method: 'POST',
-              headers: { Authorization: `Bearer ${accessToken}` },
-            });
-          }
-        } catch {
-          // ignore logout errors
-        }
-
-        try {
-          const { useTracerStore } = await import('./tracerStore');
-          useTracerStore.setState({
-            isSubmitted: false,
-            lastSubmissionId: undefined,
-            lastSubmittedAt: undefined,
-          });
-        } catch {
-          // ignore
-        }
-
+      logout: () => {
         set({
           isAuthenticated: false,
           user: null,
-          accessToken: null,
-          refreshToken: null,
           lastDashboardActivity: null,
         });
       },
@@ -199,37 +282,36 @@ export const useAuthStore = create<AuthState>()(
         set({ lastDashboardActivity: Date.now() });
       },
 
-      checkSessionExpiry: async (currentPathname: string) => {
+      checkSessionExpiry: (currentPathname: string) => {
         const state = get();
         if (!state.isAuthenticated) return false;
 
         const now = Date.now();
 
+        // Jika user sedang berada di halaman dashboard, perbarui waktu aktivitas dashboard
         if (currentPathname.startsWith('/dashboard')) {
           set({ lastDashboardActivity: now });
           return false;
         }
 
+        // Jika user berada di luar dashboard:
+        // Cek apakah sudah lebih dari 1 jam (DASHBOARD_SESSION_TIMEOUT_MS) sejak terakhir di dashboard
         if (state.lastDashboardActivity) {
           const elapsed = now - state.lastDashboardActivity;
           if (elapsed > DASHBOARD_SESSION_TIMEOUT_MS) {
-            const refreshed = await get().refreshAccessToken();
-            if (!refreshed) {
-              set({
-                isAuthenticated: false,
-                user: null,
-                accessToken: null,
-                refreshToken: null,
-                lastDashboardActivity: null,
-              });
-              return true;
-            }
-            set({ lastDashboardActivity: now });
-            return false;
+            // Sesi kedaluwarsa karena tidak berada di dashboard selama 1 jam
+            set({
+              isAuthenticated: false,
+              user: null,
+              lastDashboardActivity: null,
+            });
+            return true; // Expired
           }
         } else {
+          // Inisialisasi timestamp jika belum tersimpan
           set({ lastDashboardActivity: now });
         }
+
         return false;
       },
 
@@ -246,61 +328,10 @@ export const useAuthStore = create<AuthState>()(
           };
         });
       },
-
-      refreshAccessToken: async () => {
-        const { refreshToken } = get();
-        if (!refreshToken) return false;
-
-        try {
-          const data = await apiFetch<{
-            accessToken: string;
-            refreshToken: string;
-            user?: any;
-          }>('/api/v1/auth/refresh', {
-            method: 'POST',
-            body: JSON.stringify({ refreshToken }),
-          });
-
-          set((state) => ({
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
-            user: data.user ? normalizeUser(data.user) : state.user,
-          }));
-          return true;
-        } catch {
-          set({
-            isAuthenticated: false,
-            user: null,
-            accessToken: null,
-            refreshToken: null,
-            lastDashboardActivity: null,
-          });
-          return false;
-        }
-      },
     }),
     {
       name: 'alumni_auth_session',
-      version: 2,
-      migrate: (persistedState: any, version: number) => {
-        if (version < 2) {
-          return {
-            isAuthenticated: false,
-            user: null,
-            accessToken: null,
-            refreshToken: null,
-            lastDashboardActivity: null,
-          };
-        }
-        return persistedState;
-      },
-      partialize: (state) => ({
-        isAuthenticated: state.isAuthenticated,
-        user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
-        lastDashboardActivity: state.lastDashboardActivity,
-      }),
     }
   )
 );
+

@@ -5,29 +5,16 @@ import { MOCK_IJAZAH_DATABASE } from "@/lib/mockData";
 import { IjazahStatus } from "@/types/tracer";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { getMyIjazah, getIjazahByNisn } from "@/services/ijazahService";
 import {
-  FileCheck2,
   Search,
-  CheckCircle2,
-  Clock,
   MapPin,
   QrCode,
   Printer,
   ShieldCheck,
-  AlertCircle,
+  Copy,
+  Check,
+  GraduationCap,
 } from "lucide-react";
-
-const getJurusanCode = (jurusan: string): string => {
-  const lower = (jurusan || "").toLowerCase();
-  if (lower.includes("komputer") || lower.includes("jaringan") || lower.includes("tkj")) return "TKJ";
-  if (lower.includes("mesin") || lower.includes("tpm")) return "TPM";
-  if (lower.includes("listrik") || lower.includes("titl")) return "TITL";
-  if (lower.includes("elektronika") || lower.includes("industri") || lower.includes("el")) return "EL";
-  if (lower.includes("ringan") || lower.includes("mobil") || lower.includes("tkro")) return "TKRO";
-  if (lower.includes("sepeda motor") || lower.includes("tbsm")) return "TBSM";
-  return "SMK";
-};
 
 const resolveIjazahData = (
   searchQuery: string,
@@ -83,14 +70,11 @@ const resolveIjazahData = (
       const isTracerDone = foundResp
         ? true
         : foundMaster?.statusTracer === "SUDAH";
-      const jCode = getJurusanCode(jurusan);
-
       const lastDigits = cleanNisn
         .replace(/\D/g, "")
         .slice(-7)
         .padStart(7, "0");
       const nomorIjazah = `M-SMK/K13-3/${String(tahunLulus).slice(-2)}/${lastDigits}`;
-      const nomorSertifikatBnsp = `BNSP-${jCode}-${tahunLulus}-${cleanNisn.slice(-5).padStart(5, "0")}`;
 
       return {
         nisn: cleanNisn,
@@ -104,7 +88,6 @@ const resolveIjazahData = (
               ? "SIAP_DIAMBIL"
               : "SIAP_DIAMBIL",
         nomorIjazah,
-        nomorSertifikatBnsp,
         tanggalSiap: `15 Juli ${tahunLulus}`,
         tanggalDiambil:
           cleanNisn === "0051234567" ? `22 Juli ${tahunLulus}` : undefined,
@@ -132,7 +115,6 @@ const resolveIjazahData = (
     const isDone = currentUser.tracerStatus === "SUDAH";
     const tahunLulus = currentUser.tahun_lulus || 2024;
     const cleanNisn = currentUser.nisn || "0051234567";
-    const jCode = getJurusanCode(currentUser.jurusan);
     return {
       nisn: cleanNisn,
       nama: currentUser.nama || "Alumni SMK Sasmita",
@@ -140,7 +122,6 @@ const resolveIjazahData = (
       tahunLulus: tahunLulus,
       statusPengambilan: isDone ? "SIAP_DIAMBIL" : "SIAP_DIAMBIL",
       nomorIjazah: `M-SMK/K13-3/${String(tahunLulus).slice(-2)}/${cleanNisn.slice(-7).padStart(7, "0")}`,
-      nomorSertifikatBnsp: `BNSP-${jCode}-${tahunLulus}-${cleanNisn.slice(-5).padStart(5, "0")}`,
       tanggalSiap: `15 Juli ${tahunLulus}`,
       lokasiPengambilan: "Ruang Tata Usaha (TU) SMK Sasmita Jaya 2 Pamulang",
       persyaratan: [
@@ -163,7 +144,6 @@ const resolveIjazahData = (
       tahunLulus: 2024,
       statusPengambilan: "SIAP_DIAMBIL",
       nomorIjazah: `M-SMK/K13-3/24/${query.slice(-7).padStart(7, "0")}`,
-      nomorSertifikatBnsp: `BNSP-TKJ-2024-${query.slice(-5).padStart(5, "0")}`,
       tanggalSiap: "15 Juli 2024",
       lokasiPengambilan: "Ruang Tata Usaha (TU) SMK Sasmita Jaya 2 Pamulang",
       persyaratan: [
@@ -189,36 +169,27 @@ export const CekIjazahTab: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  // Load initial data for logged-in user
+  // Sync state if logged in user changes
   useEffect(() => {
-    const ident = user?.nisn || user?.nik || "0051234567";
-    setSearchNisn(ident);
-    const initialFallback = resolveIjazahData(ident, user);
-    if (initialFallback) {
-      setIjazahData(initialFallback);
-    }
-
-    const loadInitial = async () => {
-      if (!user?.nisn && !user?.nik) return;
-      setIsLoading(true);
-      try {
-        const data = await getMyIjazah();
-        if (data) {
-          setIjazahData(data);
-          setSearchNisn(data.nisn);
-        }
-      } catch {
-        // Fallback remains active
-      } finally {
-        setIsLoading(false);
+    const ident = user?.nisn || user?.nik;
+    if (ident) {
+      const initial = resolveIjazahData(ident, user);
+      if (initial) {
+        setSearchNisn(ident);
+        setIjazahData(initial);
       }
-    };
-    loadInitial();
+    }
   }, [user]);
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleCopy = (text: string, field: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     const query = searchNisn.trim();
@@ -228,39 +199,25 @@ export const CekIjazahTab: React.FC = () => {
     }
 
     setIsSearching(true);
-    try {
-      const data = await getIjazahByNisn(query);
-      if (data) {
-        setIjazahData(data);
-        setError(null);
-        return;
-      }
-    } catch {
-      // Backend not found or offline, fallback to resolveIjazahData
-    } finally {
+    setTimeout(() => {
       setIsSearching(false);
-    }
-
-    const fallback = resolveIjazahData(query, user);
-    if (fallback) {
-      setIjazahData(fallback);
-      setError(null);
-    } else {
-      setIjazahData(null);
-      setError("Data alumni dengan NISN/NIK tersebut tidak ditemukan di database sekolah.");
-    }
+      const found = resolveIjazahData(query, user);
+      if (found) {
+        setIjazahData(found);
+      } else {
+        setError(
+          "Data alumni dengan NISN / NIK tersebut tidak ditemukan di database sekolah.",
+        );
+      }
+    }, 300);
   };
-
-  const isSiap =
-    ijazahData?.statusPengambilan === "SIAP_DIAMBIL" ||
-    ijazahData?.statusPengambilan === "SUDAH_DIAMBIL";
 
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-base sm:text-xl font-bold text-slate-900">
-          Verifikasi & Pelacakan Status Ijazah
+          Verifikasi & Data Ijazah Alumni
         </h2>
       </div>
 
@@ -271,7 +228,7 @@ export const CekIjazahTab: React.FC = () => {
       >
         <div className="flex-1">
           <Input
-            placeholder="Ketik NISN (10 Digit) atau NIK (16 Digit) untuk melacak..."
+            placeholder="Ketik NISN (10 Digit) atau NIK (16 Digit) untuk mencari..."
             value={searchNisn}
             onChange={(e) => setSearchNisn(e.target.value)}
             leftIcon={<Search className="w-4 h-4" />}
@@ -283,7 +240,7 @@ export const CekIjazahTab: React.FC = () => {
           isLoading={isSearching}
           className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
         >
-          <span>Lacak Status</span>
+          <span>Cari Data</span>
         </Button>
       </form>
 
@@ -293,120 +250,212 @@ export const CekIjazahTab: React.FC = () => {
         </div>
       )}
 
-      {isLoading || isSearching ? (
-        <div className="bg-white rounded-xl p-4 sm:p-6 border border-slate-200 shadow-sm space-y-5 sm:space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-            <div className="space-y-1.5">
-              <div className="h-3 w-24 bg-slate-200/60 rounded-md animate-pulse animate-shimmer" />
-              <div className="h-5 sm:h-6 w-52 bg-slate-200 rounded-md animate-pulse animate-shimmer" />
-              <div className="h-3.5 w-64 bg-slate-200/70 rounded-md animate-pulse animate-shimmer" />
+      {isSearching ? (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-pulse">
+          <div className="p-4 sm:p-6 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-2">
+              <div className="h-3 w-32 bg-slate-200 rounded" />
+              <div className="h-6 w-56 bg-slate-200 rounded" />
             </div>
-            <div className="h-7 w-32 rounded-full bg-slate-100 animate-pulse animate-shimmer" />
+            <div className="h-8 w-36 bg-slate-200 rounded-lg" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((step) => (
-              <div key={step} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center space-y-2">
-                <div className="w-5 h-5 mx-auto rounded-full bg-slate-200 animate-pulse animate-shimmer" />
-                <div className="h-3.5 w-24 mx-auto bg-slate-200 rounded-md animate-pulse animate-shimmer" />
-                <div className="h-2.5 w-16 mx-auto bg-slate-200/60 rounded-md animate-pulse animate-shimmer" />
-              </div>
-            ))}
-          </div>
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="space-y-2 w-full sm:w-auto">
-              <div className="h-3.5 w-60 bg-slate-200 rounded-md animate-pulse animate-shimmer" />
-              <div className="h-3.5 w-52 bg-slate-200 rounded-md animate-pulse animate-shimmer" />
-              <div className="h-3 w-64 bg-slate-200/70 rounded-md animate-pulse animate-shimmer" />
-            </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-14 h-14 bg-slate-200 rounded-xl animate-pulse animate-shimmer" />
-              <div className="h-8 w-36 bg-slate-200 rounded-xl animate-pulse animate-shimmer" />
+          <div className="p-4 sm:p-6 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-xl bg-slate-50 border border-slate-200/60 space-y-2"
+                >
+                  <div className="h-3 w-24 bg-slate-200 rounded" />
+                  <div className="h-5 w-40 bg-slate-200 rounded" />
+                </div>
+              ))}
             </div>
           </div>
         </div>
       ) : (
         ijazahData && (
-          <div className="space-y-4 sm:space-y-6">
-            {/* Main Status Tracker Card */}
-            <div className="bg-white rounded-xl p-4 sm:p-6 border border-slate-200 shadow-sm space-y-5 sm:space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            {/* Card Header: Official Brand & Verification Badges */}
+            <div className="p-4 sm:p-6 bg-slate-50/70 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-200 flex items-center justify-center text-blue-700 shrink-0">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">{ijazahData.nama}</h3>
-                  <p className="text-xs text-slate-500">
-                    {ijazahData.nisn} - {ijazahData.jurusan} (Lulus {ijazahData.tahunLulus})
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                      SMK Sasmita Jaya 2 Pamulang
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                      Data Valid & Terverifikasi
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">
+                    {ijazahData.nama}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+                    ijazahData.statusPengambilan === "SUDAH_DIAMBIL"
+                      ? "bg-slate-100 text-slate-700 border-slate-200"
+                      : "bg-blue-50 text-blue-700 border-blue-200"
+                  }`}
+                >
+                  Status Dokumen:{" "}
+                  {ijazahData.statusPengambilan === "SUDAH_DIAMBIL"
+                    ? "Sudah Diambil"
+                    : "Tersedia di Loket TU"}
+                </span>
+              </div>
+            </div>
+
+            {/* Card Body: Structured 6-Grid Data */}
+            <div className="p-4 sm:p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+                {/* 1. Nomor Seri Ijazah (Highlighted) */}
+                <div className="p-4 rounded-xl bg-blue-50/50 border border-blue-100 flex flex-col justify-between space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-blue-800 tracking-wider uppercase">
+                      Nomor Seri Ijazah
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCopy(ijazahData.nomorIjazah, "noIjazah")
+                      }
+                      className="text-blue-600 hover:text-blue-800 text-xs flex items-center gap-1 transition-colors"
+                      title="Salin Nomor Ijazah"
+                    >
+                      {copiedField === "noIjazah" ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="text-[10px] text-emerald-600 font-medium">
+                            Tersalin
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-medium">Salin</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <p className="font-mono text-sm sm:text-base font-bold text-blue-900 break-all">
+                    {ijazahData.nomorIjazah}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold ${
-                      ijazahData.statusPengambilan === "SUDAH_DIAMBIL"
-                        ? "bg-blue-100 text-blue-800"
-                        : ijazahData.statusPengambilan === "SIAP_DIAMBIL"
-                        ? "bg-blue-100 text-slate-800"
-                        : "bg-amber-100 text-amber-800"
-                    }`}
-                  >
-                    {ijazahData.statusPengambilan.replace("_", " ")}
+
+                {/* 2. NISN */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 flex flex-col justify-between space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-slate-500 uppercase">
+                      NISN (Siswa)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(ijazahData.nisn, "nisn")}
+                      className="text-slate-500 hover:text-slate-700 text-xs flex items-center gap-1 transition-colors"
+                      title="Salin NISN"
+                    >
+                      {copiedField === "nisn" ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="text-[10px] text-emerald-600 font-medium">
+                            Tersalin
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span className="text-[10px] font-medium">Salin</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <p className="font-mono text-sm sm:text-base font-bold text-slate-800">
+                    {ijazahData.nisn}
+                  </p>
+                </div>
+
+                {/* 3. Status Kelulusan */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-500 uppercase">
+                    Status Kelulusan
                   </span>
+                  <p className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Lulus & Terverifikasi</span>
+                  </p>
                 </div>
-              </div>
 
-              {/* Timeline Milestones */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
-                  <CheckCircle2 className="w-5 h-5 text-slate-600 mx-auto mb-1" />
-                  <h4 className="text-xs font-bold text-slate-900">1. Percetakan Ijazah</h4>
-                  <p className="text-[10px] text-slate-700">Selesai & Valid</p>
+                {/* 4. Jurusan / Program Keahlian */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-500 uppercase">
+                    Program Keahlian
+                  </span>
+                  <p className="text-sm font-bold text-slate-800">
+                    {ijazahData.jurusan}
+                  </p>
                 </div>
-                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
-                  <CheckCircle2 className="w-5 h-5 text-slate-600 mx-auto mb-1" />
-                  <h4 className="text-xs font-bold text-slate-900">2. Sertifikat BNSP</h4>
-                  <p className="text-[10px] text-slate-700">Lulus Uji Kompetensi</p>
+
+                {/* 5. Tahun Lulus */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-500 uppercase">
+                    Tahun Kelulusan
+                  </span>
+                  <p className="text-sm font-bold text-slate-800">
+                    Tahun Ajaran {ijazahData.tahunLulus}
+                  </p>
                 </div>
-                <div className={`p-3 rounded-xl border ${isSiap ? "bg-blue-50 border-blue-200" : "bg-slate-50 border-slate-200"}`}>
-                  <CheckCircle2 className={`w-5 h-5 mx-auto mb-1 ${isSiap ? "text-slate-600" : "text-slate-400"}`} />
-                  <h4 className={`text-xs font-bold ${isSiap ? "text-slate-900" : "text-slate-700"}`}>3. Siap di Loket TU</h4>
-                  <p className={`text-[10px] ${isSiap ? "text-slate-700" : "text-slate-400"}`}>{ijazahData.tanggalSiap || "Tersedia"}</p>
-                </div>
-                <div className={`p-3 rounded-xl border ${ijazahData.statusPengambilan === "SUDAH_DIAMBIL" ? "bg-slate-50 border-slate-200" : "bg-slate-50 border-slate-200"}`}>
-                  <Clock className={`w-5 h-5 mx-auto mb-1 ${ijazahData.statusPengambilan === "SUDAH_DIAMBIL" ? "text-slate-600" : "text-slate-400"}`} />
-                  <h4 className={`text-xs font-bold ${ijazahData.statusPengambilan === "SUDAH_DIAMBIL" ? "text-slate-900" : "text-slate-700"}`}>4. Pengambilan Fisik</h4>
-                  <p className="text-[10px] text-slate-500">
-                    {ijazahData.tanggalDiambil ? `Diambil: ${ijazahData.tanggalDiambil}` : "Menunggu Siswa"}
+
+                {/* 6. Lokasi Arsip / Loket */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
+                  <span className="text-[11px] font-semibold text-slate-500 uppercase">
+                    Lokasi Arsip / Loket
+                  </span>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-800 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                    <span className="truncate">
+                      {ijazahData.lokasiPengambilan}
+                    </span>
                   </p>
                 </div>
               </div>
 
-              {/* Nomor Ijazah & Barcode */}
-              <div className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="space-y-1 text-xs text-slate-700">
-                  <p>
-                    <strong>Nomor Seri Ijazah:</strong>{" "}
-                    <span className="font-mono text-blue-700 font-bold">{ijazahData.nomorIjazah}</span>
-                  </p>
-                  {ijazahData.nomorSertifikatBnsp && (
-                    <p>
-                      <strong>Nomor Registrasi BNSP:</strong>{" "}
-                      <span className="font-mono text-blue-700 font-bold">{ijazahData.nomorSertifikatBnsp}</span>
+              {/* Security Stamp & Verification Bar */}
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0">
+                    <QrCode className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-mono font-bold text-slate-800">
+                      {ijazahData.barcode}
                     </p>
-                  )}
-                  <p className="flex items-center gap-1 text-slate-500">
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span>{ijazahData.lokasiPengambilan}</span>
-                  </p>
+                    <p className="text-[11px] text-slate-500">
+                      Kode digital resmi Sistem Informasi Alumni SMK Sasmita
+                      Jaya 2 Pamulang
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              {/* Checklist Persyaratan */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold tracking-wider text-slate-700">Kelengkapan Berkas Pengambilan</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                  {ijazahData.persyaratan.map((syarat, i) => (
-                    <div key={i} className="p-3 flex items-center gap-2.5 text-slate-700">
-                      <CheckCircle2 className="w-4 h-4 text-slate-600 shrink-0" />
-                      <span>{syarat}</span>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.print()}
+                    className="text-xs flex items-center gap-1.5"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Cetak Bukti</span>
+                  </Button>
                 </div>
               </div>
             </div>

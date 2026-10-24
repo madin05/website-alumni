@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useContentStore } from "@/store/contentStore";
-import { JobVacancy } from "@/types/tracer";
+import { JobVacancy, JobApplyType } from "@/types/tracer";
 import {
   Plus,
   Search,
@@ -12,10 +12,16 @@ import {
   Trash2,
   ShieldCheck,
   Clock,
+  Eye,
+  ExternalLink,
+  MessageCircle,
+  Mail,
+  Navigation,
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
+import { Toast } from "@/components/ui/Toast";
 import { AdminJobEditor, JURUSAN_OPTIONS, JOB_TYPES } from "./AdminJobEditor";
 
 const SolidBriefcaseIcon: React.FC<{ className?: string }> = ({
@@ -32,7 +38,7 @@ const SolidBriefcaseIcon: React.FC<{ className?: string }> = ({
 );
 
 export const AdminJobsTab: React.FC = () => {
-  const { jobList, addJob, updateJob, deleteJob, fetchJobsFromBackend } = useContentStore();
+  const { jobList, addJob, updateJob, deleteJob } = useContentStore();
 
   const [viewMode, setViewMode] = useState<"list" | "editor">("list");
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,26 +47,21 @@ export const AdminJobsTab: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  useEffect(() => {
-    fetchJobsFromBackend();
-  }, [fetchJobsFromBackend]);
-
   // Editor State
   const [editingJob, setEditingJob] = useState<JobVacancy | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState("");
 
-
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(""), 3500);
-  }
+  };
 
   const handleOpenEditor = (job: JobVacancy | null) => {
     setEditingJob(job);
     setViewMode("editor");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  };
 
   const handleSaveJob = (data: {
     title: string;
@@ -74,6 +75,15 @@ export const AdminJobsTab: React.FC = () => {
     isBkkPartner: boolean;
     description: string;
     requirements: string[];
+    applyType: JobApplyType;
+    locationAddress?: string;
+    walkInSchedule?: string;
+    mapsUrl?: string;
+    whatsappNumber?: string;
+    whatsappTemplate?: string;
+    emailAddress?: string;
+    emailSubject?: string;
+    externalUrl?: string;
   }) => {
     const todayStr = new Date().toLocaleDateString("id-ID", {
       day: "numeric",
@@ -90,37 +100,36 @@ export const AdminJobsTab: React.FC = () => {
       addJob({
         ...data,
         postedAt: todayStr,
+        clickCount: 0,
       });
       showToast("Lowongan baru berhasil ditambahkan dan langsung tampil di Dashboard Alumni!");
     }
 
     setViewMode("list");
-  }
+  };
 
   const handleDelete = (id: string) => {
     deleteJob(id);
     setDeleteConfirmId(null);
     showToast("Lowongan kerja berhasil dihapus dari sistem.");
-  }
+  };
 
-  // Reset pagination when search query or filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedType, selectedMajor]);
-
-  // Filtered Jobs
   const filteredJobs = jobList.filter((job) => {
-    const matchSearch =
+    const matchesSearch =
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.location.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchType = selectedType === "Semua" || job.type === selectedType;
-    const matchMajor =
+
+    const matchesType =
+      selectedType === "Semua" || job.type === selectedType;
+
+    const matchesMajor =
       selectedMajor === "Semua" ||
       job.targetMajors.some((m) =>
         m.toLowerCase().includes(selectedMajor.toLowerCase())
       );
-    return matchSearch && matchType && matchMajor;
+
+    return matchesSearch && matchesType && matchesMajor;
   });
 
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
@@ -129,19 +138,53 @@ export const AdminJobsTab: React.FC = () => {
     currentPage * itemsPerPage
   );
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedType, selectedMajor]);
+
+  const totalClicks = jobList.reduce((acc, j) => acc + (j.clickCount || 0), 0);
+
+  const getApplyBadge = (type?: JobApplyType) => {
+    switch (type) {
+      case "walk_in":
+        return (
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            Walk-in
+          </span>
+        );
+      case "whatsapp":
+        return (
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-green-50 text-green-700 border border-green-200">
+            WhatsApp
+          </span>
+        );
+      case "external_url":
+        return (
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+            Portal Web
+          </span>
+        );
+      case "email":
+      default:
+        return (
+          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200">
+            Email
+          </span>
+        );
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 p-4 bg-[#0d2346] text-white rounded-xl shadow-xl flex items-center gap-3 border border-slate-700 animate-in slide-in-from-bottom-5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span className="text-xs sm:text-sm font-semibold">
-            {toastMessage}
-          </span>
-        </div>
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage("")}
+          type="success"
+        />
       )}
 
-      {/* VIEW 1: DEDICATED EDITOR PAGE */}
       {viewMode === "editor" ? (
         <AdminJobEditor
           editingJob={editingJob}
@@ -150,15 +193,21 @@ export const AdminJobsTab: React.FC = () => {
           showToast={showToast}
         />
       ) : (
-        /* VIEW 2: LIST VIEW OF ALL JOBS */
         <div className="space-y-6 animate-in fade-in duration-200">
-          {/* Header Banner */}
-          <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-                <SolidBriefcaseIcon className="w-5 h-5 text-[#0d2346] shrink-0" />
-                <span>Kelola Lowongan Kerja & Karir Alumni</span>
-              </h1>
+          {/* Header Management Bar */}
+          <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+                <SolidBriefcaseIcon className="w-5 h-5 text-[#0d2346]" />
+              </div>
+              <div>
+                <h1 className="text-base sm:text-lg font-bold text-[#0d2346]">
+                  Kelola Informasi Lowongan Kerja & BKK Hub
+                </h1>
+                <p className="text-xs text-slate-500">
+                  Publikasikan lowongan kerja terverifikasi dan pantau respons alumni secara real-time.
+                </p>
+              </div>
             </div>
 
             <button
@@ -172,47 +221,53 @@ export const AdminJobsTab: React.FC = () => {
           </div>
 
           {/* Quick Stat Highlights */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-xs flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold text-slate-500">
-                  Total Loker Aktif
-                </p>
-                <p className="text-2xl font-bold text-[#0d2346] mt-1">
-                  {jobList.length}
-                </p>
-                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                  Tersedia untuk Alumni
-                </p>
-              </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4">
+            <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+              <p className="text-[11px] font-semibold text-slate-500">
+                Total Loker Aktif
+              </p>
+              <p className="text-xl sm:text-2xl font-bold text-[#0d2346] mt-1">
+                {jobList.length}
+              </p>
+              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                Tersedia untuk Alumni
+              </p>
             </div>
 
-            <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-xs flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold text-slate-500">
-                  Mitra DUDI Resmi
-                </p>
-                <p className="text-2xl font-bold text-[#0d2346] mt-1">
-                  {jobList.filter((j) => j.isBkkPartner).length}
-                </p>
-                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                  Terverifikasi BKK
-                </p>
-              </div>
+            <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+              <p className="text-[11px] font-semibold text-slate-500">
+                Mitra DUDI Resmi
+              </p>
+              <p className="text-xl sm:text-2xl font-bold text-emerald-600 mt-1">
+                {jobList.filter((j) => j.isBkkPartner).length}
+              </p>
+              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                Terverifikasi BKK
+              </p>
             </div>
 
-            <div className="bg-white rounded-xl p-4 sm:p-5 border border-slate-200 shadow-xs flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold text-slate-500">
-                  Jurusan Tercover
-                </p>
-                <p className="text-2xl font-bold text-blue-600 mt-1">
-                  6 Program
-                </p>
-                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                  100% Sesuai Keahlian
-                </p>
-              </div>
+            <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+              <p className="text-[11px] font-semibold text-slate-500">
+                Minat / Klik Alumni
+              </p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">
+                {totalClicks}
+              </p>
+              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                Akses Pendaftaran
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+              <p className="text-[11px] font-semibold text-slate-500">
+                Jurusan Tercover
+              </p>
+              <p className="text-xl sm:text-2xl font-bold text-indigo-600 mt-1">
+                6 Program
+              </p>
+              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                100% Sesuai Keahlian
+              </p>
             </div>
           </div>
 
@@ -277,14 +332,17 @@ export const AdminJobsTab: React.FC = () => {
                   className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs hover:shadow-md transition duration-200 flex flex-col justify-between space-y-4 group"
                 >
                   <div className="space-y-3">
-                    {/* Header: Type and BKK Partner Badge */}
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                        {job.type}
-                      </span>
+                    {/* Header: Type, Channel & BKK Partner Badge */}
+                    <div className="flex items-center justify-between gap-1.5 flex-wrap">
+                      <div className="flex items-center gap-1.5">
+                        <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                          {job.type}
+                        </span>
+                        {getApplyBadge(job.applyType)}
+                      </div>
                       {job.isBkkPartner && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-700">
-                          <ShieldCheck className="w-3.5 h-3.5 text-slate-600" />
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-700 bg-slate-50 border border-slate-200">
+                          <ShieldCheck className="w-3 h-3 text-blue-600" />
                           <span>Mitra DUDI</span>
                         </span>
                       )}
@@ -327,7 +385,7 @@ export const AdminJobsTab: React.FC = () => {
 
                     {/* Target Majors */}
                     <div className="space-y-1">
-                      <span className="text-[10px] font-bold  tracking-wider text-slate-400 block">
+                      <span className="text-[10px] font-bold tracking-wider text-slate-400 block">
                         Sasaran Program:
                       </span>
                       <div className="flex flex-wrap gap-1">
@@ -354,17 +412,21 @@ export const AdminJobsTab: React.FC = () => {
                     </p>
                   </div>
 
-                  {/* Card Actions Footer */}
+                  {/* Card Actions Footer with Interest Click Count Metric */}
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-500 font-medium truncate max-w-[120px]">
-                      {job.contactPerson}
+                    <span
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full"
+                      title="Jumlah alumni yang mengakses pendaftaran loker ini"
+                    >
+                      <Eye className="w-3 h-3 text-slate-500" />
+                      <span>{job.clickCount || 0} Klik Minat</span>
                     </span>
 
                     <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         type="button"
                         onClick={() => handleOpenEditor(job)}
-                        className="px-2.5 py-1.5 text-slate-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
+                        className="px-2.5 py-1.5 text-slate-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer rounded-lg hover:bg-slate-100"
                         title="Edit Lowongan"
                       >
                         <Edit3 className="w-3 h-3 text-slate-600" />
@@ -373,7 +435,7 @@ export const AdminJobsTab: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setDeleteConfirmId(job.id)}
-                        className="px-2.5 py-1.5 text-rose-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
+                        className="px-2.5 py-1.5 text-rose-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer rounded-lg hover:bg-rose-50"
                         title="Hapus Lowongan"
                       >
                         <Trash2 className="w-3 h-3 text-rose-600" />
@@ -411,4 +473,3 @@ export const AdminJobsTab: React.FC = () => {
     </div>
   );
 };
-
