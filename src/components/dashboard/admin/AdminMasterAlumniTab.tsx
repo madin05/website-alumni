@@ -20,6 +20,7 @@ import {
   Phone,
   Mail,
   FileSpreadsheet,
+  GraduationCap,
 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { CustomSelect } from "@/components/ui/CustomSelect";
@@ -744,16 +745,19 @@ export const AdminMasterAlumniTab: React.FC = () => {
 
       {/* Modal Preview Data Lengkap Siswa */}
       {selectedPreviewAlumni && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-slate-200/90 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 bg-white sm:bg-slate-950/60 sm:backdrop-blur-xs sm:flex sm:items-center sm:justify-center sm:p-4 md:sm:p-6 animate-in fade-in duration-150 overflow-hidden">
+          <div className="bg-white w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-2xl rounded-none shadow-none sm:shadow-2xl sm:border sm:border-slate-200/90 overflow-hidden flex flex-col">
             {/* Modal Header */}
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-white">
-              <div className="flex items-center gap-3">
+            <div className="px-4 py-3.5 sm:px-6 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+              <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                  <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
                 <div>
-                  <h3 className="font-bold text-base text-slate-900 leading-snug tracking-tight">
+                  <h3 className="font-bold text-sm sm:text-lg text-slate-900 leading-snug tracking-tight">
                     Preview Data Lengkap Siswa
                   </h3>
-                  <p className="text-xs text-slate-500 leading-normal mt-0.5">
+                  <p className="text-[11px] sm:text-xs text-slate-500 leading-normal mt-0.5">
                     Data pokok alumni SMKS Sasmita Jaya 2
                   </p>
                 </div>
@@ -761,72 +765,76 @@ export const AdminMasterAlumniTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedPreviewAlumni(null)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
                 title="Tutup"
+                aria-label="Tutup Preview"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-4 overflow-y-auto">
+            <div className="flex-1 p-4 sm:p-6 space-y-3.5 sm:space-y-5 overflow-y-auto overscroll-contain">
               {/* Profile Card Header */}
-              <div className="p-4 sm:p-4.5 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-center gap-4">
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
                 <div className="min-w-0 flex-1">
-                  <h4 className="font-bold text-slate-900 text-base sm:text-lg leading-snug tracking-tight truncate">
+                  <h4 className="font-bold text-slate-900 text-base sm:text-xl leading-snug tracking-tight">
                     {selectedPreviewAlumni.nama}
                   </h4>
-                  <p className="text-xs text-slate-600 font-medium leading-relaxed truncate mt-1">
+                  <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed mt-0.5">
                     {selectedPreviewAlumni.jurusan}
                   </p>
-                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                    <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-200/80 text-slate-700 tracking-wide">
-                      Angkatan {selectedPreviewAlumni.tahunLulus}
+                </div>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-200/80 text-slate-700 tracking-wide">
+                    Angkatan {selectedPreviewAlumni.tahunLulus}
+                  </span>
+                  {selectedPreviewAlumni.statusTracer === "SUDAH" ? (
+                    <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 flex items-center gap-1.5 border border-emerald-200/60">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Sudah Mengisi Tracer</span>
                     </span>
-                    {selectedPreviewAlumni.statusTracer === "SUDAH" ? (
-                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-800 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Sudah Mengisi Tracer</span>
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-100/90 text-amber-800 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-amber-600" />
-                        <span>Belum Mengisi Tracer</span>
-                      </span>
-                    )}
-                  </div>
+                  ) : (
+                    <span className="text-[11px] sm:text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800 flex items-center gap-1.5 border border-amber-200/60">
+                      <Clock className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Belum Mengisi Tracer</span>
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Section 1: Identitas Pokok Siswa */}
-              <div className="p-4 sm:p-4.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5 sm:space-y-4">
+                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Identitas Pokok
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5">
                   {/* NISN */}
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     <span className="text-xs font-medium text-slate-500 block leading-normal">
                       Nomor Induk Siswa (NISN)
                     </span>
-                    <span className="font-mono font-semibold text-slate-900 text-sm tracking-wide block leading-snug">
+                    <span className="font-mono font-bold text-slate-900 text-sm sm:text-base tracking-wide block leading-snug">
                       {selectedPreviewAlumni.nisn}
                     </span>
                   </div>
 
                   {/* NIK */}
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     <span className="text-xs font-medium text-slate-500 block leading-normal">
                       Nomor Induk Kependudukan (NIK)
                     </span>
-                    <span className="font-mono font-semibold text-slate-900 text-sm tracking-wide block leading-snug">
+                    <span className="font-mono font-bold text-slate-900 text-sm sm:text-base tracking-wide block leading-snug">
                       {selectedPreviewAlumni.nik || "-"}
                     </span>
                   </div>
 
                   {/* Program Keahlian */}
-                  <div className="sm:col-span-2 pt-2.5 border-t border-slate-100 space-y-1">
+                  <div className="sm:col-span-2 pt-2.5 border-t border-slate-100 space-y-0.5">
                     <span className="text-xs font-medium text-slate-500 block leading-normal">
                       Program Keahlian / Jurusan
                     </span>
-                    <span className="font-semibold text-slate-900 text-sm leading-relaxed block tracking-normal">
+                    <span className="font-semibold text-slate-900 text-sm sm:text-base leading-relaxed block tracking-normal">
                       {selectedPreviewAlumni.jurusan}
                     </span>
                   </div>
@@ -834,14 +842,18 @@ export const AdminMasterAlumniTab: React.FC = () => {
               </div>
 
               {/* Section 2: Kontak & Komunikasi */}
-              <div className="p-4 sm:p-4.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5">
+              <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5 sm:space-y-4">
+                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Kontak & Komunikasi
+                </h5>
+
                 {/* Nomor WhatsApp */}
-                <div className="flex items-center justify-between gap-3 pt-1">
-                  <div className="min-w-0 space-y-1">
+                <div className="flex items-center justify-between gap-3 pt-0.5">
+                  <div className="min-w-0 flex-1 pr-2 space-y-0.5">
                     <span className="text-xs font-medium text-slate-500 block leading-normal">
                       Nomor WhatsApp
                     </span>
-                    <span className="font-mono font-semibold text-slate-900 text-sm tracking-wide flex items-center gap-2 leading-snug">
+                    <span className="font-mono font-bold text-slate-900 text-xs sm:text-sm tracking-wide flex items-center gap-1.5 leading-snug">
                       <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       <span>{selectedPreviewAlumni.noWhatsapp || "-"}</span>
                     </span>
@@ -860,52 +872,54 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       }`}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3.5 py-1.5 rounded-full text-emerald-700 font-semibold hover:bg-slate-200 text-xs flex items-center gap-1.5 shrink-0 active:scale-95 shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs border border-emerald-200/80 transition active:scale-95 shadow-2xs shrink-0"
                     >
                       <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Chat</span>
+                      <span>Chat WA</span>
                     </a>
                   )}
                 </div>
 
                 {/* Email */}
-                <div className="flex items-center justify-between gap-3 pt-2.5 border-t border-slate-100">
-                  <div className="min-w-0 pr-2 space-y-1">
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                  <div className="min-w-0 flex-1 pr-2 space-y-0.5">
                     <span className="text-xs font-medium text-slate-500 block leading-normal">
                       Alamat Email
                     </span>
-                    <span className="font-semibold text-slate-900 text-xs sm:text-sm truncate flex items-center gap-2 leading-snug tracking-normal">
+                    <span className="font-semibold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 leading-snug tracking-normal break-all">
                       <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate">
-                        {selectedPreviewAlumni.email || "-"}
-                      </span>
+                      <span>{selectedPreviewAlumni.email || "-"}</span>
                     </span>
                   </div>
                   {selectedPreviewAlumni.email && (
                     <a
                       href={`mailto:${selectedPreviewAlumni.email}`}
-                      className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition shrink-0 active:scale-95"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition shrink-0 active:scale-95"
                     >
-                      Kirim Email
+                      <Mail className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Kirim Email</span>
                     </a>
                   )}
                 </div>
               </div>
 
               {/* Section 3: Informasi Tracer Study */}
-              <div className="p-4 sm:p-4.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5 sm:space-y-3">
+                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Status Kuesioner Tracer
+                </h5>
                 {selectedPreviewAlumni.statusTracer === "SUDAH" ? (
-                  <div className="space-y-2.5 text-xs">
-                    <div className="flex items-center justify-between gap-2 leading-relaxed">
+                  <div className="space-y-2 text-xs sm:text-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 leading-relaxed">
                       <span className="text-slate-500 font-medium">
                         No. Registrasi / Submisi:
                       </span>
-                      <span className="font-mono font-bold text-slate-900 tracking-wide text-xs sm:text-sm">
+                      <span className="font-mono font-bold text-slate-900 tracking-wide">
                         {selectedPreviewAlumni.submissionId || "-"}
                       </span>
                     </div>
                     {selectedPreviewAlumni.submittedAt && (
-                      <div className="flex items-center justify-between gap-2 leading-relaxed pt-2 border-t border-slate-200/60">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 leading-relaxed pt-2 border-t border-slate-200/60">
                         <span className="text-slate-500 font-medium">
                           Waktu Pengisian:
                         </span>
@@ -924,36 +938,39 @@ export const AdminMasterAlumniTab: React.FC = () => {
                     )}
                   </div>
                 ) : (
-                  <p className="text-slate-500 text-xs leading-relaxed">
-                    Alumni ini belum menyelesaikan pengisian kuesioner
-                    penelusuran tamatan.
-                  </p>
+                  <div className="flex items-start gap-2.5 text-slate-600 text-xs sm:text-sm leading-relaxed">
+                    <Clock className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                    <p>
+                      Alumni ini belum menyelesaikan pengisian kuesioner
+                      penelusuran tamatan.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4.5 border-t border-slate-100 bg-slate-50 flex items-center justify-between gap-3">
-              <div>
+            <div className="p-4 sm:px-6 sm:py-4 border-t border-slate-200 bg-white sm:bg-slate-50 shrink-0">
+              <div className="flex items-center justify-end gap-2.5 sm:gap-3">
                 {selectedPreviewAlumni.statusTracer === "BELUM" && (
                   <a
                     href={generateWaLink(selectedPreviewAlumni)}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition active:scale-95"
+                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 text-center cursor-pointer"
                   >
-                    <WhatsAppIcon className="w-3.5 h-3.5" />
+                    <WhatsAppIcon className="w-4 h-4" />
                     <span>Kirim Pengingat WA</span>
                   </a>
                 )}
+                <button
+                  type="button"
+                  onClick={() => setSelectedPreviewAlumni(null)}
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold tracking-wide transition active:scale-95 cursor-pointer shadow-xs text-center"
+                >
+                  Tutup Preview
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelectedPreviewAlumni(null)}
-                className="px-5 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold tracking-wide transition active:scale-95 cursor-pointer shadow-xs"
-              >
-                Tutup Preview
-              </button>
             </div>
           </div>
         </div>

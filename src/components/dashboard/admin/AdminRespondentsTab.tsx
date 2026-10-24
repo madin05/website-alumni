@@ -253,7 +253,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                 : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
             }`}
           >
-            <Building className="w-3.5 h-3.5 text-slate-500" />
+            <Building className="w-3.5 h-3.5 text-white" />
             <span>Bekerja ({countKerja})</span>
           </button>
           <button
@@ -264,7 +264,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                 : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
             }`}
           >
-            <GraduationCap className="w-3.5 h-3.5 text-slate-500" />
+            <GraduationCap className="w-3.5 h-3.5 text-white" />
             <span>Kuliah ({countKuliah})</span>
           </button>
           <button
@@ -275,7 +275,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                 : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
             }`}
           >
-            <Store className="w-3.5 h-3.5 text-slate-500" />
+            <Store className="w-3.5 h-3.5 text-white" />
             <span>Wirausaha ({countWirausaha})</span>
           </button>
           <button
@@ -286,7 +286,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                 : "bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200/60"
             }`}
           >
-            <Clock className="w-3.5 h-3.5 text-slate-500" />
+            <Clock className="w-3.5 h-3.5 text-white" />
             <span>Mencari Kerja ({countBelumKerja})</span>
           </button>
         </div>
