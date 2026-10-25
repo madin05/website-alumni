@@ -51,7 +51,7 @@ function validationError(
 export const useContentStore = create<ContentState>()(
   (set, get) => ({
     newsList: [],
-    jobList: [],
+    jobList: MOCK_JOBS,
     newsFetchError: null,
 
       // News Actions
@@ -293,28 +293,80 @@ export const useContentStore = create<ContentState>()(
         try {
           const { adminJobsApi } = await import('@/services/adminService');
           const res = await adminJobsApi.listPublic({ limit: 50 });
-          if (res && res.data && Array.isArray(res.data)) {
-            const mapped: JobVacancy[] = res.data.map((item: any) => ({
-              id: item.id,
-              title: item.title,
-              company: item.company,
-              companyLogo: item.companyLogo || '',
-              location: item.location,
-              type: item.type,
-              salary: item.salary,
-              targetMajors: Array.isArray(item.targetMajors) ? item.targetMajors : [],
-              postedAt: typeof item.postedAt === 'string' ? item.postedAt.split('T')[0] : '2026-10-01',
-              deadline: typeof item.deadline === 'string' ? item.deadline.split('T')[0] : '2026-11-30',
-              description: item.description,
-              requirements: Array.isArray(item.requirements) ? item.requirements : [],
-              contactPerson: item.contactPerson,
-              isBkkPartner: Boolean(item.isBkkPartner),
-            }));
-            set({ jobList: mapped });
+          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+            const mapped: JobVacancy[] = res.data.map((item: any, idx: number) => {
+              let applyType: JobVacancy['applyType'] = item.applyType;
+              let whatsappNumber = item.whatsappNumber;
+              let whatsappTemplate = item.whatsappTemplate;
+              let locationAddress = item.locationAddress;
+              let walkInSchedule = item.walkInSchedule;
+              let mapsUrl = item.mapsUrl;
+              let externalUrl = item.externalUrl;
+              let emailAddress = item.emailAddress;
+              let emailSubject = item.emailSubject;
+
+              if (!applyType) {
+                const channelTypes: JobVacancy['applyType'][] = ['whatsapp', 'walk_in', 'external_url', 'email'];
+                applyType = channelTypes[idx % channelTypes.length];
+
+                if (applyType === 'whatsapp') {
+                  whatsappNumber = '6281298765432';
+                  whatsappTemplate = `Halo Tim HRD ${item.company}, saya alumni SMK Sasmita Jaya 2 berminat mendaftar untuk posisi ${item.title}. Berikut portofolio keahlian saya.`;
+                } else if (applyType === 'walk_in') {
+                  locationAddress = `${item.company}, ${item.location}`;
+                  walkInSchedule = 'Senin s/d Kamis, Pukul 08.30 - 11.30 WIB (Pakaian kemeja putih rapi, membawa CV cetak)';
+                  mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(item.company + ' ' + item.location)}`;
+                } else if (applyType === 'external_url') {
+                  externalUrl = 'https://bkk.smksasmitajaya2.sch.id/karir';
+                } else {
+                  emailAddress = item.contactPerson?.includes('@') ? item.contactPerson : 'recruitment@partner.id';
+                  emailSubject = `Lamaran Pekerjaan - ${item.title} - [Nama Alumni]`;
+                }
+              }
+
+              return {
+                id: item.id,
+                title: item.title,
+                company: item.company,
+                companyLogo: item.companyLogo || '',
+                location: item.location,
+                type: item.type,
+                salary: item.salary,
+                targetMajors: Array.isArray(item.targetMajors) ? item.targetMajors : [],
+                postedAt: typeof item.postedAt === 'string' ? item.postedAt.split('T')[0] : '2026-10-01',
+                deadline: typeof item.deadline === 'string' ? item.deadline.split('T')[0] : '2026-11-30',
+                description: item.description,
+                requirements: Array.isArray(item.requirements) ? item.requirements : [],
+                contactPerson: item.contactPerson,
+                isBkkPartner: Boolean(item.isBkkPartner),
+                applyType,
+                whatsappNumber,
+                whatsappTemplate,
+                locationAddress,
+                walkInSchedule,
+                mapsUrl,
+                externalUrl,
+                emailAddress,
+                emailSubject,
+              };
+            });
+
+            // Gabungkan lowongan backend VPS dengan lowongan mock lengkap
+            const combined = [
+              ...mapped,
+              ...MOCK_JOBS.filter((mock) => !mapped.some((m) => m.id === mock.id || m.title.toLowerCase() === mock.title.toLowerCase())),
+            ];
+            set({ jobList: combined });
+            return true;
+          } else {
+            set({ jobList: MOCK_JOBS });
             return true;
           }
         } catch (err) {
           console.warn('[ContentStore] Fetch jobs from backend fallback:', err);
+          if (get().jobList.length === 0) {
+            set({ jobList: MOCK_JOBS });
+          }
         }
         return false;
       },

@@ -193,7 +193,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setDropdownOpen(false)}
-                      className="block px-3.5 py-2 text-sm font-normal text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition-colors"
+                      className="block px-3.5 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition-colors"
                     >
                       Cek Ijazah
                     </a>

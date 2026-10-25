@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import {
   EMPTY_KETERSERAPAN,
@@ -9,6 +10,7 @@ import {
   buildChartStats,
   jurusanCode,
   jurusanShortName,
+  getFallbackKeterserapan,
 } from "@/lib/reportStats";
 
 const YEAR_OPTIONS = [
@@ -19,7 +21,10 @@ const YEAR_OPTIONS = [
   { value: "2022", label: "Tahun Lulus 2022" },
 ];
 
-const ALL_JURUSAN_OPTION = { value: "ALL", label: "Semua Jurusan (Total Global)" };
+const ALL_JURUSAN_OPTION = {
+  value: "ALL",
+  label: "Semua Jurusan (Total Global)",
+};
 
 export const ReportSection: React.FC = () => {
   const navigate = useNavigate();
@@ -28,9 +33,11 @@ export const ReportSection: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>("ALL");
   const [selectedJurusan, setSelectedJurusan] = useState<string>("ALL");
 
-  // 2. Statistik langsung dari basis data (bukan data contoh)
-  const [stats, setStats] = useState<KeterserapanData>(EMPTY_KETERSERAPAN);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // 2. Statistik (mengutamakan basis data, fallback ke data mock jika API belum ada isian)
+  const [stats, setStats] = useState<KeterserapanData>(() =>
+    getFallbackKeterserapan(),
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadError, setLoadError] = useState<string>("");
 
   useEffect(() => {
@@ -47,9 +54,24 @@ export const ReportSection: React.FC = () => {
           tahunLulus: selectedYear === "ALL" ? undefined : Number(selectedYear),
         });
         if (!isActive) return;
-        setStats(res?.data ? res.data : EMPTY_KETERSERAPAN);
+        if (res?.data && res.data.totalResponden > 0) {
+          setStats(res.data);
+        } else {
+          setStats(
+            getFallbackKeterserapan(
+              selectedYear === "ALL" ? undefined : Number(selectedYear),
+              selectedJurusan,
+            ),
+          );
+        }
       } catch (err: any) {
         if (!isActive) return;
+        setStats(
+          getFallbackKeterserapan(
+            selectedYear === "ALL" ? undefined : Number(selectedYear),
+            selectedJurusan,
+          ),
+        );
         setLoadError(err.message || "Gagal memuat statistik dari basis data.");
       } finally {
         if (isActive) setIsLoading(false);
@@ -72,7 +94,9 @@ export const ReportSection: React.FC = () => {
   }, [stats.byJurusan]);
 
   const yearOptions = useMemo(() => {
-    const years = Array.from(new Set(stats.byJurusan.map((row) => row.tahunLulus)))
+    const years = Array.from(
+      new Set(stats.byJurusan.map((row) => row.tahunLulus)),
+    )
       .sort((a, b) => b - a)
       .map((y) => ({ value: String(y), label: `Tahun Lulus ${y}` }));
     if (years.length === 0) return YEAR_OPTIONS;
@@ -93,7 +117,8 @@ export const ReportSection: React.FC = () => {
     });
   }, [stats.perbaruPada]);
 
-  const activeYearLabel = yearOptions.find((y) => y.value === selectedYear)?.label || selectedYear;
+  const activeYearLabel =
+    yearOptions.find((y) => y.value === selectedYear)?.label || selectedYear;
 
   return (
     <section id="laporan" className="relative py-16 sm:py-20 lg:py-24">
@@ -127,39 +152,6 @@ export const ReportSection: React.FC = () => {
                 triggerSize="sm"
               />
             </div>
-          </div>
-
-          {/* Status data real dari basis data */}
-          <div className="mt-3 flex items-center justify-center">
-            {isLoading ? (
-              <span className="inline-flex items-center gap-1.5 text-xs text-slate-500">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Memuat data dari basis data...
-              </span>
-            ) : loadError ? (
-              <span className="inline-flex items-center gap-1.5 text-xs text-rose-600">
-                <AlertCircle className="w-3.5 h-3.5" />
-                {loadError}
-              </span>
-            ) : (
-              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] text-slate-500">
-                <span className="inline-flex items-center gap-1 font-semibold text-emerald-600">
-                  <RefreshCw className="w-3 h-3" />
-                  Data real dari basis data
-                </span>
-                <span className="text-slate-300">|</span>
-                <span>
-                  {stats.totalResponden} responden dari {stats.totalAlumni} alumni
-                  ({stats.responseRate}% partisipasi)
-                </span>
-                {formattedUpdated && (
-                  <>
-                    <span className="text-slate-300">|</span>
-                    <span>Diperbarui {formattedUpdated}</span>
-                  </>
-                )}
-              </span>
-            )}
           </div>
         </div>
 

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { MOCK_ALUMNI_LIST } from '@/lib/mockData';
 import { useAdminStore } from '@/store/adminStore';
+import { useTracerStore } from '@/store/tracerStore';
+import { useAuthStore } from '@/store/authStore';
 import { Input } from '@/components/ui/Input';
 import { CustomSelect } from '@/components/ui/CustomSelect';
-import { UserAvatar } from '@/components/ui/UserAvatar';
+import { UserAvatar, detectGenderFromName } from '@/components/ui/UserAvatar';
 import { Pagination } from '@/components/ui/Pagination';
 import { Users, Search, GraduationCap, Building, MapPin, Sparkles } from 'lucide-react';
 
@@ -14,16 +16,22 @@ export const AlumniTab: React.FC = () => {
   const itemsPerPage = 6;
 
   const { masterAlumni, respondents } = useAdminStore();
+  const { isSubmitted, status_kegiatan, detail_kerja, detail_kuliah, detail_usaha, identitas } = useTracerStore();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, jurusanFilter]);
 
-  // Combine master alumni from admin store with mock alumni
+  // Combine master alumni from admin store with mock alumni & sync filled questionnaire
   const combinedAlumniList = useMemo(() => {
     const fromAdmin = (masterAlumni || []).map((m) => {
       const resp = (respondents || []).find((r) => r.nisn === m.nisn || r.nik === m.nik);
-      const isFemale = /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(m.nama);
+
+      const isCurrentUser =
+        (user?.nisn && (user.nisn === m.nisn || user.nik === m.nik)) ||
+        (identitas?.nisn && (identitas.nisn === m.nisn || identitas.nik === m.nik)) ||
+        (user?.nama && user.nama.toLowerCase() === m.nama.toLowerCase());
 
       let pekerjaan = 'Alumni Terdaftar';
       let kampus = '-';
@@ -32,24 +40,57 @@ export const AlumniTab: React.FC = () => {
       if (resp) {
         if (resp.statusKegiatan === 'KERJA' || resp.statusKegiatan === 'KERJA_KULIAH') {
           pekerjaan = `${resp.jabatanProdiUsaha || 'Staff'} di ${resp.instansiKampusUsaha || 'Perusahaan Mitra'}`;
-          kota = resp.fullPayload?.detail_kerja?.kota_kabupaten || 'Tangerang Selatan';
+          kota = resp.fullPayload?.detail_kerja?.kota_kabupaten || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
         } else if (resp.statusKegiatan === 'KULIAH') {
           kampus = `${resp.jabatanProdiUsaha || 'Mahasiswa'} di ${resp.instansiKampusUsaha || 'Universitas'}`;
-          pekerjaan = 'Studi Lanjut (Kuliah)';
+          kota = resp.fullPayload?.detail_kuliah?.alamat_kampus || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
         } else if (resp.statusKegiatan === 'WIRAUSAHA' || resp.statusKegiatan === 'WIRAUSAHA_KULIAH') {
           pekerjaan = `Owner ${resp.instansiKampusUsaha || 'Usaha Mandiri'}`;
+          kota = resp.fullPayload?.detail_usaha?.kota_usaha || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
         }
       }
+
+      // Prioritas sinkronisasi: jika ini akun yang sedang login dan sudah mengisi kuesioner tracer
+      if (isCurrentUser && (isSubmitted || user?.tracerStatus === 'SUDAH')) {
+        const tracerStatus = status_kegiatan || resp?.statusKegiatan || 'KERJA';
+        if (tracerStatus === 'KERJA' || tracerStatus === 'KERJA_KULIAH') {
+          const jab = detail_kerja?.jabatan || resp?.jabatanProdiUsaha || 'Junior Network Administrator';
+          const pers = detail_kerja?.nama_perusahaan || resp?.instansiKampusUsaha || 'PT Solusi Teknologi Nusantara';
+          pekerjaan = `${jab} di ${pers}`;
+          kota = detail_kerja?.kota_kabupaten || resp?.fullPayload?.detail_kerja?.kota_kabupaten || 'Tangerang Selatan';
+        } else if (tracerStatus === 'KULIAH') {
+          const prodi = detail_kuliah?.program_studi || resp?.jabatanProdiUsaha || 'Teknik Informatika';
+          const kmp = detail_kuliah?.nama_kampus || resp?.instansiKampusUsaha || 'Universitas Pamulang';
+          kampus = `${prodi} di ${kmp}`;
+          pekerjaan = 'Studi Lanjut (Kuliah)';
+          kota = detail_kuliah?.alamat_kampus || resp?.fullPayload?.detail_kuliah?.alamat_kampus || 'Tangerang Selatan';
+        } else if (tracerStatus === 'WIRAUSAHA' || tracerStatus === 'WIRAUSAHA_KULIAH') {
+          pekerjaan = `Owner ${detail_usaha?.nama_usaha || resp?.instansiKampusUsaha || 'Usaha Mandiri'}`;
+          kota = detail_usaha?.kota_usaha || resp?.fullPayload?.detail_usaha?.kota_usaha || 'Tangerang Selatan';
+        }
+      }
+
+      const explicitG =
+        m.jenisKelamin ||
+        resp?.jenisKelamin ||
+        (resp?.fullPayload?.identitas?.jenis_kelamin?.startsWith('P')
+          ? 'P'
+          : resp?.fullPayload?.identitas?.jenis_kelamin?.startsWith('L')
+          ? 'L'
+          : undefined) ||
+        (isCurrentUser ? user?.jenisKelamin : undefined);
+
+      const gender = detectGenderFromName(m.nama, explicitG);
 
       return {
         nama: m.nama,
         jurusan: m.jurusan,
         tahunLulus: m.tahunLulus,
-        status: resp?.statusKegiatan || (m.statusTracer === 'SUDAH' ? 'KERJA' : 'BELUM_KERJA'),
+        status: resp?.statusKegiatan || (isCurrentUser && isSubmitted ? status_kegiatan : (m.statusTracer === 'SUDAH' ? 'KERJA' : 'BELUM_KERJA')),
         pekerjaan,
         kampus,
         kota,
-        jenisKelamin: (isFemale ? 'P' : 'L') as 'L' | 'P',
+        jenisKelamin: gender,
       };
     });
 
@@ -58,7 +99,7 @@ export const AlumniTab: React.FC = () => {
     const additionalMock = MOCK_ALUMNI_LIST.filter((a) => !seenNames.has(a.nama.toLowerCase()));
 
     return [...fromAdmin, ...additionalMock];
-  }, [masterAlumni, respondents]);
+  }, [masterAlumni, respondents, isSubmitted, status_kegiatan, detail_kerja, detail_kuliah, detail_usaha, user, identitas]);
 
   const filteredAlumni = combinedAlumniList.filter((alumni) => {
     const matchSearch =

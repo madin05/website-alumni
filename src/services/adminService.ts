@@ -29,6 +29,7 @@ let refreshPromise: Promise<boolean> | null = null;
 
 async function ensureFreshAccessToken(): Promise<string | null> {
   const { accessToken, refreshAccessToken } = useAuthStore.getState();
+  if (accessToken && accessToken.startsWith('mock-')) return accessToken;
   if (!isTokenExpired(accessToken)) return accessToken;
 
   if (!refreshPromise) {
@@ -56,6 +57,11 @@ export interface ApiResponse<T> {
 async function fetchWithAuth<T>(endpoint: string, options: RequestInit = {}, isRetry = false): Promise<T> {
   const freshToken = await ensureFreshAccessToken();
   const base = API_BASE || '';
+
+  // Jika sesi mock lokal, jangan kirim token palsu ke backend karena akan memicu 401 JWT Malformed
+  if (freshToken && freshToken.startsWith('mock-')) {
+    throw new Error('MOCK_SESSION_FALLBACK');
+  }
 
   const isDeleteNoBody = options.method === 'DELETE' && (!options.body || options.body === '');
 

@@ -39,16 +39,14 @@ export const LoginPage: React.FC = () => {
     try {
       const ok = await login(identifier, password, "alumni");
       if (!ok) {
-        setError(
-          "NISN/Email atau password salah. Format password alumni: alumni# + 3 digit terakhir NISN (contoh: alumni#847). Untuk Admin BKK, gunakan password Admin#12345.",
-        );
+        setError("Username atau password salah.");
         return;
       }
       navigate("/dashboard", { replace: true });
     } catch (err: any) {
       setError(
         err?.message ||
-          "Data tidak ditemukan. Silakan periksa kembali NISN Anda.",
+          "Data tidak ditemukan. Silakan periksa kembali data Anda.",
       );
     } finally {
       setLoading(false);
@@ -179,8 +177,8 @@ export const LoginPage: React.FC = () => {
               />
             </div>
 
-            {/* Step Label & Title */}
-            <div className="mb-5 sm:mb-6">
+            {/* Step Label & Title (Hidden on Desktop because the left panel already has greeting) */}
+            <div className="mb-5 sm:mb-6 lg:hidden">
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight text-center">
                 Selamat Datang
               </h2>
@@ -188,7 +186,7 @@ export const LoginPage: React.FC = () => {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-medium">
+              <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-md text-xs text-rose-700">
                 {error}
               </div>
             )}
@@ -206,9 +204,7 @@ export const LoginPage: React.FC = () => {
                 />
                 <span className="material-bar" />
                 <span className="material-highlight" />
-                <label className="material-label">
-                  Username
-                </label>
+                <label className="material-label">Username</label>
               </div>
 
               <div className="material-group !mt-7">
@@ -239,9 +235,6 @@ export const LoginPage: React.FC = () => {
                   )}
                 </button>
               </div>
-              <p className="text-[11px] text-slate-500 text-left mt-1.5 pl-0.5">
-                Format password alumni: <span className="font-semibold text-slate-700">alumni#3digitnisn</span> (contoh: <code className="font-mono text-blue-700 font-bold">alumni#847</code>)
-              </p>
 
               {/* Submit Button */}
               <button

@@ -8,7 +8,16 @@ import { Input } from "@/components/ui/Input";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Button } from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
-import { Search, Building, MapPin, Lock, ShieldCheck } from "lucide-react";
+import {
+  Search,
+  Building,
+  MapPin,
+  Lock,
+  ShieldCheck,
+  MessageCircle,
+  Mail,
+  ExternalLink,
+} from "lucide-react";
 import { JobDetailModal } from "./loker/JobDetailModal";
 import { JobReferralModal } from "./loker/JobReferralModal";
 import { JobGatekeeperModal } from "./loker/JobGatekeeperModal";
@@ -235,11 +244,11 @@ export const LokerTab: React.FC<LokerTabProps> = ({
                   className={`flex-1 font-semibold ${
                     isTracerDone
                       ? "bg-blue-600 hover:bg-blue-700"
-                      : "bg-slate-700 hover:bg-slate-800 text-white"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
                   }`}
                 >
                   {!isTracerDone && (
-                    <Lock className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
+                    <Lock className="w-3.5 h-3.5 mr-1.5 text-white" />
                   )}
                   <span>Daftar</span>
                 </Button>
