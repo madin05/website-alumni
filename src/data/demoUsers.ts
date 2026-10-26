@@ -47,11 +47,11 @@ const RAW_DEMO_NAMES: Array<{
   { nama: 'Wahyu Hidayat', jurusan: 'Teknik dan Bisnis Sepeda Motor', jurusanShort: 'TBSM', gender: 'L', tahun: 2023, status: 'BELUM' },
   { nama: 'Wulan Dari', jurusan: 'Teknik Elektronika Industri', jurusanShort: 'EL', gender: 'P', tahun: 2024, status: 'BELUM' },
   { nama: 'Yoga Pratama', jurusan: 'Teknik Komputer dan Jaringan', jurusanShort: 'TKJ', gender: 'L', tahun: 2023, status: 'BELUM' },
-  { nama: 'Zahra Amalia', jurusan: 'Teknik Pemesinan', jurusanShort: 'TPM', gender: 'P', tahun: 2024, status: 'SUDAH' },
-  { nama: 'Dimas Saputra', jurusan: 'Teknik Instalasi Tenaga Listrik', jurusanShort: 'TITL', gender: 'L', tahun: 2024, status: 'SUDAH' },
-  { nama: 'Anisa Rahma', jurusan: 'Teknik Kendaraan Ringan Otomotif', jurusanShort: 'TKRO', gender: 'P', tahun: 2023, status: 'SUDAH' },
-  { nama: 'Rizky Fauzi', jurusan: 'Teknik dan Bisnis Sepeda Motor', jurusanShort: 'TBSM', gender: 'L', tahun: 2024, status: 'SUDAH' },
-  { nama: 'Tiara Shabila', jurusan: 'Teknik Elektronika Industri', jurusanShort: 'EL', gender: 'P', tahun: 2024, status: 'SUDAH' },
+  { nama: 'Zahra Amalia', jurusan: 'Teknik Pemesinan', jurusanShort: 'TPM', gender: 'P', tahun: 2024, status: 'BELUM' },
+  { nama: 'Dimas Saputra', jurusan: 'Teknik Instalasi Tenaga Listrik', jurusanShort: 'TITL', gender: 'L', tahun: 2024, status: 'BELUM' },
+  { nama: 'Anisa Rahma', jurusan: 'Teknik Kendaraan Ringan Otomotif', jurusanShort: 'TKRO', gender: 'P', tahun: 2023, status: 'BELUM' },
+  { nama: 'Rizky Fauzi', jurusan: 'Teknik dan Bisnis Sepeda Motor', jurusanShort: 'TBSM', gender: 'L', tahun: 2024, status: 'BELUM' },
+  { nama: 'Tiara Shabila', jurusan: 'Teknik Elektronika Industri', jurusanShort: 'EL', gender: 'P', tahun: 2024, status: 'BELUM' },
 ];
 
 export const DEMO_USERS: DemoUser[] = RAW_DEMO_NAMES.map((item, index) => {
@@ -83,4 +83,22 @@ export function findDemoUser(identifier: string): DemoUser | undefined {
       u.nisn === clean ||
       u.email.toLowerCase() === clean
   );
+}
+
+export function getDemoMasterAlumniRecords() {
+  return DEMO_USERS.map((u) => ({
+    id: u.id,
+    nisn: u.nisn,
+    nik: u.nik,
+    nama: u.nama,
+    jurusan: u.jurusan as any,
+    tahunLulus: u.tahunLulus,
+    noWhatsapp: u.noWhatsapp,
+    email: u.email,
+    statusTracer: 'BELUM' as const,
+    submissionId: undefined,
+    submittedAt: undefined,
+    jenisKelamin: u.jenisKelamin,
+    createdAt: '2026-08-01T08:00:00Z',
+  }));
 }

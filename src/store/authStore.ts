@@ -95,12 +95,20 @@ async function syncWithTracerStore(user: UserSession) {
         },
       });
     } else {
+      // User baru (termasuk akun demo user01-user30): Form survey benar-benar fresh & kosong tanpa data sample mock
       useTracerStore.setState({
         isSubmitted: false,
-        lastSubmissionId: undefined,
-        lastSubmittedAt: undefined,
+        lastSubmissionId: null,
+        lastSubmittedAt: null,
+        hasStartedSurvey: false,
+        currentStep: 1,
+        status_kegiatan: '',
+        masa_tunggu: undefined,
+        detail_kerja: null,
+        detail_kuliah: null,
+        detail_usaha: null,
+        agreement: false,
         identitas: {
-          ...tracerStore.identitas,
           nama_lengkap: user.nama,
           nisn: user.nisn,
           nik: user.nik || '',
