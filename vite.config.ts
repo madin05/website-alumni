@@ -10,7 +10,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://tend-nikon-rows-mins.trycloudflare.com',
+        target: 'https://eagles-rounds-clause-omaha.trycloudflare.com',
         changeOrigin: true,
         secure: false,
       },

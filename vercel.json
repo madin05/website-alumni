@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://tend-nikon-rows-mins.trycloudflare.com/api/:path*"
+      "destination": "https://eagles-rounds-clause-omaha.trycloudflare.com/api/:path*"
     },
     {
       "source": "/(.*)",
