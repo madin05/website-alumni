@@ -10,21 +10,31 @@ export interface UserAvatarProps {
 }
 
 export const detectGenderFromName = (name?: string, explicitGender?: GenderType): 'L' | 'P' => {
+  // 1. If explicitGender is explicitly given, ALWAYS trust it!
   if (explicitGender) {
     const g = explicitGender.toString().trim().toUpperCase();
     if (g.startsWith('P') || g === 'FEMALE' || g === 'WANITA' || g === 'PEREMPUAN') return 'P';
-    return 'L';
+    if (g.startsWith('L') || g === 'MALE' || g === 'PRIA' || g === 'LAKI-LAKI') return 'L';
   }
+
+  // 2. Fallback heuristic from name only when explicitGender is undefined
   if (!name) return 'L';
-  const lower = name.toLowerCase();
-  const femaleKeywords = [
-    'siti', 'dewi', 'putri', 'annisa', 'anisa', 'nur', 'rida', 'rina', 'ayu',
+  const lower = name.toLowerCase().trim();
+  const words = lower.split(/[\s,.-]+/);
+
+  const exactFemaleWords = new Set([
+    'citra', 'kirana', 'siti', 'dewi', 'putri', 'annisa', 'anisa', 'nur', 'rida', 'rina', 'ayu',
     'nabila', 'fitri', 'rahma', 'dina', 'maya', 'linda', 'sarah', 'aulia',
     'indah', 'ratna', 'lestari', 'widya', 'tiara', 'mega', 'zahra', 'kartika',
-    'nurhaliza', 'kania', 'amalia', 'fatimah'
-  ];
-  const isFemale = femaleKeywords.some((keyword) => lower.includes(keyword));
-  return isFemale ? 'P' : 'L';
+    'nurhaliza', 'kania', 'amalia', 'fatimah', 'olivia', 'vina', 'yasmin',
+    'bella', 'gita', 'ani', 'shifa', 'syifa', 'salma', 'fathia', 'mutia',
+    'tasya', 'nadia', 'alysa', 'amanda', 'audrey', 'chika', 'chelsea', 'cantika',
+    'dinda', 'eva', 'fani', 'fanny', 'hana', 'intan', 'jessica', 'laila', 'melly',
+    'nanda', 'novi', 'novita', 'puja', 'rizka', 'safira', 'tania', 'wulan', 'yulia', 'yuliana',
+    'cut', 'kayla', 'masitoh', 'astuti', 'salsabila', 'sfella', 'pratiwi'
+  ]);
+
+  return words.some((w) => exactFemaleWords.has(w)) ? 'P' : 'L';
 };
 
 export const UserAvatar: React.FC<UserAvatarProps> = ({

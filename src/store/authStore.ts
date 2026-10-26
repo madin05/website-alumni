@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UserSession } from '@/types/tracer';
+import { detectGenderFromName } from '@/components/ui/UserAvatar';
 
 export const DASHBOARD_SESSION_TIMEOUT_MS = 60 * 60 * 1000;
 
@@ -26,11 +27,12 @@ function normalizeRole(role: string): 'alumni' | 'admin_bkk' {
 }
 
 function normalizeUser(rawUser: any): UserSession {
+  const nama = rawUser.nama || rawUser.namaLengkap || 'Alumni Sasmita';
   return {
     id: rawUser.id || `usr-${Date.now()}`,
     nisn: rawUser.nisn || '',
     nik: rawUser.nik || '',
-    nama: rawUser.nama || rawUser.namaLengkap || 'Alumni Sasmita',
+    nama,
     email: rawUser.email || '',
     noWhatsapp: rawUser.noWhatsapp || rawUser.noWhatsApp || '',
     role: normalizeRole(rawUser.role),
@@ -39,7 +41,7 @@ function normalizeUser(rawUser: any): UserSession {
     tracerStatus: (rawUser.tracerStatus || 'BELUM') as 'SUDAH' | 'BELUM' | 'DRAFT',
     submissionId: rawUser.submissionId || undefined,
     submittedAt: rawUser.submittedAt || undefined,
-    jenisKelamin: rawUser.jenisKelamin || 'L',
+    jenisKelamin: rawUser.jenisKelamin || detectGenderFromName(nama),
     avatarUrl: rawUser.avatarUrl || undefined,
   };
 }
@@ -327,6 +329,11 @@ export const useAuthStore = create<AuthState>()(
         refreshToken: state.refreshToken,
         lastDashboardActivity: state.lastDashboardActivity,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state && state.user) {
+          state.user.jenisKelamin = detectGenderFromName(state.user.nama, state.user.jenisKelamin);
+        }
+      },
     }
   )
 );

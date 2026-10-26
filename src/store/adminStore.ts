@@ -24,6 +24,7 @@ export interface MasterAlumniRecord {
   statusTracer: 'SUDAH' | 'BELUM';
   submissionId?: string;
   submittedAt?: string;
+  jenisKelamin?: 'L' | 'P';
   createdAt: string;
 }
 
@@ -47,6 +48,7 @@ export interface RespondentRecord {
   verificationNote?: string;
   verifiedAt?: string;
   verifiedBy?: string;
+  jenisKelamin?: 'L' | 'P';
   fullPayload: TracerSubmissionPayload;
 }
 
