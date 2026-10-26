@@ -15,6 +15,10 @@ pids
 *.pid
 *.seed
 *.pid.lock
+*.tmp
+*.temp
+*.bak
+*.backup
 
 # Coverage directory
 lib-cov
