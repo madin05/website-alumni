@@ -330,3 +330,10 @@
   }
 }
 
+/* Disabled Dropdown Option Styling */
+select option:disabled {
+  color: #94a3b8 !important;
+  background-color: #f1f5f9 !important;
+  cursor: not-allowed !important;
+}
+

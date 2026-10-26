@@ -62,6 +62,9 @@ export const LoginPage: React.FC = () => {
     if (found) {
       if (isUserLockedByOther(found.username, demoLocks)) {
         setError(`Akun ${found.username} sedang digunakan oleh audiens lain.`);
+        setSelectedDemoUser("");
+        setIdentifier("");
+        setPassword("");
         return;
       }
       setIdentifier(found.username);
@@ -265,7 +268,7 @@ export const LoginPage: React.FC = () => {
                     htmlFor="demo-user-selector"
                     className="text-xs font-bold text-slate-800 tracking-tight"
                   >
-                    Akun Demo Audiens (30 User)
+                    Akun Demo Audiens
                   </label>
                 </div>
                 <span className="text-[10px] font-semibold text-slate-600 bg-white px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
@@ -290,12 +293,11 @@ export const LoginPage: React.FC = () => {
                         disabled={isLocked}
                         className={
                           isLocked
-                            ? "text-slate-400 bg-slate-100 font-normal"
-                            : "text-slate-800 font-medium"
+                            ? "text-slate-400 bg-slate-100 cursor-not-allowed select-none"
+                            : "text-slate-800 font-medium cursor-pointer"
                         }
                       >
-                        {user.username} • {user.nama} ({user.jurusanShort}){" "}
-                        {isLocked ? " [🔒 Terpakai]" : " [✅ Siap]"}
+                        {user.username}
                       </option>
                     );
                   })}
