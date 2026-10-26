@@ -14,7 +14,7 @@ export const HeroSection: React.FC = () => {
         <img
           src="/bg-cto2.webp"
           alt="Banner Siswa SMK Sasmita Jaya 2"
-          fetchPriority="high"
+          {...({ fetchpriority: "high" } as React.ImgHTMLAttributes<HTMLImageElement>)}
           loading="eager"
           decoding="async"
           className="absolute inset-0 w-full h-full object-cover object-[calc(100%+40px)_center] sm:object-right lg:object-[calc(100%+60px)_center] pointer-events-none select-none"

@@ -17,7 +17,7 @@ export const App: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       {/* Auto-logout & session tracker: logs out if user is outside dashboard for > 1 hour */}
       <SessionTracker />
       {/* Scroll restoration and hash anchor navigation handler */}

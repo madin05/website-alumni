@@ -179,8 +179,8 @@ export const LoginPage: React.FC = () => {
               />
             </div>
 
-            {/* Step Label & Title */}
-            <div className="mb-5 sm:mb-6">
+            {/* Step Label & Title (Hidden on Desktop because left panel already has welcome greeting) */}
+            <div className="mb-5 sm:mb-6 lg:hidden">
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight text-center">
                 Selamat Datang
               </h2>
