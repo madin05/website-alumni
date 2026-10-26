@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { MOCK_ALUMNI_LIST } from '@/lib/mockData';
 import { useAdminStore } from '@/store/adminStore';
 import { useTracerStore } from '@/store/tracerStore';
 import { useAuthStore } from '@/store/authStore';
@@ -7,7 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { CustomSelect } from '@/components/ui/CustomSelect';
 import { UserAvatar, detectGenderFromName } from '@/components/ui/UserAvatar';
 import { Pagination } from '@/components/ui/Pagination';
-import { Users, Search, GraduationCap, Building, MapPin, Sparkles } from 'lucide-react';
+import { Search, GraduationCap, Building, MapPin } from 'lucide-react';
 
 export const AlumniTab: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -23,9 +22,24 @@ export const AlumniTab: React.FC = () => {
     setCurrentPage(1);
   }, [search, jurusanFilter]);
 
-  // Combine master alumni from admin store with mock alumni & sync filled questionnaire
+  // Hanya tampilkan data alumni yang SUDAH mengisi kuesioner tracer study (telah terlacak oleh sekolah)
   const combinedAlumniList = useMemo(() => {
-    const fromAdmin = (masterAlumni || []).map((m) => {
+    // 1. Filter master alumni yang sudah mengisi tracer study atau user aktif yang telah submit
+    const trackedMaster = (masterAlumni || []).filter((m) => {
+      const isCurrentUser =
+        (user?.nisn && (user.nisn === m.nisn || user.nik === m.nik)) ||
+        (identitas?.nisn && (identitas.nisn === m.nisn || identitas.nik === m.nik)) ||
+        (user?.nama && user.nama.toLowerCase() === m.nama.toLowerCase());
+
+      const hasCompleted =
+        m.statusTracer === 'SUDAH' ||
+        (respondents || []).some((r) => r.nisn === m.nisn || r.nik === m.nik) ||
+        (isCurrentUser && (isSubmitted || user?.tracerStatus === 'SUDAH'));
+
+      return hasCompleted;
+    });
+
+    const trackedList = trackedMaster.map((m) => {
       const resp = (respondents || []).find((r) => r.nisn === m.nisn || r.nik === m.nik);
 
       const isCurrentUser =
@@ -33,40 +47,86 @@ export const AlumniTab: React.FC = () => {
         (identitas?.nisn && (identitas.nisn === m.nisn || identitas.nik === m.nik)) ||
         (user?.nama && user.nama.toLowerCase() === m.nama.toLowerCase());
 
-      let pekerjaan = 'Alumni Terdaftar';
+      let pekerjaan = 'Bekerja';
       let kampus = '-';
       let kota = 'Tangerang Selatan';
 
       if (resp) {
-        if (resp.statusKegiatan === 'KERJA' || resp.statusKegiatan === 'KERJA_KULIAH') {
-          pekerjaan = `${resp.jabatanProdiUsaha || 'Staff'} di ${resp.instansiKampusUsaha || 'Perusahaan Mitra'}`;
+        if (resp.statusKegiatan === 'KERJA') {
+          const jab = resp.fullPayload?.detail_kerja?.jabatan || resp.jabatanProdiUsaha || 'Staff';
+          const per = resp.fullPayload?.detail_kerja?.nama_perusahaan || resp.instansiKampusUsaha || 'Perusahaan Mitra';
+          pekerjaan = `${jab} di ${per}`;
+          kampus = '-';
+          kota = resp.fullPayload?.detail_kerja?.kota_kabupaten || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
+        } else if (resp.statusKegiatan === 'KERJA_KULIAH') {
+          const jab = resp.fullPayload?.detail_kerja?.jabatan || resp.jabatanProdiUsaha?.split('/')[0]?.trim() || 'Staff';
+          const per = resp.fullPayload?.detail_kerja?.nama_perusahaan || resp.instansiKampusUsaha?.split('/')[0]?.trim() || 'Perusahaan Mitra';
+          pekerjaan = `${jab} di ${per}`;
+
+          const prodi = resp.fullPayload?.detail_kuliah?.program_studi || resp.jabatanProdiUsaha?.split('/')[1]?.trim() || 'Mahasiswa';
+          const kmp = resp.fullPayload?.detail_kuliah?.nama_kampus || resp.instansiKampusUsaha?.split('/')[1]?.trim() || 'Universitas';
+          kampus = `${prodi} di ${kmp}`;
           kota = resp.fullPayload?.detail_kerja?.kota_kabupaten || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
         } else if (resp.statusKegiatan === 'KULIAH') {
-          kampus = `${resp.jabatanProdiUsaha || 'Mahasiswa'} di ${resp.instansiKampusUsaha || 'Universitas'}`;
+          const prodi = resp.fullPayload?.detail_kuliah?.program_studi || resp.jabatanProdiUsaha || 'Mahasiswa';
+          const kmp = resp.fullPayload?.detail_kuliah?.nama_kampus || resp.instansiKampusUsaha || 'Universitas';
+          kampus = `${prodi} di ${kmp}`;
+          pekerjaan = 'Studi Lanjut (Kuliah)';
           kota = resp.fullPayload?.detail_kuliah?.alamat_kampus || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
-        } else if (resp.statusKegiatan === 'WIRAUSAHA' || resp.statusKegiatan === 'WIRAUSAHA_KULIAH') {
-          pekerjaan = `Owner ${resp.instansiKampusUsaha || 'Usaha Mandiri'}`;
+        } else if (resp.statusKegiatan === 'WIRAUSAHA') {
+          pekerjaan = `Owner ${resp.fullPayload?.detail_usaha?.nama_usaha || resp.instansiKampusUsaha || 'Usaha Mandiri'}`;
+          kampus = '-';
           kota = resp.fullPayload?.detail_usaha?.kota_usaha || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
+        } else if (resp.statusKegiatan === 'WIRAUSAHA_KULIAH') {
+          pekerjaan = `Owner ${resp.fullPayload?.detail_usaha?.nama_usaha || resp.instansiKampusUsaha?.split('/')[0]?.trim() || 'Usaha Mandiri'}`;
+          const prodi = resp.fullPayload?.detail_kuliah?.program_studi || resp.jabatanProdiUsaha?.split('/')[1]?.trim() || 'Mahasiswa';
+          const kmp = resp.fullPayload?.detail_kuliah?.nama_kampus || resp.instansiKampusUsaha?.split('/')[1]?.trim() || 'Universitas';
+          kampus = `${prodi} di ${kmp}`;
+          kota = resp.fullPayload?.detail_usaha?.kota_usaha || resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
+        } else if (resp.statusKegiatan === 'BELUM_KERJA') {
+          pekerjaan = 'Mencari Kerja / Persiapan Karir';
+          kampus = '-';
+          kota = resp.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
         }
       }
 
       // Prioritas sinkronisasi: jika ini akun yang sedang login dan sudah mengisi kuesioner tracer
       if (isCurrentUser && (isSubmitted || user?.tracerStatus === 'SUDAH')) {
         const tracerStatus = status_kegiatan || resp?.statusKegiatan || 'KERJA';
-        if (tracerStatus === 'KERJA' || tracerStatus === 'KERJA_KULIAH') {
-          const jab = detail_kerja?.jabatan || resp?.jabatanProdiUsaha || 'Junior Network Administrator';
-          const pers = detail_kerja?.nama_perusahaan || resp?.instansiKampusUsaha || 'PT Solusi Teknologi Nusantara';
+        if (tracerStatus === 'KERJA') {
+          const jab = detail_kerja?.jabatan || resp?.fullPayload?.detail_kerja?.jabatan || resp?.jabatanProdiUsaha || 'Junior Network Administrator';
+          const pers = detail_kerja?.nama_perusahaan || resp?.fullPayload?.detail_kerja?.nama_perusahaan || resp?.instansiKampusUsaha || 'PT Solusi Teknologi Nusantara';
           pekerjaan = `${jab} di ${pers}`;
+          kampus = '-';
+          kota = detail_kerja?.kota_kabupaten || resp?.fullPayload?.detail_kerja?.kota_kabupaten || 'Tangerang Selatan';
+        } else if (tracerStatus === 'KERJA_KULIAH') {
+          const jab = detail_kerja?.jabatan || resp?.fullPayload?.detail_kerja?.jabatan || 'Junior Network Administrator';
+          const pers = detail_kerja?.nama_perusahaan || resp?.fullPayload?.detail_kerja?.nama_perusahaan || 'PT Solusi Teknologi Nusantara';
+          pekerjaan = `${jab} di ${pers}`;
+          const prodi = detail_kuliah?.program_studi || resp?.fullPayload?.detail_kuliah?.program_studi || 'Teknik Informatika';
+          const kmp = detail_kuliah?.nama_kampus || resp?.fullPayload?.detail_kuliah?.nama_kampus || 'Universitas Pamulang';
+          kampus = `${prodi} di ${kmp}`;
           kota = detail_kerja?.kota_kabupaten || resp?.fullPayload?.detail_kerja?.kota_kabupaten || 'Tangerang Selatan';
         } else if (tracerStatus === 'KULIAH') {
-          const prodi = detail_kuliah?.program_studi || resp?.jabatanProdiUsaha || 'Teknik Informatika';
-          const kmp = detail_kuliah?.nama_kampus || resp?.instansiKampusUsaha || 'Universitas Pamulang';
+          const prodi = detail_kuliah?.program_studi || resp?.fullPayload?.detail_kuliah?.program_studi || resp?.jabatanProdiUsaha || 'Teknik Informatika';
+          const kmp = detail_kuliah?.nama_kampus || resp?.fullPayload?.detail_kuliah?.nama_kampus || resp?.instansiKampusUsaha || 'Universitas Pamulang';
           kampus = `${prodi} di ${kmp}`;
           pekerjaan = 'Studi Lanjut (Kuliah)';
           kota = detail_kuliah?.alamat_kampus || resp?.fullPayload?.detail_kuliah?.alamat_kampus || 'Tangerang Selatan';
-        } else if (tracerStatus === 'WIRAUSAHA' || tracerStatus === 'WIRAUSAHA_KULIAH') {
-          pekerjaan = `Owner ${detail_usaha?.nama_usaha || resp?.instansiKampusUsaha || 'Usaha Mandiri'}`;
+        } else if (tracerStatus === 'WIRAUSAHA') {
+          pekerjaan = `Owner ${detail_usaha?.nama_usaha || resp?.fullPayload?.detail_usaha?.nama_usaha || resp?.instansiKampusUsaha || 'Usaha Mandiri'}`;
+          kampus = '-';
           kota = detail_usaha?.kota_usaha || resp?.fullPayload?.detail_usaha?.kota_usaha || 'Tangerang Selatan';
+        } else if (tracerStatus === 'WIRAUSAHA_KULIAH') {
+          pekerjaan = `Owner ${detail_usaha?.nama_usaha || resp?.fullPayload?.detail_usaha?.nama_usaha || 'Usaha Mandiri'}`;
+          const prodi = detail_kuliah?.program_studi || resp?.fullPayload?.detail_kuliah?.program_studi || 'Teknik Informatika';
+          const kmp = detail_kuliah?.nama_kampus || resp?.fullPayload?.detail_kuliah?.nama_kampus || 'Universitas Pamulang';
+          kampus = `${prodi} di ${kmp}`;
+          kota = detail_usaha?.kota_usaha || resp?.fullPayload?.detail_usaha?.kota_usaha || 'Tangerang Selatan';
+        } else if (tracerStatus === 'BELUM_KERJA') {
+          pekerjaan = 'Mencari Kerja / Persiapan Karir';
+          kampus = '-';
+          kota = identitas?.kota_domisili || resp?.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
         }
       }
 
@@ -94,11 +154,68 @@ export const AlumniTab: React.FC = () => {
       };
     });
 
-    // Merge without duplicates by name
-    const seenNames = new Set(fromAdmin.map((a) => a.nama.toLowerCase()));
-    const additionalMock = MOCK_ALUMNI_LIST.filter((a) => !seenNames.has(a.nama.toLowerCase()));
+    // 2. Sertakan responden yang mungkin belum ada di masterAlumni
+    const coveredNisns = new Set(trackedMaster.map((m) => m.nisn));
+    const extraRespondents = (respondents || [])
+      .filter((r) => !coveredNisns.has(r.nisn))
+      .map((r) => {
+        let pekerjaan = 'Bekerja';
+        let kampus = '-';
+        let kota = r.fullPayload?.identitas?.kota_domisili || 'Tangerang Selatan';
 
-    return [...fromAdmin, ...additionalMock];
+        if (r.statusKegiatan === 'KERJA') {
+          const jab = r.fullPayload?.detail_kerja?.jabatan || r.jabatanProdiUsaha || 'Staff';
+          const per = r.fullPayload?.detail_kerja?.nama_perusahaan || r.instansiKampusUsaha || 'Perusahaan Mitra';
+          pekerjaan = `${jab} di ${per}`;
+          kota = r.fullPayload?.detail_kerja?.kota_kabupaten || kota;
+        } else if (r.statusKegiatan === 'KERJA_KULIAH') {
+          const jab = r.fullPayload?.detail_kerja?.jabatan || r.jabatanProdiUsaha?.split('/')[0]?.trim() || 'Staff';
+          const per = r.fullPayload?.detail_kerja?.nama_perusahaan || r.instansiKampusUsaha?.split('/')[0]?.trim() || 'Perusahaan Mitra';
+          pekerjaan = `${jab} di ${per}`;
+          const prodi = r.fullPayload?.detail_kuliah?.program_studi || r.jabatanProdiUsaha?.split('/')[1]?.trim() || 'Mahasiswa';
+          const kmp = r.fullPayload?.detail_kuliah?.nama_kampus || r.instansiKampusUsaha?.split('/')[1]?.trim() || 'Universitas';
+          kampus = `${prodi} di ${kmp}`;
+          kota = r.fullPayload?.detail_kerja?.kota_kabupaten || kota;
+        } else if (r.statusKegiatan === 'KULIAH') {
+          const prodi = r.fullPayload?.detail_kuliah?.program_studi || r.jabatanProdiUsaha || 'Mahasiswa';
+          const kmp = r.fullPayload?.detail_kuliah?.nama_kampus || r.instansiKampusUsaha || 'Universitas';
+          kampus = `${prodi} di ${kmp}`;
+          pekerjaan = 'Studi Lanjut (Kuliah)';
+          kota = r.fullPayload?.detail_kuliah?.alamat_kampus || kota;
+        } else if (r.statusKegiatan === 'WIRAUSAHA') {
+          pekerjaan = `Owner ${r.fullPayload?.detail_usaha?.nama_usaha || r.instansiKampusUsaha || 'Usaha Mandiri'}`;
+          kota = r.fullPayload?.detail_usaha?.kota_usaha || kota;
+        } else if (r.statusKegiatan === 'WIRAUSAHA_KULIAH') {
+          pekerjaan = `Owner ${r.fullPayload?.detail_usaha?.nama_usaha || r.instansiKampusUsaha?.split('/')[0]?.trim() || 'Usaha Mandiri'}`;
+          const prodi = r.fullPayload?.detail_kuliah?.program_studi || r.jabatanProdiUsaha?.split('/')[1]?.trim() || 'Mahasiswa';
+          const kmp = r.fullPayload?.detail_kuliah?.nama_kampus || r.instansiKampusUsaha?.split('/')[1]?.trim() || 'Universitas';
+          kampus = `${prodi} di ${kmp}`;
+          kota = r.fullPayload?.detail_usaha?.kota_usaha || kota;
+        } else if (r.statusKegiatan === 'BELUM_KERJA') {
+          pekerjaan = 'Mencari Kerja / Persiapan Karir';
+        }
+
+        const explicitG =
+          r.jenisKelamin ||
+          (r.fullPayload?.identitas?.jenis_kelamin?.startsWith('P')
+            ? 'P'
+            : r.fullPayload?.identitas?.jenis_kelamin?.startsWith('L')
+            ? 'L'
+            : undefined);
+
+        return {
+          nama: r.nama,
+          jurusan: r.jurusan,
+          tahunLulus: r.tahunLulus,
+          status: r.statusKegiatan,
+          pekerjaan,
+          kampus,
+          kota,
+          jenisKelamin: detectGenderFromName(r.nama, explicitG),
+        };
+      });
+
+    return [...trackedList, ...extraRespondents];
   }, [masterAlumni, respondents, isSubmitted, status_kegiatan, detail_kerja, detail_kuliah, detail_usaha, user, identitas]);
 
   const filteredAlumni = combinedAlumniList.filter((alumni) => {
@@ -126,6 +243,9 @@ export const AlumniTab: React.FC = () => {
         <h2 className="text-base sm:text-xl font-bold text-slate-900">
           Direktori & Jejaring Alumni Sasmita Jaya
         </h2>
+        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          Daftar alumni yang telah terdata melalui Tracer Study ({filteredAlumni.length} alumni terlacak).
+        </p>
       </div>
 
       {/* Filter Bar */}
