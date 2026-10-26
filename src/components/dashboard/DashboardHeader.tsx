@@ -20,6 +20,11 @@ const getGreetingName = (user: any): string => {
   const rawName = (user.nama || '').trim();
   const ident = (user.nisn || user.nik || '').trim();
 
+  // If demo user entity (e.g. "User 01", "User 02")
+  if (/^user\s*\d+/i.test(rawName) || (user.email && user.email.includes('@demo.'))) {
+    return rawName;
+  }
+
   // If name contains raw placeholder like "Alumni (0061234567)" or "Alumni NIK"
   if (!rawName || /^alumni\s*[\(/]/i.test(rawName)) {
     if (ident.includes('1234567')) return 'Ahmad Dani';
