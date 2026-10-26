@@ -9,11 +9,15 @@ import { messagesRoutes, publicMessagesRoutes } from './messages/routes.js';
 import { ijazahRoutes, publicIjazahRoutes } from './ijazah/routes.js';
 import { settingsRoutes } from './settings/routes.js';
 import { publicReportsRoutes, reportsRoutes } from './reports/routes.js';
+import { demoRoutes } from './demo/routes.js';
 import { AuthPayload } from '../core/middleware/auth.js';
 
 export async function routes(app: FastifyInstance) {
   // Auth (public)
   await app.register(authRoutes);
+
+  // Demo session locks (public)
+  await app.register(demoRoutes);
 
   // Public routes (no auth required)
   await app.register(publicMasterAlumniRoutes);

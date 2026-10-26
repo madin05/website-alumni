@@ -69,8 +69,10 @@ Thumbs.db
 # Agent / AI Scratch caches
 .agents/
 
-# Backend Isolation (Staging is Frontend Only)
-backend/
+# Backend Build Outputs & Dependencies
+backend/dist/
+backend/node_modules/
+backend/uploads/
 
 # Sensitive Data Dumps & Spreadsheets
 *.xlsx
