@@ -141,6 +141,67 @@ export const useAuthStore = create<AuthState>()(
           pwd = '3079145847';
         }
 
+        // Demo Audiens (user01 - user30) Special Handler & Device Session Lock
+        try {
+          const { findDemoUser } = await import('@/data/demoUsers');
+          const demoUser = findDemoUser(cleanIdent);
+
+          if (demoUser) {
+            const { fetchActiveDemoLocks, isUserLockedByOther, lockDemoUser } = await import('@/services/demoSessionService');
+            const locks = await fetchActiveDemoLocks();
+
+            if (isUserLockedByOther(demoUser.username, locks)) {
+              throw new Error(`Akun ${demoUser.username} (${demoUser.nama}) sedang digunakan oleh audiens lain. Silakan pilih user demo lain.`);
+            }
+
+            const pad3 = demoUser.password.replace('alumni#', '');
+            const allowedPwds = [
+              demoUser.password,
+              `alumni${pad3}`,
+              demoUser.username,
+              `${demoUser.username}#demo`,
+              demoUser.nisn,
+            ];
+
+            if (allowedPwds.includes(pwd)) {
+              await lockDemoUser(demoUser.username);
+
+              const alumniUser: UserSession = {
+                id: demoUser.id,
+                nisn: demoUser.nisn,
+                nik: demoUser.nik,
+                nama: demoUser.nama,
+                email: demoUser.email,
+                noWhatsapp: demoUser.noWhatsapp,
+                role: 'alumni',
+                jurusan: demoUser.jurusan,
+                tahun_lulus: demoUser.tahunLulus,
+                tracerStatus: demoUser.statusTracer,
+                submissionId: demoUser.statusTracer === 'SUDAH' ? `DEMO-${demoUser.username.toUpperCase()}` : undefined,
+                submittedAt: demoUser.statusTracer === 'SUDAH' ? '2026-10-24T10:00:00.000Z' : undefined,
+                jenisKelamin: demoUser.jenisKelamin,
+              };
+
+              set({
+                isAuthenticated: true,
+                user: alumniUser,
+                accessToken: `mock-access-token-${demoUser.username}`,
+                refreshToken: `mock-refresh-token-${demoUser.username}`,
+                lastDashboardActivity: Date.now(),
+              });
+              await syncWithTracerStore(alumniUser);
+              return true;
+            } else {
+              throw new Error(`Password tidak sesuai untuk akun demo ${demoUser.username}.`);
+            }
+          }
+        } catch (demoErr: any) {
+          if (demoErr?.message?.includes('sedang digunakan') || demoErr?.message?.includes('Password tidak sesuai')) {
+            throw demoErr;
+          }
+          console.warn('[AuthStore] Demo user check skipped:', demoErr);
+        }
+
         try {
           let data: any = null;
           try {
@@ -288,7 +349,22 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: async () => {
-        const { accessToken } = get();
+        const { accessToken, user } = get();
+
+        // Release demo session lock if current session is demo user
+        if (user) {
+          try {
+            const { findDemoUser } = await import('@/data/demoUsers');
+            const { unlockDemoUser } = await import('@/services/demoSessionService');
+            const demo = findDemoUser(user.nisn) || findDemoUser(user.email);
+            if (demo) {
+              await unlockDemoUser(demo.username);
+            }
+          } catch (unlockErr) {
+            console.warn('[AuthStore] Error releasing demo lock on logout:', unlockErr);
+          }
+        }
+
         try {
           if (accessToken) {
             await apiFetch('/api/v1/auth/logout', {

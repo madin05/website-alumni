@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { useAdminStore } from "@/store/adminStore";
 import { getHelpdeskWaUrl } from "@/lib/whatsapp";
-import { ArrowRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, ChevronLeft, Eye, EyeOff, ShieldCheck, Sparkles } from "lucide-react";
+import { DEMO_USERS } from "@/data/demoUsers";
+import {
+  fetchActiveDemoLocks,
+  isUserLockedByOther,
+  subscribeDemoLockChanges,
+  DemoLocksMap,
+} from "@/services/demoSessionService";
 
 export const LoginPage: React.FC = () => {
   const [identifier, setIdentifier] = useState("");
@@ -11,6 +18,8 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [demoLocks, setDemoLocks] = useState<DemoLocksMap>({});
+  const [selectedDemoUser, setSelectedDemoUser] = useState("");
 
   const { login, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
@@ -21,12 +30,63 @@ export const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    // 1. Initial fetch demo locks
+    fetchActiveDemoLocks().then(setDemoLocks);
+
+    // 2. BroadcastChannel listener (instant cross-tab sync)
+    const unsubscribe = subscribeDemoLockChanges((locks) => {
+      setDemoLocks(locks);
+    });
+
+    // 3. Polling interval (cross-device demo audience sync)
+    const interval = setInterval(() => {
+      fetchActiveDemoLocks().then(setDemoLocks);
+    }, 3000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleSelectDemoUser = (username: string) => {
+    setSelectedDemoUser(username);
+    if (!username) {
+      setIdentifier("");
+      setPassword("");
+      return;
+    }
+
+    const found = DEMO_USERS.find((u) => u.username === username);
+    if (found) {
+      if (isUserLockedByOther(found.username, demoLocks)) {
+        setError(`Akun ${found.username} sedang digunakan oleh audiens lain.`);
+        return;
+      }
+      setIdentifier(found.username);
+      setPassword(found.password);
+      setError("");
+    }
+  };
+
+  const handleClearDemo = () => {
+    setSelectedDemoUser("");
+    setIdentifier("");
+    setPassword("");
+    setError("");
+  };
+
+  const availableDemoUsersCount = DEMO_USERS.filter(
+    (u) => !isUserLockedByOther(u.username, demoLocks)
+  ).length;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!identifier.trim()) {
-      setError("Harap masukkan NISN Anda.");
+      setError("Harap masukkan NISN atau Username Anda.");
       return;
     }
 
@@ -54,8 +114,13 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleQuickDemo = () => {
-    setIdentifier("3079145847");
-    setPassword("alumni#847");
+    const firstFree = DEMO_USERS.find((u) => !isUserLockedByOther(u.username, demoLocks));
+    if (firstFree) {
+      handleSelectDemoUser(firstFree.username);
+    } else {
+      setIdentifier("3079145847");
+      setPassword("alumni#847");
+    }
   };
 
   const handleAdminDemo = () => {
@@ -191,13 +256,93 @@ export const LoginPage: React.FC = () => {
               </div>
             )}
 
+            {/* Dropdown Demo Audiens (user01 - user30) */}
+            <div className="mb-6 p-3.5 bg-gradient-to-br from-blue-50/80 via-slate-50 to-indigo-50/50 border border-blue-200/90 rounded-xl shadow-xs">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <label
+                    htmlFor="demo-user-selector"
+                    className="text-xs font-bold text-slate-800 tracking-tight"
+                  >
+                    Akun Demo Audiens (30 User)
+                  </label>
+                </div>
+                <span className="text-[10px] font-semibold text-slate-600 bg-white px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
+                  {availableDemoUsersCount} / {DEMO_USERS.length} Tersedia
+                </span>
+              </div>
+
+              <div className="relative">
+                <select
+                  id="demo-user-selector"
+                  value={selectedDemoUser}
+                  onChange={(e) => handleSelectDemoUser(e.target.value)}
+                  className="w-full text-xs py-2.5 px-3 pr-8 rounded-lg border border-slate-300 bg-white text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 transition-all cursor-pointer shadow-2xs"
+                >
+                  <option value="">-- Pilih Akun Demo (user01 - user30) --</option>
+                  {DEMO_USERS.map((user) => {
+                    const isLocked = isUserLockedByOther(user.username, demoLocks);
+                    return (
+                      <option
+                        key={user.id}
+                        value={user.username}
+                        disabled={isLocked}
+                        className={
+                          isLocked
+                            ? "text-slate-400 bg-slate-100 font-normal"
+                            : "text-slate-800 font-medium"
+                        }
+                      >
+                        {user.username} • {user.nama} ({user.jurusanShort}){" "}
+                        {isLocked ? " [🔒 Terpakai]" : " [✅ Siap]"}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              {selectedDemoUser ? (
+                <div className="mt-2 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>
+                      Password otomatis terisi untuk <strong>{selectedDemoUser}</strong>
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleClearDemo}
+                    className="text-[10px] text-slate-500 hover:text-rose-600 font-medium underline ml-2 cursor-pointer"
+                  >
+                    Reset
+                  </button>
+                </div>
+              ) : (
+                <p className="mt-1.5 text-[10.5px] text-slate-500 leading-normal">
+                  Pilih username dari dropdown, password terisi otomatis. Akun yang sedang aktif terkunci hingga user logout.
+                </p>
+              )}
+            </div>
+
             {/* Form Inputs */}
-            <form onSubmit={handleSubmit} className="mt-7 space-y-7">
+            <form onSubmit={handleSubmit} className="mt-2 space-y-7">
               <div className="material-group">
                 <input
                   type="text"
                   value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setIdentifier(val);
+                    const match = DEMO_USERS.find(
+                      (u) => u.username.toLowerCase() === val.trim().toLowerCase()
+                    );
+                    if (match) {
+                      setSelectedDemoUser(match.username);
+                    } else {
+                      setSelectedDemoUser("");
+                    }
+                  }}
                   placeholder=""
                   className="material-input"
                   required
