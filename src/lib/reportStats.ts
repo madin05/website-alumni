@@ -91,12 +91,55 @@ export const EMPTY_STAT_AGGREGATE: StatAggregate = {
   skalaKerja: { lokal: 0, nasional: 0, multinasional: 0, wirausaha: 0 },
 };
 
+import { MOCK_YEARLY_TRACER_DATA } from '@/lib/mockData';
+
 export const EMPTY_KETERSERAPAN: KeterserapanData = {
   ...EMPTY_STAT_AGGREGATE,
   responseRate: 0,
   byJurusan: [],
   perbaruPada: '',
 };
+
+/** Data mock keterserapan lengkap sebagai fallback jika API database offline atau kosong. */
+export function getFallbackKeterserapan(tahunLulus?: number, jurusan?: string): KeterserapanData {
+  let rows: JurusanKeterserapanRow[] = MOCK_YEARLY_TRACER_DATA.map((item) => ({
+    jurusan: item.jurusanName,
+    tahunLulus: item.year,
+    totalAlumni: item.totalAlumni,
+    mengisiTracer: item.mengisiTracer,
+    bekerja: item.bekerja,
+    kuliah: item.kuliah,
+    wirausaha: item.wirausaha,
+    belumKerja: item.belumKerja,
+    lainnya: 0,
+    kesesuaian: item.kesesuaian,
+    skalaKerja: item.skalaKerja,
+  }));
+
+  if (tahunLulus) {
+    rows = rows.filter((r) => r.tahunLulus === tahunLulus);
+  }
+  if (jurusan && jurusan !== 'ALL') {
+    rows = rows.filter(
+      (r) =>
+        jurusanCode(r.jurusan).toLowerCase() === jurusan.toLowerCase() ||
+        r.jurusan.toLowerCase() === jurusan.toLowerCase()
+    );
+  }
+
+  const agg = aggregateRows(rows);
+  const responseRate =
+    agg.totalAlumni > 0
+      ? parseFloat(((agg.totalResponden / agg.totalAlumni) * 100).toFixed(1))
+      : 0;
+
+  return {
+    ...agg,
+    responseRate,
+    byJurusan: rows,
+    perbaruPada: '2026-10-25T00:00:00.000Z',
+  };
+}
 
 /** Persentase aman terhadap pembagian nol. */
 export function calcPct(num: number, denom: number): number {

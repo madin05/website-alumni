@@ -8,7 +8,16 @@ import { Input } from "@/components/ui/Input";
 import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Button } from "@/components/ui/Button";
 import { Pagination } from "@/components/ui/Pagination";
-import { Search, Building, MapPin, Lock, ShieldCheck } from "lucide-react";
+import {
+  Search,
+  Building,
+  MapPin,
+  Lock,
+  ShieldCheck,
+  MessageCircle,
+  Mail,
+  ExternalLink,
+} from "lucide-react";
 import { JobDetailModal } from "./loker/JobDetailModal";
 import { JobReferralModal } from "./loker/JobReferralModal";
 import { JobGatekeeperModal } from "./loker/JobGatekeeperModal";

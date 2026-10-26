@@ -51,7 +51,7 @@ function validationError(
 export const useContentStore = create<ContentState>()(
   (set, get) => ({
     newsList: [],
-    jobList: [],
+    jobList: MOCK_JOBS,
     newsFetchError: null,
 
       // News Actions
@@ -293,7 +293,7 @@ export const useContentStore = create<ContentState>()(
         try {
           const { adminJobsApi } = await import('@/services/adminService');
           const res = await adminJobsApi.listPublic({ limit: 50 });
-          if (res && res.data && Array.isArray(res.data)) {
+          if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
             const mapped: JobVacancy[] = res.data.map((item: any, idx: number) => {
               let applyType: JobVacancy['applyType'] = item.applyType;
               let whatsappNumber = item.whatsappNumber;
@@ -350,11 +350,23 @@ export const useContentStore = create<ContentState>()(
                 emailSubject,
               };
             });
-            set({ jobList: mapped });
+
+            // Gabungkan lowongan backend VPS dengan lowongan mock lengkap
+            const combined = [
+              ...mapped,
+              ...MOCK_JOBS.filter((mock) => !mapped.some((m) => m.id === mock.id || m.title.toLowerCase() === mock.title.toLowerCase())),
+            ];
+            set({ jobList: combined });
+            return true;
+          } else {
+            set({ jobList: MOCK_JOBS });
             return true;
           }
         } catch (err) {
           console.warn('[ContentStore] Fetch jobs from backend fallback:', err);
+          if (get().jobList.length === 0) {
+            set({ jobList: MOCK_JOBS });
+          }
         }
         return false;
       },

@@ -13,7 +13,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101001",
     "submittedAt": "2026-09-01T08:00:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-002",
@@ -27,7 +28,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101002",
     "submittedAt": "2026-09-02T09:07:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-003",
@@ -41,7 +43,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101003",
     "submittedAt": "2026-09-03T10:14:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-004",
@@ -55,7 +58,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101004",
     "submittedAt": "2026-09-04T11:21:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-005",
@@ -69,7 +73,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101005",
     "submittedAt": "2026-09-05T12:28:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-006",
@@ -83,7 +88,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101006",
     "submittedAt": "2026-09-06T13:35:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-007",
@@ -97,7 +103,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101007",
     "submittedAt": "2026-09-07T14:42:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-008",
@@ -111,7 +118,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101008",
     "submittedAt": "2026-09-08T15:49:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-009",
@@ -125,7 +133,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101009",
     "submittedAt": "2026-09-09T16:56:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-010",
@@ -139,7 +148,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101010",
     "submittedAt": "2026-09-10T17:03:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-011",
@@ -153,7 +163,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101011",
     "submittedAt": "2026-09-11T08:10:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-012",
@@ -167,7 +178,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101012",
     "submittedAt": "2026-09-12T09:17:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-013",
@@ -181,7 +193,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101013",
     "submittedAt": "2026-09-13T10:24:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-014",
@@ -195,7 +208,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101014",
     "submittedAt": "2026-09-14T11:31:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-015",
@@ -209,7 +223,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101015",
     "submittedAt": "2026-09-15T12:38:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-016",
@@ -223,7 +238,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101016",
     "submittedAt": "2026-09-16T13:45:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-017",
@@ -237,7 +253,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101017",
     "submittedAt": "2026-09-17T14:52:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-018",
@@ -251,7 +268,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101018",
     "submittedAt": "2026-09-18T15:59:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-019",
@@ -265,7 +283,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101019",
     "submittedAt": "2026-09-19T16:06:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-020",
@@ -279,7 +298,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101020",
     "submittedAt": "2026-09-20T17:13:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-021",
@@ -293,7 +313,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101021",
     "submittedAt": "2026-09-21T08:20:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-022",
@@ -307,7 +328,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101022",
     "submittedAt": "2026-09-22T09:27:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-023",
@@ -321,7 +343,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101023",
     "submittedAt": "2026-09-23T10:34:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-024",
@@ -335,7 +358,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101024",
     "submittedAt": "2026-09-24T11:41:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-025",
@@ -349,7 +373,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101025",
     "submittedAt": "2026-09-25T12:48:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-026",
@@ -363,7 +388,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101026",
     "submittedAt": "2026-09-01T13:55:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-027",
@@ -377,7 +403,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101027",
     "submittedAt": "2026-09-02T14:02:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-028",
@@ -391,7 +418,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101028",
     "submittedAt": "2026-09-03T15:09:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-029",
@@ -405,7 +433,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101029",
     "submittedAt": "2026-09-04T16:16:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-030",
@@ -419,7 +448,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101030",
     "submittedAt": "2026-09-05T17:23:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-031",
@@ -433,7 +463,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101031",
     "submittedAt": "2026-09-06T08:30:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-032",
@@ -447,7 +478,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101032",
     "submittedAt": "2026-09-07T09:37:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-033",
@@ -461,7 +493,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101033",
     "submittedAt": "2026-09-08T10:44:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-034",
@@ -475,7 +508,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101034",
     "submittedAt": "2026-09-09T11:51:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-035",
@@ -489,7 +523,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101035",
     "submittedAt": "2026-09-10T12:58:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-036",
@@ -503,7 +538,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101036",
     "submittedAt": "2026-09-11T13:05:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-037",
@@ -517,7 +553,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101037",
     "submittedAt": "2026-09-12T14:12:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-038",
@@ -531,7 +568,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101038",
     "submittedAt": "2026-09-13T15:19:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-039",
@@ -545,7 +583,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101039",
     "submittedAt": "2026-09-14T16:26:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-040",
@@ -559,7 +598,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101040",
     "submittedAt": "2026-09-15T17:33:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-041",
@@ -573,7 +613,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101041",
     "submittedAt": "2026-09-16T08:40:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-042",
@@ -587,7 +628,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101042",
     "submittedAt": "2026-09-17T09:47:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-043",
@@ -601,7 +643,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101043",
     "submittedAt": "2026-09-18T10:54:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-044",
@@ -615,7 +658,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101044",
     "submittedAt": "2026-09-19T11:01:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-045",
@@ -629,7 +673,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101045",
     "submittedAt": "2026-09-20T12:08:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-046",
@@ -643,7 +688,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101046",
     "submittedAt": "2026-09-21T13:15:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-047",
@@ -657,7 +703,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101047",
     "submittedAt": "2026-09-22T14:22:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-048",
@@ -671,7 +718,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101048",
     "submittedAt": "2026-09-23T15:29:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-049",
@@ -685,7 +733,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101049",
     "submittedAt": "2026-09-24T16:36:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-050",
@@ -699,7 +748,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101050",
     "submittedAt": "2026-09-25T17:43:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-051",
@@ -713,7 +763,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101051",
     "submittedAt": "2026-09-01T08:50:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-052",
@@ -727,7 +778,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101052",
     "submittedAt": "2026-09-02T09:57:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-053",
@@ -741,7 +793,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101053",
     "submittedAt": "2026-09-03T10:04:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-054",
@@ -755,7 +808,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101054",
     "submittedAt": "2026-09-04T11:11:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-055",
@@ -769,7 +823,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101055",
     "submittedAt": "2026-09-05T12:18:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-056",
@@ -783,7 +838,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101056",
     "submittedAt": "2026-09-06T13:25:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-057",
@@ -797,7 +853,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101057",
     "submittedAt": "2026-09-07T14:32:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-058",
@@ -811,7 +868,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101058",
     "submittedAt": "2026-09-08T15:39:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-059",
@@ -825,7 +883,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101059",
     "submittedAt": "2026-09-09T16:46:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-060",
@@ -839,7 +898,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101060",
     "submittedAt": "2026-09-10T17:53:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-061",
@@ -853,7 +913,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101061",
     "submittedAt": "2026-09-11T08:00:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-062",
@@ -867,7 +928,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101062",
     "submittedAt": "2026-09-12T09:07:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-063",
@@ -881,7 +943,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101063",
     "submittedAt": "2026-09-13T10:14:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-064",
@@ -895,7 +958,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101064",
     "submittedAt": "2026-09-14T11:21:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-065",
@@ -909,7 +973,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101065",
     "submittedAt": "2026-09-15T12:28:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-066",
@@ -923,7 +988,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101066",
     "submittedAt": "2026-09-16T13:35:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-067",
@@ -937,7 +1003,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101067",
     "submittedAt": "2026-09-17T14:42:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-068",
@@ -951,7 +1018,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101068",
     "submittedAt": "2026-09-18T15:49:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-069",
@@ -965,7 +1033,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101069",
     "submittedAt": "2026-09-19T16:56:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-070",
@@ -979,7 +1048,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101070",
     "submittedAt": "2026-09-20T17:03:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-071",
@@ -993,7 +1063,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101071",
     "submittedAt": "2026-09-21T08:10:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-072",
@@ -1007,7 +1078,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101072",
     "submittedAt": "2026-09-22T09:17:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-073",
@@ -1021,7 +1093,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101073",
     "submittedAt": "2026-09-23T10:24:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-074",
@@ -1035,7 +1108,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101074",
     "submittedAt": "2026-09-24T11:31:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-075",
@@ -1049,7 +1123,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101075",
     "submittedAt": "2026-09-25T12:38:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-076",
@@ -1063,7 +1138,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101076",
     "submittedAt": "2026-09-01T13:45:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-077",
@@ -1077,7 +1153,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101077",
     "submittedAt": "2026-09-02T14:52:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-078",
@@ -1091,7 +1168,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101078",
     "submittedAt": "2026-09-03T15:59:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-079",
@@ -1105,7 +1183,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101079",
     "submittedAt": "2026-09-04T16:06:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-080",
@@ -1119,7 +1198,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101080",
     "submittedAt": "2026-09-05T17:13:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-081",
@@ -1133,7 +1213,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101081",
     "submittedAt": "2026-09-06T08:20:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-082",
@@ -1147,7 +1228,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101082",
     "submittedAt": "2026-09-07T09:27:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-083",
@@ -1161,7 +1243,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101083",
     "submittedAt": "2026-09-08T10:34:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-084",
@@ -1175,7 +1258,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101084",
     "submittedAt": "2026-09-09T11:41:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-085",
@@ -1189,7 +1273,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101085",
     "submittedAt": "2026-09-10T12:48:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-086",
@@ -1203,7 +1288,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101086",
     "submittedAt": "2026-09-11T13:55:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-087",
@@ -1217,7 +1303,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101087",
     "submittedAt": "2026-09-12T14:02:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-088",
@@ -1231,7 +1318,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101088",
     "submittedAt": "2026-09-13T15:09:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-089",
@@ -1245,7 +1333,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101089",
     "submittedAt": "2026-09-14T16:16:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-090",
@@ -1259,7 +1348,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101090",
     "submittedAt": "2026-09-15T17:23:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-091",
@@ -1273,7 +1363,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101091",
     "submittedAt": "2026-09-16T08:30:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-092",
@@ -1287,7 +1378,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101092",
     "submittedAt": "2026-09-17T09:37:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-093",
@@ -1301,7 +1393,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101093",
     "submittedAt": "2026-09-18T10:44:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-094",
@@ -1315,7 +1408,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101094",
     "submittedAt": "2026-09-19T11:51:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-095",
@@ -1329,7 +1423,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101095",
     "submittedAt": "2026-09-20T12:58:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-096",
@@ -1343,7 +1438,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101096",
     "submittedAt": "2026-09-21T13:05:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-097",
@@ -1357,7 +1453,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101097",
     "submittedAt": "2026-09-22T14:12:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-098",
@@ -1371,7 +1468,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101098",
     "submittedAt": "2026-09-23T15:19:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-099",
@@ -1385,7 +1483,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101099",
     "submittedAt": "2026-09-24T16:26:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-100",
@@ -1399,7 +1498,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101100",
     "submittedAt": "2026-09-25T17:33:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-101",
@@ -1413,7 +1513,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101101",
     "submittedAt": "2026-09-01T08:40:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-102",
@@ -1427,7 +1528,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101102",
     "submittedAt": "2026-09-02T09:47:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-103",
@@ -1441,7 +1543,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101103",
     "submittedAt": "2026-09-03T10:54:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-104",
@@ -1455,7 +1558,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101104",
     "submittedAt": "2026-09-04T11:01:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-105",
@@ -1469,7 +1573,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101105",
     "submittedAt": "2026-09-05T12:08:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-106",
@@ -1483,7 +1588,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101106",
     "submittedAt": "2026-09-06T13:15:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-107",
@@ -1497,7 +1603,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101107",
     "submittedAt": "2026-09-07T14:22:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-108",
@@ -1511,7 +1618,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101108",
     "submittedAt": "2026-09-08T15:29:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-109",
@@ -1525,7 +1633,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101109",
     "submittedAt": "2026-09-09T16:36:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-110",
@@ -1539,7 +1648,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101110",
     "submittedAt": "2026-09-10T17:43:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-111",
@@ -1553,7 +1663,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101111",
     "submittedAt": "2026-09-11T08:50:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-112",
@@ -1567,7 +1678,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101112",
     "submittedAt": "2026-09-12T09:57:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-113",
@@ -1581,7 +1693,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101113",
     "submittedAt": "2026-09-13T10:04:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-114",
@@ -1595,7 +1708,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101114",
     "submittedAt": "2026-09-14T11:11:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-115",
@@ -1609,7 +1723,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101115",
     "submittedAt": "2026-09-15T12:18:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-116",
@@ -1623,7 +1738,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101116",
     "submittedAt": "2026-09-16T13:25:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-117",
@@ -1637,7 +1753,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101117",
     "submittedAt": "2026-09-17T14:32:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-118",
@@ -1651,7 +1768,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101118",
     "submittedAt": "2026-09-18T15:39:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-119",
@@ -1665,7 +1783,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101119",
     "submittedAt": "2026-09-19T16:46:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-120",
@@ -1679,7 +1798,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101120",
     "submittedAt": "2026-09-20T17:53:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-121",
@@ -1693,7 +1813,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101121",
     "submittedAt": "2026-09-21T08:00:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-122",
@@ -1707,7 +1828,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101122",
     "submittedAt": "2026-09-22T09:07:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-123",
@@ -1721,7 +1843,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101123",
     "submittedAt": "2026-09-23T10:14:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-124",
@@ -1735,7 +1858,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101124",
     "submittedAt": "2026-09-24T11:21:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-125",
@@ -1749,7 +1873,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101125",
     "submittedAt": "2026-09-25T12:28:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-126",
@@ -1763,7 +1888,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101126",
     "submittedAt": "2026-09-01T13:35:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-127",
@@ -1777,7 +1903,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101127",
     "submittedAt": "2026-09-02T14:42:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-128",
@@ -1791,7 +1918,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101128",
     "submittedAt": "2026-09-03T15:49:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-129",
@@ -1805,7 +1933,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101129",
     "submittedAt": "2026-09-04T16:56:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-130",
@@ -1819,7 +1948,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101130",
     "submittedAt": "2026-09-05T17:03:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-131",
@@ -1833,7 +1963,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101131",
     "submittedAt": "2026-09-06T08:10:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-132",
@@ -1847,7 +1978,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101132",
     "submittedAt": "2026-09-07T09:17:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-133",
@@ -1861,7 +1993,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101133",
     "submittedAt": "2026-09-08T10:24:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-134",
@@ -1875,7 +2008,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101134",
     "submittedAt": "2026-09-09T11:31:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-135",
@@ -1889,7 +2023,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101135",
     "submittedAt": "2026-09-10T12:38:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-136",
@@ -1903,7 +2038,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101136",
     "submittedAt": "2026-09-11T13:45:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-137",
@@ -1917,7 +2053,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101137",
     "submittedAt": "2026-09-12T14:52:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-138",
@@ -1931,7 +2068,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101138",
     "submittedAt": "2026-09-13T15:59:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-139",
@@ -1945,7 +2083,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101139",
     "submittedAt": "2026-09-14T16:06:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-140",
@@ -1959,7 +2098,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101140",
     "submittedAt": "2026-09-15T17:13:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-141",
@@ -1973,7 +2113,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101141",
     "submittedAt": "2026-09-16T08:20:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-142",
@@ -1987,7 +2128,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101142",
     "submittedAt": "2026-09-17T09:27:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-143",
@@ -2001,7 +2143,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101143",
     "submittedAt": "2026-09-18T10:34:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-144",
@@ -2015,7 +2158,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101144",
     "submittedAt": "2026-09-19T11:41:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-145",
@@ -2029,7 +2173,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101145",
     "submittedAt": "2026-09-20T12:48:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-146",
@@ -2043,7 +2188,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101146",
     "submittedAt": "2026-09-21T13:55:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-147",
@@ -2057,7 +2203,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101147",
     "submittedAt": "2026-09-22T14:02:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-148",
@@ -2071,7 +2218,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101148",
     "submittedAt": "2026-09-23T15:09:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-149",
@@ -2085,7 +2233,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101149",
     "submittedAt": "2026-09-24T16:16:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-150",
@@ -2099,7 +2248,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101150",
     "submittedAt": "2026-09-25T17:23:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-151",
@@ -2113,7 +2263,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101151",
     "submittedAt": "2026-09-01T08:30:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-152",
@@ -2127,7 +2278,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101152",
     "submittedAt": "2026-09-02T09:37:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-153",
@@ -2141,7 +2293,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101153",
     "submittedAt": "2026-09-03T10:44:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-154",
@@ -2155,7 +2308,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101154",
     "submittedAt": "2026-09-04T11:51:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-155",
@@ -2169,7 +2323,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101155",
     "submittedAt": "2026-09-05T12:58:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-156",
@@ -2183,7 +2338,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101156",
     "submittedAt": "2026-09-06T13:05:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-157",
@@ -2197,7 +2353,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101157",
     "submittedAt": "2026-09-07T14:12:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-158",
@@ -2211,7 +2368,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101158",
     "submittedAt": "2026-09-08T15:19:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-159",
@@ -2225,7 +2383,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101159",
     "submittedAt": "2026-09-09T16:26:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-160",
@@ -2239,7 +2398,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101160",
     "submittedAt": "2026-09-10T17:33:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-161",
@@ -2253,7 +2413,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101161",
     "submittedAt": "2026-09-11T08:40:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-162",
@@ -2267,7 +2428,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101162",
     "submittedAt": "2026-09-12T09:47:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-163",
@@ -2281,7 +2443,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101163",
     "submittedAt": "2026-09-13T10:54:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-164",
@@ -2295,7 +2458,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101164",
     "submittedAt": "2026-09-14T11:01:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-165",
@@ -2309,7 +2473,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101165",
     "submittedAt": "2026-09-15T12:08:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-166",
@@ -2323,7 +2488,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101166",
     "submittedAt": "2026-09-16T13:15:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-167",
@@ -2337,7 +2503,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101167",
     "submittedAt": "2026-09-17T14:22:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-168",
@@ -2351,7 +2518,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101168",
     "submittedAt": "2026-09-18T15:29:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-169",
@@ -2365,7 +2533,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101169",
     "submittedAt": "2026-09-19T16:36:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-170",
@@ -2379,7 +2548,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101170",
     "submittedAt": "2026-09-20T17:43:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-171",
@@ -2393,7 +2563,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101171",
     "submittedAt": "2026-09-21T08:50:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-172",
@@ -2407,7 +2578,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101172",
     "submittedAt": "2026-09-22T09:57:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-173",
@@ -2421,7 +2593,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101173",
     "submittedAt": "2026-09-23T10:04:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-174",
@@ -2435,7 +2608,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101174",
     "submittedAt": "2026-09-24T11:11:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-175",
@@ -2449,7 +2623,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101175",
     "submittedAt": "2026-09-25T12:18:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-176",
@@ -2463,7 +2638,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101176",
     "submittedAt": "2026-09-01T13:25:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-177",
@@ -2477,7 +2653,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101177",
     "submittedAt": "2026-09-02T14:32:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-178",
@@ -2491,7 +2668,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101178",
     "submittedAt": "2026-09-03T15:39:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-179",
@@ -2505,7 +2683,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101179",
     "submittedAt": "2026-09-04T16:46:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-180",
@@ -2519,7 +2698,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101180",
     "submittedAt": "2026-09-05T17:53:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-181",
@@ -2533,7 +2713,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101181",
     "submittedAt": "2026-09-06T08:00:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-182",
@@ -2547,7 +2728,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101182",
     "submittedAt": "2026-09-07T09:07:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-183",
@@ -2561,7 +2743,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101183",
     "submittedAt": "2026-09-08T10:14:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-184",
@@ -2575,7 +2758,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101184",
     "submittedAt": "2026-09-09T11:21:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-185",
@@ -2589,7 +2773,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101185",
     "submittedAt": "2026-09-10T12:28:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-186",
@@ -2603,7 +2788,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101186",
     "submittedAt": "2026-09-11T13:35:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-187",
@@ -2617,7 +2803,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101187",
     "submittedAt": "2026-09-12T14:42:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-188",
@@ -2631,7 +2818,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101188",
     "submittedAt": "2026-09-13T15:49:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-189",
@@ -2645,7 +2833,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101189",
     "submittedAt": "2026-09-14T16:56:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-190",
@@ -2659,7 +2848,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101190",
     "submittedAt": "2026-09-15T17:03:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-191",
@@ -2673,7 +2863,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101191",
     "submittedAt": "2026-09-16T08:10:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-192",
@@ -2687,7 +2878,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101192",
     "submittedAt": "2026-09-17T09:17:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-193",
@@ -2701,7 +2893,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101193",
     "submittedAt": "2026-09-18T10:24:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-194",
@@ -2715,7 +2908,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101194",
     "submittedAt": "2026-09-19T11:31:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-195",
@@ -2729,7 +2923,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101195",
     "submittedAt": "2026-09-20T12:38:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-196",
@@ -2743,7 +2938,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101196",
     "submittedAt": "2026-09-21T13:45:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-197",
@@ -2757,7 +2953,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101197",
     "submittedAt": "2026-09-22T14:52:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-198",
@@ -2771,7 +2968,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101198",
     "submittedAt": "2026-09-23T15:59:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-199",
@@ -2785,7 +2983,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101199",
     "submittedAt": "2026-09-24T16:06:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-200",
@@ -2799,7 +2998,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101200",
     "submittedAt": "2026-09-25T17:13:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-201",
@@ -2813,7 +3013,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101201",
     "submittedAt": "2026-09-01T08:20:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-202",
@@ -2827,7 +3028,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101202",
     "submittedAt": "2026-09-02T09:27:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-203",
@@ -2841,7 +3043,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101203",
     "submittedAt": "2026-09-03T10:34:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-204",
@@ -2855,7 +3058,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101204",
     "submittedAt": "2026-09-04T11:41:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-205",
@@ -2869,7 +3073,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101205",
     "submittedAt": "2026-09-05T12:48:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-206",
@@ -2883,7 +3088,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101206",
     "submittedAt": "2026-09-06T13:55:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-207",
@@ -2897,7 +3103,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101207",
     "submittedAt": "2026-09-07T14:02:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-208",
@@ -2911,7 +3118,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101208",
     "submittedAt": "2026-09-08T15:09:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-209",
@@ -2925,7 +3133,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101209",
     "submittedAt": "2026-09-09T16:16:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-210",
@@ -2939,7 +3148,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101210",
     "submittedAt": "2026-09-10T17:23:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-211",
@@ -2953,7 +3163,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101211",
     "submittedAt": "2026-09-11T08:30:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-212",
@@ -2967,7 +3178,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101212",
     "submittedAt": "2026-09-12T09:37:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-213",
@@ -2981,7 +3193,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101213",
     "submittedAt": "2026-09-13T10:44:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-214",
@@ -2995,7 +3208,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101214",
     "submittedAt": "2026-09-14T11:51:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-215",
@@ -3009,7 +3223,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101215",
     "submittedAt": "2026-09-15T12:58:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-216",
@@ -3023,7 +3238,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101216",
     "submittedAt": "2026-09-16T13:05:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-217",
@@ -3037,7 +3253,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101217",
     "submittedAt": "2026-09-17T14:12:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-218",
@@ -3051,7 +3268,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101218",
     "submittedAt": "2026-09-18T15:19:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-219",
@@ -3065,7 +3283,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101219",
     "submittedAt": "2026-09-19T16:26:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-220",
@@ -3079,7 +3298,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101220",
     "submittedAt": "2026-09-20T17:33:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-221",
@@ -3093,7 +3313,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "statusTracer": "SUDAH",
     "submissionId": "2026101221",
     "submittedAt": "2026-09-21T08:40:00.000Z",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-222",
@@ -3105,7 +3326,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000000",
     "email": "dindaayumaharani@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-223",
@@ -3117,7 +3339,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000001",
     "email": "riankurniawan@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-224",
@@ -3129,7 +3352,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000002",
     "email": "bambangtriatmojo@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-225",
@@ -3141,7 +3365,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000003",
     "email": "fajarnugraha@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-226",
@@ -3153,7 +3378,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000004",
     "email": "gilangramadhan@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-227",
@@ -3165,7 +3391,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000005",
     "email": "hendragunawan@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-228",
@@ -3177,7 +3404,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000006",
     "email": "indahpermatasari@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-229",
@@ -3189,7 +3417,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000007",
     "email": "jokosusilo@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-230",
@@ -3201,7 +3430,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000008",
     "email": "kikifatmawati@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-231",
@@ -3213,7 +3443,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000009",
     "email": "lukmanhakim@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-232",
@@ -3225,7 +3456,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000010",
     "email": "megautami@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-233",
@@ -3237,7 +3469,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000011",
     "email": "nandapratama@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-234",
@@ -3249,7 +3482,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000012",
     "email": "okisetiawan@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-235",
@@ -3261,7 +3495,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000013",
     "email": "putrirahmadani@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-236",
@@ -3273,7 +3508,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000014",
     "email": "qorialamsyah@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-237",
@@ -3285,7 +3521,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000015",
     "email": "rezafahlevi@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-238",
@@ -3297,7 +3534,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000016",
     "email": "sitinurhaliza@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-239",
@@ -3309,7 +3547,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000017",
     "email": "taufikhidayat@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-240",
@@ -3321,7 +3560,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000018",
     "email": "umarbakri@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-241",
@@ -3333,7 +3573,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000019",
     "email": "vinapanduwinata@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-242",
@@ -3345,7 +3586,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000020",
     "email": "wahyusaputra@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-243",
@@ -3357,7 +3599,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000021",
     "email": "yogiprasetyo@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-244",
@@ -3369,7 +3612,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000022",
     "email": "zainalabidin@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-245",
@@ -3381,7 +3625,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000023",
     "email": "adityapratama@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-246",
@@ -3393,7 +3638,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000024",
     "email": "bayusegara@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-247",
@@ -3404,8 +3650,11 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "tahunLulus": 2025,
     "noWhatsapp": "081310000025",
     "email": "citrakirana@gmail.com",
-    "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "statusTracer": "SUDAH",
+    "submissionId": "2026101247",
+    "submittedAt": "2026-09-25T09:30:00.000Z",
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "P"
   },
   {
     "id": "mst-248",
@@ -3417,7 +3666,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000026",
     "email": "donisalman@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-249",
@@ -3429,7 +3679,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000027",
     "email": "ekoyulianto@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   },
   {
     "id": "mst-250",
@@ -3441,7 +3692,8 @@ export const INITIAL_MASTER_ALUMNI: MasterAlumniRecord[] = [
     "noWhatsapp": "081310000028",
     "email": "firmansyahputra@gmail.com",
     "statusTracer": "BELUM",
-    "createdAt": "2026-08-01T08:00:00Z"
+    "createdAt": "2026-08-01T08:00:00Z",
+    "jenisKelamin": "L"
   }
 ];
 
@@ -3518,7 +3770,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-002",
@@ -3578,7 +3831,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-003",
@@ -3638,7 +3892,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-004",
@@ -3708,7 +3963,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-005",
@@ -3778,7 +4034,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-006",
@@ -3848,7 +4105,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-007",
@@ -3918,7 +4176,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-008",
@@ -3993,7 +4252,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-009",
@@ -4062,7 +4322,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-010",
@@ -4137,7 +4398,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-011",
@@ -4206,7 +4468,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-012",
@@ -4273,7 +4536,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-013",
@@ -4346,7 +4610,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-014",
@@ -4413,7 +4678,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-015",
@@ -4480,7 +4746,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-016",
@@ -4549,7 +4816,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-017",
@@ -4618,7 +4886,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-018",
@@ -4687,7 +4956,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-019",
@@ -4762,7 +5032,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-020",
@@ -4829,7 +5100,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-021",
@@ -4898,7 +5170,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-022",
@@ -4967,7 +5240,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-023",
@@ -5036,7 +5310,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-024",
@@ -5111,7 +5386,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-025",
@@ -5169,7 +5445,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-026",
@@ -5242,7 +5519,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-027",
@@ -5311,7 +5589,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-028",
@@ -5384,7 +5663,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-029",
@@ -5444,7 +5724,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-030",
@@ -5514,7 +5795,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-031",
@@ -5574,7 +5856,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-032",
@@ -5644,7 +5927,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-033",
@@ -5720,7 +6004,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-034",
@@ -5780,7 +6065,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-035",
@@ -5850,7 +6136,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-036",
@@ -5920,7 +6207,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-037",
@@ -5994,7 +6282,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-038",
@@ -6054,7 +6343,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-039",
@@ -6121,7 +6411,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-040",
@@ -6197,7 +6488,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-041",
@@ -6267,7 +6559,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-042",
@@ -6337,7 +6630,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-043",
@@ -6407,7 +6701,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-044",
@@ -6474,7 +6769,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-045",
@@ -6544,7 +6840,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-046",
@@ -6614,7 +6911,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-047",
@@ -6687,7 +6985,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-048",
@@ -6757,7 +7056,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-049",
@@ -6824,7 +7124,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-050",
@@ -6893,7 +7194,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-051",
@@ -6966,7 +7268,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-052",
@@ -7039,7 +7342,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-053",
@@ -7108,7 +7412,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-054",
@@ -7177,7 +7482,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-055",
@@ -7250,7 +7556,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-056",
@@ -7325,7 +7632,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-057",
@@ -7394,7 +7702,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-058",
@@ -7461,7 +7770,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-059",
@@ -7534,7 +7844,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-060",
@@ -7609,7 +7920,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-061",
@@ -7676,7 +7988,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-062",
@@ -7743,7 +8056,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-063",
@@ -7818,7 +8132,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-064",
@@ -7891,7 +8206,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-065",
@@ -7966,7 +8282,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-066",
@@ -8039,7 +8356,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-067",
@@ -8106,7 +8424,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-068",
@@ -8175,7 +8494,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-069",
@@ -8244,7 +8564,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-070",
@@ -8317,7 +8638,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-071",
@@ -8386,7 +8708,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-072",
@@ -8461,7 +8784,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-073",
@@ -8534,7 +8858,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-074",
@@ -8609,7 +8934,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-075",
@@ -8684,7 +9010,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-076",
@@ -8753,7 +9080,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-077",
@@ -8826,7 +9154,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-078",
@@ -8895,7 +9224,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-079",
@@ -8968,7 +9298,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-080",
@@ -9035,7 +9366,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-081",
@@ -9104,7 +9436,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-082",
@@ -9179,7 +9512,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-083",
@@ -9248,7 +9582,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-084",
@@ -9321,7 +9656,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-085",
@@ -9388,7 +9724,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-086",
@@ -9457,7 +9794,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-087",
@@ -9526,7 +9864,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-088",
@@ -9595,7 +9934,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-089",
@@ -9668,7 +10008,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-090",
@@ -9741,7 +10082,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-091",
@@ -9814,7 +10156,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-092",
@@ -9887,7 +10230,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-093",
@@ -9956,7 +10300,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-094",
@@ -10031,7 +10376,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-095",
@@ -10104,7 +10450,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-096",
@@ -10179,7 +10526,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-097",
@@ -10252,7 +10600,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-098",
@@ -10321,7 +10670,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-099",
@@ -10396,7 +10746,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-100",
@@ -10469,7 +10820,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-101",
@@ -10538,7 +10890,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-102",
@@ -10605,7 +10958,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-103",
@@ -10680,7 +11034,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-104",
@@ -10740,7 +11095,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-105",
@@ -10815,7 +11171,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-106",
@@ -10885,7 +11242,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-107",
@@ -10945,7 +11303,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-108",
@@ -11012,7 +11371,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-109",
@@ -11080,7 +11440,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-110",
@@ -11155,7 +11516,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-111",
@@ -11230,7 +11592,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-112",
@@ -11300,7 +11663,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-113",
@@ -11370,7 +11734,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-114",
@@ -11430,7 +11795,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-115",
@@ -11500,7 +11866,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-116",
@@ -11567,7 +11934,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-117",
@@ -11627,7 +11995,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-118",
@@ -11703,7 +12072,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-119",
@@ -11778,7 +12148,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-120",
@@ -11847,7 +12218,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-121",
@@ -11920,7 +12292,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-122",
@@ -11995,7 +12368,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-123",
@@ -12062,7 +12436,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-124",
@@ -12137,7 +12512,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-125",
@@ -12212,7 +12588,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-126",
@@ -12281,7 +12658,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-127",
@@ -12356,7 +12734,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-128",
@@ -12431,7 +12810,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-129",
@@ -12506,7 +12886,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-130",
@@ -12581,7 +12962,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-131",
@@ -12656,7 +13038,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-132",
@@ -12725,7 +13108,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-133",
@@ -12798,7 +13182,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-134",
@@ -12873,7 +13258,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-135",
@@ -12948,7 +13334,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-136",
@@ -13023,7 +13410,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-137",
@@ -13098,7 +13486,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-138",
@@ -13173,7 +13562,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-139",
@@ -13248,7 +13638,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-140",
@@ -13323,7 +13714,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-141",
@@ -13399,7 +13791,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-142",
@@ -13475,7 +13868,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-143",
@@ -13551,7 +13945,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-144",
@@ -13627,7 +14022,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-145",
@@ -13701,7 +14097,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-146",
@@ -13777,7 +14174,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-147",
@@ -13847,7 +14245,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-148",
@@ -13923,7 +14322,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-149",
@@ -13999,7 +14399,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-150",
@@ -14075,7 +14476,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-151",
@@ -14151,7 +14553,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-152",
@@ -14227,7 +14630,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-153",
@@ -14303,7 +14707,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-154",
@@ -14378,7 +14783,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-155",
@@ -14451,7 +14857,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-156",
@@ -14518,7 +14925,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-157",
@@ -14591,7 +14999,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-158",
@@ -14666,7 +15075,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-159",
@@ -14741,7 +15151,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-160",
@@ -14816,7 +15227,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-161",
@@ -14891,7 +15303,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-162",
@@ -14966,7 +15379,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-163",
@@ -15041,7 +15455,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-164",
@@ -15116,7 +15531,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-165",
@@ -15191,7 +15607,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-166",
@@ -15266,7 +15683,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-167",
@@ -15341,7 +15759,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-168",
@@ -15416,7 +15835,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-169",
@@ -15489,7 +15909,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-170",
@@ -15564,7 +15985,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-171",
@@ -15639,7 +16061,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-172",
@@ -15714,7 +16137,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-173",
@@ -15789,7 +16213,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-174",
@@ -15864,7 +16289,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-175",
@@ -15934,7 +16360,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-176",
@@ -16009,7 +16436,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-177",
@@ -16079,7 +16507,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-178",
@@ -16154,7 +16583,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-179",
@@ -16229,7 +16659,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-180",
@@ -16304,7 +16735,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-181",
@@ -16377,7 +16809,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-182",
@@ -16452,7 +16885,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-183",
@@ -16527,7 +16961,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-184",
@@ -16602,7 +17037,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-185",
@@ -16677,7 +17113,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-186",
@@ -16752,7 +17189,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-187",
@@ -16819,7 +17257,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-188",
@@ -16894,7 +17333,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-189",
@@ -16969,7 +17409,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-190",
@@ -17044,7 +17485,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-191",
@@ -17119,7 +17561,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-192",
@@ -17194,7 +17637,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-193",
@@ -17267,7 +17711,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-194",
@@ -17342,7 +17787,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "P"
   },
   {
     "id": "rsp-195",
@@ -17417,7 +17863,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-196",
@@ -17492,7 +17939,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-197",
@@ -17559,7 +18007,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-198",
@@ -17626,7 +18075,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-199",
@@ -17695,7 +18145,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-200",
@@ -17764,7 +18215,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-201",
@@ -17831,7 +18283,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-202",
@@ -17898,7 +18351,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-203",
@@ -17967,7 +18421,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-204",
@@ -18042,7 +18497,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-205",
@@ -18107,7 +18563,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-206",
@@ -18182,7 +18639,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-207",
@@ -18257,7 +18715,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-208",
@@ -18326,7 +18785,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-209",
@@ -18401,7 +18861,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-210",
@@ -18476,7 +18937,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-211",
@@ -18551,7 +19013,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-212",
@@ -18627,7 +19090,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-213",
@@ -18703,7 +19167,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-214",
@@ -18779,7 +19244,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-215",
@@ -18855,7 +19321,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-216",
@@ -18931,7 +19398,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-217",
@@ -18996,7 +19464,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-218",
@@ -19063,7 +19532,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-219",
@@ -19130,7 +19600,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-220",
@@ -19190,7 +19661,8 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
   },
   {
     "id": "rsp-221",
@@ -19257,6 +19729,78 @@ export const INITIAL_RESPONDENTS: RespondentRecord[] = [
         "saran_industri": "Terus tingkatkan kerjasama dengan perusahaan multinasional.",
         "kesediaan_dihubungi": true
       }
-    }
+    },
+    "jenisKelamin": "L"
+  },
+  {
+    "id": "rsp-247",
+    "submissionId": "2026101247",
+    "nisn": "0078912366",
+    "nik": "3674013000000025",
+    "nama": "Citra Kirana",
+    "jurusan": "Teknik Komputer dan Jaringan",
+    "tahunLulus": 2025,
+    "noWhatsapp": "081310000025",
+    "email": "citrakirana@gmail.com",
+    "statusKegiatan": "KERJA_KULIAH",
+    "instansiKampusUsaha": "PT Solusi Teknologi Nusantara / Universitas Pamulang",
+    "jabatanProdiUsaha": "Junior Network Administrator / Teknik Informatika",
+    "submittedAt": "2026-09-25T09:30:00.000Z",
+    "verificationStatus": "VALID",
+    "verifiedAt": "2026-09-25T09:30:00.000Z",
+    "verifiedBy": "Admin BKK Sasmita",
+    "fullPayload": {
+      "identitas": {
+        "nama_lengkap": "Citra Kirana",
+        "nisn": "0078912366",
+        "nik": "3674013000000025",
+        "tahun_lulus": 2025,
+        "jurusan": "Teknik Komputer dan Jaringan",
+        "tahun_masuk": 2022,
+        "no_whatsapp": "081310000025",
+        "email": "citrakirana@gmail.com",
+        "jenis_kelamin": "Perempuan",
+        "status_menikah": "Belum Menikah",
+        "usia": 19,
+        "provinsi_domisili": "Prov. Banten",
+        "kota_domisili": "Kota Tangerang Selatan"
+      },
+      "status_kegiatan": "KERJA_KULIAH",
+      "masa_tunggu": "1",
+      "detail_kerja": {
+        "nama_perusahaan": "PT Solusi Teknologi Nusantara",
+        "jabatan": "Junior Network Administrator",
+        "bidang_pekerjaan": "Teknologi Informasi & Jaringan",
+        "kota_kabupaten": "Kota Tangerang Selatan",
+        "kota_kerja": "Kota Tangerang Selatan",
+        "provinsi_kerja": "Prov. Banten",
+        "lokasi_pekerjaan": "DALAM_NEGERI",
+        "negara_kerja": "Indonesia",
+        "kesesuaian_jurusan": "SANGAT_SESUAI"
+      },
+      "detail_kuliah": {
+        "nama_kampus": "Universitas Pamulang",
+        "program_studi": "Teknik Informatika",
+        "jenjang": "S1",
+        "status_kuliah": "Aktif",
+        "alamat_kampus": "Jl. Surya Kencana No. 1, Pamulang, Tangerang Selatan"
+      },
+      "detail_usaha": null,
+      "evaluasi": {
+        "skor_relevansi": 5,
+        "kompetensi_bermanfaat": [
+          "Kompetensi teknis",
+          "Komputer/TIK",
+          "Kedisiplinan"
+        ],
+        "kompetensi_ditingkatkan": "Sertifikasi Jaringan Mikrotik/Cisco",
+        "bantu_dunia_kerja": "Sangat membantu",
+        "saran_pembelajaran": "Tingkatkan praktik perakitan server dan routing.",
+        "saran_bkk": "Sangat baik dalam menghubungkan ke DUDI mitra.",
+        "saran_industri": "Pertahankan kemitraan rekrutmen alumni.",
+        "kesediaan_dihubungi": true
+      }
+    },
+    "jenisKelamin": "P"
   }
 ];

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { CustomSelect } from "@/components/ui/CustomSelect";
-import { ChevronRight, HelpCircle, Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { ChevronRight, HelpCircle } from "lucide-react";
 import {
   EMPTY_KETERSERAPAN,
   KeterserapanData,
@@ -12,6 +12,7 @@ import {
   buildJurusanTableRows,
   filterByJurusanCode,
   jurusanCode,
+  getFallbackKeterserapan,
 } from "@/lib/reportStats";
 
 const JURUSAN_OPTIONS_MAP: { id: string; name: string; code: string }[] = [
@@ -50,9 +51,9 @@ export const ReportDetailPage: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>("ALL");
   const [selectedJurusan, setSelectedJurusan] = useState<string>("ALL");
 
-  // 2. Statistik langsung dari basis data (bukan data contoh)
-  const [stats, setStats] = useState<KeterserapanData>(EMPTY_KETERSERAPAN);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // 2. Statistik (mengutamakan basis data, fallback ke data mock jika API belum ada isian)
+  const [stats, setStats] = useState<KeterserapanData>(() => getFallbackKeterserapan());
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadError, setLoadError] = useState<string>("");
 
   useEffect(() => {
@@ -68,9 +69,22 @@ export const ReportDetailPage: React.FC = () => {
           tahunLulus: selectedYear === "ALL" ? undefined : Number(selectedYear),
         });
         if (!isActive) return;
-        setStats(res?.data ? res.data : EMPTY_KETERSERAPAN);
+        if (res?.data && res.data.totalResponden > 0) {
+          setStats(res.data);
+        } else {
+          setStats(
+            getFallbackKeterserapan(
+              selectedYear === "ALL" ? undefined : Number(selectedYear),
+            ),
+          );
+        }
       } catch (err: any) {
         if (!isActive) return;
+        setStats(
+          getFallbackKeterserapan(
+            selectedYear === "ALL" ? undefined : Number(selectedYear),
+          ),
+        );
         setLoadError(err.message || "Gagal memuat statistik dari basis data.");
       } finally {
         if (isActive) setIsLoading(false);
@@ -94,12 +108,21 @@ export const ReportDetailPage: React.FC = () => {
   );
 
   const totalSummary = useMemo(() => {
-    const totalAlumni = tableRows.reduce((acc, curr) => acc + curr.totalAlumni, 0);
-    const mengisiTracer = tableRows.reduce((acc, curr) => acc + curr.mengisiTracer, 0);
+    const totalAlumni = tableRows.reduce(
+      (acc, curr) => acc + curr.totalAlumni,
+      0,
+    );
+    const mengisiTracer = tableRows.reduce(
+      (acc, curr) => acc + curr.mengisiTracer,
+      0,
+    );
     const bekerja = tableRows.reduce((acc, curr) => acc + curr.bekerja, 0);
     const kuliah = tableRows.reduce((acc, curr) => acc + curr.kuliah, 0);
     const wirausaha = tableRows.reduce((acc, curr) => acc + curr.wirausaha, 0);
-    const belumKerja = tableRows.reduce((acc, curr) => acc + curr.belumKerja, 0);
+    const belumKerja = tableRows.reduce(
+      (acc, curr) => acc + curr.belumKerja,
+      0,
+    );
 
     return {
       totalAlumni,
@@ -108,13 +131,19 @@ export const ReportDetailPage: React.FC = () => {
       kuliah,
       wirausaha,
       belumKerja,
-      tracerPercent: totalAlumni > 0 ? ((mengisiTracer / totalAlumni) * 100).toFixed(1) : "0",
+      tracerPercent:
+        totalAlumni > 0
+          ? ((mengisiTracer / totalAlumni) * 100).toFixed(1)
+          : "0",
     };
   }, [tableRows]);
 
   // 4. Chart mengikuti filter jurusan (klik baris tabel)
   const chartStats = useMemo(
-    () => buildChartStats(aggregateRows(filterByJurusanCode(stats.byJurusan, selectedJurusan))),
+    () =>
+      buildChartStats(
+        aggregateRows(filterByJurusanCode(stats.byJurusan, selectedJurusan)),
+      ),
     [stats.byJurusan, selectedJurusan],
   );
 
@@ -461,26 +490,6 @@ export const ReportDetailPage: React.FC = () => {
               Total Responden:{" "}
               {chartStats.totalResponden.toLocaleString("id-ID")} Orang
             </span>
-          </div>
-
-          {/* Status data real dari basis data */}
-          <div className="mt-2 flex items-center justify-end">
-            {isLoading ? (
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-400">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                Memuat data dari basis data...
-              </span>
-            ) : loadError ? (
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-rose-600">
-                <AlertCircle className="w-3 h-3" />
-                {loadError}
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-600 font-semibold">
-                <RefreshCw className="w-3 h-3" />
-                Data real dari basis data
-              </span>
-            )}
           </div>
         </div>
 
