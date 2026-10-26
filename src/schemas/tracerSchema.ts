@@ -182,7 +182,10 @@ export const step1Schema = z
       .min(4, 'NIS / NISN wajib diisi'),
     nik: z
       .string()
-      .optional(),
+      .optional()
+      .refine((val) => !val || /^[0-9]{16}$/.test(val.trim()), {
+        message: 'NIK harus terdiri dari 16 digit angka jika diisi',
+      }),
     tahun_masuk: z
       .number()
       .min(2000, 'Tahun masuk minimal 2000')

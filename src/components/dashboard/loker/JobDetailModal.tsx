@@ -82,11 +82,11 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
               className={`w-full sm:w-auto font-semibold ${
                 isTracerDone
                   ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-slate-700 hover:bg-slate-800 text-white"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
               }`}
             >
               {!isTracerDone && (
-                <Lock className="w-3.5 h-3.5 mr-1 text-amber-300" />
+                <Lock className="w-3.5 h-3.5 mr-1 text-white" />
               )}
               <span>Daftar</span>
             </Button>

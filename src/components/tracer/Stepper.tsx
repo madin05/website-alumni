@@ -39,8 +39,8 @@ export const Stepper: React.FC<StepperProps> = ({ currentStep }) => {
       </div>
 
       {/* Mobile Bar */}
-      <div className="sm:hidden px-4 py-3 bg-blue-600 text-white flex items-center justify-between text-xs font-medium uppercase">
-        <span>STEP {currentStep} - {STEPS[currentStep - 1].title}</span>
+      <div className="sm:hidden px-4 py-3 bg-blue-600 text-white flex items-center justify-between text-xs font-medium ">
+        <span>Step {currentStep} - {STEPS[currentStep - 1].title}</span>
         <span className="text-blue-100">{currentStep} / 5</span>
       </div>
     </div>
