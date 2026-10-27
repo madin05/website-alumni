@@ -98,6 +98,14 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
+    // Validasi pencegahan jika akun demo sedang aktif di perangkat lain
+    const cleanId = identifier.trim().toLowerCase();
+    const demoFound = DEMO_USERS.find((u) => u.username.toLowerCase() === cleanId);
+    if (demoFound && isUserLockedByOther(demoFound.username, demoLocks)) {
+      setError(`Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`);
+      return;
+    }
+
     setLoading(true);
     try {
       const ok = await login(identifier, password, "alumni");
@@ -297,7 +305,7 @@ export const LoginPage: React.FC = () => {
                             : "text-slate-800 font-medium cursor-pointer"
                         }
                       >
-                        {user.username}
+                        {user.username} ({user.nama}){isLocked ? " (🔒 Sedang Digunakan)" : ""}
                       </option>
                     );
                   })}

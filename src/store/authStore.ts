@@ -159,7 +159,7 @@ export const useAuthStore = create<AuthState>()(
             const locks = await fetchActiveDemoLocks();
 
             if (isUserLockedByOther(demoUser.username, locks)) {
-              throw new Error(`Akun ${demoUser.username} (${demoUser.nama}) sedang digunakan oleh audiens lain. Silakan pilih user demo lain.`);
+              throw new Error(`Akun ${demoUser.username} (${demoUser.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`);
             }
 
             const pad3 = demoUser.password.replace('alumni#', '');
@@ -204,7 +204,11 @@ export const useAuthStore = create<AuthState>()(
             }
           }
         } catch (demoErr: any) {
-          if (demoErr?.message?.includes('sedang digunakan') || demoErr?.message?.includes('Password tidak sesuai')) {
+          if (
+            demoErr?.message?.includes('sedang aktif') ||
+            demoErr?.message?.includes('sedang digunakan') ||
+            demoErr?.message?.includes('Password tidak sesuai')
+          ) {
             throw demoErr;
           }
           console.warn('[AuthStore] Demo user check skipped:', demoErr);

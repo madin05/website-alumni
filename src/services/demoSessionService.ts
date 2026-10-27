@@ -1,12 +1,15 @@
 /**
  * Demo Session Service:
  * Mengelola penguncian akun demo (user01 - user30) agar tidak dapat digunakan
- * bersamaan oleh audiens yang berbeda secara realtime (Cross-Tab & Cloud Backend Sync).
+ * bersamaan oleh audiens yang berbeda secara realtime (Cross-Device, Cross-Tab & Cloud Sync).
  */
 
 const STORAGE_KEY = 'alumni_demo_active_locks';
 const DEVICE_KEY = 'alumni_demo_device_id';
 const LOCK_TIMEOUT_MS = 20 * 60 * 1000; // 20 Menit auto-expire jika tab ditutup tanpa logout
+
+// Universal Realtime Cloud Sync Object (Menghubungkan Laptop, HP, Tablet lintas internet)
+const CLOUD_SYNC_ENDPOINT = 'https://api.restful-api.dev/objects/ff808181a09d98f701a17b1278541dc9';
 
 export interface DemoLockInfo {
   deviceId: string;
@@ -66,29 +69,47 @@ if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
   }
 }
 
-/** Ambil seluruh daftar user demo yang sedang terkunci dari Backend & LocalStorage */
+/** Ambil seluruh daftar user demo yang sedang terkunci dari Cloud Sync, Backend & LocalStorage */
 export async function fetchActiveDemoLocks(): Promise<DemoLocksMap> {
   const local = getLocalDemoLocks();
+  let merged: DemoLocksMap = { ...local };
 
+  // 1. Ambil dari Cloud Sync (Universal Cross-Device across mobile & desktop)
+  try {
+    const cloudRes = await fetch(CLOUD_SYNC_ENDPOINT, {
+      signal: AbortSignal.timeout(2500),
+    });
+
+    if (cloudRes.ok) {
+      const cloudJson = await cloudRes.json();
+      if (cloudJson && cloudJson.data && typeof cloudJson.data === 'object') {
+        const cleanedCloud = cleanExpiredLocks(cloudJson.data);
+        merged = { ...merged, ...cleanedCloud };
+      }
+    }
+  } catch {
+    // Fallback jika offline
+  }
+
+  // 2. Ambil dari VPS Backend (jika tersedia)
   try {
     const res = await fetch('/api/v1/demo/locks', {
       headers: { 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(2000),
     });
 
     if (res.ok) {
       const json = await res.json();
       if (json && json.data && typeof json.data === 'object') {
-        const merged: DemoLocksMap = { ...local, ...cleanExpiredLocks(json.data) };
-        setLocalDemoLocks(merged);
-        return merged;
+        merged = { ...merged, ...cleanExpiredLocks(json.data) };
       }
     }
   } catch {
-    // Backend offline / tunnel issue fallback ke local sync
+    // Backend offline / tunnel fallback ke cloud sync
   }
 
-  return local;
+  setLocalDemoLocks(merged);
+  return merged;
 }
 
 /** Cek apakah user sedang terkunci oleh audiens di perangkat LAIN */
@@ -121,15 +142,28 @@ export async function lockDemoUser(username: string): Promise<boolean> {
     broadcastChannel.postMessage({ type: 'DEMO_LOCK_UPDATED', locks: current });
   }
 
+  // 1. Sync ke Cloud Sync Server (Instan untuk semua HP & Laptop)
+  try {
+    await fetch(CLOUD_SYNC_ENDPOINT, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: current }),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch {
+    // ignore
+  }
+
+  // 2. Sync ke VPS Backend
   try {
     await fetch('/api/v1/demo/lock', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(2000),
     });
   } catch {
-    // local broadcast is sufficient
+    // ignore
   }
 
   return true;
@@ -148,15 +182,28 @@ export async function unlockDemoUser(username: string): Promise<boolean> {
     broadcastChannel.postMessage({ type: 'DEMO_LOCK_UPDATED', locks: current });
   }
 
+  // 1. Sync ke Cloud Sync Server
+  try {
+    await fetch(CLOUD_SYNC_ENDPOINT, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: current }),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch {
+    // ignore
+  }
+
+  // 2. Sync ke VPS Backend
   try {
     await fetch('/api/v1/demo/unlock', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(2000),
     });
   } catch {
-    // local broadcast is sufficient
+    // ignore
   }
 
   return true;

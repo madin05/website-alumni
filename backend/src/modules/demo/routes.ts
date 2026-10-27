@@ -65,3 +65,4 @@ export async function demoRoutes(app: FastifyInstance) {
     return reply.send(successResponse(activeLocks, `Kunci akun ${cleanUser} berhasil dilepas`));
   });
 }
+
