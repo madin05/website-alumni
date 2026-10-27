@@ -98,21 +98,8 @@ export const SessionTracker: React.FC = () => {
           return;
         }
 
-        // Jika masih aktif (< 2 jam), kirim heartbeat untuk memperpanjang kunci server
-        const ok = await sendDemoHeartbeat(demoUsername);
-        if (!ok) {
-          // Kunci akun di server telah lepas atau diambil perangkat lain
-          console.warn('[SessionTracker] Heartbeat ditolak server. Melepas sesi lokal...');
-          await logout();
-          navigate('/login', {
-            replace: true,
-            state: {
-              expiredMessage:
-                'Sesi akun demo Anda telah berakhir di server. Silakan pilih akun demo lain.',
-            },
-          });
-          return;
-        }
+        // Jika masih aktif (< 2 jam), kirim sinyal heartbeat keepalive di background
+        sendDemoHeartbeat(demoUsername).catch(() => {});
       }
 
       // Jalankan pemeriksaan sesi reguler
