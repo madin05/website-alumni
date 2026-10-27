@@ -39,13 +39,24 @@ export const LoginPage: React.FC = () => {
       setDemoLocks(locks);
     });
 
-    // 3. Polling interval (cross-device demo audience sync)
+    // 3. Immediate sync on tab focus or mobile screen resume
+    const handleVisibilityOrFocus = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible') {
+        fetchActiveDemoLocks().then(setDemoLocks);
+      }
+    };
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+
+    // 4. Polling interval (cross-device demo audience sync)
     const interval = setInterval(() => {
       fetchActiveDemoLocks().then(setDemoLocks);
-    }, 3000);
+    }, 4000);
 
     return () => {
       unsubscribe();
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
       clearInterval(interval);
     };
   }, []);

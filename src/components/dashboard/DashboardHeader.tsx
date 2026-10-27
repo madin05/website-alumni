@@ -86,9 +86,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     setShowLogoutModal(true);
   };
 
-  const confirmLogout = () => {
-    logout();
-    navigate('/', { replace: true });
+  const confirmLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      setShowLogoutModal(false);
+      navigate('/', { replace: true });
+    }
   };
 
   return (

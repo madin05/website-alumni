@@ -366,9 +366,18 @@ export const useAuthStore = create<AuthState>()(
         // Release demo session lock if current session is demo user
         if (user) {
           try {
-            const { findDemoUser } = await import('@/data/demoUsers');
+            const { findDemoUser, DEMO_USERS } = await import('@/data/demoUsers');
             const { unlockDemoUser } = await import('@/services/demoSessionService');
-            const demo = findDemoUser(user.nisn) || findDemoUser(user.email);
+            let demo = findDemoUser(user.nisn) || findDemoUser(user.email);
+            if (!demo && user.nama) {
+              const cleanName = user.nama.trim().toLowerCase();
+              demo = DEMO_USERS.find(
+                (u) =>
+                  u.id === user.id ||
+                  u.nama.toLowerCase() === cleanName ||
+                  u.username.toLowerCase() === cleanName
+              );
+            }
             if (demo) {
               await unlockDemoUser(demo.username);
             }

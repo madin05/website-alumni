@@ -440,9 +440,13 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   const isAdmin = user?.role === "admin_bkk";
   const menuList = isAdmin ? ADMIN_MENU_ITEMS : ALUMNI_MENU_ITEMS;
 
-  const confirmLogout = () => {
-    logout();
-    navigate("/", { replace: true });
+  const confirmLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      setShowLogoutModal(false);
+      navigate("/", { replace: true });
+    }
   };
 
   const handleSelectTab = (tab: DashboardTab) => {
