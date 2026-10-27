@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyRequest } from "fastify";
 import { successResponse, errorResponse } from "../../core/utils/response.js";
 import * as fs from "fs";
 import * as path from "path";
@@ -8,18 +8,30 @@ interface DemoLockInfo {
   lockedAt: number;
 }
 
+type EnvScope = "production" | "development";
+
 const LOCK_TIMEOUT_MS = 20 * 60 * 1000; // 20 Menit auto-expire jika tidak ada aktivitas/heartbeat
-const activeLocks: Record<string, DemoLockInfo> = {};
 
-const LOCK_FILE = path.join(process.cwd(), "active_demo_locks.json");
+const activeLocks: Record<EnvScope, Record<string, DemoLockInfo>> = {
+  production: {},
+  development: {},
+};
 
-function loadLocksFromDisk() {
+function getLockFilePath(scope: EnvScope): string {
+  return path.join(
+    process.cwd(),
+    scope === "development" ? "active_demo_locks_dev.json" : "active_demo_locks.json"
+  );
+}
+
+function loadLocksFromDisk(scope: EnvScope) {
   try {
-    if (fs.existsSync(LOCK_FILE)) {
-      const raw = fs.readFileSync(LOCK_FILE, "utf-8");
+    const file = getLockFilePath(scope);
+    if (fs.existsSync(file)) {
+      const raw = fs.readFileSync(file, "utf-8");
       const data = JSON.parse(raw);
       if (data && typeof data === "object") {
-        Object.assign(activeLocks, data);
+        Object.assign(activeLocks[scope], data);
       }
     }
   } catch {
@@ -27,37 +39,51 @@ function loadLocksFromDisk() {
   }
 }
 
-function saveLocksToDisk() {
+function saveLocksToDisk(scope: EnvScope) {
   try {
-    fs.writeFileSync(LOCK_FILE, JSON.stringify(activeLocks), "utf-8");
+    const file = getLockFilePath(scope);
+    fs.writeFileSync(file, JSON.stringify(activeLocks[scope]), "utf-8");
   } catch {
     // ignore
   }
 }
 
 // Inisialisasi saat modul dimuat
-loadLocksFromDisk();
+loadLocksFromDisk("production");
+loadLocksFromDisk("development");
 
-function cleanExpiredLocks() {
+function getScope(request: FastifyRequest): EnvScope {
+  const envHeader = (request.headers["x-demo-env"] || "").toString().toLowerCase();
+  if (envHeader === "development" || envHeader === "dev") return "development";
+  const origin = (request.headers["origin"] || request.headers["referer"] || "").toString();
+  if (origin.includes("localhost") || origin.includes("127.0.0.1") || origin.includes("192.168.")) {
+    return "development";
+  }
+  return "production";
+}
+
+function cleanExpiredLocks(scope: EnvScope) {
   const now = Date.now();
   let changed = false;
-  for (const [user, info] of Object.entries(activeLocks)) {
+  const locks = activeLocks[scope];
+  for (const [user, info] of Object.entries(locks)) {
     if (!info || !info.lockedAt || now - info.lockedAt > LOCK_TIMEOUT_MS) {
-      delete activeLocks[user];
+      delete locks[user];
       changed = true;
     }
   }
   if (changed) {
-    saveLocksToDisk();
+    saveLocksToDisk(scope);
   }
 }
 
 export async function demoRoutes(app: FastifyInstance) {
   // GET /demo/locks
-  app.get("/demo/locks", async (_request, reply) => {
-    cleanExpiredLocks();
+  app.get("/demo/locks", async (request, reply) => {
+    const scope = getScope(request);
+    cleanExpiredLocks(scope);
     return reply.send(
-      successResponse(activeLocks, "Data sesi demo aktif berhasil diambil"),
+      successResponse(activeLocks[scope], "Data sesi demo aktif berhasil diambil"),
     );
   });
 
@@ -65,6 +91,7 @@ export async function demoRoutes(app: FastifyInstance) {
   app.post<{ Body: { username: string; deviceId: string } }>(
     "/demo/lock",
     async (request, reply) => {
+      const scope = getScope(request);
       const { username, deviceId } = request.body || {};
       if (!username || !deviceId) {
         return reply
@@ -72,11 +99,11 @@ export async function demoRoutes(app: FastifyInstance) {
           .send(errorResponse("Username dan deviceId wajib disertakan"));
       }
 
-      cleanExpiredLocks();
+      cleanExpiredLocks(scope);
       const cleanUser = username.trim().toLowerCase();
-      const existing = activeLocks[cleanUser];
+      const existing = activeLocks[scope][cleanUser];
 
-      // Cek jika akun sudah dipakai device lain
+      // Cek jika akun sudah dipakai device lain dalam scope lingkungan yang sama
       if (
         existing &&
         existing.deviceId !== deviceId &&
@@ -91,15 +118,15 @@ export async function demoRoutes(app: FastifyInstance) {
           );
       }
 
-      activeLocks[cleanUser] = {
+      activeLocks[scope][cleanUser] = {
         deviceId,
         lockedAt: Date.now(),
       };
-      saveLocksToDisk();
+      saveLocksToDisk(scope);
 
       return reply.send(
         successResponse(
-          activeLocks,
+          activeLocks[scope],
           `Akun ${cleanUser} berhasil dikunci untuk sesi ini`,
         ),
       );
@@ -110,6 +137,7 @@ export async function demoRoutes(app: FastifyInstance) {
   app.post<{ Body: { username: string; deviceId: string } }>(
     "/demo/heartbeat",
     async (request, reply) => {
+      const scope = getScope(request);
       const { username, deviceId } = request.body || {};
       if (!username || !deviceId) {
         return reply
@@ -117,15 +145,15 @@ export async function demoRoutes(app: FastifyInstance) {
           .send(errorResponse("Username dan deviceId wajib disertakan"));
       }
 
-      cleanExpiredLocks();
+      cleanExpiredLocks(scope);
       const cleanUser = username.trim().toLowerCase();
-      const existing = activeLocks[cleanUser];
+      const existing = activeLocks[scope][cleanUser];
 
       if (existing) {
         if (existing.deviceId === deviceId) {
           existing.lockedAt = Date.now();
-          saveLocksToDisk();
-          return reply.send(successResponse(activeLocks, "Heartbeat diterima"));
+          saveLocksToDisk(scope);
+          return reply.send(successResponse(activeLocks[scope], "Heartbeat diterima"));
         } else {
           return reply
             .status(409)
@@ -134,12 +162,12 @@ export async function demoRoutes(app: FastifyInstance) {
       }
 
       // Jika server sempat restart saat klien masih aktif, pulihkan kunci klien
-      activeLocks[cleanUser] = {
+      activeLocks[scope][cleanUser] = {
         deviceId,
         lockedAt: Date.now(),
       };
-      saveLocksToDisk();
-      return reply.send(successResponse(activeLocks, "Sesi demo dipulihkan"));
+      saveLocksToDisk(scope);
+      return reply.send(successResponse(activeLocks[scope], "Sesi demo dipulihkan"));
     },
   );
 
@@ -147,6 +175,7 @@ export async function demoRoutes(app: FastifyInstance) {
   app.post<{ Body: { username: string; deviceId?: string } }>(
     "/demo/unlock",
     async (request, reply) => {
+      const scope = getScope(request);
       const { username } = request.body || {};
       if (!username) {
         return reply
@@ -154,14 +183,14 @@ export async function demoRoutes(app: FastifyInstance) {
           .send(errorResponse("Username wajib disertakan"));
       }
 
-      cleanExpiredLocks();
+      cleanExpiredLocks(scope);
       const cleanUser = username.trim().toLowerCase();
-      delete activeLocks[cleanUser];
-      saveLocksToDisk();
+      delete activeLocks[scope][cleanUser];
+      saveLocksToDisk(scope);
 
       return reply.send(
         successResponse(
-          activeLocks,
+          activeLocks[scope],
           `Kunci akun ${cleanUser} berhasil dilepas`,
         ),
       );

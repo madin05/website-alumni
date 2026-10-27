@@ -17,6 +17,25 @@ export interface DemoLockInfo {
 
 export type DemoLocksMap = Record<string, DemoLockInfo>;
 
+/**
+ * Deteksi apakah aplikasi berjalan di lingkungan lokal (localhost / 127.0.0.1 / IP LAN).
+ * Sesi demo di lingkungan lokal diisolasi total (sandbox) agar pengujian developer tidak pernah
+ * mengunci akun demo audiens di production (Vercel), dan sebaliknya.
+ */
+export function isLocalEnvironment(): boolean {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname;
+  return (
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host === '[::1]' ||
+    host.endsWith('.local') ||
+    /^192\.168\.\d+\.\d+$/.test(host) ||
+    /^10\.\d+\.\d+\.\d+$/.test(host) ||
+    /^172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+$/.test(host)
+  );
+}
+
 // Cache in-memory untuk mencegah flicker/reset ke kosong saat jaringan mengalami lag spike
 let memoryLocksCache: DemoLocksMap = {};
 
@@ -110,9 +129,20 @@ function reconcileLocks(serverLocks: DemoLocksMap | null): DemoLocksMap {
  * agar akun yang sedang aktif TIDAK mendadak berubah menjadi 'Tersedia'.
  */
 export async function fetchActiveDemoLocks(): Promise<DemoLocksMap> {
+  // Lingkungan Lokal: Isolasi penuh ke tab/jendela lokal via localStorage & BroadcastChannel.
+  // Tidak mengambil kunci dari server production agar akun demo audiens tidak terpengaruh.
+  if (isLocalEnvironment()) {
+    const local = getLocalDemoLocks();
+    memoryLocksCache = { ...local };
+    return local;
+  }
+
   try {
     const res = await fetch(`${API_BASE}/api/v1/demo/locks`, {
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-demo-env': 'production',
+      },
       signal: AbortSignal.timeout(6000), // 6 Detik untuk toleransi koneksi mobile 3G/4G
     });
 
@@ -153,19 +183,47 @@ export function isUserLockedByOther(username: string, locks: DemoLocksMap): bool
 
 /**
  * Kunci username saat audiens login:
- * WAJIB MENDAPATKAN PERSETUJUAN OTORITATIF DARI SERVER FASTIFY.
- * JANGAN PERNAH meloloskan login jika server menolak (409) atau jaringan timeout!
+ * WAJIB MENDAPATKAN PERSETUJUAN OTORITATIF DARI SERVER FASTIFY (Production)
+ * atau dikelola mandiri secara instan dalam sandbox (Localhost).
  */
 export async function lockDemoUser(username: string): Promise<boolean> {
   const clean = username.toLowerCase();
   const myDeviceId = getDeviceId();
+
+  // Lingkungan Lokal: Kunci dikelola secara mandiri di browser/tab lokal.
+  // Tidak akan pernah menembak server production VPS.
+  if (isLocalEnvironment()) {
+    const local = getLocalDemoLocks();
+    if (isUserLockedByOther(clean, local)) {
+      throw new Error(
+        `Akun ${clean} sedang aktif digunakan di tab/jendela lokal lain. Silakan pilih akun demo lain.`
+      );
+    }
+
+    const current = { ...local };
+    current[clean] = {
+      deviceId: myDeviceId,
+      lockedAt: Date.now(),
+    };
+
+    setLocalDemoLocks(current);
+
+    if (broadcastChannel) {
+      broadcastChannel.postMessage({ type: 'DEMO_LOCK_UPDATED', locks: current });
+    }
+
+    return true;
+  }
 
   // 1. Kirim permintaan kunci atomik ke server Fastify dengan batas toleransi 8 detik
   let res: Response;
   try {
     res = await fetch(`${API_BASE}/api/v1/demo/lock`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-demo-env': 'production',
+      },
       body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
       signal: AbortSignal.timeout(8000),
     });
@@ -231,10 +289,22 @@ export async function sendDemoHeartbeat(username: string): Promise<boolean> {
   const clean = username.toLowerCase();
   const myDeviceId = getDeviceId();
 
+  if (isLocalEnvironment()) {
+    const local = getLocalDemoLocks();
+    if (local[clean] && local[clean].deviceId === myDeviceId) {
+      local[clean].lockedAt = Date.now();
+      setLocalDemoLocks(local);
+    }
+    return true;
+  }
+
   try {
     const res = await fetch(`${API_BASE}/api/v1/demo/heartbeat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-demo-env': 'production',
+      },
       body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
       signal: AbortSignal.timeout(5000),
     });
@@ -266,11 +336,18 @@ export async function unlockDemoUser(username: string): Promise<boolean> {
     broadcastChannel.postMessage({ type: 'DEMO_LOCK_UPDATED', locks: current });
   }
 
+  if (isLocalEnvironment()) {
+    return true;
+  }
+
   // Sync ke Backend Fastify dengan keepalive
   try {
     await fetch(`${API_BASE}/api/v1/demo/unlock`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-demo-env': 'production',
+      },
       body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
       keepalive: true,
       signal: AbortSignal.timeout(4000),
