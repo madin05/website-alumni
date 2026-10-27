@@ -1,12 +1,12 @@
 /**
  * Demo Session Service:
- * Mengelola penguncian akun demo (user01 - user30) agar tidak dapat digunakan
- * bersamaan oleh audiens yang berbeda secara realtime (Cross-Device, Cross-Tab & Cloud Sync).
+ * Mengelola penguncian akun demo (user01 - user30) secara terpusat (Server-Authoritative)
+ * dengan proteksi anti-race condition saat jaringan lambat (lag).
  */
 
 const STORAGE_KEY = 'alumni_demo_active_locks';
 const DEVICE_KEY = 'alumni_demo_device_id';
-const LOCK_TIMEOUT_MS = 20 * 60 * 1000; // 20 Menit auto-expire jika tab ditutup tanpa logout
+const LOCK_TIMEOUT_MS = 20 * 60 * 1000; // 20 Menit auto-expire jika tidak ada aktivitas/heartbeat
 
 const API_BASE = (import.meta as any).env?.VITE_API_URL || '';
 
@@ -16,6 +16,9 @@ export interface DemoLockInfo {
 }
 
 export type DemoLocksMap = Record<string, DemoLockInfo>;
+
+// Cache in-memory untuk mencegah flicker/reset ke kosong saat jaringan mengalami lag spike
+let memoryLocksCache: DemoLocksMap = {};
 
 export function getDeviceId(): string {
   if (typeof window === 'undefined') return 'server';
@@ -52,6 +55,7 @@ export function getLocalDemoLocks(): DemoLocksMap {
 export function setLocalDemoLocks(locks: DemoLocksMap): void {
   if (typeof window === 'undefined') return;
   const cleaned = cleanExpiredLocks(locks);
+  memoryLocksCache = { ...cleaned };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
   } catch (err) {
@@ -71,22 +75,23 @@ if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
 /**
  * Rekonsiliasi state penguncian:
  * Server backend Fastify adalah sumber kebenaran absolut (Authoritative Source of Truth).
- * Kunci remote yang sudah dilepas/dihapus di server WAJIB langsung terhapus dari localStorage.
+ * Kunci remote yang sudah dilepas di server WAJIB langsung terhapus dari client.
  */
 function reconcileLocks(serverLocks: DemoLocksMap | null): DemoLocksMap {
   const myDeviceId = getDeviceId();
   const local = getLocalDemoLocks();
   const now = Date.now();
 
-  // Jika server offline / jaringan bermasalah, gunakan cache lokal yang belum expired
+  // Jika server offline / jaringan bermasalah, gunakan cache terakhir yang belum expired
   if (!serverLocks) {
-    return cleanExpiredLocks(local);
+    const fallback = Object.keys(memoryLocksCache).length > 0 ? memoryLocksCache : local;
+    return cleanExpiredLocks(fallback);
   }
 
   const cleanedServer = cleanExpiredLocks(serverLocks);
   const result: DemoLocksMap = { ...cleanedServer };
 
-  // Pertahankan kunci lokal milik perangkat ini jika baru saja dibuat (< 15 detik) untuk mencegah race condition
+  // Pertahankan kunci lokal milik perangkat ini jika baru dibuat (< 15 detik) untuk mencegah race condition in-flight
   for (const [user, info] of Object.entries(local)) {
     if (info && info.deviceId === myDeviceId && now - info.lockedAt < 15000) {
       if (!result[user]) {
@@ -99,26 +104,38 @@ function reconcileLocks(serverLocks: DemoLocksMap | null): DemoLocksMap {
   return result;
 }
 
-/** Ambil seluruh daftar user demo yang sedang terkunci dari Backend Fastify & LocalStorage */
+/**
+ * Ambil seluruh daftar user demo yang sedang terkunci dari Backend Fastify.
+ * Jika terjadi lag/timeout jaringan, sistem TETAP mempertahankan kunci terakhir
+ * agar akun yang sedang aktif TIDAK mendadak berubah menjadi 'Tersedia'.
+ */
 export async function fetchActiveDemoLocks(): Promise<DemoLocksMap> {
   try {
     const res = await fetch(`${API_BASE}/api/v1/demo/locks`, {
       headers: { 'Content-Type': 'application/json' },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(6000), // 6 Detik untuk toleransi koneksi mobile 3G/4G
     });
 
     if (res.ok) {
       const json = await res.json();
       const serverData = (json && typeof json === 'object' && 'data' in json ? json.data : json) as DemoLocksMap;
       if (serverData && typeof serverData === 'object') {
-        return reconcileLocks(serverData);
+        const reconciled = reconcileLocks(serverData);
+        memoryLocksCache = { ...reconciled };
+        return reconciled;
       }
     }
-  } catch {
-    // Fallback ke local cache jika koneksi timeout
+  } catch (netErr) {
+    // Saat koneksi lag / timeout: pertahankan data kunci terakhir yang diketahui
+    console.warn('[DemoSession] Fetch locks timeout/error, maintaining last known state:', netErr);
   }
 
-  return reconcileLocks(null);
+  // Gunakan cache memori terakhir yang diketahui agar tidak mereset UI ke status kosong
+  const fallback = Object.keys(memoryLocksCache).length > 0
+    ? memoryLocksCache
+    : getLocalDemoLocks();
+
+  return cleanExpiredLocks(fallback);
 }
 
 /** Cek apakah user sedang terkunci oleh audiens di perangkat LAIN */
@@ -134,47 +151,64 @@ export function isUserLockedByOther(username: string, locks: DemoLocksMap): bool
   return lock.deviceId !== myDeviceId;
 }
 
-/** Kunci username saat audiens login */
+/**
+ * Kunci username saat audiens login:
+ * WAJIB MENDAPATKAN PERSETUJUAN OTORITATIF DARI SERVER FASTIFY.
+ * JANGAN PERNAH meloloskan login jika server menolak (409) atau jaringan timeout!
+ */
 export async function lockDemoUser(username: string): Promise<boolean> {
   const clean = username.toLowerCase();
   const myDeviceId = getDeviceId();
-  // 1. Validasi atomik langsung ke Backend Fastify
+
+  // 1. Kirim permintaan kunci atomik ke server Fastify dengan batas toleransi 8 detik
+  let res: Response;
   try {
-    const res = await fetch(`${API_BASE}/api/v1/demo/lock`, {
+    res = await fetch(`${API_BASE}/api/v1/demo/lock`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
-      signal: AbortSignal.timeout(3500),
+      signal: AbortSignal.timeout(8000),
     });
+  } catch (netErr: any) {
+    const isTimeout =
+      netErr?.name === 'TimeoutError' ||
+      netErr?.message?.includes('timeout') ||
+      netErr?.message?.includes('aborted');
 
-    if (res.status === 409) {
-      const errJson = await res.json().catch(() => null);
-      const msg = errJson?.message || `Akun ${clean} sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`;
-      if (errJson && errJson.data && typeof errJson.data === 'object') {
-        setLocalDemoLocks(errJson.data);
-      }
-      throw new Error(msg);
+    if (isTimeout) {
+      throw new Error(
+        `Koneksi internet Anda lambat (timeout 8 detik). Server belum mengonfirmasi status akun ${clean}. Demi mencegah tabrakan sesi, silakan coba login kembali.`
+      );
     }
-
-    if (res.ok) {
-      const okJson = await res.json().catch(() => null);
-      if (okJson && okJson.data && typeof okJson.data === 'object') {
-        setLocalDemoLocks(okJson.data);
-      }
-    }
-  } catch (err: any) {
-    if (
-      err?.message?.includes('sedang aktif') ||
-      err?.message?.includes('sedang digunakan') ||
-      err?.message?.includes('409')
-    ) {
-      throw err;
-    }
-    // Fallback jika backend offline / timeout
+    throw new Error(
+      `Gagal terhubung ke server untuk mengamankan akun ${clean}. Pastikan koneksi internet stabil lalu coba lagi.`
+    );
   }
 
-  // 2. Tandai di penyimpanan lokal & broadcast
-  const current = getLocalDemoLocks();
+  // 2. Evaluasi respons penolakan dari server
+  if (res.status === 409) {
+    const errJson = await res.json().catch(() => null);
+    const msg =
+      errJson?.message ||
+      `Akun ${clean} sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`;
+
+    // Segera perbarui daftar kunci di lokal jika server mengembalikan daftar kunci aktif
+    if (errJson && errJson.data && typeof errJson.data === 'object') {
+      setLocalDemoLocks(errJson.data);
+    }
+    throw new Error(msg);
+  }
+
+  if (!res.ok) {
+    throw new Error(`Server menolak penguncian akun ${clean} (HTTP ${res.status}). Silakan coba lagi.`);
+  }
+
+  const okJson = await res.json().catch(() => null);
+  const serverLocks =
+    okJson && okJson.data && typeof okJson.data === 'object' ? okJson.data : {};
+
+  // 3. Hanya setelah server resmi mencatat penguncian: simpan di lokal & broadcast
+  const current = { ...serverLocks };
   current[clean] = {
     deviceId: myDeviceId,
     lockedAt: Date.now(),
@@ -189,6 +223,35 @@ export async function lockDemoUser(username: string): Promise<boolean> {
   return true;
 }
 
+/**
+ * Mengirimkan sinyal detak jantung (Heartbeat) setiap 25-30 detik dari sesi dashboard yang aktif
+ * untuk memperbarui timestamp penguncian di server sehingga sesi tidak kedaluwarsa.
+ */
+export async function sendDemoHeartbeat(username: string): Promise<boolean> {
+  const clean = username.toLowerCase();
+  const myDeviceId = getDeviceId();
+
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/demo/heartbeat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (res.ok) {
+      const okJson = await res.json().catch(() => null);
+      if (okJson && okJson.data && typeof okJson.data === 'object') {
+        memoryLocksCache = { ...okJson.data };
+      }
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 /** Lepas kunci username saat audiens logout */
 export async function unlockDemoUser(username: string): Promise<boolean> {
   const clean = username.toLowerCase();
@@ -196,6 +259,7 @@ export async function unlockDemoUser(username: string): Promise<boolean> {
   const current = getLocalDemoLocks();
 
   delete current[clean];
+  delete memoryLocksCache[clean];
   setLocalDemoLocks(current);
 
   if (broadcastChannel) {
@@ -209,7 +273,7 @@ export async function unlockDemoUser(username: string): Promise<boolean> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
       keepalive: true,
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(4000),
     });
   } catch {
     // ignore

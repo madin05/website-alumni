@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { DEMO_USERS, DemoUser } from '@/data/demoUsers';
-import { DemoLocksMap, isUserLockedByOther } from '@/services/demoSessionService';
+import { DemoLocksMap, isUserLockedByOther, fetchActiveDemoLocks } from '@/services/demoSessionService';
 import {
   ChevronDown,
   Search,
@@ -114,6 +114,9 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
 
   const handleToggle = () => {
     if (disabled) return;
+    if (!isOpen) {
+      fetchActiveDemoLocks();
+    }
     setIsOpen((prev) => !prev);
   };
 

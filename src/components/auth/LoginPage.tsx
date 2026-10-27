@@ -113,17 +113,23 @@ export const LoginPage: React.FC = () => {
     // Validasi pencegahan jika akun demo sedang aktif di perangkat lain
     const cleanId = identifier.trim().toLowerCase();
     const demoFound = findDemoUser(cleanId);
-    if (demoFound) {
-      const freshLocks = await fetchActiveDemoLocks();
-      setDemoLocks(freshLocks);
-      if (isUserLockedByOther(demoFound.username, freshLocks)) {
-        setError(`Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`);
-        return;
-      }
+    if (demoFound && isUserLockedByOther(demoFound.username, demoLocks)) {
+      setError(`Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`);
+      return;
     }
 
     setLoading(true);
     try {
+      if (demoFound) {
+        const freshLocks = await fetchActiveDemoLocks();
+        setDemoLocks(freshLocks);
+        if (isUserLockedByOther(demoFound.username, freshLocks)) {
+          setError(`Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`);
+          setLoading(false);
+          return;
+        }
+      }
+
       const ok = await login(identifier, password, "alumni");
       if (!ok) {
         setError("Username atau password salah.");
@@ -287,12 +293,12 @@ export const LoginPage: React.FC = () => {
             <div className="mb-6 p-3.5 bg-gradient-to-br from-blue-50/80 via-slate-50 to-indigo-50/50 border border-blue-200/90 rounded-xl shadow-xs">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
-                  <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  
                   <label
                     htmlFor="demo-user-custom-trigger"
                     className="text-xs font-bold text-slate-800 tracking-tight"
                   >
-                    Akun Demo Audiens
+                    Akun Demo
                   </label>
                 </div>
                 <span className="text-[10px] font-semibold text-slate-600 bg-white px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
