@@ -222,15 +222,6 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
           {/* Header Search & Filter */}
           <div className="p-2.5 bg-slate-50/90 border-b border-slate-200 shrink-0 space-y-2">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari nomor akun atau jurusan..."
-                className="w-full text-xs pl-8 pr-7 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              />
               {searchQuery && (
                 <button
                   type="button"
@@ -247,7 +238,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
               <button
                 type="button"
                 onClick={() => setFilterMode("all")}
-                className={`px-2 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
+                className={`px-2 py-0.5 rounded-md font-medium transition-colors cursor-pointer ${
                   filterMode === "all"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
@@ -258,7 +249,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
               <button
                 type="button"
                 onClick={() => setFilterMode("available")}
-                className={`px-2 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
+                className={`px-2 py-0.5 rounded-md font-medium transition-colors cursor-pointer ${
                   filterMode === "available"
                     ? "bg-emerald-600 text-white"
                     : "bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50"
@@ -269,7 +260,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
               <button
                 type="button"
                 onClick={() => setFilterMode("locked")}
-                className={`px-2 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
+                className={`px-2 py-0.5 rounded-md font-medium transition-colors cursor-pointer ${
                   filterMode === "locked"
                     ? "bg-rose-600 text-white"
                     : "bg-white text-rose-700 border border-rose-200 hover:bg-rose-50"
@@ -306,9 +297,6 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-slate-600 truncate line-through">
                             {user.username} ({user.nama})
-                          </p>
-                          <p className="text-[10px] text-slate-400 truncate">
-                            {user.jurusanShort} • {user.jurusan}
                           </p>
                         </div>
                       </div>
