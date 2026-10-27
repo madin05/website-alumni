@@ -4,7 +4,8 @@ import { useAuthStore } from "@/store/authStore";
 import { useAdminStore } from "@/store/adminStore";
 import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 import { ArrowRight, ChevronLeft, Eye, EyeOff, ShieldCheck, Sparkles } from "lucide-react";
-import { DEMO_USERS } from "@/data/demoUsers";
+import { DEMO_USERS, findDemoUser } from "@/data/demoUsers";
+import { DemoUserSelect } from "./DemoUserSelect";
 import {
   fetchActiveDemoLocks,
   isUserLockedByOther,
@@ -111,10 +112,14 @@ export const LoginPage: React.FC = () => {
 
     // Validasi pencegahan jika akun demo sedang aktif di perangkat lain
     const cleanId = identifier.trim().toLowerCase();
-    const demoFound = DEMO_USERS.find((u) => u.username.toLowerCase() === cleanId);
-    if (demoFound && isUserLockedByOther(demoFound.username, demoLocks)) {
-      setError(`Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`);
-      return;
+    const demoFound = findDemoUser(cleanId);
+    if (demoFound) {
+      const freshLocks = await fetchActiveDemoLocks();
+      setDemoLocks(freshLocks);
+      if (isUserLockedByOther(demoFound.username, freshLocks)) {
+        setError(`Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`);
+        return;
+      }
     }
 
     setLoading(true);
@@ -278,13 +283,13 @@ export const LoginPage: React.FC = () => {
               </div>
             )}
 
-            {/* Dropdown Demo Audiens (user01 - user30) */}
+            {/* Custom Dropdown Demo Audiens (user01 - user30) */}
             <div className="mb-6 p-3.5 bg-gradient-to-br from-blue-50/80 via-slate-50 to-indigo-50/50 border border-blue-200/90 rounded-xl shadow-xs">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5">
                   <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   <label
-                    htmlFor="demo-user-selector"
+                    htmlFor="demo-user-custom-trigger"
                     className="text-xs font-bold text-slate-800 tracking-tight"
                   >
                     Akun Demo Audiens
@@ -295,36 +300,15 @@ export const LoginPage: React.FC = () => {
                 </span>
               </div>
 
-              <div className="relative">
-                <select
-                  id="demo-user-selector"
-                  value={selectedDemoUser}
-                  onChange={(e) => handleSelectDemoUser(e.target.value)}
-                  className="w-full text-xs py-2.5 px-3 pr-8 rounded-lg border border-slate-300 bg-white text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 transition-all cursor-pointer shadow-2xs"
-                >
-                  <option value="">-- Pilih Akun Demo (user01 - user30) --</option>
-                  {DEMO_USERS.map((user) => {
-                    const isLocked = isUserLockedByOther(user.username, demoLocks);
-                    return (
-                      <option
-                        key={user.id}
-                        value={user.username}
-                        disabled={isLocked}
-                        className={
-                          isLocked
-                            ? "text-slate-400 bg-slate-100 cursor-not-allowed select-none"
-                            : "text-slate-800 font-medium cursor-pointer"
-                        }
-                      >
-                        {user.username} ({user.nama}){isLocked ? " (🔒 Sedang Digunakan)" : ""}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
+              <DemoUserSelect
+                selectedUser={selectedDemoUser}
+                onSelectUser={handleSelectDemoUser}
+                demoLocks={demoLocks}
+                disabled={loading}
+              />
 
               {selectedDemoUser ? (
-                <div className="mt-2 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
+                <div className="mt-2.5 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <span>
@@ -340,7 +324,7 @@ export const LoginPage: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <p className="mt-1.5 text-[10.5px] text-slate-500 leading-normal">
+                <p className="mt-2 text-[10.5px] text-slate-500 leading-normal">
                   Pilih username dari dropdown, password terisi otomatis. Akun yang sedang aktif terkunci hingga user logout.
                 </p>
               )}

@@ -138,8 +138,43 @@ export function isUserLockedByOther(username: string, locks: DemoLocksMap): bool
 export async function lockDemoUser(username: string): Promise<boolean> {
   const clean = username.toLowerCase();
   const myDeviceId = getDeviceId();
-  const current = getLocalDemoLocks();
+  // 1. Validasi atomik langsung ke Backend Fastify
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/demo/lock`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
+      signal: AbortSignal.timeout(3500),
+    });
 
+    if (res.status === 409) {
+      const errJson = await res.json().catch(() => null);
+      const msg = errJson?.message || `Akun ${clean} sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`;
+      if (errJson && errJson.data && typeof errJson.data === 'object') {
+        setLocalDemoLocks(errJson.data);
+      }
+      throw new Error(msg);
+    }
+
+    if (res.ok) {
+      const okJson = await res.json().catch(() => null);
+      if (okJson && okJson.data && typeof okJson.data === 'object') {
+        setLocalDemoLocks(okJson.data);
+      }
+    }
+  } catch (err: any) {
+    if (
+      err?.message?.includes('sedang aktif') ||
+      err?.message?.includes('sedang digunakan') ||
+      err?.message?.includes('409')
+    ) {
+      throw err;
+    }
+    // Fallback jika backend offline / timeout
+  }
+
+  // 2. Tandai di penyimpanan lokal & broadcast
+  const current = getLocalDemoLocks();
   current[clean] = {
     deviceId: myDeviceId,
     lockedAt: Date.now(),
@@ -149,19 +184,6 @@ export async function lockDemoUser(username: string): Promise<boolean> {
 
   if (broadcastChannel) {
     broadcastChannel.postMessage({ type: 'DEMO_LOCK_UPDATED', locks: current });
-  }
-
-  // Sync ke Backend Fastify dengan keepalive agar tidak dibatalkan browser saat navigasi
-  try {
-    await fetch(`${API_BASE}/api/v1/demo/lock`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: clean, deviceId: myDeviceId }),
-      keepalive: true,
-      signal: AbortSignal.timeout(3000),
-    });
-  } catch {
-    // ignore
   }
 
   return true;
