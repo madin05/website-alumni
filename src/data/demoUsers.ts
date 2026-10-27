@@ -74,3 +74,35 @@ export function getDemoMasterAlumniRecords() {
     createdAt: '2026-08-01T08:00:00Z',
   }));
 }
+
+/** Batas waktu inaktivitas sesi demo: 2 Jam (7.200.000 ms) */
+export const DEMO_INACTIVITY_TIMEOUT_MS = 2 * 60 * 60 * 1000;
+
+/** Memeriksa apakah session user adalah akun demo audiens (user01 - user30) */
+export function isDemoSession(
+  user: { id?: string; username?: string; email?: string; nisn?: string; nama?: string } | null | undefined
+): boolean {
+  if (!user) return false;
+  if (user.id?.startsWith('usr-demo-')) return true;
+  if (user.email?.includes('@demo.sasmitajaya2.sch.id')) return true;
+  if (user.nisn?.startsWith('30700100') && user.nisn.length === 10) return true;
+  if (/^user\s*\d+/i.test(user.nama || '')) return true;
+  if (/^user\d+$/i.test(user.username || '')) return true;
+  return false;
+}
+
+/** Mengambil username baku akun demo (contoh: user01, user02) */
+export function getDemoUsername(
+  user: { id?: string; username?: string; email?: string; nisn?: string; nama?: string } | null | undefined
+): string | null {
+  if (!user || !isDemoSession(user)) return null;
+  if (user.username && /^user\d+$/i.test(user.username)) return user.username.toLowerCase();
+  const match = (user.nama || '').match(/\d+/);
+  if (match) return `user${match[0].padStart(2, '0')}`.toLowerCase();
+  if (user.nisn && user.nisn.startsWith('30700100')) {
+    const num = user.nisn.slice(-2);
+    return `user${num}`.toLowerCase();
+  }
+  return null;
+}
+

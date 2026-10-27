@@ -2,8 +2,10 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { UserSession } from '@/types/tracer';
 import { detectGenderFromName } from '@/components/ui/UserAvatar';
+import { DEMO_INACTIVITY_TIMEOUT_MS, isDemoSession } from '@/data/demoUsers';
 
 export const DASHBOARD_SESSION_TIMEOUT_MS = 60 * 60 * 1000;
+export { DEMO_INACTIVITY_TIMEOUT_MS };
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -189,6 +191,10 @@ export const useAuthStore = create<AuthState>()(
                 submittedAt: demoUser.statusTracer === 'SUDAH' ? '2026-10-24T10:00:00.000Z' : undefined,
                 jenisKelamin: demoUser.jenisKelamin,
               };
+
+              if (typeof window !== 'undefined') {
+                localStorage.setItem('alumni_demo_last_activity', String(Date.now()));
+              }
 
               set({
                 isAuthenticated: true,
@@ -408,6 +414,14 @@ export const useAuthStore = create<AuthState>()(
           // ignore
         }
 
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.removeItem('alumni_demo_last_activity');
+          } catch {
+            // ignore
+          }
+        }
+
         set({
           isAuthenticated: false,
           user: null,
@@ -426,6 +440,23 @@ export const useAuthStore = create<AuthState>()(
         if (!state.isAuthenticated) return false;
 
         const now = Date.now();
+
+        // KHUSUS AKUN DEMO: Auto-logout jika tidak ada aktivitas selama 2 jam
+        if (state.user && isDemoSession(state.user)) {
+          const lastActivityStr =
+            typeof window !== 'undefined'
+              ? localStorage.getItem('alumni_demo_last_activity')
+              : null;
+          const lastActivity = lastActivityStr
+            ? Number(lastActivityStr)
+            : state.lastDashboardActivity || now;
+
+          if (now - lastActivity >= DEMO_INACTIVITY_TIMEOUT_MS) {
+            console.info('[AuthStore] Sesi demo tidak aktif selama 2 jam. Auto-logout...');
+            await get().logout();
+            return true;
+          }
+        }
 
         if (currentPathname.startsWith('/dashboard')) {
           set({ lastDashboardActivity: now });
@@ -470,11 +501,23 @@ export const useAuthStore = create<AuthState>()(
       },
 
       refreshAccessToken: async () => {
-        const { refreshToken } = get();
+        const { refreshToken, user } = get();
         if (!refreshToken) return false;
 
         // Mock / local session tidak memerlukan refresh JWT dari backend
         if (refreshToken.startsWith('mock-')) {
+          if (user && isDemoSession(user)) {
+            const lastActivityStr =
+              typeof window !== 'undefined'
+                ? localStorage.getItem('alumni_demo_last_activity')
+                : null;
+            if (
+              lastActivityStr &&
+              Date.now() - Number(lastActivityStr) >= DEMO_INACTIVITY_TIMEOUT_MS
+            ) {
+              return false;
+            }
+          }
           return true;
         }
 
