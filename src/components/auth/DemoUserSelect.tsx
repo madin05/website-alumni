@@ -1,6 +1,10 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { DEMO_USERS, DemoUser } from '@/data/demoUsers';
-import { DemoLocksMap, isUserLockedByOther, fetchActiveDemoLocks } from '@/services/demoSessionService';
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { DEMO_USERS, DemoUser } from "@/data/demoUsers";
+import {
+  DemoLocksMap,
+  isUserLockedByOther,
+  fetchActiveDemoLocks,
+} from "@/services/demoSessionService";
 import {
   ChevronDown,
   Search,
@@ -10,7 +14,7 @@ import {
   Sparkles,
   User,
   ShieldCheck,
-} from 'lucide-react';
+} from "lucide-react";
 
 interface DemoUserSelectProps {
   selectedUser: string;
@@ -26,26 +30,31 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterMode, setFilterMode] = useState<'all' | 'available' | 'locked'>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterMode, setFilterMode] = useState<"all" | "available" | "locked">(
+    "all",
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Close when tapping outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isOpen]);
 
@@ -56,25 +65,27 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
         searchInputRef.current?.focus();
       }, 50);
     } else {
-      setSearchQuery('');
+      setSearchQuery("");
     }
   }, [isOpen]);
 
   // Handle escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         setIsOpen(false);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
   // Selected demo user details
   const currentSelectedUser = useMemo(() => {
     if (!selectedUser) return null;
-    return DEMO_USERS.find((u) => u.username.toLowerCase() === selectedUser.toLowerCase());
+    return DEMO_USERS.find(
+      (u) => u.username.toLowerCase() === selectedUser.toLowerCase(),
+    );
   }, [selectedUser]);
 
   // Compute status counts
@@ -98,8 +109,8 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
       const isLocked = isUserLockedByOther(u.username, demoLocks);
 
       // Filter Mode tab
-      if (filterMode === 'available' && isLocked) return false;
-      if (filterMode === 'locked' && !isLocked) return false;
+      if (filterMode === "available" && isLocked) return false;
+      if (filterMode === "locked" && !isLocked) return false;
 
       // Search Query
       if (!q) return true;
@@ -129,7 +140,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onSelectUser('');
+    onSelectUser("");
   };
 
   return (
@@ -144,30 +155,24 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
         aria-expanded={isOpen}
         className={`w-full text-left flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border transition-all cursor-pointer shadow-2xs ${
           isOpen
-            ? 'bg-white border-blue-500 ring-2 ring-blue-500/20'
+            ? "bg-white border-blue-500 ring-2 ring-blue-500/20"
             : currentSelectedUser
-            ? 'bg-blue-50/70 border-blue-300 hover:border-blue-400'
-            : 'bg-white border-slate-300 hover:border-slate-400'
-        } ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
+              ? "bg-blue-50/70 border-blue-300 hover:border-blue-400"
+              : "bg-white border-slate-300 hover:border-slate-400"
+        } ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
       >
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           {currentSelectedUser ? (
             <>
               <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
-                {currentSelectedUser.username.replace('user', '')}
+                {currentSelectedUser.username.replace("user", "")}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-bold text-slate-800 truncate">
                     {currentSelectedUser.username}
                   </span>
-                  <span className="text-[10px] font-semibold text-blue-700 bg-blue-100/80 px-1.5 py-0.2 rounded">
-                    {currentSelectedUser.jurusanShort}
-                  </span>
                 </div>
-                <p className="text-[11px] text-slate-500 truncate">
-                  {currentSelectedUser.nama} • {currentSelectedUser.jurusan}
-                </p>
               </div>
             </>
           ) : (
@@ -202,7 +207,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
           )}
           <ChevronDown
             className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
-              isOpen ? 'rotate-180 text-blue-600' : ''
+              isOpen ? "rotate-180 text-blue-600" : ""
             }`}
           />
         </div>
@@ -229,7 +234,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => setSearchQuery("")}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
                 >
                   <X className="w-3 h-3" />
@@ -241,33 +246,33 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
             <div className="flex items-center gap-1 text-[10.5px]">
               <button
                 type="button"
-                onClick={() => setFilterMode('all')}
+                onClick={() => setFilterMode("all")}
                 className={`px-2 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
-                  filterMode === 'all'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                  filterMode === "all"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
                 }`}
               >
                 Semua ({DEMO_USERS.length})
               </button>
               <button
                 type="button"
-                onClick={() => setFilterMode('available')}
+                onClick={() => setFilterMode("available")}
                 className={`px-2 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
-                  filterMode === 'available'
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50'
+                  filterMode === "available"
+                    ? "bg-emerald-600 text-white"
+                    : "bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50"
                 }`}
               >
                 Tersedia ({availableCount})
               </button>
               <button
                 type="button"
-                onClick={() => setFilterMode('locked')}
+                onClick={() => setFilterMode("locked")}
                 className={`px-2 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
-                  filterMode === 'locked'
-                    ? 'bg-rose-600 text-white'
-                    : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'
+                  filterMode === "locked"
+                    ? "bg-rose-600 text-white"
+                    : "bg-white text-rose-700 border border-rose-200 hover:bg-rose-50"
                 }`}
               >
                 Terpakai ({lockedCount})
@@ -285,7 +290,8 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
               filteredUsers.map((user) => {
                 const isLocked = isUserLockedByOther(user.username, demoLocks);
                 const isSelected =
-                  currentSelectedUser?.username.toLowerCase() === user.username.toLowerCase();
+                  currentSelectedUser?.username.toLowerCase() ===
+                  user.username.toLowerCase();
 
                 if (isLocked) {
                   return (
@@ -295,7 +301,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <div className="w-6 h-6 rounded-md bg-slate-200 text-slate-500 text-[10px] font-bold flex items-center justify-center shrink-0">
-                          {user.username.replace('user', '')}
+                          {user.username.replace("user", "")}
                         </div>
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-slate-600 truncate line-through">
@@ -321,19 +327,19 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
                     onClick={() => handleSelect(user)}
                     className={`w-full text-left p-2.5 flex items-center justify-between gap-2 transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-blue-50/90 hover:bg-blue-100/80 text-blue-900 border-l-4 border-blue-600'
-                        : 'hover:bg-slate-50 text-slate-800'
+                        ? "bg-blue-50/90 hover:bg-blue-100/80 text-blue-900 border-l-4 border-blue-600"
+                        : "hover:bg-slate-50 text-slate-800"
                     }`}
                   >
                     <div className="flex items-center gap-2 min-w-0 flex-1">
                       <div
                         className={`w-6 h-6 rounded-md text-[10px] font-bold flex items-center justify-center shrink-0 ${
                           isSelected
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-slate-100 text-slate-700'
+                            ? "bg-blue-600 text-white"
+                            : "bg-slate-100 text-slate-700"
                         }`}
                       >
-                        {user.username.replace('user', '')}
+                        {user.username.replace("user", "")}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
@@ -343,13 +349,7 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
                           <span className="text-[9.5px] font-medium text-slate-500">
                             ({user.nama})
                           </span>
-                          <span className="text-[9.5px] font-semibold text-slate-700 bg-slate-100 px-1 py-0.2 rounded">
-                            {user.jurusanShort}
-                          </span>
                         </div>
-                        <p className="text-[10.5px] text-slate-500 truncate">
-                          {user.jurusan}
-                        </p>
                       </div>
                     </div>
 
@@ -361,7 +361,6 @@ export const DemoUserSelect: React.FC<DemoUserSelectProps> = ({
                         </span>
                       ) : (
                         <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                           <span>Tersedia</span>
                         </span>
                       )}

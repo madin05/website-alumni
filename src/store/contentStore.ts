@@ -50,7 +50,7 @@ function validationError(
 
 export const useContentStore = create<ContentState>()(
   (set, get) => ({
-    newsList: [],
+    newsList: MOCK_NEWS,
     jobList: MOCK_JOBS,
     newsFetchError: null,
 
