@@ -26,7 +26,7 @@ export const LoginPage: React.FC = () => {
     setError("");
 
     if (!identifier.trim()) {
-      setError("Harap masukkan NISN Anda.");
+      setError("Harap masukkan NISN atau Email Anda.");
       return;
     }
 
@@ -37,7 +37,8 @@ export const LoginPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const ok = await login(identifier, password, "alumni");
+      const roleHint = identifier.includes("@") ? "admin_bkk" : "alumni";
+      const ok = await login(identifier, password, roleHint);
       if (!ok) {
         setError("Username atau password salah.");
         return;
@@ -53,14 +54,16 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleQuickDemo = () => {
+  const handleQuickAlumni = () => {
     setIdentifier("3079145847");
     setPassword("alumni#847");
+    setError("");
   };
 
-  const handleAdminDemo = () => {
+  const handleQuickAdmin = () => {
     setIdentifier("admin@smksasmitajaya2.sch.id");
     setPassword("Admin#12345");
+    setError("");
   };
 
   return (
@@ -77,7 +80,7 @@ export const LoginPage: React.FC = () => {
       </div>
 
       {/* Main Login Card: Single column on mobile/tablet, 12-col split on desktop */}
-      <div className="relative z-10 w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-white rounded-2xl lg:rounded-xl shadow-xl sm:shadow-2xl overflow-hidden border border-slate-200/90 grid grid-cols-1 lg:grid-cols-12">
+      <div className="relative z-10 w-full max-w-md sm:max-w-lg lg:max-w-4xl lg:min-h-[560px] bg-white rounded-2xl lg:rounded-2xl shadow-xl sm:shadow-2xl overflow-hidden border border-slate-200/90 grid grid-cols-1 lg:grid-cols-12">
         {/* LEFT COLUMN: Dark Navy Branding & Guarantee Panel (Visible only on Desktop lg+) */}
         <div className="hidden lg:flex lg:col-span-5 bg-[#122e5d] text-white p-8 sm:p-10 lg:p-11 flex-col justify-between relative overflow-hidden">
           {/* Seigaiha Wave Pattern Overlay */}
@@ -134,16 +137,16 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Middle Content */}
-          <div className="relative z-10 my-8 sm:my-10 space-y-4">
+          <div className="relative z-10 my-auto py-4 space-y-4">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">
               Selamat datang kembali, pejuang pendidikan kejuruan.
             </h1>
 
             {/* Privacy callout box */}
-            <div className="p-2 rounded-md bg-white/10 backdrop-blur-md border border-white/15 text-left space-y-1 mt-6">
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-left space-y-1 mt-6">
               <p className="text-[11px] text-slate-300 leading-relaxed">
-                Seluruh jawaban tidak dipublikasikan & dilindungi sesuai UU
-                Perlindungan Data.
+                Seluruh data Anda dilindungi dan dijamin kerahasiaannya sesuai
+                ketentuan perlindungan data pribadi.
               </p>
             </div>
           </div>
@@ -156,18 +159,19 @@ export const LoginPage: React.FC = () => {
 
         {/* RIGHT COLUMN / MOBILE CARD: Interactive Login Form (Full width on mobile/tablet, 7 cols on desktop) */}
         <div className="lg:col-span-7 p-6 sm:p-8 lg:p-12 flex flex-col justify-between bg-white">
-          <div>
-            {/* Top Back Link */}
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 cursor-pointer"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Kembali</span>
-              </Link>
-            </div>
+          {/* Top Back Link */}
+          <div className="flex items-center justify-between shrink-0 mb-4 sm:mb-6">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Kembali</span>
+            </Link>
+          </div>
 
+          {/* Form Content - Centered Vertically */}
+          <div className="my-auto py-4 sm:py-6 w-full">
             {/* Mobile & Tablet Logo Banner (Hidden on Desktop) */}
             <div className="flex justify-center items-center mb-5 lg:hidden">
               <img
@@ -177,22 +181,22 @@ export const LoginPage: React.FC = () => {
               />
             </div>
 
-            {/* Step Label & Title (Hidden on Desktop because the left panel already has greeting) */}
-            <div className="mb-5 sm:mb-6 lg:hidden">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight text-center">
+            {/* Form Title & Instruction (Hanya Mobile & Tablet) */}
+            <div className="mb-6 sm:mb-8 lg:hidden">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight text-center">
                 Selamat Datang
               </h2>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-md text-xs text-rose-700">
+              <div className="mb-5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
                 {error}
               </div>
             )}
 
             {/* Form Inputs */}
-            <form onSubmit={handleSubmit} className="mt-7 space-y-7">
+            <form onSubmit={handleSubmit} className="space-y-7">
               <div className="material-group">
                 <input
                   type="text"
@@ -254,21 +258,21 @@ export const LoginPage: React.FC = () => {
             </form>
           </div>
 
-          {/* Quick Demo Fill & Helpdesk */}
-          <div className="mt-6 pt-4 border-t border-slate-100 space-y-3 text-center">
+          {/* Helpdesk & Info */}
+          <div className="shrink-0 pt-4 border-t border-slate-100 space-y-3 text-center">
             {/* 1-Click Demo Shortcut */}
             <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
               <button
                 type="button"
-                onClick={handleQuickDemo}
-                className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 font-medium text-[11px]"
+                onClick={handleQuickAlumni}
+                className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 font-medium text-[11px] cursor-pointer transition-colors border border-slate-200/60"
               >
                 Alumni (DEMO)
               </button>
               <button
                 type="button"
-                onClick={handleAdminDemo}
-                className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium text-[11px]"
+                onClick={handleQuickAdmin}
+                className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium text-[11px] cursor-pointer transition-colors border border-emerald-200/60"
               >
                 Admin BKK
               </button>

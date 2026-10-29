@@ -66,10 +66,6 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
   return (json && typeof json === 'object' && 'data' in json ? json.data : json) as T;
 }
 
-function generateDefaultPassword(nisn: string): string {
-  return `alumni${nisn.slice(-3)}`;
-}
-
 async function syncWithTracerStore(user: UserSession) {
   try {
     const { useTracerStore } = await import('./tracerStore');
@@ -129,17 +125,7 @@ export const useAuthStore = create<AuthState>()(
 
       login: async (identifier: string, password?: string, roleHint?: string) => {
         const cleanIdent = identifier.trim();
-        let pwd = password?.trim() || cleanIdent;
-        let loginIdentifier = cleanIdent;
-
-        // Auto-map demo credentials if user entered legacy demo password
-        if (cleanIdent.toLowerCase() === 'admin@smksasmitajaya2.sch.id' && (pwd === 'admin123' || pwd === 'admin')) {
-          pwd = 'Admin#12345';
-        }
-        if (cleanIdent === '0051234567') {
-          loginIdentifier = '3079145847';
-          pwd = '3079145847';
-        }
+        const pwd = password?.trim() || cleanIdent;
 
         try {
           let data: any = null;
@@ -150,7 +136,7 @@ export const useAuthStore = create<AuthState>()(
               refreshToken: string;
             }>('/api/v1/auth/login', {
               method: 'POST',
-              body: JSON.stringify({ identifier: loginIdentifier, password: pwd }),
+              body: JSON.stringify({ identifier: cleanIdent, password: pwd }),
             });
           } catch (err: any) {
             // Jika login pertama gagal dan identifier berupa 10-digit NISN, coba password = NISN
@@ -221,7 +207,7 @@ export const useAuthStore = create<AuthState>()(
             }
           }
 
-          // Check mock alumni in masterAlumni (including 3079145847)
+          // Check alumni in masterAlumni
           const { useAdminStore } = await import('./adminStore');
           const adminState = useAdminStore.getState();
           const masterList = adminState.masterAlumni || [];
@@ -229,51 +215,35 @@ export const useAuthStore = create<AuthState>()(
             (a) => a.nisn === cleanIdent || (a.email && a.email.toLowerCase() === lowerIdent)
           );
 
-          if (found || cleanIdent === '3079145847' || cleanIdent === '0051234567') {
-            const actualAlumni = found || {
-              id: 'usr-3079145847',
-              nisn: '3079145847',
-              nik: '3674012000000999',
-              nama: 'Alumni Demo Sasmita',
-              email: 'alumni.demo@example.com',
-              noWhatsapp: '081234567890',
-              jurusan: 'Teknik Komputer dan Jaringan',
-              tahunLulus: 2024,
-              statusTracer: 'BELUM',
-              submissionId: undefined,
-              submittedAt: undefined,
-            };
-
-            const last3 = actualAlumni.nisn.slice(-3);
+          if (found) {
+            const last3 = found.nisn.slice(-3);
             const validPasswords = [
               `alumni#${last3}`,
               `alumni${last3}`,
-              actualAlumni.nisn,
-              'alumni#847',
-              'alumni847',
+              found.nisn,
             ];
 
             if (validPasswords.includes(pwd)) {
               const alumniUser: UserSession = {
-                id: actualAlumni.id || `usr-${actualAlumni.nisn}`,
-                nisn: actualAlumni.nisn,
-                nik: actualAlumni.nik,
-                nama: actualAlumni.nama,
-                email: actualAlumni.email,
-                noWhatsapp: actualAlumni.noWhatsapp,
+                id: found.id || `usr-${found.nisn}`,
+                nisn: found.nisn,
+                nik: found.nik,
+                nama: found.nama,
+                email: found.email,
+                noWhatsapp: found.noWhatsapp,
                 role: 'alumni',
-                jurusan: actualAlumni.jurusan,
-                tahun_lulus: actualAlumni.tahunLulus,
-                tracerStatus: actualAlumni.statusTracer || 'BELUM',
-                submissionId: actualAlumni.submissionId,
-                submittedAt: actualAlumni.submittedAt,
-                jenisKelamin: detectGenderFromName(actualAlumni.nama, (actualAlumni as any).jenisKelamin),
+                jurusan: found.jurusan,
+                tahun_lulus: found.tahunLulus,
+                tracerStatus: found.statusTracer || 'BELUM',
+                submissionId: found.submissionId,
+                submittedAt: found.submittedAt,
+                jenisKelamin: detectGenderFromName(found.nama, (found as any).jenisKelamin),
               };
               set({
                 isAuthenticated: true,
                 user: alumniUser,
-                accessToken: `mock-access-token-${actualAlumni.nisn}`,
-                refreshToken: `mock-refresh-token-${actualAlumni.nisn}`,
+                accessToken: `mock-access-token-${found.nisn}`,
+                refreshToken: `mock-refresh-token-${found.nisn}`,
                 lastDashboardActivity: Date.now(),
               });
               await syncWithTracerStore(alumniUser);
