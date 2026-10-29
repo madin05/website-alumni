@@ -4,7 +4,10 @@ import { Download } from 'lucide-react';
 
 export const LegalBases: React.FC = () => {
   return (
-    <section id="dasar-hukum" className="pt-16 sm:pt-24 pb-12 sm:pb-16 bg-transparent relative">
+    <section
+      id="dasar-hukum"
+      className="scroll-mt-24 sm:scroll-mt-28 pt-10 sm:pt-16 pb-12 sm:pb-16 bg-transparent relative"
+    >
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header matching exact attachment typography & text */}
@@ -26,7 +29,7 @@ export const LegalBases: React.FC = () => {
               className="relative bg-[#f1f5f9]/90 backdrop-blur-sm rounded-xl pt-6 pb-5 px-5 border border-slate-200/80 shadow-sm transition-all duration-200 flex flex-col justify-between"
             >
               {/* Top Badge: Centered on top border */}
-              <div className="absolute -top-3.5 left-0 right-0 flex justify-center pointer-events-none">
+              <div className="absolute -top-3.5 left-0 right-0 flex justify-center pointer-events-none z-10">
                 <span className="inline-block px-4 py-1 rounded-full bg-[#1c293d] text-white text-[10px] font-bold tracking-wider uppercase shadow-sm">
                   {item.badge || item.year}
                 </span>

@@ -83,6 +83,9 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
       if (user.email && !getValues('email')) {
         setValue('email', user.email);
       }
+      if (user.nik && !getValues('nik')) {
+        setValue('nik', user.nik);
+      }
     }
   }, [user, setValue, getValues]);
 
@@ -96,6 +99,7 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
 
   const handleFillDemo = () => {
     loadSampleData();
+    setValue('nik', '3674012000000001');
     setValue('no_whatsapp', '081310000023');
     setValue('email', user?.email || 'adityapratama@gmail.com');
     setValue('status_menikah', 'Belum Menikah');
@@ -145,6 +149,29 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
           {...register('nisn')}
         />
 
+        {/* NIK (Nomor Induk Kependudukan) - Opsional */}
+        <Input
+          label="Nomor Induk Kependudukan (NIK)"
+          placeholder="16 digit NIK KTP (opsional)"
+          maxLength={16}
+          helperText="Opsional (tidak wajib diisi)"
+          error={errors.nik?.message}
+          {...register('nik')}
+        />
+
+        {/* Tahun Masuk - Locked */}
+        <Input
+          label="Tahun Masuk"
+          type="number"
+          placeholder="Contoh : 2022"
+          requiredStar
+          readOnly
+          tabIndex={-1}
+          className="bg-slate-100 text-slate-700 border-slate-200 cursor-not-allowed select-none"
+          error={errors.tahun_masuk?.message}
+          {...register('tahun_masuk', { valueAsNumber: true })}
+        />
+
         {/* Tahun Lulus - Locked */}
         <Input
           label="Tahun Lulus"
@@ -170,19 +197,6 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
             {...register('jurusan')}
           />
         </div>
-
-        {/* Tahun Masuk - Locked */}
-        <Input
-          label="Tahun Masuk"
-          type="number"
-          placeholder="Contoh : 2022"
-          requiredStar
-          readOnly
-          tabIndex={-1}
-          className="bg-slate-100 text-slate-700 border-slate-200 cursor-not-allowed select-none"
-          error={errors.tahun_masuk?.message}
-          {...register('tahun_masuk', { valueAsNumber: true })}
-        />
 
         {/* Nomor WhatsApp - EDITABLE */}
         <Input

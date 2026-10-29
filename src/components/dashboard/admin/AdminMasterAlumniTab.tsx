@@ -241,7 +241,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
       const csvContent = sampleRows
         .map(
           (r) =>
-            `${r.nisn},${r.nik},${r.nama},${r.jurusan},${r.tahun_lulus},${r.no_wa},${r.email}`
+            `${r.nisn},${r.nik},${r.nama},${r.jurusan},${r.tahun_lulus},${r.no_wa},${r.email}`,
         )
         .join("\n");
       const blob = new Blob([headers + csvContent], {
@@ -270,7 +270,8 @@ export const AdminMasterAlumniTab: React.FC = () => {
       return;
     }
 
-    const listToExport = filteredAlumni.length > 0 ? filteredAlumni : masterAlumni;
+    const listToExport =
+      filteredAlumni.length > 0 ? filteredAlumni : masterAlumni;
     const exportData = listToExport.map((item, index) => ({
       No: index + 1,
       NISN: item.nisn,
@@ -287,9 +288,11 @@ export const AdminMasterAlumniTab: React.FC = () => {
     exportJsonToExcel(
       exportData,
       `data_siswa_lulusan_smk_sasmita2_${new Date().getFullYear()}`,
-      { sheetName: "Data Siswa Lulusan" }
+      { sheetName: "Data Siswa Lulusan" },
     );
-    showToast(`Berhasil mengekspor ${exportData.length} data siswa ke Excel (.xlsx).`);
+    showToast(
+      `Berhasil mengekspor ${exportData.length} data siswa ke Excel (.xlsx).`,
+    );
   };
 
   const handleCreateSingle = (e: React.FormEvent) => {
@@ -750,7 +753,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
             {/* Modal Header */}
             <div className="px-4 py-3.5 sm:px-6 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
               <div className="flex items-center gap-2.5 sm:gap-3">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-slate-700 flex items-center justify-center shrink-0">
                   <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
@@ -805,9 +808,6 @@ export const AdminMasterAlumniTab: React.FC = () => {
 
               {/* Section 1: Identitas Pokok Siswa */}
               <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5 sm:space-y-4">
-                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Identitas Pokok
-                </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5">
                   {/* NISN */}
                   <div className="space-y-0.5">
@@ -843,10 +843,6 @@ export const AdminMasterAlumniTab: React.FC = () => {
 
               {/* Section 2: Kontak & Komunikasi */}
               <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/80 shadow-2xs space-y-3.5 sm:space-y-4">
-                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Kontak & Komunikasi
-                </h5>
-
                 {/* Nomor WhatsApp */}
                 <div className="flex items-center justify-between gap-3 pt-0.5">
                   <div className="min-w-0 flex-1 pr-2 space-y-0.5">
@@ -905,9 +901,6 @@ export const AdminMasterAlumniTab: React.FC = () => {
 
               {/* Section 3: Informasi Tracer Study */}
               <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5 sm:space-y-3">
-                <h5 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Status Kuesioner Tracer
-                </h5>
                 {selectedPreviewAlumni.statusTracer === "SUDAH" ? (
                   <div className="space-y-2 text-xs sm:text-sm">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 leading-relaxed">

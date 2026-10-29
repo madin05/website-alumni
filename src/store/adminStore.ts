@@ -108,7 +108,7 @@ const DEFAULT_SETTINGS: AdminSettings = {
   nipKepalaSekolah: '19680514 199303 1 004',
   ketuaBkk: 'Ahmad Fauzi, S.Pd., M.Kom.',
   nipKetuaBkk: '19840219 200902 1 002',
-  namaSekolah: 'SMKS SASMITA JAYA 2',
+  namaSekolah: 'SMKS Sasmita Jaya 2',
   npsn: '20603287',
   alamatSekolah: 'Jl. Surya Kencana No. 1, Pamulang Barat, Kec. Pamulang, Kota Tangerang Selatan, Banten 15417',
   kontakBkk: '0812-8889-7762',

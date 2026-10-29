@@ -409,7 +409,7 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
 const ALUMNI_MENU_ITEMS = [
   { id: "beranda", label: "Beranda" },
   { id: "tracer_study", label: "Tracer Study" },
-  { id: "loker", label: "Info Loker/Magang" },
+  { id: "loker", label: "Lowongan Kerja" },
   { id: "alumni", label: "Alumni" },
   { id: "helpdesk", label: "Helpdesk" },
 ] as const;

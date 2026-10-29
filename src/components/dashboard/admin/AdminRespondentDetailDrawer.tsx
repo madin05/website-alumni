@@ -123,7 +123,7 @@ export const AdminRespondentDetailDrawer: React.FC<
 
       {/* Sliding Sheet / Drawer Panel from Right */}
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
-        <div className="w-screen max-w-2xl bg-white shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-300">
+        <div className="w-screen max-w-2xl bg-white shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-300 rounded-l-xl">
           {/* Header */}
           <div className="p-4 sm:p-5 sm:px-6 border-b border-slate-100 bg-[#0d2346] text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -147,7 +147,7 @@ export const AdminRespondentDetailDrawer: React.FC<
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 sm:p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition cursor-pointer"
+              className="p-1.5 sm:p-2 hover:rounded-full  hover:bg-white/20 text-white/80 hover:text-white  cursor-pointer"
               title="Tutup"
             >
               <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -162,7 +162,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                 <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-[#0d2346]">
                   <SolidUserIcon className="w-4 h-4 text-[#0d2346]" />
                 </div>
-                <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                <h3 className="font-bold text-sm sm:text-base text-slate-700">
                   Identitas dan Kontak Alumni
                 </h3>
               </div>
@@ -172,7 +172,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                   <span className="text-slate-500 block text-xs font-medium tracking-wide">
                     NISN / NIK:
                   </span>
-                  <span className="font-mono text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block break-words">
+                  <span className="font-mono text-sm sm:text-[15px] font-medium text-slate-700 leading-relaxed block break-words">
                     {identitas.nisn}{" "}
                     {identitas.nik ? ` / ${identitas.nik}` : ""}
                   </span>
@@ -181,7 +181,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                   <span className="text-slate-500 block text-xs font-medium tracking-wide">
                     Jurusan / Program Keahlian:
                   </span>
-                  <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
+                  <span className="text-sm sm:text-[15px] font-semibold text-slate-700 leading-relaxed block">
                     {identitas.jurusan}
                   </span>
                 </div>
@@ -193,7 +193,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                     href={`https://wa.me/${identitas.no_whatsapp.replace(/\D/g, "")}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-mono text-sm sm:text-[15px] font-semibold text-slate-900 hover:text-blue-700 hover:underline inline-flex items-center gap-1.5 leading-relaxed"
+                    className="font-mono text-sm sm:text-[15px] font-semibold text-slate-700 hover:text-blue-700 hover:underline inline-flex items-center gap-1.5 leading-relaxed"
                   >
                     <Phone className="w-4 h-4 text-slate-500" />
                     <span>{identitas.no_whatsapp}</span>
@@ -203,7 +203,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                   <span className="text-slate-500 block text-xs font-medium tracking-wide">
                     Alamat Email:
                   </span>
-                  <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block break-words">
+                  <span className="text-sm sm:text-[15px] font-semibold text-slate-700 leading-relaxed block break-words">
                     {identitas.email || "-"}
                   </span>
                 </div>
@@ -212,8 +212,8 @@ export const AdminRespondentDetailDrawer: React.FC<
                     <span className="text-slate-500 block text-xs font-medium tracking-wide">
                       Demografi (Usia & Pernikahan):
                     </span>
-                    <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
-                      {identitas.usia ? `${identitas.usia} Tahun` : "-"} •{" "}
+                    <span className="text-sm sm:text-[15px] font-semibold text-slate-700 leading-relaxed block">
+                      {identitas.usia ? `${identitas.usia} Tahun` : "-"} - {" "}
                       {identitas.status_menikah || "Belum Menikah"}
                     </span>
                   </div>
@@ -223,7 +223,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                     <span className="text-slate-500 block text-xs font-medium tracking-wide">
                       Domisili Tempat Tinggal:
                     </span>
-                    <span className="text-sm sm:text-[15px] font-semibold text-slate-900 leading-relaxed block">
+                    <span className="text-sm sm:text-[15px] font-semibold text-slate-700 leading-relaxed block">
                       {identitas.kota_domisili || "-"},{" "}
                       {identitas.provinsi_domisili || "-"}
                     </span>
@@ -239,7 +239,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                   <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-[#0d2346]">
                     <SolidBuildingIcon className="w-4 h-4 text-[#0d2346]" />
                   </div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                  <h3 className="font-bold text-sm sm:text-base text-slate-700">
                     Aktivitas Setelah Kelulusan
                   </h3>
                 </div>
@@ -271,14 +271,24 @@ export const AdminRespondentDetailDrawer: React.FC<
                   <select
                     value={filterTab}
                     onChange={(e) =>
-                      setFilterTab(e.target.value as "ALL" | "KERJA" | "KULIAH" | "USAHA")
+                      setFilterTab(
+                        e.target.value as "ALL" | "KERJA" | "KULIAH" | "USAHA",
+                      )
                     }
                     className="text-xs font-medium bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0d2346] cursor-pointer shadow-2xs"
                   >
                     <option value="ALL">Tampilkan Semua Rincian Data</option>
-                    {kuliah && <option value="KULIAH">Rincian Perguruan Tinggi</option>}
-                    {kerja && <option value="KERJA">Rincian Instansi / Tempat Kerja</option>}
-                    {usaha && <option value="USAHA">Rincian Usaha Mandiri</option>}
+                    {kuliah && (
+                      <option value="KULIAH">Rincian Perguruan Tinggi</option>
+                    )}
+                    {kerja && (
+                      <option value="KERJA">
+                        Rincian Instansi / Tempat Kerja
+                      </option>
+                    )}
+                    {usaha && (
+                      <option value="USAHA">Rincian Usaha Mandiri</option>
+                    )}
                   </select>
                 </div>
               )}
@@ -297,7 +307,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                       <div className="flex items-center gap-3 min-w-0">
                         <GraduationCap className="w-5 h-5 text-[#0d2346] shrink-0" />
                         <div className="min-w-0">
-                          <span className="font-bold text-xs sm:text-sm text-slate-900 leading-snug block">
+                          <span className="font-bold text-xs sm:text-sm text-slate-700 leading-snug block">
                             Rincian Perguruan Tinggi
                           </span>
                           <p className="text-xs text-slate-500 truncate mt-0.5">
@@ -325,7 +335,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                             <span className="text-slate-500 block font-medium">
                               Nama Kampus / Perguruan Tinggi:
                             </span>
-                            <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                            <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                               {kuliah.nama_kampus}
                             </span>
                           </div>
@@ -333,7 +343,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                             <span className="text-slate-500 block font-medium">
                               Program Studi & Jenjang:
                             </span>
-                            <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                            <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                               {kuliah.program_studi} ({kuliah.jenjang})
                             </span>
                           </div>
@@ -342,7 +352,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Keselarasan Program Studi dengan SMK:
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {kuliah.keselarasan_studi}
                               </span>
                             </div>
@@ -365,7 +375,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                       <div className="flex items-center gap-3 min-w-0">
                         <Building className="w-5 h-5 text-[#0d2346] shrink-0" />
                         <div className="min-w-0">
-                          <span className="font-bold text-xs sm:text-sm text-slate-900 leading-snug block">
+                          <span className="font-bold text-xs sm:text-sm text-slate-700 leading-snug block">
                             Rincian Instansi / Tempat Kerja
                           </span>
                           <p className="text-xs text-slate-500 truncate mt-0.5">
@@ -392,7 +402,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                             <span className="text-slate-500 block font-medium">
                               Nama Perusahaan / Tempat Kerja:
                             </span>
-                            <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                            <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                               {kerja.nama_perusahaan}
                             </span>
                           </div>
@@ -400,7 +410,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                             <span className="text-slate-500 block font-medium">
                               Posisi / Jabatan:
                             </span>
-                            <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                            <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                               {kerja.jabatan}
                             </span>
                           </div>
@@ -408,7 +418,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                             <span className="text-slate-500 block font-medium">
                               Kesesuaian dengan Jurusan SMK:
                             </span>
-                            <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                            <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                               {kerja.kesesuaian_jurusan}
                             </span>
                           </div>
@@ -417,7 +427,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Status Hubungan Kerja (BPS):
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {kerja.keterangan_kerja}
                               </span>
                             </div>
@@ -429,7 +439,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Lokasi Kerja (Luar Negeri):
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {kerja.kota_kerja || kerja.kota_kabupaten
                                   ? `${kerja.kota_kerja || kerja.kota_kabupaten}, `
                                   : ""}
@@ -443,7 +453,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Lokasi Tempat Kerja:
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {kerja.kota_kerja ||
                                   kerja.kota_kabupaten ||
                                   "-"}
@@ -458,7 +468,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Perkiraan Penghasilan / Gaji:
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {kerja.kisaran_penghasilan}
                               </span>
                             </div>
@@ -468,7 +478,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Standar UMP (Provinsi):
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {kerja.pendapatan_ump}
                               </span>
                             </div>
@@ -478,7 +488,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Standar UMK (Kabupaten / Kota):
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {kerja.pendapatan_umk}
                               </span>
                             </div>
@@ -491,7 +501,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                                 Kontak Atasan / HRD (Untuk Survei Kepuasan
                                 Pengguna Lulusan):
                               </span>
-                              <p className="text-slate-900 text-sm font-semibold leading-relaxed">
+                              <p className="text-slate-700 text-sm font-semibold leading-relaxed">
                                 {kerja.nama_atasan}{" "}
                                 <span className="text-slate-600 font-normal">
                                   (
@@ -520,7 +530,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                       <div className="flex items-center gap-3 min-w-0">
                         <Store className="w-5 h-5 text-[#0d2346] shrink-0" />
                         <div className="min-w-0">
-                          <span className="font-bold text-xs sm:text-sm text-slate-900 leading-snug block">
+                          <span className="font-bold text-xs sm:text-sm text-slate-700 leading-snug block">
                             Rincian Usaha Mandiri
                           </span>
                           <p className="text-xs text-slate-500 truncate mt-0.5">
@@ -550,7 +560,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                             <span className="text-slate-500 block font-medium">
                               Nama Usaha:
                             </span>
-                            <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                            <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                               {usaha.nama_usaha}
                             </span>
                           </div>
@@ -558,7 +568,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                             <span className="text-slate-500 block font-medium">
                               Bidang Usaha & Jenis:
                             </span>
-                            <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                            <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                               {usaha.bidang_usaha || usaha.kategori_usaha}{" "}
                               {usaha.jenis_usaha
                                 ? `(${usaha.jenis_usaha})`
@@ -570,7 +580,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Nama Produk / Komoditas:
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {usaha.nama_produk_usaha}
                               </span>
                             </div>
@@ -580,7 +590,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Lokasi Usaha:
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {usaha.kota_usaha || "-"},{" "}
                                 {usaha.provinsi_usaha || "Prov. Banten"}
                               </span>
@@ -593,7 +603,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Standar UMP Usaha (Provinsi):
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {usaha.pendapatan_ump}
                               </span>
                             </div>
@@ -603,7 +613,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                               <span className="text-slate-500 block font-medium">
                                 Standar UMK Usaha (Kabupaten / Kota):
                               </span>
-                              <span className="font-semibold text-slate-900 text-sm block leading-relaxed">
+                              <span className="font-semibold text-slate-700 text-sm block leading-relaxed">
                                 {usaha.pendapatan_umk}
                               </span>
                             </div>
@@ -623,7 +633,7 @@ export const AdminRespondentDetailDrawer: React.FC<
                   <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-[#0d2346]">
                     <SolidMessageSquareIcon className="w-4 h-4 text-[#0d2346]" />
                   </div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900">
+                  <h3 className="font-bold text-sm sm:text-base text-slate-700">
                     Evaluasi Pembelajaran dan Masukan Sekolah
                   </h3>
                 </div>

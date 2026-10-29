@@ -643,7 +643,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     isBkkPartner: true,
     applyType: "email",
     emailAddress: "recruitment@solusiteknologi.co.id",
-    emailSubject: "Lamaran Pekerjaan - Junior Network Administrator - [Nama Alumni]",
+    emailSubject:
+      "Lamaran Pekerjaan - Junior Network Administrator - [Nama Alumni]",
     clickCount: 19,
   },
   {
@@ -670,7 +671,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     isBkkPartner: true,
     applyType: "whatsapp",
     whatsappNumber: "6281298765432",
-    whatsappTemplate: "Halo Tim Rekrutmen PT Astra Motor Sasmita, saya alumni SMK Sasmita Jaya 2 berminat mendaftar untuk posisi Service Advisor & Teknisi Roda Dua. Berikut lampiran identitas dan portofolio keahlian saya.",
+    whatsappTemplate:
+      "Halo Tim Rekrutmen PT Astra Motor Sasmita, saya alumni SMK Sasmita Jaya 2 berminat mendaftar untuk posisi Service Advisor & Teknisi Roda Dua. Berikut lampiran identitas dan portofolio keahlian saya.",
     clickCount: 32,
   },
   {
@@ -693,8 +695,10 @@ export const MOCK_JOBS: JobVacancy[] = [
     contactPerson: "hrd@astra-otoparts-career.id",
     isBkkPartner: true,
     applyType: "walk_in",
-    locationAddress: "Kawasan Industri KIIC Lot C-3, Jl. Permata Raya No. 12, Karawang Barat, Jawa Barat 41361",
-    walkInSchedule: "Senin s/d Kamis, Pukul 08.00 - 11.00 WIB (Pakaian kemeja putih, celana hitam bahan, membawa CV & portofolio cetak)",
+    locationAddress:
+      "Kawasan Industri KIIC Lot C-3, Jl. Permata Raya No. 12, Karawang Barat, Jawa Barat 41361",
+    walkInSchedule:
+      "Senin s/d Kamis, Pukul 08.00 - 11.00 WIB (Pakaian kemeja putih, celana hitam bahan, membawa CV & portofolio cetak)",
     mapsUrl: "https://maps.google.com/?q=Kawasan+Industri+KIIC+Karawang",
     clickCount: 14,
   },
@@ -748,7 +752,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     isBkkPartner: true,
     applyType: "whatsapp",
     whatsappNumber: "6281311223344",
-    whatsappTemplate: "Halo HRD PT Panasonic Manufacturing Indonesia, saya alumni SMK Sasmita Jaya 2 jurusan Elektronika Industri bermaksud melamar untuk posisi Teknisi Maintenance Sensor PLC.",
+    whatsappTemplate:
+      "Halo HRD PT Panasonic Manufacturing Indonesia, saya alumni SMK Sasmita Jaya 2 jurusan Elektronika Industri bermaksud melamar untuk posisi Teknisi Maintenance Sensor PLC.",
     clickCount: 41,
   },
   {
@@ -776,7 +781,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     isBkkPartner: true,
     applyType: "whatsapp",
     whatsappNumber: "6281288991122",
-    whatsappTemplate: "Selamat siang HRD PT Indonesia Epson Industry, saya alumni SMK Sasmita Jaya 2 ingin melamar untuk posisi Teknisi Perakitan & Testing PCB Presisi. Berikut identitas serta riwayat kejuruan saya.",
+    whatsappTemplate:
+      "Selamat siang HRD PT Indonesia Epson Industry, saya alumni SMK Sasmita Jaya 2 ingin melamar untuk posisi Teknisi Perakitan & Testing PCB Presisi. Berikut identitas serta riwayat kejuruan saya.",
     clickCount: 38,
   },
   {
@@ -800,8 +806,10 @@ export const MOCK_JOBS: JobVacancy[] = [
     contactPerson: "Kepala Bengkel Astra Daihatsu Ciputat",
     isBkkPartner: true,
     applyType: "walk_in",
-    locationAddress: "Bengkel Resmi Astra Daihatsu Ciputat, Jl. Otista Raya No. 45, Sasak Tinggi, Ciputat, Kota Tangerang Selatan 15411",
-    walkInSchedule: "Setiap Selasa & Kamis, Pukul 09.00 - 12.00 WIB (Pakaian kemeja putih, celana bahan hitam, membawa CV & portofolio)",
+    locationAddress:
+      "Bengkel Resmi Astra Daihatsu Ciputat, Jl. Otista Raya No. 45, Sasak Tinggi, Ciputat, Kota Tangerang Selatan 15411",
+    walkInSchedule:
+      "Setiap Selasa & Kamis, Pukul 09.00 - 12.00 WIB (Pakaian kemeja putih, celana bahan hitam, membawa CV & portofolio)",
     mapsUrl: "https://maps.google.com/?q=Daihatsu+Ciputat",
     clickCount: 29,
   },
@@ -829,7 +837,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     contactPerson: "bkk-telkomakses@smksasmitajaya2.sch.id",
     isBkkPartner: true,
     applyType: "external_url",
-    externalUrl: "https://rekrutmen.telkomakses.co.id/career/technician-tangsel-2026",
+    externalUrl:
+      "https://rekrutmen.telkomakses.co.id/career/technician-tangsel-2026",
     clickCount: 53,
   },
   {
@@ -853,7 +862,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     isBkkPartner: true,
     applyType: "whatsapp",
     whatsappNumber: "6285712345678",
-    whatsappTemplate: "Selamat pagi Tim HRD PT Mayora Indah Tbk, saya alumni SMK Sasmita Jaya 2 bermaksud mengajukan lamaran untuk posisi Teknisi Pemeliharaan Mesin & Toolmaker di Pabrik Jatake. Berikut resume kejuruan saya.",
+    whatsappTemplate:
+      "Selamat pagi Tim HRD PT Mayora Indah Tbk, saya alumni SMK Sasmita Jaya 2 bermaksud mengajukan lamaran untuk posisi Teknisi Pemeliharaan Mesin & Toolmaker di Pabrik Jatake. Berikut resume kejuruan saya.",
     clickCount: 34,
   },
   {
@@ -876,8 +886,10 @@ export const MOCK_JOBS: JobVacancy[] = [
     contactPerson: "Bpk. Heru (Kepala Bengkel AHASS 07122)",
     isBkkPartner: true,
     applyType: "walk_in",
-    locationAddress: "Bengkel Resmi AHASS 07122 Sasmita Motor, Jl. Surya Kencana No. 88, Pamulang Barat, Kota Tangerang Selatan (Depan Kampus Unpam)",
-    walkInSchedule: "Senin s/d Sabtu, Pukul 10.00 - 14.00 WIB (Langsung datang membawa lamaran dan fotokopi sertifikat PKL/kejuruan)",
+    locationAddress:
+      "Bengkel Resmi AHASS 07122 Sasmita Motor, Jl. Surya Kencana No. 88, Pamulang Barat, Kota Tangerang Selatan (Depan Kampus Unpam)",
+    walkInSchedule:
+      "Senin s/d Sabtu, Pukul 10.00 - 14.00 WIB (Langsung datang membawa lamaran dan fotokopi sertifikat PKL/kejuruan)",
     mapsUrl: "https://maps.google.com/?q=AHASS+Pamulang+Surya+Kencana",
     clickCount: 46,
   },
@@ -904,7 +916,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     contactPerson: "bkk-schneider@smksasmitajaya2.sch.id",
     isBkkPartner: true,
     applyType: "external_url",
-    externalUrl: "https://se.com/id/id/about-us/careers/jobs/junior-automation-2026",
+    externalUrl:
+      "https://se.com/id/id/about-us/careers/jobs/junior-automation-2026",
     clickCount: 62,
   },
   {
@@ -929,7 +942,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     isBkkPartner: true,
     applyType: "email",
     emailAddress: "karir.dc@indomaret.co.id",
-    emailSubject: "Lamaran IT Support Cabang - [Nama Lengkap Alumni] - SMK Sasmita Jaya 2",
+    emailSubject:
+      "Lamaran IT Support Cabang - [Nama Lengkap Alumni] - SMK Sasmita Jaya 2",
     clickCount: 25,
   },
   {
@@ -939,10 +953,7 @@ export const MOCK_JOBS: JobVacancy[] = [
     location: "MM2100 Industrial Town, Cikarang Barat",
     type: "Full-time",
     salary: "Rp 5.400.000 - Rp 7.100.000",
-    targetMajors: [
-      "Teknik Pemesinan",
-      "Teknik Kendaraan Ringan Otomotif",
-    ],
+    targetMajors: ["Teknik Pemesinan", "Teknik Kendaraan Ringan Otomotif"],
     postedAt: "17 Sep 2026",
     deadline: "15 Nov 2026",
     description:
@@ -957,7 +968,8 @@ export const MOCK_JOBS: JobVacancy[] = [
     isBkkPartner: true,
     applyType: "whatsapp",
     whatsappNumber: "6281198761234",
-    whatsappTemplate: "Halo Tim Rekrutmen PT Denso Indonesia, saya alumni SMK Sasmita Jaya 2 ingin melamar untuk posisi Quality Control & Dimensi Presisi Otomotif. Terlampir berkas data diri saya.",
+    whatsappTemplate:
+      "Halo Tim Rekrutmen PT Denso Indonesia, saya alumni SMK Sasmita Jaya 2 ingin melamar untuk posisi Quality Control & Dimensi Presisi Otomotif. Terlampir berkas data diri saya.",
     clickCount: 47,
   },
   {
@@ -983,8 +995,10 @@ export const MOCK_JOBS: JobVacancy[] = [
     contactPerson: "Bpk. Rahmat (Daikin Center BSD)",
     isBkkPartner: true,
     applyType: "walk_in",
-    locationAddress: "Daikin Training Center BSD, Komplek Ruko Tol Boulevard Blok B No. 12-14, BSD City, Tangerang Selatan",
-    walkInSchedule: "Setiap Rabu, Pukul 09.00 - 11.30 WIB (Membawa surat permohonan magang, CV, fotokopi rapor/SKL)",
+    locationAddress:
+      "Daikin Training Center BSD, Komplek Ruko Tol Boulevard Blok B No. 12-14, BSD City, Tangerang Selatan",
+    walkInSchedule:
+      "Setiap Rabu, Pukul 09.00 - 11.30 WIB (Membawa surat permohonan magang, CV, fotokopi rapor/SKL)",
     mapsUrl: "https://maps.google.com/?q=Daikin+BSD+Boulevard",
     clickCount: 58,
   },
@@ -1150,7 +1164,7 @@ export const MOCK_FAQS = [
     question:
       "Bagaimana cara mendaftar lowongan kerja di BKK SMK Sasmita Jaya 2?",
     answer:
-      'Alumni dapat login ke dashboard, mengakses menu "Info Loker/Magang", dan memilih lowongan yang tersedia untuk melamar langsung atau menghubungi kontak BKK sekolah.',
+      'Alumni dapat login ke dashboard, mengakses menu "Lowongan Kerja", dan memilih lowongan yang tersedia untuk melamar langsung atau menghubungi kontak BKK sekolah.',
   },
 ];
 
