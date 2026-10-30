@@ -161,6 +161,14 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
       {/* Editor Top Navigation Bar */}
       <div className=" sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
+            title="Kembali"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
           <div>
             <h2 className="text-base sm:text-lg font-bold text-slate-900">
               {editingNews

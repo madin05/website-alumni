@@ -215,7 +215,7 @@ export const AdminJobsTab: React.FC = () => {
             <button
               type="button"
               onClick={() => handleOpenEditor(null)}
-              className="px-4 py-2 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+              className="px-4 py-2 rounded-full bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-semibold shadow-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Tambah Lowongan Baru</span>
