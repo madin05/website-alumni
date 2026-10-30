@@ -23,11 +23,32 @@ export const MasterAlumniPreviewModal: React.FC<
 > = ({ alumni, onClose }) => {
   if (!alumni) return null;
 
+  const cleanNik =
+    alumni.nik && alumni.nik !== "-" && alumni.nik !== "3674000000000000"
+      ? alumni.nik
+      : "";
+  const cleanWa =
+    alumni.noWhatsapp &&
+    alumni.noWhatsapp !== "-" &&
+    alumni.noWhatsapp !== "081200000000"
+      ? alumni.noWhatsapp
+      : "";
+  const cleanEmail =
+    alumni.email &&
+    alumni.email !== "-" &&
+    (!alumni.email.toLowerCase().endsWith("@example.com") ||
+      alumni.statusTracer === "SUDAH")
+      ? alumni.email
+      : "";
+
   return (
-    <div className="fixed inset-0 z-50 bg-white sm:bg-slate-950/60 sm:backdrop-blur-xs sm:flex sm:items-center sm:justify-center sm:p-4 md:sm:p-6 animate-in fade-in duration-150 overflow-hidden">
-      <div className="bg-white w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-2xl rounded-none shadow-none sm:shadow-2xl sm:border sm:border-slate-200/90 overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-hidden">
+      <div className="bg-white w-full h-auto max-h-[92vh] sm:max-h-[90vh] sm:max-w-2xl rounded-t-3xl sm:rounded-2xl border-t sm:border border-slate-100 sm:border-slate-200/90 shadow-2xl overflow-hidden flex flex-col">
+        {/* Pull bar indicator halus di mobile */}
+        <div className="w-10 h-1 bg-slate-200 rounded-full mx-auto mt-2.5 -mb-1 sm:hidden shrink-0" />
+
         {/* Modal Header */}
-        <div className="px-4 py-3.5 sm:px-6 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+        <div className="px-6 py-4 sm:px-6 sm:py-4.5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 text-slate-700 flex items-center justify-center shrink-0">
               <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -53,7 +74,7 @@ export const MasterAlumniPreviewModal: React.FC<
         </div>
 
         {/* Modal Content */}
-        <div className="flex-1 p-4 sm:p-6 space-y-3.5 sm:space-y-5 overflow-y-auto overscroll-contain">
+        <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-5 sm:px-6 sm:py-6 pb-8 sm:pb-6 space-y-3.5 sm:space-y-5">
           {/* Profile Card Header */}
           <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
             <div className="min-w-0 flex-1">
@@ -101,7 +122,7 @@ export const MasterAlumniPreviewModal: React.FC<
                   Nomor Induk Kependudukan (NIK)
                 </span>
                 <span className="font-mono font-bold text-slate-900 text-sm sm:text-base tracking-wide block leading-snug">
-                  {alumni.nik || "-"}
+                  {cleanNik || "-"}
                 </span>
               </div>
 
@@ -127,15 +148,15 @@ export const MasterAlumniPreviewModal: React.FC<
                 </span>
                 <span className="font-mono font-bold text-slate-900 text-xs sm:text-sm tracking-wide flex items-center gap-1.5 leading-snug">
                   <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span>{alumni.noWhatsapp || "-"}</span>
+                  <span>{cleanWa || "-"}</span>
                 </span>
               </div>
-              {alumni.noWhatsapp && (
+              {cleanWa && (
                 <a
                   href={`https://wa.me/${
-                    alumni.noWhatsapp.replace(/\D/g, "").startsWith("0")
-                      ? "62" + alumni.noWhatsapp.replace(/\D/g, "").slice(1)
-                      : alumni.noWhatsapp.replace(/\D/g, "")
+                    cleanWa.replace(/\D/g, "").startsWith("0")
+                      ? "62" + cleanWa.replace(/\D/g, "").slice(1)
+                      : cleanWa.replace(/\D/g, "")
                   }`}
                   target="_blank"
                   rel="noreferrer"
@@ -155,12 +176,12 @@ export const MasterAlumniPreviewModal: React.FC<
                 </span>
                 <span className="font-semibold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 leading-snug tracking-normal break-all">
                   <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span>{alumni.email || "-"}</span>
+                  <span>{cleanEmail || "-"}</span>
                 </span>
               </div>
-              {alumni.email && (
+              {cleanEmail && (
                 <a
-                  href={`mailto:${alumni.email}`}
+                  href={`mailto:${cleanEmail}`}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-200 transition shrink-0 active:scale-95"
                 >
                   <Mail className="w-3.5 h-3.5 text-slate-500" />
@@ -214,9 +235,9 @@ export const MasterAlumniPreviewModal: React.FC<
         {/* Modal Footer */}
         <div className="p-4 sm:px-6 sm:py-4 border-t border-slate-200 bg-white sm:bg-slate-50 shrink-0">
           <div className="flex items-center justify-end gap-2.5 sm:gap-3">
-            {alumni.statusTracer === "BELUM" && (
+            {alumni.statusTracer === "BELUM" && cleanWa && (
               <a
-                href={generateAlumniWaLink(alumni)}
+                href={generateAlumniWaLink({ ...alumni, noWhatsapp: cleanWa })}
                 target="_blank"
                 rel="noreferrer"
                 className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 text-center cursor-pointer"

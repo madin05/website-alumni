@@ -46,16 +46,33 @@ export const MasterAlumniAddModal: React.FC<MasterAlumniAddModalProps> = ({
       return;
     }
 
+    const cleanNik =
+      newNik.trim() &&
+      newNik.trim() !== "-" &&
+      newNik.trim() !== "3674000000000000"
+        ? newNik.trim()
+        : "";
+    const cleanWa =
+      newNoWa.trim() &&
+      newNoWa.trim() !== "-" &&
+      newNoWa.trim() !== "081200000000"
+        ? newNoWa.trim()
+        : "";
+    const cleanEmail =
+      newEmail.trim() &&
+      newEmail.trim() !== "-" &&
+      !newEmail.trim().toLowerCase().endsWith("@example.com")
+        ? newEmail.trim()
+        : "";
+
     const success = onSubmit({
       nisn: newNisn.trim(),
-      nik: newNik.trim() || "3674000000000000",
+      nik: cleanNik,
       nama: newNama.trim(),
       jurusan: newJurusan,
       tahunLulus: Number(newTahun) || 2024,
-      noWhatsapp: newNoWa.trim() || "081200000000",
-      email:
-        newEmail.trim() ||
-        `${newNama.toLowerCase().replace(/\s+/g, "")}@example.com`,
+      noWhatsapp: cleanWa,
+      email: cleanEmail,
     });
 
     if (success) {
@@ -71,8 +88,10 @@ export const MasterAlumniAddModal: React.FC<MasterAlumniAddModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
-      <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl border border-slate-200 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/60 backdrop-blur-xs">
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-lg max-h-[92vh] sm:max-h-[90vh] shadow-xl border-t sm:border border-slate-200 overflow-hidden flex flex-col">
+        {/* Pull bar indicator halus di mobile */}
+        <div className="w-10 h-1 bg-slate-200 rounded-full mx-auto mt-2.5 -mb-1 sm:hidden shrink-0" />
         <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <h3 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-2">
             <Plus className="w-4 h-4 text-slate-700" />

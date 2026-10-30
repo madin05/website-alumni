@@ -136,8 +136,28 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
           } else {
             currentNisns.add(cleanNisn);
             importedCount++;
+            const cleanNik =
+              rec.nik && rec.nik !== '-' && rec.nik !== '3674000000000000'
+                ? rec.nik
+                : '';
+            const cleanWa =
+              rec.noWhatsapp &&
+              rec.noWhatsapp !== '-' &&
+              rec.noWhatsapp !== '081200000000'
+                ? rec.noWhatsapp
+                : '';
+            const cleanEmail =
+              rec.email &&
+              rec.email !== '-' &&
+              !rec.email.toLowerCase().endsWith('@example.com')
+                ? rec.email
+                : '';
+
             newEntries.push({
               ...rec,
+              nik: cleanNik,
+              noWhatsapp: cleanWa,
+              email: cleanEmail,
               id: `mst-imp-${Date.now()}-${idx}`,
               statusTracer: 'BELUM',
               createdAt: new Date().toISOString(),
@@ -159,8 +179,28 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
           return false;
         }
 
+        const cleanNik =
+          record.nik && record.nik !== '-' && record.nik !== '3674000000000000'
+            ? record.nik
+            : '';
+        const cleanWa =
+          record.noWhatsapp &&
+          record.noWhatsapp !== '-' &&
+          record.noWhatsapp !== '081200000000'
+            ? record.noWhatsapp
+            : '';
+        const cleanEmail =
+          record.email &&
+          record.email !== '-' &&
+          !record.email.toLowerCase().endsWith('@example.com')
+            ? record.email
+            : '';
+
         const newRecord: MasterAlumniRecord = {
           ...record,
+          nik: cleanNik,
+          noWhatsapp: cleanWa,
+          email: cleanEmail,
           id: `mst-single-${Date.now()}`,
           statusTracer: 'BELUM',
           createdAt: new Date().toISOString(),
@@ -246,11 +286,23 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
             updatedRespondents = [newRespondent, ...updatedRespondents];
           }
 
-          // Also update masterAlumni statusTracer to SUDAH
+          // Also update masterAlumni statusTracer to SUDAH and populate real details
           const updatedMaster = state.masterAlumni.map((m) => {
             if (m.nisn === payload.identitas.nisn) {
               return {
                 ...m,
+                nik:
+                  payload.identitas.nik && payload.identitas.nik !== '-'
+                    ? payload.identitas.nik
+                    : m.nik || '',
+                noWhatsapp:
+                  payload.identitas.no_whatsapp && payload.identitas.no_whatsapp !== '-'
+                    ? payload.identitas.no_whatsapp
+                    : m.noWhatsapp || '',
+                email:
+                  payload.identitas.email && payload.identitas.email !== '-'
+                    ? payload.identitas.email
+                    : m.email || '',
                 statusTracer: 'SUDAH' as const,
                 submissionId,
                 submittedAt: new Date().toISOString(),

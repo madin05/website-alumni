@@ -227,19 +227,29 @@ export function parseWorkbookMatrix(rawRows: unknown[][]): {
     };
 
     const nisn = cleanIdString(getVal(colMap.nisn));
-    const nik = cleanIdString(getVal(colMap.nik));
+    const rawNik = getVal(colMap.nik);
+    const nik =
+      rawNik && rawNik !== "-" && rawNik !== "3674000000000000"
+        ? cleanIdString(rawNik)
+        : "";
     const nama = getVal(colMap.nama);
     const rawJurusan = getVal(colMap.jurusan);
     const parsedTahun = parseInt(getVal(colMap.tahun), 10) || 2024;
-    const noWa = getVal(colMap.noWa) || "081200000000";
+    const rawWa = getVal(colMap.noWa);
+    const noWa =
+      rawWa && rawWa !== "-" && rawWa !== "081200000000" ? rawWa : "";
+    const rawEmail = getVal(colMap.email);
     const email =
-      getVal(colMap.email) ||
-      `${nama.toLowerCase().replace(/[^a-z0-9]/g, "")}@example.com`;
+      rawEmail &&
+      rawEmail !== "-" &&
+      !rawEmail.toLowerCase().endsWith("@example.com")
+        ? rawEmail
+        : "";
 
     if (nisn && nama) {
       result.push({
         nisn,
-        nik: nik || "3674000000000000",
+        nik,
         nama,
         jurusan: mapJurusan(rawJurusan),
         tahunLulus: parsedTahun,

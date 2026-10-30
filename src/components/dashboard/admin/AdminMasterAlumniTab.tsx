@@ -392,7 +392,10 @@ export const AdminMasterAlumniTab: React.FC = () => {
 
                       {/* 5. Pengingat WA */}
                       <td className="py-2.5 px-3 text-center">
-                        {alumni.statusTracer === "BELUM" ? (
+                        {alumni.statusTracer === "BELUM" &&
+                        alumni.noWhatsapp &&
+                        alumni.noWhatsapp !== "-" &&
+                        alumni.noWhatsapp !== "081200000000" ? (
                           <a
                             href={generateAlumniWaLink(alumni)}
                             target="_blank"
