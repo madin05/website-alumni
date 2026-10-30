@@ -71,7 +71,7 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
               onClick={() => setApplyType(opt.value)}
               className={`p-2.5 rounded-lg border text-left transition flex flex-col justify-between cursor-pointer ${
                 isSelected
-                  ? "bg-white border-[#0d2346] ring-1 ring-[#0d2346] shadow-xs"
+                  ? "bg-slate-100 shadow-xs"
                   : "bg-white/80 border-slate-200 hover:bg-white hover:border-slate-300"
               }`}
             >
@@ -240,7 +240,8 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
               className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
             />
             <p className="text-[10px] text-slate-500 font-normal">
-              Alumni akan diarahkan langsung ke portal resmi mitra pada tab baru.
+              Alumni akan diarahkan langsung ke portal resmi mitra pada tab
+              baru.
             </p>
           </div>
         </div>

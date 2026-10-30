@@ -340,7 +340,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 Tandai sebagai Perusahaan Mitra Resmi BKK
               </span>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Menampilkan badge terverifikasi kemitraan resmi SMK Sasmita Jaya 2
+                Menampilkan badge terverifikasi kemitraan resmi SMK Sasmita Jaya
+                2
               </p>
             </div>
             <input
@@ -385,7 +386,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
               <button
                 type="button"
                 onClick={selectAllMajors}
-                className="text-xs text-[#0d2346] hover:underline font-medium cursor-pointer"
+                className="text-xs text-blue-500 hover:underline font-medium cursor-pointer"
               >
                 {targetMajors.length === JURUSAN_OPTIONS.length
                   ? "Batal Pilih Semua"
@@ -400,7 +401,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                     key={major}
                     className={`flex items-center gap-2 p-2 sm:p-2.5 rounded-lg border text-xs cursor-pointer transition ${
                       isChecked
-                        ? "bg-slate-50/80 border-[#0d2346] text-[#0d2346] font-medium"
+                        ? "bg-slate-50/80  text-[#0d2346] font-medium"
                         : "border-slate-200 hover:bg-slate-50 text-slate-700 font-normal"
                     }`}
                   >
