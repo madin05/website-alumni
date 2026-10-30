@@ -188,20 +188,20 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="space-y-5 animate-in fade-in duration-200">
       {/* Editor Header Navigation */}
-      <div className=" p-5  flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={onCancel}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
             title="Kembali"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-slate-900">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
               {editingJob
                 ? "Sunting Lowongan Kerja"
                 : "Tambah Lowongan Kerja Baru"}
@@ -213,14 +213,14 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+            className="px-3.5 py-2 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer"
           >
             Batal
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="px-5 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 cursor-pointer"
+            className="px-4 py-2 rounded-lg bg-[#0d2346] hover:bg-[#163868] text-white text-xs font-medium shadow-xs transition active:scale-95 cursor-pointer"
           >
             {editingJob ? "Simpan Perubahan" : "Terbitkan Lowongan"}
           </button>
@@ -228,44 +228,44 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
       </div>
 
       {/* Editor Main Form & Live Preview Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
         {/* Left Column: Form Fields (8 cols) */}
-        <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+        <div className="lg:col-span-8 bg-white rounded-xl border border-slate-200 shadow-xs p-4 sm:p-6 space-y-4">
           {/* Field 1: Posisi & Perusahaan */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Posisi / Judul Pekerjaan{" "}
-                <span className="text-rose-500">*</span>
+                <span className="text-rose-500 font-normal ml-0.5">*</span>
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Contoh: IT Network Support, Operator Mesin CNC"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Nama Perusahaan / Instansi{" "}
-                <span className="text-rose-500">*</span>
+                <span className="text-rose-500 font-normal ml-0.5">*</span>
               </label>
               <input
                 type="text"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Contoh: PT Telkom Indonesia, PT Astra Otoparts"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
             </div>
           </div>
 
           {/* Field 2: Lokasi, Tipe, Gaji */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Lokasi Penempatan
               </label>
               <input
@@ -273,24 +273,25 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Tangerang Selatan, Jakarta Barat"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Tipe Ikatan Kerja
               </label>
               <CustomSelect
                 value={type}
                 onChange={(val) => setType(val as JobVacancy["type"])}
                 options={JOB_TYPES.map((t) => ({ value: t, label: t }))}
-                className="text-xs sm:text-sm"
+                triggerSize="sm"
+                triggerClassName="rounded-lg bg-slate-50/50 hover:bg-white border-slate-200 text-xs sm:text-[13px]"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Kisaran Gaji / Benefit
               </label>
               <input
@@ -298,15 +299,15 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 value={salary}
                 onChange={(e) => setSalary(e.target.value)}
                 placeholder="Rp 4.500.000 - Rp 6.000.000 / UMR"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
             </div>
           </div>
 
           {/* Field 3: Deadline & Kontak Umum */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Batas Akhir Pendaftaran
               </label>
               <input
@@ -314,12 +315,12 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
                 placeholder="Contoh: 30 November 2026 / Segera"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Kontak PIC Bursa Kerja / Email BKK
               </label>
               <input
@@ -327,27 +328,26 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 value={contactPerson}
                 onChange={(e) => setContactPerson(e.target.value)}
                 placeholder="bkk@smksasmitajaya2.sch.id"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
               />
             </div>
           </div>
 
           {/* Field 4: Mitra Resmi BKK */}
-          <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+          <div className="flex items-center justify-between p-3 sm:p-3.5 bg-slate-50/70 rounded-lg border border-slate-200">
             <div>
-              <span className="block text-xs font-bold text-slate-900">
+              <span className="block text-xs font-medium text-slate-800">
                 Tandai sebagai Perusahaan Mitra Resmi BKK
               </span>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Menampilkan badge terverifikasi kemitraan resmi SMK Sasmita Jaya
-                2
+                Menampilkan badge terverifikasi kemitraan resmi SMK Sasmita Jaya 2
               </p>
             </div>
             <input
               type="checkbox"
               checked={isBkkPartner}
               onChange={(e) => setIsBkkPartner(e.target.checked)}
-              className="w-5 h-5 rounded text-[#0d2346] accent-[#0d2346] cursor-pointer"
+              className="w-4 h-4 rounded text-[#0d2346] accent-[#0d2346] cursor-pointer"
             />
           </div>
 
@@ -378,14 +378,14 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           {/* Field 5: Sasaran Jurusan */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-900">
+              <label className="text-xs font-medium text-slate-700">
                 Sasaran Program Keahlian{" "}
-                <span className="text-rose-500">*</span>
+                <span className="text-rose-500 font-normal ml-0.5">*</span>
               </label>
               <button
                 type="button"
                 onClick={selectAllMajors}
-                className="text-xs text-[#0d2346] hover:underline font-semibold cursor-pointer"
+                className="text-xs text-[#0d2346] hover:underline font-medium cursor-pointer"
               >
                 {targetMajors.length === JURUSAN_OPTIONS.length
                   ? "Batal Pilih Semua"
@@ -398,19 +398,19 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 return (
                   <label
                     key={major}
-                    className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs cursor-pointer transition ${
+                    className={`flex items-center gap-2 p-2 sm:p-2.5 rounded-lg border text-xs cursor-pointer transition ${
                       isChecked
-                        ? "bg-slate-50  text-[#0d2346] font-semibold"
-                        : "border-slate-200 hover:bg-slate-50 text-slate-700"
+                        ? "bg-slate-50/80 border-[#0d2346] text-[#0d2346] font-medium"
+                        : "border-slate-200 hover:bg-slate-50 text-slate-700 font-normal"
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={isChecked}
                       onChange={() => toggleMajor(major)}
-                      className="w-4 h-4 rounded text-[#0d2346] accent-[#0d2346]"
+                      className="w-3.5 h-3.5 rounded text-[#0d2346] accent-[#0d2346]"
                     />
-                    <span>{major}</span>
+                    <span className="truncate">{major}</span>
                   </label>
                 );
               })}
@@ -418,36 +418,36 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           </div>
 
           {/* Field 6: Deskripsi Pekerjaan */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-slate-700">
               Deskripsi Pekerjaan & Tanggung Jawab{" "}
-              <span className="text-rose-500">*</span>
+              <span className="text-rose-500 font-normal ml-0.5">*</span>
             </label>
             <textarea
-              rows={4}
+              rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Jelaskan gambaran umum pekerjaan, tugas harian, dan lingkungan kerja..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
             />
           </div>
 
           {/* Field 7: Persyaratan & Kualifikasi */}
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-slate-900">
+              <label className="block text-xs font-medium text-slate-700">
                 Persyaratan & Kualifikasi
               </label>
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-slate-400 font-normal">
                 Tulis satu baris untuk tiap poin kualifikasi
               </span>
             </div>
             <textarea
-              rows={4}
+              rows={3}
               value={requirementsText}
               onChange={(e) => setRequirementsText(e.target.value)}
               placeholder="Lulusan SMK Sasmita Jaya 2&#10;Memiliki sertifikat kompetensi BNSP&#10;Mampu bekerjasama dalam tim kerja industri&#10;Disiplin dan teliti"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white leading-relaxed"
             />
           </div>
         </div>

@@ -331,3 +331,4 @@ export const AdminJobDetailModal: React.FC<AdminJobDetailModalProps> = ({
     </Modal>
   );
 };
+

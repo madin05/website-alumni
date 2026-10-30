@@ -48,11 +48,11 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
   company,
 }) => {
   return (
-    <div className="p-4 bg-blue-50/40 rounded-xl border border-blue-100 space-y-4">
+    <div className="p-3.5 sm:p-4 bg-slate-50/70 rounded-xl border border-slate-200 space-y-3">
       <div>
-        <label className="block text-xs font-bold text-[#0d2346]">
+        <label className="block text-xs font-semibold text-slate-800">
           Metode Kanal Pendaftaran Alumni (Direct Referral){" "}
-          <span className="text-rose-500">*</span>
+          <span className="text-rose-500 font-normal ml-0.5">*</span>
         </label>
         <p className="text-[11px] text-slate-500 mt-0.5">
           Tentukan bagaimana alumni yang tervalidasi Tracer Study menghubungi
@@ -61,7 +61,7 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
       </div>
 
       {/* Apply Type Radio Selector Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {APPLY_TYPE_OPTIONS.map((opt) => {
           const isSelected = applyType === opt.value;
           return (
@@ -69,15 +69,15 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
               key={opt.value}
               type="button"
               onClick={() => setApplyType(opt.value)}
-              className={`p-3 rounded-xl border text-left transition flex flex-col justify-between cursor-pointer ${
+              className={`p-2.5 rounded-lg border text-left transition flex flex-col justify-between cursor-pointer ${
                 isSelected
-                  ? "bg-white border-[#0d2346] ring-2 ring-[#0d2346]/10 shadow-xs"
-                  : "bg-white/60 border-slate-200 hover:bg-white hover:border-slate-300"
+                  ? "bg-white border-[#0d2346] ring-1 ring-[#0d2346] shadow-xs"
+                  : "bg-white/80 border-slate-200 hover:bg-white hover:border-slate-300"
               }`}
             >
               <div className="flex items-center justify-between">
                 <span
-                  className={`text-xs font-bold ${
+                  className={`text-xs font-semibold ${
                     isSelected ? "text-[#0d2346]" : "text-slate-800"
                   }`}
                 >
@@ -95,7 +95,9 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
                   )}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 mt-1">{opt.desc}</p>
+              <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                {opt.desc}
+              </p>
             </button>
           );
         })}
@@ -104,27 +106,28 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
       {/* DYNAMIC INPUTS BASED ON APPLY TYPE */}
       {/* TYPE 1: EMAIL */}
       {applyType === "email" && (
-        <div className="pt-2 border-t border-blue-100 space-y-3">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900">
-              Alamat Email Rekrutmen Mitra <span className="text-rose-500">*</span>
+        <div className="pt-2.5 border-t border-slate-200/60 space-y-2.5">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-slate-700">
+              Alamat Email Rekrutmen Mitra{" "}
+              <span className="text-rose-500 font-normal ml-0.5">*</span>
             </label>
             <input
               type="email"
               value={emailAddress}
               onChange={(e) => setEmailAddress(e.target.value)}
               placeholder="recruitment@nama-perusahaan.co.id"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-slate-900">
+              <label className="block text-xs font-medium text-slate-700">
                 Format Subjek Email Terstandarisasi
               </label>
-              <span className="text-[11px] text-slate-400">
-                Opsional - default: Lamaran Pekerjaan - [Posisi] - [Nama]
+              <span className="text-[11px] text-slate-400 font-normal">
+                Opsional
               </span>
             </div>
             <input
@@ -132,7 +135,7 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
               value={emailSubject}
               onChange={(e) => setEmailSubject(e.target.value)}
               placeholder={`Lamaran Pekerjaan - ${title || "Posisi"} - [Nama Alumni]`}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
             />
           </div>
         </div>
@@ -140,35 +143,35 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
 
       {/* TYPE 2: WHATSAPP */}
       {applyType === "whatsapp" && (
-        <div className="pt-2 border-t border-blue-100 space-y-3">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900">
-              Nomor WhatsApp HRD Resmi (Standar Internasional){" "}
-              <span className="text-rose-500">*</span>
+        <div className="pt-2.5 border-t border-slate-200/60 space-y-2.5">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-slate-700">
+              Nomor WhatsApp HRD Resmi{" "}
+              <span className="text-rose-500 font-normal ml-0.5">*</span>
             </label>
             <input
               type="text"
               value={whatsappNumber}
               onChange={(e) => setWhatsappNumber(e.target.value)}
-              placeholder="6281298765432 (Gunakan awalan 62 tanpa spasi atau strip)"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+              placeholder="6281298765432 (Gunakan format 62 tanpa spasi atau strip)"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
             />
-            <p className="text-[10px] text-slate-500">
+            <p className="text-[10px] text-slate-500 font-normal">
               Sistem otomatis mengarahkan ke link resmi wa.me saat alumni
-              mengklik tombol pendaftaran.
+              mengakses pendaftaran.
             </p>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-slate-700">
               Template Pesan WhatsApp Rekomendasi
             </label>
             <textarea
-              rows={3}
+              rows={2}
               value={whatsappTemplate}
               onChange={(e) => setWhatsappTemplate(e.target.value)}
               placeholder={`Halo Tim Rekrutmen ${company || "Perusahaan"}, saya alumni SMK Sasmita Jaya 2 bermaksud mengajukan lamaran untuk posisi ${title || "pekerjaan ini"}...`}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white leading-relaxed"
             />
           </div>
         </div>
@@ -176,23 +179,24 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
 
       {/* TYPE 3: WALK-IN INTERVIEW */}
       {applyType === "walk_in" && (
-        <div className="pt-2 border-t border-blue-100 space-y-3">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900">
-              Alamat Lengkap Lokasi Walk-in <span className="text-rose-500">*</span>
+        <div className="pt-2.5 border-t border-slate-200/60 space-y-2.5">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-slate-700">
+              Alamat Lengkap Lokasi Walk-in{" "}
+              <span className="text-rose-500 font-normal ml-0.5">*</span>
             </label>
             <textarea
               rows={2}
               value={locationAddress}
               onChange={(e) => setLocationAddress(e.target.value)}
               placeholder="Gedung Head Office, Lantai 3, Jl. Raya Industri No. 45, Karawang..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white leading-relaxed"
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Jadwal / Jam Kedatangan
               </label>
               <input
@@ -200,12 +204,12 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
                 value={walkInSchedule}
                 onChange={(e) => setWalkInSchedule(e.target.value)}
                 placeholder="Senin - Kamis, Pukul 08.00 - 11.00 WIB"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-900">
+            <div className="space-y-1">
+              <label className="block text-xs font-medium text-slate-700">
                 Tautan Google Maps Lokasi
               </label>
               <input
@@ -213,7 +217,7 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
                 value={mapsUrl}
                 onChange={(e) => setMapsUrl(e.target.value)}
                 placeholder="https://maps.google.com/?q=..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
               />
             </div>
           </div>
@@ -222,22 +226,21 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
 
       {/* TYPE 4: EXTERNAL URL */}
       {applyType === "external_url" && (
-        <div className="pt-2 border-t border-blue-100 space-y-3">
-          <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-900">
+        <div className="pt-2.5 border-t border-slate-200/60 space-y-2.5">
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-slate-700">
               Tautan Portal Karir / Google Form Resmi{" "}
-              <span className="text-rose-500">*</span>
+              <span className="text-rose-500 font-normal ml-0.5">*</span>
             </label>
             <input
               type="url"
               value={externalUrl}
               onChange={(e) => setExternalUrl(e.target.value)}
               placeholder="https://career.mitra-industri.id/apply"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
+              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-[13px] text-slate-800 placeholder:text-slate-400 focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-white"
             />
-            <p className="text-[10px] text-slate-500">
-              Alumni akan diarahkan langsung ke halaman pendaftaran resmi mitra
-              pada tab baru.
+            <p className="text-[10px] text-slate-500 font-normal">
+              Alumni akan diarahkan langsung ke portal resmi mitra pada tab baru.
             </p>
           </div>
         </div>
@@ -245,4 +248,3 @@ export const ApplyChannelFields: React.FC<ApplyChannelFieldsProps> = ({
     </div>
   );
 };
-
