@@ -49,61 +49,59 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
   const [title, setTitle] = useState(editingJob?.title || "");
   const [company, setCompany] = useState(editingJob?.company || "");
   const [location, setLocation] = useState(
-    editingJob?.location || "Tangerang Selatan"
+    editingJob?.location || "Tangerang Selatan",
   );
   const [type, setType] = useState<JobVacancy["type"]>(
-    editingJob?.type || "Full-time"
+    editingJob?.type || "Full-time",
   );
   const [salary, setSalary] = useState(
-    editingJob?.salary || "Rp 4.500.000 - Rp 6.500.000"
+    editingJob?.salary || "Rp 4.500.000 - Rp 6.500.000",
   );
   const [targetMajors, setTargetMajors] = useState<string[]>(
-    editingJob?.targetMajors || ["Teknik Komputer dan Jaringan"]
+    editingJob?.targetMajors || ["Teknik Komputer dan Jaringan"],
   );
   const [deadline, setDeadline] = useState(
-    editingJob?.deadline || "30 Okt 2026"
+    editingJob?.deadline || "30 Okt 2026",
   );
   const [contactPerson, setContactPerson] = useState(
-    editingJob?.contactPerson || "bkk@smksasmitajaya2.sch.id"
+    editingJob?.contactPerson || "bkk@smksasmitajaya2.sch.id",
   );
   const [isBkkPartner, setIsBkkPartner] = useState(
-    editingJob ? editingJob.isBkkPartner : true
+    editingJob ? editingJob.isBkkPartner : true,
   );
   const [description, setDescription] = useState(editingJob?.description || "");
   const [requirementsText, setRequirementsText] = useState(
-    editingJob?.requirements?.join("\n") || ""
+    editingJob?.requirements?.join("\n") || "",
   );
 
   // Dynamic Apply Channels
   const [applyType, setApplyType] = useState<JobApplyType>(
-    editingJob?.applyType || "email"
+    editingJob?.applyType || "email",
   );
   const [locationAddress, setLocationAddress] = useState(
-    editingJob?.locationAddress || ""
+    editingJob?.locationAddress || "",
   );
   const [walkInSchedule, setWalkInSchedule] = useState(
-    editingJob?.walkInSchedule || ""
+    editingJob?.walkInSchedule || "",
   );
   const [mapsUrl, setMapsUrl] = useState(editingJob?.mapsUrl || "");
   const [whatsappNumber, setWhatsappNumber] = useState(
-    editingJob?.whatsappNumber || ""
+    editingJob?.whatsappNumber || "",
   );
   const [whatsappTemplate, setWhatsappTemplate] = useState(
-    editingJob?.whatsappTemplate || ""
+    editingJob?.whatsappTemplate || "",
   );
   const [emailAddress, setEmailAddress] = useState(
-    editingJob?.emailAddress || ""
+    editingJob?.emailAddress || "",
   );
   const [emailSubject, setEmailSubject] = useState(
-    editingJob?.emailSubject || ""
+    editingJob?.emailSubject || "",
   );
-  const [externalUrl, setExternalUrl] = useState(
-    editingJob?.externalUrl || ""
-  );
+  const [externalUrl, setExternalUrl] = useState(editingJob?.externalUrl || "");
 
   const toggleMajor = (major: string) => {
     setTargetMajors((prev) =>
-      prev.includes(major) ? prev.filter((m) => m !== major) : [...prev, major]
+      prev.includes(major) ? prev.filter((m) => m !== major) : [...prev, major],
     );
   };
 
@@ -120,7 +118,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
 
     if (!title.trim() || !company.trim() || !description.trim()) {
       showToast(
-        "Harap lengkapi judul posisi, nama perusahaan, dan deskripsi pekerjaan."
+        "Harap lengkapi judul posisi, nama perusahaan, dan deskripsi pekerjaan.",
       );
       return;
     }
@@ -136,7 +134,9 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
     }
 
     if (applyType === "walk_in" && !locationAddress.trim()) {
-      showToast("Harap isi alamat lengkap lokasi kedatangan walk-in interview.");
+      showToast(
+        "Harap isi alamat lengkap lokasi kedatangan walk-in interview.",
+      );
       return;
     }
 
@@ -145,7 +145,11 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
       return;
     }
 
-    if (applyType === "email" && !emailAddress.trim() && !contactPerson.trim()) {
+    if (
+      applyType === "email" &&
+      !emailAddress.trim() &&
+      !contactPerson.trim()
+    ) {
       showToast("Harap isi alamat email rekrutmen mitra.");
       return;
     }
@@ -186,7 +190,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Editor Header Navigation */}
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className=" p-5  flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -198,11 +202,10 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           </button>
           <div>
             <h2 className="text-base sm:text-lg font-bold text-slate-900">
-              {editingJob ? "Sunting Lowongan Kerja" : "Tambah Lowongan Kerja Baru"}
+              {editingJob
+                ? "Sunting Lowongan Kerja"
+                : "Tambah Lowongan Kerja Baru"}
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Kelola informasi peluang karir, kriteria penerimaan, dan kanal lamaran bagi alumni
-            </p>
           </div>
         </div>
 
@@ -210,7 +213,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
+            className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
           >
             Batal
           </button>
@@ -232,7 +235,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-900">
-                Posisi / Judul Pekerjaan <span className="text-rose-500">*</span>
+                Posisi / Judul Pekerjaan{" "}
+                <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -245,7 +249,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
 
             <div className="space-y-1.5">
               <label className="block text-xs font-bold text-slate-900">
-                Nama Perusahaan / Instansi <span className="text-rose-500">*</span>
+                Nama Perusahaan / Instansi{" "}
+                <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -334,7 +339,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                 Tandai sebagai Perusahaan Mitra Resmi BKK
               </span>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Menampilkan badge terverifikasi kemitraan resmi SMK Sasmita Jaya 2
+                Menampilkan badge terverifikasi kemitraan resmi SMK Sasmita Jaya
+                2
               </p>
             </div>
             <input
@@ -373,7 +379,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-slate-900">
-                Sasaran Program Keahlian <span className="text-rose-500">*</span>
+                Sasaran Program Keahlian{" "}
+                <span className="text-rose-500">*</span>
               </label>
               <button
                 type="button"
@@ -393,7 +400,7 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
                     key={major}
                     className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs cursor-pointer transition ${
                       isChecked
-                        ? "bg-slate-50 border-[#0d2346] text-[#0d2346] font-semibold"
+                        ? "bg-slate-50  text-[#0d2346] font-semibold"
                         : "border-slate-200 hover:bg-slate-50 text-slate-700"
                     }`}
                   >
@@ -413,7 +420,8 @@ export const AdminJobEditor: React.FC<AdminJobEditorProps> = ({
           {/* Field 6: Deskripsi Pekerjaan */}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-slate-900">
-              Deskripsi Pekerjaan & Tanggung Jawab <span className="text-rose-500">*</span>
+              Deskripsi Pekerjaan & Tanggung Jawab{" "}
+              <span className="text-rose-500">*</span>
             </label>
             <textarea
               rows={4}

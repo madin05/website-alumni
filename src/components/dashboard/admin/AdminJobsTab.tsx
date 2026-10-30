@@ -23,6 +23,7 @@ import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { Toast } from "@/components/ui/Toast";
 import { AdminJobEditor, JURUSAN_OPTIONS, JOB_TYPES } from "./AdminJobEditor";
+import { AdminJobDetailModal } from "./AdminJobDetailModal";
 
 const SolidBriefcaseIcon: React.FC<{ className?: string }> = ({
   className = "w-5 h-5 text-[#0d2346]",
@@ -49,6 +50,7 @@ export const AdminJobsTab: React.FC = () => {
 
   // Editor State
   const [editingJob, setEditingJob] = useState<JobVacancy | null>(null);
+  const [viewingJob, setViewingJob] = useState<JobVacancy | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState("");
 
@@ -221,7 +223,7 @@ export const AdminJobsTab: React.FC = () => {
           </div>
 
           {/* Quick Stat Highlights */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
             <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
               <p className="text-[11px] font-semibold text-slate-500">
                 Total Loker Aktif
@@ -238,11 +240,11 @@ export const AdminJobsTab: React.FC = () => {
               <p className="text-[11px] font-semibold text-slate-500">
                 Mitra DUDI Resmi
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-600 mt-1">
+              <p className="text-xl sm:text-2xl font-bold text-slate-600 mt-1">
                 {jobList.filter((j) => j.isBkkPartner).length}
               </p>
               <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                Terverifikasi BKK
+                Terverifikasi
               </p>
             </div>
 
@@ -250,23 +252,11 @@ export const AdminJobsTab: React.FC = () => {
               <p className="text-[11px] font-semibold text-slate-500">
                 Minat / Klik Alumni
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">
+              <p className="text-xl sm:text-2xl font-bold text-slate-600 mt-1">
                 {totalClicks}
               </p>
               <p className="text-[10px] text-slate-400 font-medium mt-0.5">
                 Akses Pendaftaran
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
-              <p className="text-[11px] font-semibold text-slate-500">
-                Jurusan Tercover
-              </p>
-              <p className="text-xl sm:text-2xl font-bold text-indigo-600 mt-1">
-                6 Program
-              </p>
-              <p className="text-[10px] text-slate-400 font-medium mt-0.5">
-                100% Sesuai Keahlian
               </p>
             </div>
           </div>
@@ -350,9 +340,14 @@ export const AdminJobsTab: React.FC = () => {
 
                     {/* Job Title and Company */}
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#0d2346] transition leading-snug line-clamp-1">
+                      <button
+                        type="button"
+                        onClick={() => setViewingJob(job)}
+                        className="text-sm font-bold text-slate-900 group-hover:text-[#0d2346] transition leading-snug line-clamp-1 text-left cursor-pointer hover:underline"
+                        title="Klik untuk melihat detail lengkap"
+                      >
                         {job.title}
-                      </h3>
+                      </button>
                       <p className="text-xs font-semibold text-slate-600 mt-1 flex items-center gap-1.5">
                         <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                         <span className="line-clamp-1">{job.company}</span>
@@ -371,48 +366,40 @@ export const AdminJobsTab: React.FC = () => {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between gap-2 text-[11px] text-slate-500 pt-1 border-t border-slate-200/60">
+                      <div className="flex items-center justify-between gap-2 text-[11px] text-slate-500 pt-1.5 border-t border-slate-200/60">
                         <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3 text-slate-400" />
-                          Diposting: {job.postedAt}
+                          <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
+                          <span>Diposting: {job.postedAt}</span>
                         </span>
-                        <span className="flex items-center gap-1 text-rose-600 font-semibold">
-                          <Clock className="w-3 h-3" />
-                          Batas: {job.deadline}
+                        <span className="flex items-center gap-1 text-rose-600 font-semibold shrink-0">
+                          <Clock className="w-3 h-3 shrink-0" />
+                          <span>Batas: {job.deadline}</span>
                         </span>
                       </div>
                     </div>
 
-                    {/* Target Majors */}
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-bold tracking-wider text-slate-400 block">
-                        Sasaran Program:
-                      </span>
-                      <div className="flex flex-wrap gap-1">
+                    {/* Target Majors Compact */}
+                    {job.targetMajors && job.targetMajors.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 pt-0.5">
                         {job.targetMajors.slice(0, 2).map((m) => (
                           <span
                             key={m}
-                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200 truncate max-w-[170px]"
+                            className="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200 truncate max-w-[160px]"
                             title={m}
                           >
                             {m}
                           </span>
                         ))}
                         {job.targetMajors.length > 2 && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600">
                             +{job.targetMajors.length - 2}
                           </span>
                         )}
                       </div>
-                    </div>
-
-                    {/* Excerpt of Description */}
-                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                      {job.description}
-                    </p>
+                    )}
                   </div>
 
-                  {/* Card Actions Footer with Interest Click Count Metric */}
+                  {/* Card Actions Footer */}
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                     <span
                       className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full"
@@ -425,20 +412,29 @@ export const AdminJobsTab: React.FC = () => {
                     <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         type="button"
+                        onClick={() => setViewingJob(job)}
+                        className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
+                        title="Lihat Detail Lowongan"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Lihat</span>
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => handleOpenEditor(job)}
-                        className="px-2.5 py-1.5 text-slate-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer rounded-lg hover:bg-slate-100"
+                        className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
                         title="Edit Lowongan"
                       >
-                        <Edit3 className="w-3 h-3 text-slate-600" />
+                        <Edit3 className="w-3.5 h-3.5 text-blue-600" />
                         <span>Edit</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setDeleteConfirmId(job.id)}
-                        className="px-2.5 py-1.5 text-rose-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer rounded-lg hover:bg-rose-50"
+                        className="px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50/50 hover:bg-rose-100/80 text-rose-700 text-xs font-semibold flex items-center gap-1 transition shadow-2xs cursor-pointer"
                         title="Hapus Lowongan"
                       >
-                        <Trash2 className="w-3 h-3 text-rose-600" />
+                        <Trash2 className="w-3.5 h-3.5 text-rose-600" />
                         <span>Hapus</span>
                       </button>
                     </div>
@@ -458,6 +454,21 @@ export const AdminJobsTab: React.FC = () => {
           />
         </div>
       )}
+
+      {/* Detail Modal */}
+      <AdminJobDetailModal
+        job={viewingJob}
+        isOpen={!!viewingJob}
+        onClose={() => setViewingJob(null)}
+        onEdit={(job) => {
+          setViewingJob(null);
+          handleOpenEditor(job);
+        }}
+        onDelete={(id) => {
+          setViewingJob(null);
+          setDeleteConfirmId(id);
+        }}
+      />
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal
