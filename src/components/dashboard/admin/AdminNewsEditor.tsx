@@ -13,7 +13,6 @@ import {
 import { CustomSelect } from "@/components/ui/CustomSelect";
 
 export const CATEGORIES = [
-  "Semua",
   "BKK & Karir",
   "Tracer Study",
   "Kemitraan DUDI",
@@ -213,7 +212,7 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
             <CustomSelect
               label="Kategori"
               requiredStar
-              options={CATEGORIES.filter((c) => c !== "Semua").map((c) => ({
+              options={CATEGORIES.map((c) => ({
                 value: c,
                 label: c,
               }))}
@@ -389,9 +388,6 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
                 Ringkasan Singkat (Excerpt){" "}
                 <span className="text-rose-500">*</span>
               </label>
-              <span className="text-[11px] text-slate-400 font-normal">
-                Tampil pada kartu berita di halaman utama
-              </span>
             </div>
             <textarea
               rows={2}
@@ -447,7 +443,7 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
         <div className="lg:col-span-4 sticky top-6 space-y-4">
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-4 sm:p-5">
             <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-100">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <h3 className="text-xs font-medium  tracking-wider text-slate-500 flex items-center gap-1.5">
                 <span>Pratinjau Kartu Landing Page</span>
               </h3>
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600">

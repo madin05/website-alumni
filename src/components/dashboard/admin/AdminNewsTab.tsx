@@ -212,10 +212,13 @@ export const AdminNewsTab: React.FC = () => {
 
               <div className="w-full sm:w-48">
                 <CustomSelect
-                  options={["Semua", ...CATEGORIES].map((c) => ({
-                    value: c,
-                    label: c === "Semua" ? "Semua Kategori" : c,
-                  }))}
+                  options={[
+                    { value: "Semua", label: "Semua Kategori" },
+                    ...CATEGORIES.map((c) => ({
+                      value: c,
+                      label: c,
+                    })),
+                  ]}
                   value={selectedCategory}
                   onChange={(val) => setSelectedCategory(val)}
                 />
