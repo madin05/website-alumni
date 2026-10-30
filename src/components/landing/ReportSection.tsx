@@ -121,7 +121,7 @@ export const ReportSection: React.FC = () => {
     yearOptions.find((y) => y.value === selectedYear)?.label || selectedYear;
 
   return (
-    <section id="laporan" className="relative py-16 sm:py-20 lg:py-24">
+    <section id="laporan" className="relative pt-16 sm:pt-20 lg:pt-24 pb-12 sm:pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">

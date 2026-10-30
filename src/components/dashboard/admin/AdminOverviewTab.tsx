@@ -315,8 +315,6 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
             <span className="text-emerald-700 font-semibold">
               {totalSubmitted} Tamatan Terdata
             </span>
-            <span>•</span>
-            <span className="text-slate-600">Tercatat Otomatis</span>
           </div>
         </div>
 
@@ -438,7 +436,7 @@ export const AdminOverviewTab: React.FC<AdminOverviewTabProps> = ({
                       {sub.nama}
                     </p>
                     <p className="text-[11px] text-slate-500 truncate">
-                      {sub.jurusan} • {sub.instansiKampusUsaha}
+                      {sub.jurusan}
                     </p>
                   </div>
                   <div className="shrink-0 flex flex-col items-end">

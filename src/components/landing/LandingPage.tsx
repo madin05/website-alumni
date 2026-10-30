@@ -58,7 +58,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         {/* Legal Bases SK */}
-        <ScrollReveal>
+        <ScrollReveal distance="sm" threshold={0.02}>
           <LegalBases />
         </ScrollReveal>
 

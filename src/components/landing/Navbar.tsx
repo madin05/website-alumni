@@ -188,6 +188,22 @@ export const Navbar: React.FC<NavbarProps> = () => {
               {dropdownOpen && (
                 <div className="absolute top-full left-0 pt-2.5 w-52 z-50">
                   <div className="bg-white rounded-md shadow-lg border border-gray-200 py-1 text-slate-800 [filter:none]">
+                    <Link
+                      to="/#dasar-hukum"
+                      onClick={(e) => {
+                        setDropdownOpen(false);
+                        if (window.location.pathname === "/") {
+                          e.preventDefault();
+                          const el = document.getElementById("dasar-hukum");
+                          if (el) {
+                            el.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }
+                      }}
+                      className="block px-3.5 py-2 text-sm font-medium text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition-colors"
+                    >
+                      Dasar Hukum
+                    </Link>
                     <a
                       href="https://ijazah.pendidikan.go.id/"
                       target="_blank"
@@ -235,20 +251,30 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
           {/* Action Button: Show Dashboard when authenticated, Login when not authenticated */}
           <div className="hidden lg:flex items-center gap-3">
-            <button
-              onClick={() => navigate("/login")}
-              className="flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#132238] hover:bg-[#1c3355] text-white text-sm font-semibold tracking-wide shadow-md transition-all active:scale-95 cursor-pointer"
-            >
-              <img
-                src="/icon-login-btn.svg"
-                alt="Login"
-                className="w-5 h-5 object-contain invert opacity-95"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = "none";
-                }}
-              />
-              <span>Login</span>
-            </button>
+            {isAuthenticated && user ? (
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#132238] hover:bg-[#1a3050] text-white text-sm font-semibold shadow-md transition-all active:scale-95 cursor-pointer"
+              >
+                <LayoutDashboard className="w-4 h-4 text-amber-400" />
+                <span>Dashboard ({user.nama.split(" ")[0]})</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#132238] hover:bg-[#1c3355] text-white text-sm font-semibold tracking-wide shadow-md transition-all active:scale-95 cursor-pointer"
+              >
+                <img
+                  src="/icon-login-btn.svg"
+                  alt="Login"
+                  className="w-5 h-5 object-contain invert opacity-95"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = "none";
+                  }}
+                />
+                <span>Login</span>
+              </button>
+            )}
           </div>
 
           {/* Mobile & Tablet menu toggle button (Visible on < 1024px) */}
@@ -368,6 +394,22 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
                 {mobileTracerOpen && (
                   <div className="pl-9 pr-2 py-1 space-y-0.5 mt-0.5">
+                    <Link
+                      to="/#dasar-hukum"
+                      onClick={(e) => {
+                        setMobileMenuOpen(false);
+                        if (window.location.pathname === "/") {
+                          e.preventDefault();
+                          const el = document.getElementById("dasar-hukum");
+                          if (el) {
+                            el.scrollIntoView({ behavior: "smooth" });
+                          }
+                        }
+                      }}
+                      className="block px-3 py-2 rounded-md text-sm font-normal text-slate-700 hover:text-blue-600 hover:bg-white transition-colors"
+                    >
+                      Dasar Hukum
+                    </Link>
                     <a
                       href="https://ijazah.pendidikan.go.id/"
                       target="_blank"

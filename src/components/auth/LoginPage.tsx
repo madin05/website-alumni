@@ -1,24 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+﻿import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { useAdminStore } from "@/store/adminStore";
 import { getHelpdeskWaUrl } from "@/lib/whatsapp";
-import {
-  ArrowRight,
-  ChevronLeft,
-  Eye,
-  EyeOff,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
-import { DEMO_USERS, findDemoUser } from "@/data/demoUsers";
-import { DemoUserSelect } from "./DemoUserSelect";
-import {
-  fetchActiveDemoLocks,
-  isUserLockedByOther,
-  subscribeDemoLockChanges,
-  DemoLocksMap,
-} from "@/services/demoSessionService";
+import { ArrowRight, ChevronLeft, Eye, EyeOff } from "lucide-react";
 
 export const LoginPage: React.FC = () => {
   const [identifier, setIdentifier] = useState("");
@@ -26,12 +11,9 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [demoLocks, setDemoLocks] = useState<DemoLocksMap>({});
-  const [selectedDemoUser, setSelectedDemoUser] = useState("");
 
   const { login, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
-  const location = useLocation();
 
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -39,86 +21,12 @@ export const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  useEffect(() => {
-    if (location.state?.expiredMessage) {
-      setError(location.state.expiredMessage);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    // 1. Initial fetch demo locks
-    fetchActiveDemoLocks().then(setDemoLocks);
-
-    // 2. BroadcastChannel listener (instant cross-tab sync)
-    const unsubscribe = subscribeDemoLockChanges((locks) => {
-      setDemoLocks(locks);
-    });
-
-    // 3. Immediate sync on tab focus or mobile screen resume
-    const handleVisibilityOrFocus = () => {
-      if (
-        typeof document !== "undefined" &&
-        document.visibilityState === "visible"
-      ) {
-        fetchActiveDemoLocks().then(setDemoLocks);
-      }
-    };
-    window.addEventListener("focus", handleVisibilityOrFocus);
-    document.addEventListener("visibilitychange", handleVisibilityOrFocus);
-
-    // 4. Polling interval (cross-device demo audience sync)
-    const interval = setInterval(() => {
-      fetchActiveDemoLocks().then(setDemoLocks);
-    }, 4000);
-
-    return () => {
-      unsubscribe();
-      window.removeEventListener("focus", handleVisibilityOrFocus);
-      document.removeEventListener("visibilitychange", handleVisibilityOrFocus);
-      clearInterval(interval);
-    };
-  }, []);
-
-  const handleSelectDemoUser = (username: string) => {
-    setSelectedDemoUser(username);
-    if (!username) {
-      setIdentifier("");
-      setPassword("");
-      return;
-    }
-
-    const found = DEMO_USERS.find((u) => u.username === username);
-    if (found) {
-      if (isUserLockedByOther(found.username, demoLocks)) {
-        setError(`Akun ${found.username} sedang digunakan oleh audiens lain.`);
-        setSelectedDemoUser("");
-        setIdentifier("");
-        setPassword("");
-        return;
-      }
-      setIdentifier(found.username);
-      setPassword(found.password);
-      setError("");
-    }
-  };
-
-  const handleClearDemo = () => {
-    setSelectedDemoUser("");
-    setIdentifier("");
-    setPassword("");
-    setError("");
-  };
-
-  const availableDemoUsersCount = DEMO_USERS.filter(
-    (u) => !isUserLockedByOther(u.username, demoLocks),
-  ).length;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     if (!identifier.trim()) {
-      setError("Harap masukkan NISN atau Username Anda.");
+      setError("Harap masukkan NISN atau Email Anda.");
       return;
     }
 
@@ -127,31 +35,10 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
-    // Validasi pencegahan jika akun demo sedang aktif di perangkat lain
-    const cleanId = identifier.trim().toLowerCase();
-    const demoFound = findDemoUser(cleanId);
-    if (demoFound && isUserLockedByOther(demoFound.username, demoLocks)) {
-      setError(
-        `Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`,
-      );
-      return;
-    }
-
     setLoading(true);
     try {
-      if (demoFound) {
-        const freshLocks = await fetchActiveDemoLocks();
-        setDemoLocks(freshLocks);
-        if (isUserLockedByOther(demoFound.username, freshLocks)) {
-          setError(
-            `Akun ${demoFound.username} (${demoFound.nama}) sedang aktif digunakan di perangkat lain. Silakan pilih akun demo lain.`,
-          );
-          setLoading(false);
-          return;
-        }
-      }
-
-      const ok = await login(identifier, password, "alumni");
+      const roleHint = identifier.includes("@") ? "admin_bkk" : "alumni";
+      const ok = await login(identifier, password, roleHint);
       if (!ok) {
         setError("Username atau password salah.");
         return;
@@ -167,21 +54,16 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleQuickDemo = () => {
-    const firstFree = DEMO_USERS.find(
-      (u) => !isUserLockedByOther(u.username, demoLocks),
-    );
-    if (firstFree) {
-      handleSelectDemoUser(firstFree.username);
-    } else {
-      setIdentifier("3079145847");
-      setPassword("alumni#847");
-    }
+  const handleQuickAlumni = () => {
+    setIdentifier("3079145847");
+    setPassword("alumni#847");
+    setError("");
   };
 
-  const handleAdminDemo = () => {
+  const handleQuickAdmin = () => {
     setIdentifier("admin@smksasmitajaya2.sch.id");
     setPassword("Admin#12345");
+    setError("");
   };
 
   return (
@@ -198,7 +80,7 @@ export const LoginPage: React.FC = () => {
       </div>
 
       {/* Main Login Card: Single column on mobile/tablet, 12-col split on desktop */}
-      <div className="relative z-10 w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-white rounded-2xl lg:rounded-xl shadow-xl sm:shadow-2xl overflow-hidden border border-slate-200/90 grid grid-cols-1 lg:grid-cols-12">
+      <div className="relative z-10 w-full max-w-md sm:max-w-lg lg:max-w-4xl lg:min-h-[560px] bg-white rounded-2xl lg:rounded-2xl shadow-xl sm:shadow-2xl overflow-hidden border border-slate-200/90 grid grid-cols-1 lg:grid-cols-12">
         {/* LEFT COLUMN: Dark Navy Branding & Guarantee Panel (Visible only on Desktop lg+) */}
         <div className="hidden lg:flex lg:col-span-5 bg-[#122e5d] text-white p-8 sm:p-10 lg:p-11 flex-col justify-between relative overflow-hidden">
           {/* Seigaiha Wave Pattern Overlay */}
@@ -255,16 +137,16 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Middle Content */}
-          <div className="relative z-10 my-8 sm:my-10 space-y-4">
+          <div className="relative z-10 my-auto py-4 space-y-4">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white leading-tight tracking-tight">
               Selamat datang kembali, pejuang pendidikan kejuruan.
             </h1>
 
             {/* Privacy callout box */}
-            <div className="p-2 rounded-md bg-white/10 backdrop-blur-md border border-white/15 text-left space-y-1 mt-6">
+            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-left space-y-1 mt-6">
               <p className="text-[11px] text-slate-300 leading-relaxed">
-                Seluruh jawaban tidak dipublikasikan & dilindungi sesuai UU
-                Perlindungan Data.
+                Seluruh data Anda dilindungi dan dijamin kerahasiaannya sesuai
+                ketentuan perlindungan data pribadi.
               </p>
             </div>
           </div>
@@ -277,18 +159,19 @@ export const LoginPage: React.FC = () => {
 
         {/* RIGHT COLUMN / MOBILE CARD: Interactive Login Form (Full width on mobile/tablet, 7 cols on desktop) */}
         <div className="lg:col-span-7 p-6 sm:p-8 lg:p-12 flex flex-col justify-between bg-white">
-          <div>
-            {/* Top Back Link */}
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 cursor-pointer"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Kembali</span>
-              </Link>
-            </div>
+          {/* Top Back Link */}
+          <div className="flex items-center justify-between shrink-0 mb-4 sm:mb-6">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Kembali</span>
+            </Link>
+          </div>
 
+          {/* Form Content - Centered Vertically */}
+          <div className="my-auto py-4 sm:py-6 w-full">
             {/* Mobile & Tablet Logo Banner (Hidden on Desktop) */}
             <div className="flex justify-center items-center mb-5 lg:hidden">
               <img
@@ -298,87 +181,27 @@ export const LoginPage: React.FC = () => {
               />
             </div>
 
-            {/* Step Label & Title (Hidden on Desktop because the left panel already has greeting) */}
-            <div className="mb-5 sm:mb-6 lg:hidden">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight text-center">
+            {/* Form Title & Instruction (Hanya Mobile & Tablet) */}
+            <div className="mb-6 sm:mb-8 lg:hidden">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight text-center">
                 Selamat Datang
               </h2>
             </div>
 
             {/* Error Message */}
             {error && (
-              <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-md text-xs text-rose-700">
+              <div className="mb-5 p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
                 {error}
               </div>
             )}
 
-            {/* Custom Dropdown Demo Audiens (user01 - user30) */}
-            <div className="mb-6 p-3.5 bg-gradient-to-br from-blue-50/80 via-slate-50 to-indigo-50/50 border border-blue-200/90 rounded-xl shadow-xs">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5">
-                  <label
-                    htmlFor="demo-user-custom-trigger"
-                    className="text-xs font-bold text-slate-800 tracking-tight"
-                  >
-                    Akun Demo
-                  </label>
-                </div>
-                <span className="text-[10px] font-semibold text-slate-600 bg-white px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
-                  {availableDemoUsersCount} / {DEMO_USERS.length} Tersedia
-                </span>
-              </div>
-
-              <DemoUserSelect
-                selectedUser={selectedDemoUser}
-                onSelectUser={handleSelectDemoUser}
-                demoLocks={demoLocks}
-                disabled={loading}
-              />
-
-              {selectedDemoUser ? (
-                <div className="mt-2.5 text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded-lg px-2.5 py-1.5 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>
-                      Password otomatis terisi untuk{" "}
-                      <strong>{selectedDemoUser}</strong>
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleClearDemo}
-                    className="text-[10px] text-slate-500 hover:text-rose-600 font-medium underline ml-2 cursor-pointer"
-                  >
-                    Reset
-                  </button>
-                </div>
-              ) : (
-                <p className="mt-2 text-[10.5px] text-slate-500 leading-normal">
-                  Pilih username dari dropdown, password terisi otomatis. Akun
-                  yang sedang aktif terkunci hingga user logout.
-                </p>
-              )}
-            </div>
-
             {/* Form Inputs */}
-            <form onSubmit={handleSubmit} className="mt-2 space-y-7">
+            <form onSubmit={handleSubmit} className="space-y-7">
               <div className="material-group">
                 <input
                   type="text"
                   value={identifier}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setIdentifier(val);
-                    const match = DEMO_USERS.find(
-                      (u) =>
-                        u.username.toLowerCase() === val.trim().toLowerCase(),
-                    );
-                    if (match) {
-                      setSelectedDemoUser(match.username);
-                    } else {
-                      setSelectedDemoUser("");
-                    }
-                  }}
+                  onChange={(e) => setIdentifier(e.target.value)}
                   placeholder=""
                   className="material-input"
                   required
@@ -435,24 +258,24 @@ export const LoginPage: React.FC = () => {
             </form>
           </div>
 
-          {/* Quick Demo Fill & Helpdesk */}
-          <div className="mt-6 pt-4 border-t border-slate-100 space-y-3 text-center">
+          {/* Helpdesk & Info */}
+          <div className="shrink-0 pt-4 border-t border-slate-100 space-y-3 text-center">
             {/* 1-Click Demo Shortcut */}
             <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
-              {/* <button
+              <button
                 type="button"
-                onClick={handleQuickDemo}
-                className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 font-medium text-[11px]"
+                onClick={handleQuickAlumni}
+                className="px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 font-medium text-[11px] cursor-pointer transition-colors border border-slate-200/60"
               >
                 Alumni (DEMO)
               </button>
               <button
                 type="button"
-                onClick={handleAdminDemo}
-                className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium text-[11px]"
+                onClick={handleQuickAdmin}
+                className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium text-[11px] cursor-pointer transition-colors border border-emerald-200/60"
               >
                 Admin BKK
-              </button> */}
+              </button>
             </div>
 
             {/* WA Helpdesk Link */}

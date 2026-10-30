@@ -82,7 +82,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
               className={`w-full sm:w-auto font-semibold ${
                 isTracerDone
                   ? "bg-blue-600 hover:bg-blue-700"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "bg-slate-700 hover:bg-slate-800 text-white"
               }`}
             >
               {!isTracerDone && (

@@ -281,7 +281,7 @@ export const AdminSettingsTab: React.FC = () => {
 
                 <div className="sm:col-span-2 space-y-1">
                   <label className="block text-xs font-bold text-slate-900">
-                    Alamat Lengkap Sekolah (Untuk Kop Surat)
+                    Alamat Lengkap Sekolah
                   </label>
                   <input
                     disabled
@@ -315,14 +315,14 @@ export const AdminSettingsTab: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-5 border-t border-slate-100">
-              <button
+              {/* <button
                 type="button"
                 onClick={handleReset}
                 className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs sm:text-sm font-medium transition flex items-center gap-2 cursor-pointer border border-slate-200"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Kembalikan ke Data Awal Demo</span>
-              </button>
+              </button> */}
 
               <button
                 type="submit"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   useAdminStore,
   RespondentRecord,
@@ -96,73 +96,102 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
     }
   }, [initialSelectedId, respondents, onClearInitialSelectedId]);
 
-  const filteredRespondents = respondents.filter((r) => {
-    const matchSearch =
-      r.nama.toLowerCase().includes(search.toLowerCase()) ||
-      r.nisn.includes(search) ||
-      r.instansiKampusUsaha.toLowerCase().includes(search.toLowerCase());
+  const filteredRespondents = useMemo(() => {
+    const searchLower = search.toLowerCase().trim();
+    return respondents.filter((r) => {
+      const matchSearch =
+        !searchLower ||
+        r.nama.toLowerCase().includes(searchLower) ||
+        r.nisn.includes(searchLower) ||
+        r.instansiKampusUsaha.toLowerCase().includes(searchLower);
 
-    const matchJurusan = jurusanFilter === "ALL" || r.jurusan === jurusanFilter;
+      const matchJurusan =
+        jurusanFilter === "ALL" || r.jurusan === jurusanFilter;
 
-    const matchAktivitas =
-      aktivitasFilter === "ALL" ||
-      r.statusKegiatan === aktivitasFilter ||
-      (aktivitasFilter === "KERJA" &&
-        (r.statusKegiatan === "KERJA" ||
-          r.statusKegiatan === "KERJA_KULIAH")) ||
-      (aktivitasFilter === "KULIAH" &&
-        (r.statusKegiatan === "KULIAH" ||
-          r.statusKegiatan === "KERJA_KULIAH" ||
-          r.statusKegiatan === "WIRAUSAHA_KULIAH")) ||
-      (aktivitasFilter === "WIRAUSAHA" &&
-        (r.statusKegiatan === "WIRAUSAHA" ||
-          r.statusKegiatan === "WIRAUSAHA_KULIAH")) ||
-      (aktivitasFilter === "BELUM_KERJA" &&
-        r.statusKegiatan === "BELUM_KERJA");
+      const matchAktivitas =
+        aktivitasFilter === "ALL" ||
+        r.statusKegiatan === aktivitasFilter ||
+        (aktivitasFilter === "KERJA" &&
+          (r.statusKegiatan === "KERJA" ||
+            r.statusKegiatan === "KERJA_KULIAH")) ||
+        (aktivitasFilter === "KULIAH" &&
+          (r.statusKegiatan === "KULIAH" ||
+            r.statusKegiatan === "KERJA_KULIAH" ||
+            r.statusKegiatan === "WIRAUSAHA_KULIAH")) ||
+        (aktivitasFilter === "WIRAUSAHA" &&
+          (r.statusKegiatan === "WIRAUSAHA" ||
+            r.statusKegiatan === "WIRAUSAHA_KULIAH")) ||
+        (aktivitasFilter === "BELUM_KERJA" &&
+          r.statusKegiatan === "BELUM_KERJA");
 
-    return matchSearch && matchJurusan && matchAktivitas;
-  });
+      return matchSearch && matchJurusan && matchAktivitas;
+    });
+  }, [respondents, search, jurusanFilter, aktivitasFilter]);
 
   React.useEffect(() => {
     setCurrentPage(1);
   }, [search, jurusanFilter, aktivitasFilter]);
 
-  const sortedRespondents = [...filteredRespondents].sort((a, b) => {
-    if (sortField === "nama") {
-      const cmp = a.nama.localeCompare(b.nama, "id-ID");
-      return sortOrder === "asc" ? cmp : -cmp;
-    }
-    if (sortField === "tanggal") {
-      const timeA = new Date(a.submittedAt).getTime();
-      const timeB = new Date(b.submittedAt).getTime();
-      return sortOrder === "asc" ? timeA - timeB : timeB - timeA;
-    }
-    return 0;
-  });
+  const sortedRespondents = useMemo(() => {
+    return [...filteredRespondents].sort((a, b) => {
+      if (sortField === "nama") {
+        const cmp = a.nama.localeCompare(b.nama, "id-ID");
+        return sortOrder === "asc" ? cmp : -cmp;
+      }
+      if (sortField === "tanggal") {
+        const timeA = new Date(a.submittedAt).getTime();
+        const timeB = new Date(b.submittedAt).getTime();
+        return sortOrder === "asc" ? timeA - timeB : timeB - timeA;
+      }
+      return 0;
+    });
+  }, [filteredRespondents, sortField, sortOrder]);
 
   const totalPages = Math.ceil(sortedRespondents.length / itemsPerPage);
-  const paginatedRespondents = sortedRespondents.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const paginatedRespondents = useMemo(() => {
+    return sortedRespondents.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    );
+  }, [sortedRespondents, currentPage, itemsPerPage]);
 
-  const countKerja = respondents.filter(
-    (r) => r.statusKegiatan === "KERJA" || r.statusKegiatan === "KERJA_KULIAH",
-  ).length;
-  const countKuliah = respondents.filter(
-    (r) =>
-      r.statusKegiatan === "KULIAH" ||
-      r.statusKegiatan === "KERJA_KULIAH" ||
-      r.statusKegiatan === "WIRAUSAHA_KULIAH",
-  ).length;
-  const countWirausaha = respondents.filter(
-    (r) =>
-      r.statusKegiatan === "WIRAUSAHA" ||
-      r.statusKegiatan === "WIRAUSAHA_KULIAH",
-  ).length;
-  const countBelumKerja = respondents.filter(
-    (r) => r.statusKegiatan === "BELUM_KERJA",
-  ).length;
+  const { countKerja, countKuliah, countWirausaha, countBelumKerja } =
+    useMemo(() => {
+      let kerja = 0;
+      let kuliah = 0;
+      let wirausaha = 0;
+      let belumKerja = 0;
+      for (const r of respondents) {
+        if (
+          r.statusKegiatan === "KERJA" ||
+          r.statusKegiatan === "KERJA_KULIAH"
+        ) {
+          kerja++;
+        }
+        if (
+          r.statusKegiatan === "KULIAH" ||
+          r.statusKegiatan === "KERJA_KULIAH" ||
+          r.statusKegiatan === "WIRAUSAHA_KULIAH"
+        ) {
+          kuliah++;
+        }
+        if (
+          r.statusKegiatan === "WIRAUSAHA" ||
+          r.statusKegiatan === "WIRAUSAHA_KULIAH"
+        ) {
+          wirausaha++;
+        }
+        if (r.statusKegiatan === "BELUM_KERJA") {
+          belumKerja++;
+        }
+      }
+      return {
+        countKerja: kerja,
+        countKuliah: kuliah,
+        countWirausaha: wirausaha,
+        countBelumKerja: belumKerja,
+      };
+    }, [respondents]);
 
   const renderAktivitasBadge = (status: string) => {
     switch (status) {

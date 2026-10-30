@@ -11,7 +11,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { TracerSubmissionPayload, JurusanSMK, StatusKegiatan } from '@/types/tracer';
 import { INITIAL_MASTER_ALUMNI, INITIAL_RESPONDENTS } from '@/data/initialAlumniData';
-import { getDemoMasterAlumniRecords } from '@/data/demoUsers';
 
 export interface MasterAlumniRecord {
   id: string;
@@ -109,20 +108,14 @@ const DEFAULT_SETTINGS: AdminSettings = {
   nipKepalaSekolah: '19680514 199303 1 004',
   ketuaBkk: 'Ahmad Fauzi, S.Pd., M.Kom.',
   nipKetuaBkk: '19840219 200902 1 002',
-  namaSekolah: 'SMKS SASMITA JAYA 2',
+  namaSekolah: 'SMKS Sasmita Jaya 2',
   npsn: '20603287',
   alamatSekolah: 'Jl. Surya Kencana No. 1, Pamulang Barat, Kec. Pamulang, Kota Tangerang Selatan, Banten 15417',
   kontakBkk: '0812-8889-7762',
 };
 
-const demoMasterRecords = getDemoMasterAlumniRecords();
-const initialMasterWithDemo: MasterAlumniRecord[] = [
-  ...demoMasterRecords,
-  ...INITIAL_MASTER_ALUMNI.filter((a) => !demoMasterRecords.some((d) => d.nisn === a.nisn)),
-];
-
 export const useAdminStore = create<AdminState>()((set, get) => ({
-      masterAlumni: initialMasterWithDemo,
+      masterAlumni: INITIAL_MASTER_ALUMNI,
       respondents: INITIAL_RESPONDENTS,
       settings: DEFAULT_SETTINGS,
 

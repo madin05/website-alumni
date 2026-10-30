@@ -409,7 +409,7 @@ const renderMenuIcon = (id: DashboardTab, isActive: boolean) => {
 const ALUMNI_MENU_ITEMS = [
   { id: "beranda", label: "Beranda" },
   { id: "tracer_study", label: "Tracer Study" },
-  { id: "loker", label: "Info Loker/Magang" },
+  { id: "loker", label: "Lowongan Kerja" },
   { id: "alumni", label: "Alumni" },
   { id: "helpdesk", label: "Helpdesk" },
 ] as const;
@@ -440,13 +440,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   const isAdmin = user?.role === "admin_bkk";
   const menuList = isAdmin ? ADMIN_MENU_ITEMS : ALUMNI_MENU_ITEMS;
 
-  const confirmLogout = async () => {
-    try {
-      await logout();
-    } finally {
-      setShowLogoutModal(false);
-      navigate("/", { replace: true });
-    }
+  const confirmLogout = () => {
+    logout();
+    navigate("/", { replace: true });
   };
 
   const handleSelectTab = (tab: DashboardTab) => {
