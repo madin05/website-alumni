@@ -4,17 +4,17 @@ import { Skeleton } from "@/components/ui/Skeleton";
 export const AdminMessagesTabSkeleton: React.FC = () => {
   return (
     <div
-      className="space-y-5 sm:space-y-6"
+      className="space-y-5 sm:space-y-6 animate-in fade-in duration-200"
       aria-busy="true"
       aria-label="Memuat kotak pesan admin..."
     >
       {/* Header Banner */}
-      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white rounded-xl border border-slate-200 shadow-xs">
+      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <Skeleton className="h-6 w-56 bg-slate-200" />
+          <Skeleton className="h-6 w-60 bg-slate-200" />
           <Skeleton className="h-3.5 w-80 bg-slate-100" />
         </div>
-        <Skeleton className="h-9 w-36 rounded-xl bg-slate-200" />
+        <Skeleton className="h-9 w-36 rounded-xl bg-slate-200 shrink-0" />
       </div>
 
       {/* 3 Metric Cards */}
@@ -38,14 +38,14 @@ export const AdminMessagesTabSkeleton: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <Skeleton className="h-10 flex-1 rounded-xl bg-white" />
             <div className="flex gap-1.5 shrink-0">
-              <Skeleton className="h-9 w-24 rounded-lg bg-slate-200" />
-              <Skeleton className="h-9 w-28 rounded-lg bg-slate-100" />
+              <Skeleton className="h-9 w-24 rounded-lg bg-[#0d2346]/20" />
+              <Skeleton className="h-9 w-32 rounded-lg bg-slate-100" />
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 pt-1 border-t border-slate-100">
+          <div className="flex items-center gap-1.5 pt-1 border-t border-slate-100 overflow-x-auto pb-1">
             {[1, 2, 3, 4].map((k) => (
-              <Skeleton key={k} className="h-7 w-24 rounded-md bg-slate-100" />
+              <Skeleton key={k} className="h-7 w-24 rounded-md bg-slate-100 shrink-0" />
             ))}
           </div>
         </div>
