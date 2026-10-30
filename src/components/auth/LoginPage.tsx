@@ -1,5 +1,5 @@
 ﻿import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { useAdminStore } from "@/store/adminStore";
 import { getHelpdeskWaUrl } from "@/lib/whatsapp";
@@ -14,6 +14,8 @@ export const LoginPage: React.FC = () => {
 
   const { login, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const expiredMsg = (location.state as any)?.expiredMessage;
 
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -187,6 +189,13 @@ export const LoginPage: React.FC = () => {
                 Selamat Datang
               </h2>
             </div>
+
+            {/* Session Expiry Notice */}
+            {expiredMsg && !error && (
+              <div className="mb-5 p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
+                {expiredMsg}
+              </div>
+            )}
 
             {/* Error Message */}
             {error && (

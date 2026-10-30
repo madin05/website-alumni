@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/store/authStore';
 import { Navbar } from './Navbar';
 import { HeroSection } from './HeroSection';
 import { FeaturesGrid } from './FeaturesGrid';
@@ -11,6 +13,16 @@ import { Footer } from './Footer';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
 
 export const LandingPage: React.FC = () => {
+  const { isAuthenticated } = useAuthStore();
+  const navigate = useNavigate();
+
+  // Pengaman rute: Jika sesi pengguna masih aktif, langsung arahkan ke dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Navbar with Direct Login Navigation */}

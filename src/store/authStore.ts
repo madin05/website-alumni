@@ -3,8 +3,38 @@ import { persist } from 'zustand/middleware';
 import { UserSession } from '@/types/tracer';
 import { detectGenderFromName } from '@/components/ui/UserAvatar';
 
-export const DASHBOARD_SESSION_TIMEOUT_MS = 60 * 60 * 1000;
-export { DEMO_INACTIVITY_TIMEOUT_MS } from '@/data/demoUsers';
+export const SESSION_INACTIVITY_TIMEOUT_MS = 2 * 60 * 60 * 1000; // 2 Jam (7.200.000 ms)
+export const DASHBOARD_SESSION_TIMEOUT_MS = SESSION_INACTIVITY_TIMEOUT_MS;
+export const DEMO_INACTIVITY_TIMEOUT_MS = SESSION_INACTIVITY_TIMEOUT_MS;
+export const USER_ACTIVITY_STORAGE_KEY = 'alumni_session_last_activity';
+
+export function recordActivityTimestamp(time = Date.now()) {
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(USER_ACTIVITY_STORAGE_KEY, String(time));
+      localStorage.removeItem('alumni_demo_last_activity');
+    } catch {
+      // ignore
+    }
+  }
+}
+
+export function getStoredActivityTimestamp(fallback = Date.now()) {
+  if (typeof window !== 'undefined') {
+    try {
+      const stored =
+        localStorage.getItem(USER_ACTIVITY_STORAGE_KEY) ||
+        localStorage.getItem('alumni_demo_last_activity');
+      if (stored) {
+        const parsed = Number(stored);
+        if (!isNaN(parsed) && parsed > 0) return parsed;
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return fallback;
+}
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -161,12 +191,14 @@ export const useAuthStore = create<AuthState>()(
 
           if (data && data.user) {
             const user = normalizeUser(data.user);
+            const now = Date.now();
+            recordActivityTimestamp(now);
             set({
               isAuthenticated: true,
               user,
               accessToken: data.accessToken,
               refreshToken: data.refreshToken,
-              lastDashboardActivity: Date.now(),
+              lastDashboardActivity: now,
             });
             await syncWithTracerStore(user);
             return true;
@@ -196,12 +228,14 @@ export const useAuthStore = create<AuthState>()(
                 tracerStatus: 'SUDAH',
                 jenisKelamin: 'L',
               };
+              const now = Date.now();
+              recordActivityTimestamp(now);
               set({
                 isAuthenticated: true,
                 user: adminUser,
                 accessToken: 'mock-access-token-admin',
                 refreshToken: 'mock-refresh-token-admin',
-                lastDashboardActivity: Date.now(),
+                lastDashboardActivity: now,
               });
               await syncWithTracerStore(adminUser);
               return true;
@@ -240,12 +274,14 @@ export const useAuthStore = create<AuthState>()(
                 submittedAt: found.submittedAt,
                 jenisKelamin: detectGenderFromName(found.nama, (found as any).jenisKelamin),
               };
+              const now = Date.now();
+              recordActivityTimestamp(now);
               set({
                 isAuthenticated: true,
                 user: alumniUser,
                 accessToken: `mock-access-token-${found.nisn}`,
                 refreshToken: `mock-refresh-token-${found.nisn}`,
-                lastDashboardActivity: Date.now(),
+                lastDashboardActivity: now,
               });
               await syncWithTracerStore(alumniUser);
               return true;
@@ -261,7 +297,7 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         const { accessToken } = get();
         try {
-          if (accessToken) {
+          if (accessToken && !accessToken.startsWith('mock-')) {
             await apiFetch('/api/v1/auth/logout', {
               method: 'POST',
               headers: { Authorization: `Bearer ${accessToken}` },
@@ -282,6 +318,15 @@ export const useAuthStore = create<AuthState>()(
           // ignore
         }
 
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.removeItem(USER_ACTIVITY_STORAGE_KEY);
+            localStorage.removeItem('alumni_demo_last_activity');
+          } catch {
+            // ignore
+          }
+        }
+
         set({
           isAuthenticated: false,
           user: null,
@@ -292,40 +337,34 @@ export const useAuthStore = create<AuthState>()(
       },
 
       recordDashboardActivity: () => {
-        set({ lastDashboardActivity: Date.now() });
+        const now = Date.now();
+        recordActivityTimestamp(now);
+        set({ lastDashboardActivity: now });
       },
 
-      checkSessionExpiry: async (currentPathname: string) => {
+      checkSessionExpiry: async (_currentPathname: string) => {
         const state = get();
         if (!state.isAuthenticated) return false;
 
         const now = Date.now();
+        const lastActivity = getStoredActivityTimestamp(state.lastDashboardActivity || now);
+        const elapsed = now - lastActivity;
 
-        if (currentPathname.startsWith('/dashboard')) {
-          set({ lastDashboardActivity: now });
-          return false;
+        // Jika tidak ada aktivitas selama >= 2 jam (7.200.000 ms), batalkan sesi secara mutlak
+        if (elapsed >= SESSION_INACTIVITY_TIMEOUT_MS) {
+          console.info(
+            `[AuthStore] Sesi otomatis kedaluwarsa setelah inaktivitas ${Math.round(
+              elapsed / 60000
+            )} menit (>= 2 jam).`
+          );
+          await get().logout();
+          return true;
         }
 
-        if (state.lastDashboardActivity) {
-          const elapsed = now - state.lastDashboardActivity;
-          if (elapsed > DASHBOARD_SESSION_TIMEOUT_MS) {
-            const refreshed = await get().refreshAccessToken();
-            if (!refreshed) {
-              set({
-                isAuthenticated: false,
-                user: null,
-                accessToken: null,
-                refreshToken: null,
-                lastDashboardActivity: null,
-              });
-              return true;
-            }
-            set({ lastDashboardActivity: now });
-            return false;
-          }
-        } else {
-          set({ lastDashboardActivity: now });
+        if (state.lastDashboardActivity !== lastActivity) {
+          set({ lastDashboardActivity: lastActivity });
         }
+
         return false;
       },
 
@@ -403,8 +442,32 @@ export const useAuthStore = create<AuthState>()(
         lastDashboardActivity: state.lastDashboardActivity,
       }),
       onRehydrateStorage: () => (state) => {
-        if (state && state.user) {
-          state.user.jenisKelamin = detectGenderFromName(state.user.nama, state.user.jenisKelamin);
+        if (state && state.isAuthenticated) {
+          const now = Date.now();
+          const lastActivity = getStoredActivityTimestamp(state.lastDashboardActivity || 0);
+
+          // Cek instan saat browser/tab dibuka: jika inaktivitas >= 2 jam, langsung hanguskan sesi
+          if (lastActivity > 0 && now - lastActivity >= SESSION_INACTIVITY_TIMEOUT_MS) {
+            console.info('[AuthStore] Sesi terdeteksi kedaluwarsa (>= 2 jam) saat rehidrasi storage.');
+            state.isAuthenticated = false;
+            state.user = null;
+            state.accessToken = null;
+            state.refreshToken = null;
+            state.lastDashboardActivity = null;
+            if (typeof window !== 'undefined') {
+              try {
+                localStorage.removeItem(USER_ACTIVITY_STORAGE_KEY);
+                localStorage.removeItem('alumni_demo_last_activity');
+              } catch {
+                // ignore
+              }
+            }
+            return;
+          }
+
+          if (state.user) {
+            state.user.jenisKelamin = detectGenderFromName(state.user.nama, state.user.jenisKelamin);
+          }
         }
       },
     }

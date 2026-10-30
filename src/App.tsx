@@ -18,14 +18,17 @@ export const App: React.FC = () => {
 
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      {/* Auto-logout & session tracker: logs out if user is outside dashboard for > 1 hour */}
+      {/* Auto-logout & session tracker: logs out if user is inactive for >= 2 hours */}
       <SessionTracker />
       {/* Scroll restoration and hash anchor navigation handler */}
       <ScrollToTopOrHash />
 
       <Routes>
-        {/* Landing Page: Publicly accessible homepage */}
-        <Route path="/" element={<LandingPage />} />
+        {/* Landing Page: Jika sesi aktif masih ada, alihkan langsung ke dashboard agar tidak masuk ke landing page */}
+        <Route
+          path="/"
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />}
+        />
 
         {/* Dedicated Login Page - Guest Only: If already logged in, redirect directly to /dashboard */}
         <Route
