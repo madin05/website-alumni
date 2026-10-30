@@ -95,14 +95,18 @@ export const AdminJobsTab: React.FC = () => {
       updateJob(editingJob.id, {
         ...data,
       });
-      showToast("Lowongan kerja berhasil diperbarui dan disinkronkan ke Dashboard Alumni!");
+      showToast(
+        "Lowongan kerja berhasil diperbarui dan disinkronkan ke Dashboard Alumni!",
+      );
     } else {
       addJob({
         ...data,
         postedAt: todayStr,
         clickCount: 0,
       });
-      showToast("Lowongan baru berhasil ditambahkan dan langsung tampil di Dashboard Alumni!");
+      showToast(
+        "Lowongan baru berhasil ditambahkan dan langsung tampil di Dashboard Alumni!",
+      );
     }
 
     setViewMode("list");
@@ -120,13 +124,12 @@ export const AdminJobsTab: React.FC = () => {
       job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.location.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesType =
-      selectedType === "Semua" || job.type === selectedType;
+    const matchesType = selectedType === "Semua" || job.type === selectedType;
 
     const matchesMajor =
       selectedMajor === "Semua" ||
       job.targetMajors.some((m) =>
-        m.toLowerCase().includes(selectedMajor.toLowerCase())
+        m.toLowerCase().includes(selectedMajor.toLowerCase()),
       );
 
     return matchesSearch && matchesType && matchesMajor;
@@ -135,7 +138,7 @@ export const AdminJobsTab: React.FC = () => {
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
   const paginatedJobs = filteredJobs.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   useEffect(() => {
@@ -195,18 +198,15 @@ export const AdminJobsTab: React.FC = () => {
       ) : (
         <div className="space-y-6 animate-in fade-in duration-200">
           {/* Header Management Bar */}
-          <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-5  flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
                 <SolidBriefcaseIcon className="w-5 h-5 text-[#0d2346]" />
               </div>
               <div>
                 <h1 className="text-base sm:text-lg font-bold text-[#0d2346]">
                   Kelola Informasi Lowongan Kerja & BKK Hub
                 </h1>
-                <p className="text-xs text-slate-500">
-                  Publikasikan lowongan kerja terverifikasi dan pantau respons alumni secara real-time.
-                </p>
               </div>
             </div>
 
@@ -415,11 +415,11 @@ export const AdminJobsTab: React.FC = () => {
                   {/* Card Actions Footer with Interest Click Count Metric */}
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                     <span
-                      className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full"
                       title="Jumlah alumni yang mengakses pendaftaran loker ini"
                     >
                       <Eye className="w-3 h-3 text-slate-500" />
-                      <span>{job.clickCount || 0} Klik Minat</span>
+                      <span>{job.clickCount || 0} Melihat</span>
                     </span>
 
                     <div className="flex items-center gap-1.5 shrink-0">

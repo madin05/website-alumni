@@ -23,16 +23,10 @@ export const JobGatekeeperModal: React.FC<JobGatekeeperModalProps> = ({
       maxWidth="md"
     >
       <div className="space-y-4 text-xs">
-        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-          <Lock className="w-5 h-5 text-slate-700 shrink-0 mt-0.5" />
-          <div className="text-xs text-slate-900 space-y-1">
-            <p className="font-bold">Lengkapi Tracer Study Terlebih Dahulu</p>
-            <p className="leading-relaxed text-slate-600">
-              Akses kontak langsung HRD (WhatsApp/Email), template pesan resmi,
-              dan rute walk-in mitra BKK SMK Sasmita Jaya 2 hanya dapat diakses
-              oleh alumni yang telah menyelesaikan pengisian kuesioner Tracer
-              Study.
-            </p>
+        <div className="p-4 rounded-xl  flex items-center gap-3">
+          <Lock className="w-5 h-5 text-slate-700 shrink-0" />
+          <div className="text-base text-slate-900 space-y-1">
+            <p className="font-bold">Mohon Lengkapi Tracer Study Terlebih Dahulu</p>
           </div>
         </div>
 
@@ -48,7 +42,7 @@ export const JobGatekeeperModal: React.FC<JobGatekeeperModalProps> = ({
         </div>
 
         <div className="pt-2 flex items-center justify-end gap-2.5">
-          <Button variant="outline" size="sm" onClick={onClose}>
+          <Button variant="ghost" size="sm" onClick={onClose}>
             Nanti Saja
           </Button>
           <Button

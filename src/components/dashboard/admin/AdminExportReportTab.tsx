@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useAdminStore } from "@/store/adminStore";
 import { exportJsonToExcel } from "@/lib/excelExport";
+import { downloadBlob } from "@/lib/fileDownload";
 import { Toast } from "@/components/ui/Toast";
 import {
   FileSpreadsheet,
   Download,
   CheckCircle2,
-  FileDown,
-  Table,
 } from "lucide-react";
+import {
+  buildVokasiExcelRows,
+  buildMasterAlumniExcelRows,
+  buildRekapKejuruanExcelRows,
+  buildVokasiCsvContent,
+  buildMasterAlumniCsvContent,
+  buildRekapKejuruanCsvContent,
+  calculateReportStats,
+} from "./export/exportBuilders";
+import { OfficialReportPrintDoc } from "./export/OfficialReportPrintDoc";
 
 const SolidFileSpreadsheetIcon: React.FC<{ className?: string }> = ({
   className = "w-5 h-5 text-[#0d2346]",
@@ -44,177 +53,15 @@ export const AdminExportReportTab: React.FC = () => {
     if (selectedFormat === "ditjen_vokasi") {
       filename = `export_tracer_vokasi_smk_sasmita2_${settings.targetYear}.xlsx`;
       sheetName = "Tracer Study Vokasi";
-      
-      const getSpektrum = (jurusan: string) => {
-        if (jurusan.includes('Komputer') || jurusan.includes('TKJ')) {
-          return { prog: 'Teknik Komputer dan Informatika', bid: 'Teknologi Informasi dan Komunikasi' };
-        }
-        if (jurusan.includes('Listrik') || jurusan.includes('TITL')) {
-          return { prog: 'Teknik Ketenagalistrikan', bid: 'Teknologi dan Rekayasa' };
-        }
-        if (jurusan.includes('Elektronika') || jurusan.includes('Industri')) {
-          return { prog: 'Teknik Elektronika', bid: 'Teknologi dan Rekayasa' };
-        }
-        if (jurusan.includes('Sepeda Motor') || jurusan.includes('TBSM')) {
-          return { prog: 'Teknik Otomotif', bid: 'Teknologi dan Rekayasa' };
-        }
-        if (jurusan.includes('Kendaraan Ringan') || jurusan.includes('TKRO')) {
-          return { prog: 'Teknik Otomotif', bid: 'Teknologi dan Rekayasa' };
-        }
-        return { prog: 'Teknik Mesin', bid: 'Teknologi dan Rekayasa' };
-      };
-
-      const getStatusLabel = (st: string) => {
-        switch (st) {
-          case 'KERJA': return 'Bekerja';
-          case 'KULIAH': return 'Melanjutkan Studi';
-          case 'WIRAUSAHA': return 'Wirausaha';
-          case 'KERJA_KULIAH': return 'Melanjutkan Studi sambil Bekerja';
-          case 'WIRAUSAHA_KULIAH': return 'Melanjutkan Studi sambil Berwirausaha';
-          case 'BELUM_KERJA': return 'Belum Bekerja / Mencari Kerja';
-          default: return st || 'Lainnya';
-        }
-      };
-
-      dataRows = respondents.map((r, idx) => {
-        const payload = r.fullPayload;
-        const identitas = payload.identitas;
-        const kerja = payload.detail_kerja;
-        const kuliah = payload.detail_kuliah;
-        const usaha = payload.detail_usaha;
-        const spektrum = getSpektrum(r.jurusan);
-
-        const keselarasanKerja = kerja?.kesesuaian_jurusan
-          ? (kerja.kesesuaian_jurusan === 'Sangat sesuai' || kerja.kesesuaian_jurusan === 'Sesuai' || kerja.kesesuaian_jurusan === 'SANGAT_SESUAI' || kerja.kesesuaian_jurusan === 'SESUAI' ? 'Selaras' : 'Tidak Selaras')
-          : '-';
-
-        const keselarasanUsaha = usaha?.kesesuaian_kompetensi
-          ? (usaha.kesesuaian_kompetensi === 'Sangat berkaitan' || usaha.kesesuaian_kompetensi === 'Berkaitan' ? 'Selaras' : 'Tidak Selaras')
-          : '-';
-
-        return {
-          No: idx + 1,
-          NISN: r.nisn,
-          Nama: r.nama,
-          "Nama Sekolah": settings.namaSekolah || "SMKS SASMITA JAYA 2",
-          NPSN: settings.npsn || "20603287",
-          "Status Sekolah": "Swasta",
-          "Tahun Lulus": r.tahunLulus,
-          "Komp. Keahlian": r.jurusan,
-          "Prog. Keahlian": spektrum.prog,
-          "Bid. Keahlian": spektrum.bid,
-          "Lama Program (Tahun)": 3,
-          "Prov. SMK": "Prov. Banten",
-          "Kab/Kota": "Kota Tangerang Selatan",
-          Usia: identitas?.usia || 20,
-          "Jenis Kelamin": (identitas?.jenis_kelamin as string) === 'Perempuan' || (identitas?.jenis_kelamin as string) === 'P' ? 'P' : 'L',
-          "Status Menikah": identitas?.status_menikah || "Belum Menikah",
-          "Prov. Dimisili": identitas?.provinsi_domisili || "Prov. Banten",
-          "Kota Domisili": identitas?.kota_domisili || "Kota Tangerang Selatan",
-          "E-mail": r.email,
-          "No HP": r.noWhatsapp,
-          "Status Aktifitas Lulusan": getStatusLabel(r.statusKegiatan),
-          Keterangan: kerja?.keterangan_kerja || (usaha ? "Berusaha/berwirausaha sendiri tanpa dibantu orang lain" : "-"),
-          "Masa Tunggu Bekerja(bulan)": payload.masa_tunggu || "0",
-          "Sertifikat Komp.": kerja?.nama_sertifikat || (kerja?.jenis_sertifikat === 'BNSP' ? "LSP BNSP" : "-"),
-          "Jabatan (Bekerja)": kerja?.jabatan || "-",
-          "Nama Tempat Kerja": kerja?.nama_perusahaan || "-",
-          "Provinsi Kerja": kerja ? (kerja.lokasi_pekerjaan === 'LUAR_NEGERI' ? "Luar Negeri" : (kerja.provinsi_kerja || "Prov. Banten")) : "-",
-          "Kota Kerja": kerja?.kota_kerja || kerja?.kota_kabupaten || (kerja ? (kerja.lokasi_pekerjaan === 'LUAR_NEGERI' ? "-" : "Kota Tangerang Selatan") : "-"),
-          "Negara Kerja": kerja ? (kerja.lokasi_pekerjaan === 'LUAR_NEGERI' ? (kerja.negara_kerja || "Luar Negeri") : "Indonesia") : "-",
-          "Keselarasan Kerja": keselarasanKerja,
-          "Provinsi Usaha": usaha?.provinsi_usaha || (usaha ? "Prov. Banten" : "-"),
-          "Kota Usaha": usaha?.kota_usaha || (usaha ? "Kota Tangerang Selatan" : "-"),
-          "Negara Usaha": usaha ? "Indonesia" : "-",
-          "Bidang Usaha": usaha?.bidang_usaha || usaha?.kategori_usaha || "-",
-          "Jenis Usaha": usaha?.jenis_usaha || (usaha ? "Jasa" : "-"),
-          "Keselarasan Usaha": keselarasanUsaha,
-          "Nama Produk Usaha": usaha?.nama_produk_usaha || usaha?.bidang_usaha || "-",
-          "Jenjang Pendidikan": kuliah?.jenjang ? (kuliah.jenjang.startsWith('S') || kuliah.jenjang.startsWith('D') ? `${kuliah.jenjang.slice(0, 1)}-${kuliah.jenjang.slice(1)}` : kuliah.jenjang) : "-",
-          "Nama Perguruan Tinggi": kuliah?.nama_kampus || "-",
-          "Nama Prodi": kuliah?.program_studi || "-",
-          "Keselarasan Studi Lanjut": kuliah?.keselarasan_studi || (kuliah ? "Selaras" : "-"),
-          "Pendapatan Bekerja (UMP)": kerja?.pendapatan_ump || (kerja ? "Sama dengan atau lebih dari UMP" : "-"),
-          "Pendapatan Bekerja (UMK)": kerja?.pendapatan_umk || (kerja ? "Kurang dari UMK" : "-"),
-          "Pendapatan Wirausaha (UMP)": usaha?.pendapatan_ump || (usaha ? "Kurang dari UMP" : "-"),
-          "Pendapatan Wirausaha (UMK)": usaha?.pendapatan_umk || (usaha ? "Kurang dari UMK" : "-"),
-          "Pendapatan Studi Sambil Bekerja (UMP)": r.statusKegiatan === "KERJA_KULIAH" ? (kerja?.pendapatan_ump || "Sama dengan atau lebih dari UMP") : "-",
-          "Pendapatan Studi Sambil Bekerja (UMK)": r.statusKegiatan === "KERJA_KULIAH" ? (kerja?.pendapatan_umk || "Kurang dari UMK") : "-",
-          "Pendapatan Studi Sambil Berwirausaha (UMP)": r.statusKegiatan === "WIRAUSAHA_KULIAH" ? (usaha?.pendapatan_ump || "Kurang dari UMP") : "-",
-          "Pendapatan Studi Sambil Berwirausaha (UMK)": r.statusKegiatan === "WIRAUSAHA_KULIAH" ? (usaha?.pendapatan_umk || "Kurang dari UMK") : "-",
-        };
-      });
+      dataRows = buildVokasiExcelRows(respondents, settings);
     } else if (selectedFormat === "master_lengkap") {
       filename = `export_master_alumni_smk_sasmita2_${settings.targetYear}.xlsx`;
       sheetName = "Data Master Alumni";
-      dataRows = masterAlumni.map((a) => ({
-        "ID Alumni": a.id,
-        NISN: a.nisn,
-        NIK: a.nik,
-        "Nama Lengkap": a.nama,
-        "Program Keahlian": a.jurusan,
-        "Tahun Lulus": a.tahunLulus,
-        "No. WhatsApp": a.noWhatsapp,
-        Email: a.email,
-        "Status Kuesioner": a.statusTracer,
-        "ID Submisi": a.submissionId || "-",
-        "Tanggal Submit": a.submittedAt || "-",
-      }));
+      dataRows = buildMasterAlumniExcelRows(masterAlumni);
     } else {
       filename = `rekap_aktivitas_lulusan_smk_sasmita2_${settings.targetYear}.xlsx`;
       sheetName = "Rekapitulasi Kejuruan";
-      const jurusanList = [
-        "Teknik Komputer dan Jaringan",
-        "Teknik Pemesinan",
-        "Teknik Instalasi Tenaga Listrik",
-        "Teknik Elektronika Industri",
-        "Teknik Kendaraan Ringan Otomotif",
-        "Teknik dan Bisnis Sepeda Motor",
-      ];
-      dataRows = jurusanList.map((j) => {
-        const totalInJurusan = masterAlumni.filter((a) =>
-          a.jurusan.includes(j),
-        ).length;
-        const resp = respondents.filter((r) => r.jurusan.includes(j));
-        const filled = resp.length;
-        const kerja = resp.filter(
-          (r) =>
-            r.statusKegiatan === "KERJA" || r.statusKegiatan === "KERJA_KULIAH",
-        ).length;
-        const kuliah = resp.filter(
-          (r) =>
-            r.statusKegiatan === "KULIAH" ||
-            r.statusKegiatan === "WIRAUSAHA_KULIAH",
-        ).length;
-        const usaha = resp.filter(
-          (r) =>
-            r.statusKegiatan === "WIRAUSAHA" ||
-            r.statusKegiatan === "WIRAUSAHA_KULIAH",
-        ).length;
-        const belum = resp.filter(
-          (r) => r.statusKegiatan === "BELUM_KERJA",
-        ).length;
-        const percent =
-          totalInJurusan > 0
-            ? Number(((filled / totalInJurusan) * 100).toFixed(1))
-            : 0;
-        const bmwRate =
-          filled > 0
-            ? Number((((kerja + kuliah + usaha) / filled) * 100).toFixed(1))
-            : 0;
-
-        return {
-          "Program Keahlian": j,
-          "Total Alumni Master": totalInJurusan,
-          "Kuesioner Terisi": filled,
-          Bekerja: kerja,
-          Kuliah: kuliah,
-          Wirausaha: usaha,
-          "Mencari Kerja": belum,
-          "Tingkat Partisipasi (%)": `${percent}%`,
-          "Tingkat Keterserapan BMW (%)": `${bmwRate}%`,
-        };
-      });
+      dataRows = buildRekapKejuruanExcelRows(masterAlumni, respondents);
     }
 
     exportJsonToExcel(dataRows, filename, { sheetName });
@@ -228,146 +75,16 @@ export const AdminExportReportTab: React.FC = () => {
 
     if (selectedFormat === "ditjen_vokasi") {
       filename = `export_tracer_vokasi_smk_sasmita2_${settings.targetYear}.csv`;
-      const headers = [
-        "ID_SUBMISI",
-        "NISN",
-        "NIK",
-        "NAMA_LENGKAP",
-        "JURUSAN",
-        "TAHUN_LULUS",
-        "STATUS_KEGIATAN",
-        "MASA_TUNGGU",
-        "NAMA_PERUSAHAAN_KAMPUS_USAHA",
-        "JABATAN_PRODI",
-        "KESESUAIAN_JURUSAN",
-        "RENTANG_PENGHASILAN",
-        "NAMA_ATASAN_HRD",
-        "KONTAK_ATASAN_HRD",
-        "NO_WHATSAPP_ALUMNI",
-        "EMAIL_ALUMNI",
-        "TANGGAL_SUBMIT",
-        "STATUS_VERIFIKASI",
-      ].join(",");
-
-      const rows = respondents.map((r) => {
-        const payload = r.fullPayload;
-        const kerja = payload.detail_kerja;
-        const kuliah = payload.detail_kuliah;
-        const usaha = payload.detail_usaha;
-
-        const instansi =
-          kerja?.nama_perusahaan ||
-          kuliah?.nama_kampus ||
-          usaha?.nama_usaha ||
-          (r.statusKegiatan === "BELUM_KERJA" ? "Belum Bekerja" : "-");
-
-        const jabatan =
-          kerja?.jabatan || kuliah?.program_studi || usaha?.bidang_usaha || "-";
-
-        const kesesuaian =
-          kerja?.kesesuaian_jurusan || usaha?.kesesuaian_kompetensi || "-";
-        const gaji = kerja?.kisaran_penghasilan || kerja?.pendapatan_umk || kerja?.pendapatan_ump || usaha?.pendapatan_umk || usaha?.pendapatan_ump || "-";
-        const atasan = kerja?.nama_atasan || "-";
-        const kontakAtasan = kerja?.kontak_atasan || "-";
-
-        return [
-          `"${r.submissionId}"`,
-          `"${r.nisn}"`,
-          `"${r.nik}"`,
-          `"${r.nama.replace(/"/g, '""')}"`,
-          `"${r.jurusan}"`,
-          r.tahunLulus,
-          `"${r.statusKegiatan}"`,
-          `"${payload.masa_tunggu || "-"}"`,
-          `"${instansi.replace(/"/g, '""')}"`,
-          `"${jabatan.replace(/"/g, '""')}"`,
-          `"${kesesuaian}"`,
-          `"${gaji}"`,
-          `"${atasan.replace(/"/g, '""')}"`,
-          `"${kontakAtasan}"`,
-          `"${r.noWhatsapp}"`,
-          `"${r.email}"`,
-          `"${r.submittedAt}"`,
-          `"${r.verificationStatus}"`,
-        ].join(",");
-      });
-
-      csvContent = "\uFEFF" + [headers, ...rows].join("\n");
+      csvContent = buildVokasiCsvContent(respondents);
     } else if (selectedFormat === "master_lengkap") {
       filename = `export_master_alumni_smk_sasmita2_${settings.targetYear}.csv`;
-      const headers =
-        "NISN,NIK,NAMA_LENGKAP,JURUSAN,TAHUN_LULUS,NO_WHATSAPP,EMAIL,STATUS_KUESIONER,ID_SUBMISI";
-      const rows = masterAlumni.map((a) =>
-        [
-          `"${a.nisn}"`,
-          `"${a.nik}"`,
-          `"${a.nama.replace(/"/g, '""')}"`,
-          `"${a.jurusan}"`,
-          a.tahunLulus,
-          `"${a.noWhatsapp}"`,
-          `"${a.email}"`,
-          `"${a.statusTracer}"`,
-          `"${a.submissionId || "-"}"`,
-        ].join(","),
-      );
-      csvContent = "\uFEFF" + [headers, ...rows].join("\n");
+      csvContent = buildMasterAlumniCsvContent(masterAlumni);
     } else {
       filename = `rekap_aktivitas_lulusan_smk_sasmita2_${settings.targetYear}.csv`;
-      const headers =
-        "JURUSAN,TOTAL_MASTER,TOTAL_RESPON,BEKERJA,KULIAH,WIRAUSAHA,BELUM_KERJA,PERSENTASE_RESPON";
-      const jurusanList = [
-        "Teknik Komputer dan Jaringan",
-        "Teknik Pemesinan",
-        "Teknik Instalasi Tenaga Listrik",
-        "Teknik Elektronika Industri",
-        "Teknik Kendaraan Ringan Otomotif",
-        "Teknik dan Bisnis Sepeda Motor",
-      ];
-      const rows = jurusanList.map((j) => {
-        const totalInJurusan = masterAlumni.filter((a) =>
-          a.jurusan.includes(j),
-        ).length;
-        const resp = respondents.filter((r) => r.jurusan.includes(j));
-        const filled = resp.length;
-        const kerja = resp.filter(
-          (r) =>
-            r.statusKegiatan === "KERJA" || r.statusKegiatan === "KERJA_KULIAH",
-        ).length;
-        const kuliah = resp.filter(
-          (r) =>
-            r.statusKegiatan === "KULIAH" ||
-            r.statusKegiatan === "WIRAUSAHA_KULIAH",
-        ).length;
-        const usaha = resp.filter(
-          (r) => r.statusKegiatan === "WIRAUSAHA",
-        ).length;
-        const belum = resp.filter(
-          (r) => r.statusKegiatan === "BELUM_KERJA",
-        ).length;
-        const percent =
-          totalInJurusan > 0
-            ? ((filled / totalInJurusan) * 100).toFixed(1)
-            : "0";
-        return `"${j}",${totalInJurusan},${filled},${kerja},${kuliah},${usaha},${belum},${percent}%`;
-      });
-      csvContent = "\uFEFF" + [headers, ...rows].join("\n");
+      csvContent = buildRekapKejuruanCsvContent(masterAlumni, respondents);
     }
 
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", filename);
-    link.style.position = "fixed";
-    link.style.top = "-9999px";
-    link.style.left = "-9999px";
-    link.style.opacity = "0";
-    link.style.pointerEvents = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
+    downloadBlob(csvContent, filename);
     showDownloadToast(`Berkas CSV (${filename}) berhasil diunduh.`);
   };
 
@@ -375,93 +92,25 @@ export const AdminExportReportTab: React.FC = () => {
   const handleDirectDownloadOfficialReport = () => {
     window.print();
     showDownloadToast(
-      "Membuka dialog cetak / simpan dokumen Lembar Rekapitulasi Resmi.",
+      "Membuka dialog cetak / simpan dokumen Lembar Rekapitulasi Resmi."
     );
   };
 
-  // Data calculations for official report letterhead
-  const totalMaster = masterAlumni.length;
-  const totalResponden = respondents.length;
+  // Memoized report statistics calculation
+  const stats = useMemo(
+    () => calculateReportStats(masterAlumni, respondents),
+    [masterAlumni, respondents]
+  );
 
-  const countKerja = respondents.filter(
-    (r) => r.statusKegiatan === "KERJA" || r.statusKegiatan === "KERJA_KULIAH",
-  ).length;
-  const countKuliah = respondents.filter(
-    (r) =>
-      r.statusKegiatan === "KULIAH" || r.statusKegiatan === "WIRAUSAHA_KULIAH",
-  ).length;
-  const countWirausaha = respondents.filter(
-    (r) => r.statusKegiatan === "WIRAUSAHA",
-  ).length;
-  const countBelumKerja = respondents.filter(
-    (r) => r.statusKegiatan === "BELUM_KERJA",
-  ).length;
-
-  const percentKerja =
-    totalResponden > 0 ? ((countKerja / totalResponden) * 100).toFixed(1) : "0";
-  const percentKuliah =
-    totalResponden > 0
-      ? ((countKuliah / totalResponden) * 100).toFixed(1)
-      : "0";
-  const percentWirausaha =
-    totalResponden > 0
-      ? ((countWirausaha / totalResponden) * 100).toFixed(1)
-      : "0";
-  const percentBelumKerja =
-    totalResponden > 0
-      ? ((countBelumKerja / totalResponden) * 100).toFixed(1)
-      : "0";
-
-  const jurusanList = [
-    { code: "TKJ", name: "Teknik Komputer dan Jaringan" },
-    { code: "TPM", name: "Teknik Pemesinan" },
-    { code: "TITL", name: "Teknik Instalasi Tenaga Listrik" },
-    { code: "TEI", name: "Teknik Elektronika Industri" },
-    { code: "TKRO", name: "Teknik Kendaraan Ringan Otomotif" },
-    { code: "TBSM", name: "Teknik dan Bisnis Sepeda Motor" },
-  ];
-
-  const jurusanBreakdown = jurusanList.map((j) => {
-    const totalInJurusan = masterAlumni.filter((a) =>
-      a.jurusan.includes(j.name),
-    ).length;
-    const respInJurusan = respondents.filter((r) => r.jurusan.includes(j.name));
-    const filledCount = respInJurusan.length;
-    const kerjaCount = respInJurusan.filter(
-      (r) =>
-        r.statusKegiatan === "KERJA" || r.statusKegiatan === "KERJA_KULIAH",
-    ).length;
-    const kuliahCount = respInJurusan.filter(
-      (r) =>
-        r.statusKegiatan === "KULIAH" ||
-        r.statusKegiatan === "WIRAUSAHA_KULIAH",
-    ).length;
-    const usahaCount = respInJurusan.filter(
-      (r) => r.statusKegiatan === "WIRAUSAHA",
-    ).length;
-    const belumCount = respInJurusan.filter(
-      (r) => r.statusKegiatan === "BELUM_KERJA",
-    ).length;
-
-    const responseRate =
-      totalInJurusan > 0 ? Math.round((filledCount / totalInJurusan) * 100) : 0;
-    return {
-      ...j,
-      total: totalInJurusan,
-      filled: filledCount,
-      kerja: kerjaCount,
-      kuliah: kuliahCount,
-      usaha: usahaCount,
-      belum: belumCount,
-      responseRate,
-    };
-  });
-
-  const currentDateFormatted = new Date().toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const currentDateFormatted = useMemo(
+    () =>
+      new Date().toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+    []
+  );
 
   return (
     <>
@@ -525,8 +174,7 @@ export const AdminExportReportTab: React.FC = () => {
                     />
                     <div>
                       <span className="font-semibold text-slate-800 block">
-                        Data Lengkap Seluruh Alumni ({masterAlumni.length}{" "}
-                        Siswa)
+                        Data Lengkap Seluruh Alumni ({masterAlumni.length} Siswa)
                       </span>
                       <span className="text-[11px] text-slate-500">
                         Daftar seluruh alumni terdaftar beserta status pengisian
@@ -640,273 +288,21 @@ export const AdminExportReportTab: React.FC = () => {
       </div>
 
       {/* Printable Document Container (Only visible during window.print()) */}
-      <div
-        id="official-report-printable-doc"
-        className="hidden print:block p-8 text-slate-900 font-serif leading-relaxed bg-white"
-      >
-        {/* Official Letterhead (KOP SURAT RESMI) */}
-        <div className="flex items-center justify-between pb-4 border-b-4 border-double border-slate-900 gap-4">
-          <img
-            src="/logo-smk.png"
-            alt="Logo SMK Sasmita Jaya 2"
-            className="h-24 w-auto object-contain shrink-0"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/logo smk sasmita.png";
-            }}
-          />
-          <div className="text-center flex-1 font-sans">
-            <h4 className="text-xs sm:text-sm font-bold tracking-wider text-slate-700 uppercase">
-              Yayasan Sasmita Jaya
-            </h4>
-            <h2 className="text-base sm:text-xl font-extrabold tracking-tight text-slate-950 uppercase">
-              {settings.namaSekolah}
-            </h2>
-            <p className="text-[11px] text-slate-600 font-medium">
-              NPSN: {settings.npsn} • Akreditasi A Unggul
-            </p>
-            <p className="text-[10px] text-slate-500 leading-tight mt-0.5">
-              {settings.alamatSekolah} • Telp: {settings.kontakBkk}
-            </p>
-          </div>
-          <div className="w-20" />
-        </div>
-
-        {/* Document Title */}
-        <div className="text-center my-6 font-sans">
-          <h3 className="text-sm sm:text-base font-extrabold uppercase underline tracking-wide">
-            LAPORAN HASIL PENELUSURAN LULUSAN (TRACER STUDY)
-          </h3>
-          <p className="text-xs font-semibold text-slate-600 mt-1">
-            TAHUN KELULUSAN {settings.targetYear} • PERIODE PENGUMPULAN DATA
-            TAHUN 2026
-          </p>
-        </div>
-
-        {/* Ringkasan Eksekutif */}
-        <div className="space-y-4 text-xs font-sans">
-          <p className="text-justify leading-relaxed">
-            Berdasarkan hasil penelusuran lulusan yang diselenggarakan oleh
-            Bursa Kerja Khusus (BKK) SMK Sasmita Jaya 2 terhadap alumni tahun
-            kelulusan <strong>{settings.targetYear}</strong>, berikut adalah
-            rekapitulasi data keterserapan dan aktivitas alumni:
-          </p>
-
-          {/* Matrix Quick Numbers */}
-          <div className="grid grid-cols-4 gap-2 text-center my-3">
-            <div className="border border-slate-300 p-2.5 rounded bg-slate-50/50">
-              <span className="text-[10px] text-slate-500 block uppercase font-semibold">
-                Total Target Lulusan
-              </span>
-              <span className="text-lg font-bold text-slate-900">
-                {settings.targetQuota} Siswa
-              </span>
-            </div>
-            <div className="border border-slate-300 p-2.5 rounded bg-slate-50/50">
-              <span className="text-[10px] text-slate-500 block uppercase font-semibold">
-                Kuesioner Terisi
-              </span>
-              <span className="text-lg font-bold text-slate-900">
-                {totalResponden} Siswa
-              </span>
-            </div>
-            <div className="border border-slate-300 p-2.5 rounded bg-slate-50/50">
-              <span className="text-[10px] text-slate-500 block uppercase font-semibold">
-                Tingkat Pengisian
-              </span>
-              <span className="text-lg font-bold text-emerald-700">
-                {((totalResponden / (settings.targetQuota || 1)) * 100).toFixed(
-                  1,
-                )}
-                %
-              </span>
-            </div>
-            <div className="border border-slate-300 p-2.5 rounded bg-slate-50/50">
-              <span className="text-[10px] text-slate-500 block uppercase font-semibold">
-                Keterserapan Lulusan
-              </span>
-              <span className="text-lg font-bold text-[#0d2346]">
-                {(
-                  Number(percentKerja) +
-                  Number(percentKuliah) +
-                  Number(percentWirausaha)
-                ).toFixed(1)}
-                %
-              </span>
-            </div>
-          </div>
-
-          {/* Table 1: Rekapitulasi per Jurusan */}
-          <div>
-            <h5 className="font-bold text-xs uppercase mb-1.5 text-slate-800">
-              1. Rekapitulasi Pengisian per Program Keahlian
-            </h5>
-            <table className="w-full border-collapse border border-slate-400 text-center text-[11px]">
-              <thead className="bg-slate-100 font-semibold">
-                <tr>
-                  <th className="border border-slate-400 p-1.5">No</th>
-                  <th className="border border-slate-400 p-1.5 text-left">
-                    Program Keahlian
-                  </th>
-                  <th className="border border-slate-400 p-1.5">
-                    Total Alumni
-                  </th>
-                  <th className="border border-slate-400 p-1.5">Isian Masuk</th>
-                  <th className="border border-slate-400 p-1.5">Bekerja</th>
-                  <th className="border border-slate-400 p-1.5">Kuliah</th>
-                  <th className="border border-slate-400 p-1.5">Wirausaha</th>
-                  <th className="border border-slate-400 p-1.5">
-                    Mencari Kerja
-                  </th>
-                  <th className="border border-slate-400 p-1.5">Persentase</th>
-                </tr>
-              </thead>
-              <tbody>
-                {jurusanBreakdown.map((item, idx) => (
-                  <tr key={item.code} className="hover:bg-slate-50">
-                    <td className="border border-slate-400 p-1">{idx + 1}</td>
-                    <td className="border border-slate-400 p-1 text-left font-medium">
-                      {item.name} ({item.code})
-                    </td>
-                    <td className="border border-slate-400 p-1">
-                      {item.total}
-                    </td>
-                    <td className="border border-slate-400 p-1 font-semibold">
-                      {item.filled}
-                    </td>
-                    <td className="border border-slate-400 p-1">
-                      {item.kerja}
-                    </td>
-                    <td className="border border-slate-400 p-1">
-                      {item.kuliah}
-                    </td>
-                    <td className="border border-slate-400 p-1">
-                      {item.usaha}
-                    </td>
-                    <td className="border border-slate-400 p-1">
-                      {item.belum}
-                    </td>
-                    <td className="border border-slate-400 p-1 font-semibold">
-                      {item.responseRate}%
-                    </td>
-                  </tr>
-                ))}
-                <tr className="bg-slate-100 font-bold">
-                  <td
-                    colSpan={2}
-                    className="border border-slate-400 p-1 text-center"
-                  >
-                    TOTAL KESELURUHAN
-                  </td>
-                  <td className="border border-slate-400 p-1">{totalMaster}</td>
-                  <td className="border border-slate-400 p-1">
-                    {totalResponden}
-                  </td>
-                  <td className="border border-slate-400 p-1">{countKerja}</td>
-                  <td className="border border-slate-400 p-1">{countKuliah}</td>
-                  <td className="border border-slate-400 p-1">
-                    {countWirausaha}
-                  </td>
-                  <td className="border border-slate-400 p-1">
-                    {countBelumKerja}
-                  </td>
-                  <td className="border border-slate-400 p-1">
-                    {((totalResponden / (totalMaster || 1)) * 100).toFixed(1)}%
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Table 2: Distribusi Aktivitas Global */}
-          <div className="pt-2">
-            <h5 className="font-bold text-xs uppercase mb-1.5 text-slate-800">
-              2. Distribusi Aktivitas Alumni (Bekerja, Kuliah, Wirausaha)
-            </h5>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
-              <div className="p-2 border border-slate-300 rounded bg-slate-50">
-                <span className="font-medium text-slate-700 block">
-                  Bekerja di Instansi / Perusahaan
-                </span>
-                <span className="text-base font-bold text-slate-900">
-                  {countKerja} ({percentKerja}%)
-                </span>
-              </div>
-              <div className="p-2 border border-slate-300 rounded bg-slate-50">
-                <span className="font-medium text-slate-700 block">
-                  Melanjutkan Kuliah
-                </span>
-                <span className="text-base font-bold text-slate-900">
-                  {countKuliah} ({percentKuliah}%)
-                </span>
-              </div>
-              <div className="p-2 border border-slate-300 rounded bg-slate-50">
-                <span className="font-medium text-slate-700 block">
-                  Wirausaha Mandiri
-                </span>
-                <span className="text-base font-bold text-slate-900">
-                  {countWirausaha} ({percentWirausaha}%)
-                </span>
-              </div>
-              <div className="p-2 border border-slate-300 rounded bg-slate-50">
-                <span className="font-medium text-slate-700 block">
-                  Sedang Mencari Kerja
-                </span>
-                <span className="text-base font-bold text-slate-900">
-                  {countBelumKerja} ({percentBelumKerja}%)
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Catatan Penutup */}
-          <p className="text-justify leading-relaxed pt-2">
-            Data ini telah melalui proses verifikasi dan validasi oleh pengelola
-            Bursa Kerja Khusus (BKK) SMK Sasmita Jaya 2, serta dapat digunakan
-            sebagai dokumen pelaporan resmi sekolah.
-          </p>
-        </div>
-
-        {/* Signature Block (TANDA TANGAN RESMI) */}
-        <div className="mt-10 pt-6 grid grid-cols-2 gap-8 text-center text-xs font-sans">
-          <div>
-            <p className="font-medium text-slate-600">Mengetahui,</p>
-            <p className="font-bold text-slate-900">
-              Kepala SMK Sasmita Jaya 2
-            </p>
-            <div className="h-20 flex items-center justify-center">
-              <span className="text-[10px] text-slate-400 italic">
-                (Tanda Tangan & Cap Sekolah)
-              </span>
-            </div>
-            <p className="font-bold text-slate-950 underline">
-              {settings.kepalaSekolah}
-            </p>
-            <p className="text-[10px] text-slate-600 font-mono">
-              NIP. {settings.nipKepalaSekolah}
-            </p>
-          </div>
-
-          <div>
-            <p className="font-medium text-slate-600">
-              Pamulang, {currentDateFormatted}
-            </p>
-            <p className="font-bold text-slate-900">
-              Ketua Bursa Kerja Khusus (BKK)
-            </p>
-            <div className="h-20 flex items-center justify-center">
-              <span className="text-[10px] text-slate-400 italic">
-                (Tanda Tangan)
-              </span>
-            </div>
-            <p className="font-bold text-slate-950 underline">
-              {settings.ketuaBkk}
-            </p>
-            <p className="text-[10px] text-slate-600 font-mono">
-              NIP. {settings.nipKetuaBkk}
-            </p>
-          </div>
-        </div>
-      </div>
+      <OfficialReportPrintDoc
+        settings={settings}
+        totalMaster={stats.totalMaster}
+        totalResponden={stats.totalResponden}
+        countKerja={stats.countKerja}
+        countKuliah={stats.countKuliah}
+        countWirausaha={stats.countWirausaha}
+        countBelumKerja={stats.countBelumKerja}
+        percentKerja={stats.percentKerja}
+        percentKuliah={stats.percentKuliah}
+        percentWirausaha={stats.percentWirausaha}
+        percentBelumKerja={stats.percentBelumKerja}
+        jurusanBreakdown={stats.jurusanBreakdown}
+        currentDateFormatted={currentDateFormatted}
+      />
 
       {/* Toast Alert */}
       <Toast

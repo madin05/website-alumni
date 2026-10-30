@@ -86,7 +86,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
               }`}
             >
               {!isTracerDone && (
-                <Lock className="w-3.5 h-3.5 mr-1 text-amber-300" />
+                <Lock className="w-3.5 h-3.5 mr-1 text-white" />
               )}
               <span>Daftar</span>
             </Button>
