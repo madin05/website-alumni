@@ -68,14 +68,22 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
   showToast,
 }) => {
   const [title, setTitle] = useState(editingNews?.title || "");
-  const [category, setCategory] = useState(editingNews?.category || "BKK & Karir");
+  const [category, setCategory] = useState(
+    editingNews?.category || "BKK & Karir",
+  );
   const [author, setAuthor] = useState(editingNews?.author || "Tim Humas BKK");
-  const [readTime, setReadTime] = useState(editingNews?.readTime || "3 min read");
-  const [imageUrl, setImageUrl] = useState(editingNews?.imageUrl || SAMPLE_IMAGES[0].url);
+  const [readTime, setReadTime] = useState(
+    editingNews?.readTime || "3 min read",
+  );
+  const [imageUrl, setImageUrl] = useState(
+    editingNews?.imageUrl || SAMPLE_IMAGES[0].url,
+  );
   const [excerpt, setExcerpt] = useState(editingNews?.excerpt || "");
   const [content, setContent] = useState(editingNews?.content || "");
 
-  const [imageMode, setImageMode] = useState<"upload" | "url" | "preset">("upload");
+  const [imageMode, setImageMode] = useState<"upload" | "url" | "preset">(
+    "upload",
+  );
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [uploadedFileSize, setUploadedFileSize] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -152,23 +160,14 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Editor Top Navigation Bar */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className=" sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer"
-            aria-label="Kembali ke daftar berita"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
           <div>
             <h2 className="text-base sm:text-lg font-bold text-slate-900">
-              {editingNews ? "Edit Artikel Berita" : "Tulis Berita / Informasi Baru"}
+              {editingNews
+                ? "Edit Artikel Berita"
+                : "Tulis Berita / Informasi Baru"}
             </h2>
-            <p className="text-xs text-slate-500">
-              Publikasikan berita, agenda kemitraan, atau panduan karir untuk alumni dan siswa
-            </p>
           </div>
         </div>
 
@@ -387,7 +386,8 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="block text-xs font-bold text-slate-900">
-                Ringkasan Singkat (Excerpt) <span className="text-rose-500">*</span>
+                Ringkasan Singkat (Excerpt){" "}
+                <span className="text-rose-500">*</span>
               </label>
               <span className="text-[11px] text-slate-400 font-normal">
                 Tampil pada kartu berita di halaman utama
@@ -407,7 +407,8 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="block text-xs font-bold text-slate-900">
-                Isi Lengkap Berita (Paragraf) <span className="text-rose-500">*</span>
+                Isi Lengkap Berita (Paragraf){" "}
+                <span className="text-rose-500">*</span>
               </label>
               <span className="text-[11px] text-slate-400 font-normal">
                 Tekan Enter dua kali untuk membuat paragraf baru
@@ -507,7 +508,8 @@ export const AdminNewsEditor: React.FC<AdminNewsEditorProps> = ({
             </div>
 
             <p className="text-[11px] text-slate-400 mt-3 text-center leading-relaxed">
-              Perubahan pada form otomatis ter-update pada pratinjau kartu di atas.
+              Perubahan pada form otomatis ter-update pada pratinjau kartu di
+              atas.
             </p>
           </div>
         </div>
