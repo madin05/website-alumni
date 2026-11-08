@@ -49,3 +49,29 @@ export function formatTimeAgo(dateStr: string): string {
   }
 }
 
+export function formatNameTitleCase(raw?: string): string {
+  if (!raw) return '';
+  return raw
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => {
+      if (!word) return '';
+      if (/^[a-z]\.$/i.test(word)) return word.toUpperCase();
+      if (word.includes("'")) {
+        return word
+          .split("'")
+          .map((p) => (p ? p.charAt(0).toUpperCase() + p.slice(1) : ''))
+          .join("'");
+      }
+      if (word.includes('-')) {
+        return word
+          .split('-')
+          .map((p) => (p ? p.charAt(0).toUpperCase() + p.slice(1) : ''))
+          .join('-');
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
+

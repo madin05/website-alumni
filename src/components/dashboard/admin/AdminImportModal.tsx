@@ -104,16 +104,72 @@ export const AdminImportModal: React.FC<AdminImportModalProps> = ({
     processFile(file);
   };
 
-  const handleCommitImport = () => {
+  const handleCommitImport = async () => {
     if (parsedRows.length === 0) return;
 
     setIsProcessing(true);
-    setTimeout(() => {
+    try {
+      try {
+        const { adminMasterAlumniApi } = await import("@/services/adminService");
+        const sanitizePhone = (raw?: string) => {
+          if (!raw) return undefined;
+          let str = raw.trim();
+          if (!str || str === "-" || str.replace(/[-\s]/g, "") === "") return undefined;
+          if (str.includes(",") || str.includes("/")) str = str.split(/[,/]/)[0].trim();
+          str = str.replace(/[^\d+]/g, "");
+          if (str.startsWith("+62")) str = "0" + str.slice(3);
+          else if (str.startsWith("62")) str = "0" + str.slice(2);
+          if (/^08[0-9]{7,11}$/.test(str)) return str;
+          return undefined;
+        };
+
+        const sanitizeNik = (raw?: string) => {
+          if (!raw) return undefined;
+          const str = raw.trim();
+          return /^\d{16}$/.test(str) ? str : undefined;
+        };
+
+        const sanitizeEmail = (raw?: string) => {
+          if (!raw) return undefined;
+          const str = raw.trim();
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str) ? str : undefined;
+        };
+
+        const payload = parsedRows.map((r) => ({
+          nisn: r.nisn,
+          nama: r.nama,
+          jurusan: r.jurusan,
+          tahunLulus: r.tahunLulus,
+          nik: sanitizeNik(r.nik),
+          noWhatsapp: sanitizePhone(r.noWhatsapp),
+          email: sanitizeEmail(r.email),
+          jenisKelamin: r.jenisKelamin,
+          namaSekolah: r.namaSekolah,
+          npsn: r.npsn,
+          statusSekolah: r.statusSekolah,
+          lamaProgram: r.lamaProgram,
+          provinsiSmk: r.provinsiSmk,
+          kabKotaSmk: r.kabKotaSmk,
+          kompKeahlian: r.kompKeahlian,
+          progKeahlian: r.progKeahlian,
+          bidKeahlian: r.bidKeahlian,
+        }));
+        await adminMasterAlumniApi.importCsv(payload, true);
+      } catch (backendErr) {
+        console.warn(
+          "[AdminImportModal] Sinkronisasi ke backend gagal, menggunakan penyimpanan lokal:",
+          backendErr,
+        );
+      }
+
       const { importedCount } = importMasterAlumni(parsedRows);
       setIsProcessing(false);
       onSuccess(importedCount);
       onClose();
-    }, 350);
+    } catch (err) {
+      console.error("[AdminImportModal] Gagal memproses data:", err);
+      setIsProcessing(false);
+    }
   };
 
   return (

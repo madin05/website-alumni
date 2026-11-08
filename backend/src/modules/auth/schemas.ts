@@ -32,7 +32,7 @@ export const registerSchema = z.object({
     'Teknik Komputer dan Jaringan',
   ]),
   tahunMasuk: z.number().int().min(2000).max(new Date().getFullYear()),
-  tahunLulus: z.number().int().min(2003).max(new Date().getFullYear() + 1),
+  tahunLulus: z.number().int().min(2003).max(2050),
   noWhatsApp: z
     .string()
     .regex(/^(\+62|62|0)8[0-9]{7,11}$/, 'Format WhatsApp tidak valid'),

@@ -16,7 +16,7 @@ export const masterAlumniCreateSchema = z.object({
   nik: z.string().length(16, 'NIK harus 16 digit').regex(/^\d{16}$/).optional(),
   nama: z.string().min(3).max(100),
   jurusan: z.enum(JURUSAN_OPTIONS),
-  tahunLulus: z.number().int().min(2003).max(new Date().getFullYear() + 1),
+  tahunLulus: z.number().int().min(2003).max(2050),
   noWhatsapp: z.string().regex(/^(\+62|62|0)8[0-9]{7,11}$/, 'Format WhatsApp tidak valid').optional(),
   email: z.string().email('Format email tidak valid').optional(),
 

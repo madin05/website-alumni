@@ -4,7 +4,7 @@ export const ijazahCreateSchema = z.object({
   nisn: z.string().length(10).regex(/^\d{10}$/),
   nama: z.string().min(3).max(100),
   jurusan: z.string().min(2).max(50),
-  tahunLulus: z.number().int().min(2003).max(new Date().getFullYear() + 1),
+  tahunLulus: z.number().int().min(2003).max(2050),
   statusPengambilan: z.enum(['SIAP_DIAMBIL', 'SUDAH_DIAMBIL', 'PROSES_LEGALISIR', 'DALAM_PENCETAKAN']),
   nomorIjazah: z.string().min(5).max(50),
   nomorSertifikatBnsp: z.string().optional(),

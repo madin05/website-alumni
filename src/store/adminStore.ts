@@ -22,6 +22,7 @@ import {
   INITIAL_MASTER_ALUMNI,
   INITIAL_RESPONDENTS,
 } from "@/data/initialAlumniData";
+import { formatNameTitleCase } from "@/lib/utils";
 
 export interface MasterAlumniRecord {
   id: string;
@@ -238,7 +239,13 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
     });
 
     if (newEntries.length > 0) {
-      set({ masterAlumni: [...newEntries, ...currentList] });
+      const merged = [...newEntries, ...currentList];
+      set({ masterAlumni: merged });
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(SYNCED_MASTER_KEY, JSON.stringify(merged));
+        } catch {}
+      }
     }
 
     return { importedCount, duplicateCount };
@@ -444,7 +451,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
           id: item.id || `mst-${item.nisn}`,
           nisn: item.nisn,
           nik: item.nik || "",
-          nama: item.namaLengkap || item.nama,
+          nama: formatNameTitleCase(item.namaLengkap || item.nama),
           jurusan: item.jurusan,
           tahunLulus: Number(item.tahunLulus),
           noWhatsapp: item.noWhatsApp || item.noWhatsapp || "",
@@ -512,7 +519,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
             submissionId: item.submissionId,
             nisn: alumni.nisn || "",
             nik: alumni.nik || "",
-            nama: alumni.namaLengkap || alumni.nama || "",
+            nama: formatNameTitleCase(alumni.namaLengkap || alumni.nama || ""),
             jurusan: alumni.jurusan || "Teknik Komputer dan Jaringan",
             tahunLulus: Number(alumni.tahunLulus) || 2024,
             noWhatsapp: alumni.noWhatsApp || alumni.noWhatsapp || "",
