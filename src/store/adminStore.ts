@@ -88,14 +88,15 @@ interface AdminState {
   // Actions
   importMasterAlumni: (
     records: Omit<MasterAlumniRecord, "id" | "createdAt" | "statusTracer">[],
-  ) => {
+  ) => Promise<{
     importedCount: number;
     duplicateCount: number;
-  };
+    invalidCount?: number;
+  }>;
   addSingleMasterAlumni: (
     record: Omit<MasterAlumniRecord, "id" | "createdAt" | "statusTracer">,
-  ) => boolean;
-  deleteMasterAlumni: (id: string) => void;
+  ) => Promise<boolean>;
+  deleteMasterAlumni: (id: string) => Promise<void>;
   updateMasterAlumni: (
     id: string,
     updates: Partial<MasterAlumniRecord>,
@@ -192,12 +193,47 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
   respondents: getInitialRespondents(),
   settings: getInitialSettings(),
 
-  importMasterAlumni: (records) => {
-    const currentList = get().masterAlumni;
-    const currentNisns = new Set(currentList.map((a) => a.nisn.trim()));
+  importMasterAlumni: async (records) => {
     let importedCount = 0;
     let duplicateCount = 0;
+    let invalidCount = 0;
 
+    try {
+      const { adminMasterAlumniApi } = await import("@/services/adminService");
+      const payload = records.map((r: any) => ({
+        nisn: (r.nisn || "").trim(),
+        nik: r.nik && r.nik !== "-" ? r.nik.trim() : "",
+        nama: (r.nama || "").trim(),
+        jurusan: r.jurusan,
+        tahunLulus: Number(r.tahunLulus) || 2024,
+        noWhatsapp: r.noWhatsapp && r.noWhatsapp !== "-" ? r.noWhatsapp.trim() : "",
+        email: r.email && r.email !== "-" ? r.email.trim() : "",
+        jenisKelamin: r.jenisKelamin,
+        namaSekolah: r.namaSekolah,
+        npsn: r.npsn,
+        statusSekolah: r.statusSekolah,
+        lamaProgram: r.lamaProgram,
+        provinsiSmk: r.provinsiSmk,
+        kabKotaSmk: r.kabKotaSmk,
+        kompKeahlian: r.kompKeahlian,
+        progKeahlian: r.progKeahlian,
+        bidKeahlian: r.bidKeahlian,
+      }));
+
+      const res = await adminMasterAlumniApi.importCsv(payload);
+      if (res && res.data) {
+        importedCount = res.data.importedCount ?? 0;
+        duplicateCount = res.data.duplicateCount ?? 0;
+        invalidCount = res.data.invalidCount ?? 0;
+        await get().fetchMasterAlumniFromBackend();
+        return { importedCount, duplicateCount, invalidCount };
+      }
+    } catch (err) {
+      console.warn("[AdminStore] Import ke backend gagal, menggunakan fallback lokal:", err);
+    }
+
+    const currentList = get().masterAlumni;
+    const currentNisns = new Set(currentList.map((a) => a.nisn.trim()));
     const newEntries: MasterAlumniRecord[] = [];
 
     records.forEach((rec, idx) => {
@@ -248,10 +284,47 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
       }
     }
 
-    return { importedCount, duplicateCount };
+    return { importedCount, duplicateCount, invalidCount };
   },
 
-  addSingleMasterAlumni: (record) => {
+  addSingleMasterAlumni: async (record) => {
+    try {
+      const { adminMasterAlumniApi } = await import("@/services/adminService");
+      const cleanNik =
+        record.nik && record.nik !== "-" && record.nik !== "3674000000000000"
+          ? record.nik
+          : "";
+      const cleanWa =
+        record.noWhatsapp &&
+        record.noWhatsapp !== "-" &&
+        record.noWhatsapp !== "081200000000"
+          ? record.noWhatsapp
+          : "";
+      const cleanEmail =
+        record.email &&
+        record.email !== "-" &&
+        !record.email.toLowerCase().endsWith("@example.com")
+          ? record.email
+          : "";
+
+      const res = await adminMasterAlumniApi.create({
+        nisn: (record.nisn || "").trim(),
+        nik: cleanNik,
+        nama: (record.nama || "").trim(),
+        jurusan: record.jurusan,
+        tahunLulus: Number(record.tahunLulus) || 2024,
+        noWhatsapp: cleanWa,
+        email: cleanEmail,
+      });
+
+      if (res && (res.data || res.success)) {
+        await get().fetchMasterAlumniFromBackend();
+        return true;
+      }
+    } catch (err) {
+      console.warn("[AdminStore] Add single ke backend gagal, menggunakan fallback lokal:", err);
+    }
+
     const currentList = get().masterAlumni;
     const cleanNisn = (record.nisn || "").trim();
     if (currentList.some((a) => a.nisn === cleanNisn)) {
@@ -289,9 +362,16 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
     return true;
   },
 
-  deleteMasterAlumni: (id) => {
+  deleteMasterAlumni: async (id) => {
+    try {
+      const { adminMasterAlumniApi } = await import("@/services/adminService");
+      await adminMasterAlumniApi.delete(id);
+      await get().fetchMasterAlumniFromBackend();
+    } catch (err) {
+      console.warn("[AdminStore] Delete backend fallback:", err);
+    }
     set((state) => ({
-      masterAlumni: state.masterAlumni.filter((a) => a.id !== id),
+      masterAlumni: state.masterAlumni.filter((a) => a.id !== id && a.nisn !== id),
     }));
   },
 
