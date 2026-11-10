@@ -1,8 +1,14 @@
 node_modules/
 dist/
 .env
-.env.local
+.env.*
+!.env.example
 *.log
 uploads/
 coverage/
 .DS_Store
+check-*.ts
+update-*.ts
+*.sql
+*.db
+*.sqlite

@@ -277,7 +277,7 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
               </div>
 
               {/* Demo Mode Testing Box */}
-              <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
+              {/* <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
                 <div className="flex items-start gap-2.5">
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-medium text-amber-950">
@@ -300,7 +300,7 @@ export const TracerWizard: React.FC<TracerWizardProps> = ({
                   <RefreshCw className="w-3.5 h-3.5 mr-1" />
                   <span>Uji Coba Isi Ulang (Demo)</span>
                 </Button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

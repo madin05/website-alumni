@@ -10,7 +10,7 @@ lerna-debug.log*
 # Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# Runtime data
+# Runtime data & temporary files
 pids
 *.pid
 *.seed
@@ -19,6 +19,7 @@ pids
 *.temp
 *.bak
 *.backup
+scratch/
 
 # Coverage directory
 lib-cov
@@ -37,17 +38,33 @@ dist-ssr/
 build/
 .vite/
 *.local
-*.sql
 
 # Environment & Sensitive Credentials files
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
 *.pem
 *.key
 *.cert
+*.crt
+*.pfx
+*.p12
+
+# Database Dumps, Credentials & Data Stores
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+
+# Sensitive Data Dumps, Spreadsheets & Datasets
+*.xlsx
+*.xls
+*.csv
+*.tsv
 
 # Editor and IDE configurations
 .vscode/
@@ -73,36 +90,23 @@ Thumbs.db
 # Agent / AI Scratch caches
 .agents/
 
-# Backend Build Outputs & Dependencies
+# Cloudflare, Vercel & Infrastructure Secrets
+.cloudflared/
+.vercel/
+*tunnel*.json
+cert.pem
+
+# Backend Isolation & Local Password Management Scripts
 backend/dist/
 backend/node_modules/
 backend/uploads/
-backend/.env
+backend/check-*.ts
+backend/update-*.ts
 
-# Sensitive Data Dumps & Spreadsheets
-*.xlsx
-*.xls
-*.csv
-*.sql
-*.sqlite
-*.db
-*.dump
+# Large PDF artifacts at root
+/*.pdf
 
-# Cloudflare & Secrets
-.cloudflared/
-
-# Documentation, Internal Scripts & Specs
+# Internal Documentation, Specifications & Workflows
 scripts/
 docs/
 dokumentasi/
-ADMIN_WORKFLOW.md
-ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md
-DATABASE_SCHEMA.md
-DEPLOYMENT_VERCEL.md
-DOKUMENTASI_WORKFLOW_ADMIN.md
-FLOW_VERIFIKASI_PELACAKAN_IJAZAH.md
-PRD.md
-TRACER_STUDY_WORKFLOW.md
-flow-dash-admin.md
-analisis_variabel_tracer_excel.md
-term_condition_privacy_policy.md

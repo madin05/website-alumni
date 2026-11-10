@@ -116,7 +116,7 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-7">
       {/* Blue Section Header Bar matching Dapodik screenshot */}
-      <div className="bg-[#1d4ed8] text-white px-4 py-2.5 font-medium text-xs sm:text-sm flex items-center justify-between rounded-t-sm">
+      {/* <div className="bg-[#1d4ed8] text-white px-4 py-2.5 font-medium text-xs sm:text-sm flex items-center justify-between rounded-t-sm">
         <span>Update Data Pribadi</span>
         <button
           type="button"
@@ -125,7 +125,7 @@ export const Step1Identity: React.FC<Step1Props> = ({ onNext }) => {
         >
           Isi Contoh Data
         </button>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
         {/* Nama Lengkap - Locked */}
