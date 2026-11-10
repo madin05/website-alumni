@@ -158,67 +158,26 @@ Daftar perintah npm yang tersedia pada direktori utama:
 
 ---
 
-## Struktur Direktori Proyek
-
-```text
-web_alumni/
-├── backend/                  # Layanan REST API Fastify, skema Prisma, dan migrasi database
-├── docs/                     # Buku panduan resmi, dokumentasi teknis, dan arsip tangkapan layar
-│   ├── Buku_Panduan_Dashboard_Admin.pdf
-│   ├── Buku_Panduan_Dashboard_User.pdf
-│   ├── screenshots/          # Tangkapan layar antarmuka dashboard admin
-│   └── screenshots_user/     # Tangkapan layar antarmuka dashboard alumni
-├── public/                   # Asset publik statis (logo sekolah, ikon, metadata favicon)
-├── src/
-│   ├── components/           # Komponen antarmuka React
-│   │   ├── about/            # Halaman informasi Tentang Tracer Study
-│   │   ├── auth/             # Komponen autentikasi dan halaman login
-│   │   ├── common/           # Komponen utilitas bersama (pelacak sesi, scroll navigation)
-│   │   ├── dashboard/        # Layout dan tab operasional dashboard admin dan user
-│   │   ├── landing/          # Komponen landing page publik (hero, navigasi, fitur, FAQ, footer)
-│   │   ├── news/             # Portal berita dan halaman rincian artikel
-│   │   ├── report/           # Portal publikasi laporan statistik tracer study
-│   │   ├── tracer/           # Formulir wizard kuesioner tracer study (Langkah 1–5 dan bukti selesai)
-│   │   └── ui/               # Komponen antarmuka atomik (Button, Input, Modal, Card, Select)
-│   ├── data/                 # Data awal / mock data untuk kebutuhan pengembangan antarmuka
-│   ├── schemas/              # Skema validasi data menggunakan Zod
-│   ├── store/                # Manajemen state global aplikasi (Zustand: authStore, tracerStore, adminStore)
-│   ├── types/                # Definisi tipe data TypeScript
-│   ├── App.tsx               # Konfigurasi perutean utama (React Router DOM)
-│   ├── index.css             # Konfigurasi Tailwind CSS dan utilitas tata letak global
-│   └── main.tsx              # Titik masuk utama aplikasi React
-├── .env.example              # Template variabel lingkungan frontend
-├── index.html                # Berkas HTML template utama
-├── package.json              # Manifest proyek dan dependensi frontend
-├── tailwind.config.js        # Konfigurasi tema, palet warna, dan breakpoint Tailwind CSS
-├── tsconfig.json             # Konfigurasi compiler TypeScript
-└── vite.config.ts            # Konfigurasi bundler Vite dan proxy pengembangan
-```
-
----
-
 ## Dokumentasi Pendukung
 
-Petunjuk operasional mendalam telah disusun ke dalam dokumen terpisah:
-- **Buku Panduan Dashboard Admin:** [docs/Buku_Panduan_Dashboard_Admin.pdf](docs/Buku_Panduan_Dashboard_Admin.pdf)
-- **Buku Panduan Dashboard User (Alumni):** [docs/Buku_Panduan_Dashboard_User.pdf](docs/Buku_Panduan_Dashboard_User.pdf)
-- **Spesifikasi Teknis API & Integrasi Database:** [docs/API_DATABASE_INTEGRATION.md](docs/API_DATABASE_INTEGRATION.md)
-
----
-
-## Batasan dan Status Proyek
-
-- **Status Data:** Lingkungan frontend saat ini dilengkapi dengan dataset sintetis untuk kebutuhan simulasi antarmuka dan pengujian alur pengisian kuesioner. Seluruh data alumni, NIK, dan nomor kontak contoh merupakan data sintetis untuk pengujian.
-- **Mekanisme Persistensi:** Pada mode pengembangan mandiri (standalone frontend), data preferensi dan status kuesioner tersimpan pada browser storage (`localStorage`). Untuk persistensi terpusat, hubungkan ke server backend API pada folder `backend/`.
-- **Validasi Kuesioner:** Sesuai instrumen vokasi, pengisian kuesioner dibatasi satu kali pengiriman per periode bagi masing-masing responden.
+Petunjuk operasional dan spesifikasi teknis telah disusun ke dalam folder `docs/`:
+- **Workflow & SOP Panel Administrator BKK:** [docs/ADMIN_WORKFLOW.md](docs/ADMIN_WORKFLOW.md)
+- **Workflow & Logika Kuesioner Tracer Study:** [docs/TRACER_STUDY_WORKFLOW.md](docs/TRACER_STUDY_WORKFLOW.md)
+- **Integrasi REST API Fastify & Sinkronisasi DB:** [docs/API_DATABASE_INTEGRATION.md](docs/API_DATABASE_INTEGRATION.md)
+- **Spesifikasi Arsitektur Teknis Panel Admin:** [docs/ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md](docs/ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md)
+- **Skema Basis Data Relasional & Pemetaan State:** [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
+- **Arsitektur Model Bursa Kerja Khusus (Loker BKK):** [docs/FLOW_FITUR_LOWONGAN_KERJA.md](docs/FLOW_FITUR_LOWONGAN_KERJA.md)
+- **Panduan Fitur & Arsitektur Landing Page:** [docs/PANDUAN_FITUR_LANDING_PAGE.md](docs/PANDUAN_FITUR_LANDING_PAGE.md)
+- **Analisis Variabel Riil Satpen Kemendikbudristek:** [docs/analisis_variabel_tracer_excel.md](docs/analisis_variabel_tracer_excel.md)
 
 ---
 
 ## Kebijakan Data dan Kerahasiaan
 
-1. **Perlindungan Data Pribadi:** Seluruh identitas alumni (seperti NISN, NIK, nomor telepon, dan email) dikelola dengan prinsip kehati-hatian. Repositori publik ini dilarang keras memuat data pribadi asli milik siswa, alumni, maupun tenaga pengajar.
-2. **Kerahasiaan Kredensial:** Seluruh secret konfigurasi, access token, dan password basis data harus dikelola secara terisolasi pada berkas `.env` lokal masing-masing lingkungan kerja dan tidak boleh dikomit ke dalam riwayat Git.
+1. **Perlindungan Data Pribadi:** Seluruh identitas alumni (seperti NISN, NIK, nomor telepon, dan email) dikelola dengan prinsip kehati-hatian. Repositori publik dilarang memuat data pribadi asli milik siswa, alumni, maupun tenaga pengajar.
+2. **Kerahasiaan Kredensial:** Seluruh secret konfigurasi, access token, dan password basis data harus dikelola secara terisolasi pada berkas `.env` lokal masing-masing lingkungan kerja dan tidak boleh dimasukkan ke dalam riwayat Git.
 
 ---
 
 Hak Cipta (c) 2026 SMK Sasmita Jaya 2 Pamulang. Hak cipta dilindungi undang-undang.
+

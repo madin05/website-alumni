@@ -108,5 +108,9 @@ backend/update-*.ts
 
 # Internal Documentation, Specifications & Workflows
 scripts/
-docs/
+docs/*.pdf
+docs/*.docx
+docs/*.html
+docs/screenshots/
+docs/screenshots_user/
 dokumentasi/
