@@ -9,21 +9,7 @@ Aplikasi web untuk mendukung pengelolaan data penelusuran tamatan (*Tracer Study
 
 ---
 
-## Daftar Isi
-- [Fitur Utama](#fitur-utama)
-- [Arsitektur & Tech Stack](#arsitektur--tech-stack)
-- [Prasyarat Sistem](#prasyarat-sistem)
-- [Instalasi dan Menjalankan Proyek](#instalasi-dan-menjalankan-proyek)
-- [Konfigurasi Environment](#konfigurasi-environment)
-- [Perintah yang Tersedia](#perintah-yang-tersedia)
-- [Struktur Direktori Proyek](#struktur-direktori-proyek)
-- [Dokumentasi Pendukung](#dokumentasi-pendukung)
-- [Batasan dan Status Proyek](#batasan-dan-status-proyek)
-- [Kebijakan Data dan Kerahasiaan](#kebijakan-data-dan-kerahasiaan)
-
----
-
-## Fitur Utama
+## Fitur
 
 ### 1. Portal Publik & Informasi
 - **Landing Page Terpadu:** Informasi profil tracer study, statistik capaian lulusan, saluran informasi layanan sekolah, dan tautan akses akun.
@@ -136,13 +122,13 @@ npm run dev
 
 Variabel lingkungan frontend dikonfigurasi melalui berkas `.env`:
 
-| Variabel | Keterangan | Status | Nilai Bawaan / Contoh |
-|---|---|---|---|
-| `VITE_APP_NAME` | Nama aplikasi yang ditampilkan pada antarmuka | Opsional | `"Tracer Study SMK Sasmita Jaya 2"` |
-| `VITE_APP_URL` | Alamat URL origin frontend | Opsional | `http://localhost:5173` |
-| `VITE_API_URL` | URL absolut endpoint backend API (kosongkan jika memakai dev proxy) | Opsional | `""` atau `http://localhost:3001` |
-| `VITE_PROXY_TARGET` | Target penerusan permintaan proxy `/api` pada mode development Vite | Opsional | `http://localhost:3001` |
-| `VITE_HELPDESK_PHONE` | Nomor kontak resmi WhatsApp Helpdesk sekolah (format internasional) | Opsional | `6281298765432` |
+| Variabel | Keterangan | Status |
+|---|---|---|
+| `VITE_APP_NAME` | Nama aplikasi yang ditampilkan pada antarmuka | Opsional |
+| `VITE_APP_URL` | Alamat URL origin frontend | Opsional |
+| `VITE_API_URL` | URL absolut endpoint backend API (kosongkan jika memakai dev proxy) | Opsional |
+| `VITE_PROXY_TARGET` | Target penerusan permintaan proxy `/api` pada mode development Vite | Opsional |
+| `VITE_HELPDESK_PHONE` | Nomor kontak resmi WhatsApp Helpdesk sekolah (format internasional) | Opsional |
 
 ---
 
