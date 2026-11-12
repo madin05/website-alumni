@@ -76,7 +76,8 @@ async function mapCreateInput(input: MasterAlumniCreateInput) {
   const cleanNik = cleanStringOrNull(input.nik);
   const cleanEmail = cleanStringOrNull(input.email);
   const cleanWa = cleanStringOrNull(input.noWhatsapp || input.no_wa || input.no_whatsapp);
-  const tahunLulus = input.tahunLulus || input.tahun_lulus || 2024;
+  const tahunLulus = Number(input.tahunLulus || input.tahun_lulus || 2024);
+  const tracerStatus: TracerStatus = tahunLulus <= 2026 ? 'SUDAH' : 'BELUM';
 
   const data: Record<string, any> = {
     nisn: input.nisn.trim(),
@@ -89,7 +90,7 @@ async function mapCreateInput(input: MasterAlumniCreateInput) {
     noWhatsApp: cleanWa,
     passwordHash,
     role: 'ALUMNI' as const,
-    tracerStatus: 'BELUM' as TracerStatus,
+    tracerStatus,
   };
 
   mapDapodikFields(input as unknown as Record<string, any>, data);

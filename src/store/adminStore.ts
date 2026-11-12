@@ -251,13 +251,15 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
             ? rec.email
             : "";
 
+        const tahunLulus = Number(rec.tahunLulus) || 2024;
         newEntries.push({
           ...rec,
+          tahunLulus,
           nik: cleanNik,
           noWhatsapp: cleanWa,
           email: cleanEmail,
           id: `mst-imp-${Date.now()}-${idx}`,
-          statusTracer: "BELUM",
+          statusTracer: tahunLulus <= 2026 ? "SUDAH" : "BELUM",
           createdAt: new Date().toISOString(),
         });
       }
@@ -331,13 +333,15 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
         ? record.email
         : "";
 
+    const tahunLulus = Number(record.tahunLulus) || 2024;
     const newRecord: MasterAlumniRecord = {
       ...record,
+      tahunLulus,
       nik: cleanNik,
       noWhatsapp: cleanWa,
       email: cleanEmail,
       id: `mst-single-${Date.now()}`,
-      statusTracer: "BELUM",
+      statusTracer: tahunLulus <= 2026 ? "SUDAH" : "BELUM",
       createdAt: new Date().toISOString(),
     };
 
@@ -510,20 +514,27 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
         res = await adminMasterAlumniApi.listPublic({ limit: 1000 });
       }
       if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
-        const mapped: MasterAlumniRecord[] = res.data.map((item: any) => ({
-          id: item.id || `mst-${item.nisn}`,
-          nisn: item.nisn,
-          nik: item.nik || "",
-          nama: item.namaLengkap || item.nama,
-          jurusan: item.jurusan,
-          tahunLulus: Number(item.tahunLulus),
-          noWhatsapp: item.noWhatsApp || item.noWhatsapp || "",
-          email: item.email || "",
-          statusTracer: item.tracerStatus === "SUDAH" ? "SUDAH" : "BELUM",
-          submissionId: item.submissionId || undefined,
-          submittedAt: item.submittedAt || undefined,
-          createdAt: item.createdAt || new Date().toISOString(),
-        }));
+        const mapped: MasterAlumniRecord[] = res.data.map((item: any) => {
+          const tahunLulus = Number(item.tahunLulus) || 2024;
+          const statusTracer =
+            item.tracerStatus === "SUDAH" || tahunLulus <= 2026
+              ? "SUDAH"
+              : "BELUM";
+          return {
+            id: item.id || `mst-${item.nisn}`,
+            nisn: item.nisn,
+            nik: item.nik || "",
+            nama: item.namaLengkap || item.nama,
+            jurusan: item.jurusan,
+            tahunLulus,
+            noWhatsapp: item.noWhatsApp || item.noWhatsapp || "",
+            email: item.email || "",
+            statusTracer,
+            submissionId: item.submissionId || undefined,
+            submittedAt: item.submittedAt || undefined,
+            createdAt: item.createdAt || new Date().toISOString(),
+          };
+        });
         set({ masterAlumni: mapped });
         if (typeof window !== "undefined") {
           try {
