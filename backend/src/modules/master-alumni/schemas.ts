@@ -8,7 +8,7 @@ export const masterAlumniCreateSchema = z
     nik: z.string().optional().nullable().or(z.literal('')),
     nama: z.string().min(1, 'Nama wajib diisi').max(150),
     jurusan: z.string().min(1, 'Jurusan wajib diisi'),
-    tahunLulus: z.coerce.number().int().min(1990).max(new Date().getFullYear() + 5),
+    tahunLulus: z.coerce.number().int().min(1990).max(2050),
     noWhatsapp: z.string().optional().nullable().or(z.literal('')),
     email: z.string().optional().nullable().or(z.literal('')),
 

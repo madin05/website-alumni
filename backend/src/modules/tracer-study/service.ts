@@ -24,6 +24,118 @@ function normalizeStatusKegiatan(status: string): StatusKegiatan {
   return map[status] || 'BELUM_KERJA';
 }
 
+async function buildAlumniSyncData(
+  tx: Prisma.TransactionClient,
+  alumniId: string,
+  input: TracerSubmitInput,
+  submissionId: string,
+  submittedAt: Date
+) {
+  const identitas = input.identitas;
+  const data: Record<string, any> = {
+    tracerStatus: 'SUDAH',
+    submissionId,
+    submittedAt,
+  };
+
+  const aktivitasMap: Record<string, string> = {
+    KERJA: 'Bekerja',
+    KULIAH: 'Melanjutkan Pendidikan',
+    WIRAUSAHA: 'Wirausaha',
+    KERJA_KULIAH: 'Bekerja dan Kuliah',
+    WIRAUSAHA_KULIAH: 'Wirausaha dan Kuliah',
+    BELUM_KERJA: 'Mencari Kerja',
+  };
+  if (input.status_kegiatan) {
+    data.statusAktivitas = aktivitasMap[input.status_kegiatan] || input.status_kegiatan;
+  }
+
+  if (identitas) {
+    if (identitas.nik && identitas.nik.trim()) data.nik = identitas.nik.trim();
+    if (identitas.no_whatsapp && identitas.no_whatsapp.trim()) {
+      data.noWhatsApp = identitas.no_whatsapp.trim();
+      data.noHp = identitas.no_whatsapp.trim();
+    }
+    if (identitas.tahun_lulus && typeof identitas.tahun_lulus === 'number') {
+      data.tahunLulus = identitas.tahun_lulus;
+    }
+    if (identitas.tahun_masuk && typeof identitas.tahun_masuk === 'number') {
+      data.tahunMasuk = identitas.tahun_masuk;
+    }
+    if (identitas.jenis_kelamin) {
+      const jk = identitas.jenis_kelamin.toUpperCase();
+      if (jk.startsWith('L') || jk === 'PRIA') data.jenisKelamin = 'L';
+      else if (jk.startsWith('P') || jk === 'WANITA') data.jenisKelamin = 'P';
+    }
+    if (identitas.status_menikah) data.statusMenikah = identitas.status_menikah;
+    if (identitas.provinsi_domisili) data.provinsiDomisili = identitas.provinsi_domisili;
+    if (identitas.kota_domisili) data.kotaDomisili = identitas.kota_domisili;
+    if (identitas.usia) {
+      const parsed = typeof identitas.usia === 'number' ? identitas.usia : parseInt(identitas.usia, 10);
+      if (!isNaN(parsed)) data.usia = parsed;
+    }
+    if (identitas.email && identitas.email.trim()) {
+      const emailTrimmed = identitas.email.trim().toLowerCase();
+      const existingEmailOwner = await tx.alumni.findUnique({
+        where: { email: emailTrimmed },
+        select: { id: true },
+      });
+      if (!existingEmailOwner || existingEmailOwner.id === alumniId) {
+        data.email = emailTrimmed;
+      }
+    }
+  }
+
+  if (input.masa_tunggu !== undefined && input.masa_tunggu !== null) {
+    data.masaTungguKerja = input.masa_tunggu;
+  }
+
+  if (input.detail_kerja) {
+    if (input.detail_kerja.nama_perusahaan) {
+      data.pekerjaan = input.detail_kerja.nama_perusahaan;
+      data.namaTempatKerja = input.detail_kerja.nama_perusahaan;
+    }
+    if (input.detail_kerja.jabatan) data.jabatanKerja = input.detail_kerja.jabatan;
+    if (input.detail_kerja.provinsi_kerja) data.provinsiKerja = input.detail_kerja.provinsi_kerja;
+    if (input.detail_kerja.kota_kerja || input.detail_kerja.kota_kabupaten) {
+      data.kotaKerja = input.detail_kerja.kota_kerja || input.detail_kerja.kota_kabupaten;
+      data.kota = data.kotaKerja;
+    }
+    if (input.detail_kerja.negara_kerja) data.negaraKerja = input.detail_kerja.negara_kerja;
+    if (input.detail_kerja.kesesuaian_jurusan) data.keselarasanKerja = input.detail_kerja.kesesuaian_jurusan;
+    if (input.detail_kerja.pendapatan_ump) data.pendapatanBekerjaUmp = input.detail_kerja.pendapatan_ump;
+    if (input.detail_kerja.pendapatan_umk) data.pendapatanBekerjaUmk = input.detail_kerja.pendapatan_umk;
+    if (input.detail_kerja.jenis_sertifikat) data.sertifikatKompetensi = input.detail_kerja.jenis_sertifikat;
+  }
+
+  if (input.detail_kuliah) {
+    if (input.detail_kuliah.nama_kampus) {
+      data.kampus = input.detail_kuliah.nama_kampus;
+      data.namaPerguruanTinggi = input.detail_kuliah.nama_kampus;
+    }
+    if (input.detail_kuliah.program_studi) data.namaProdi = input.detail_kuliah.program_studi;
+    if (input.detail_kuliah.jenjang) data.jenjangPendidikan = input.detail_kuliah.jenjang;
+    if (input.detail_kuliah.keselarasan_studi) data.keselarasanStudi = input.detail_kuliah.keselarasan_studi;
+  }
+
+  if (input.detail_usaha) {
+    if (input.detail_usaha.nama_usaha) {
+      data.pekerjaan = input.detail_usaha.nama_usaha;
+      data.namaProdukUsaha = input.detail_usaha.nama_usaha;
+    }
+    if (input.detail_usaha.bidang_usaha) data.bidangUsaha = input.detail_usaha.bidang_usaha;
+    if (input.detail_usaha.provinsi_usaha) data.provinsiUsaha = input.detail_usaha.provinsi_usaha;
+    if (input.detail_usaha.kota_usaha) {
+      data.kotaUsaha = input.detail_usaha.kota_usaha;
+      data.kota = data.kotaUsaha;
+    }
+    if (input.detail_usaha.pendapatan_ump) data.pendapatanWirausahaUmp = input.detail_usaha.pendapatan_ump;
+    if (input.detail_usaha.pendapatan_umk) data.pendapatanWirausahaUmk = input.detail_usaha.pendapatan_umk;
+  }
+
+  return data;
+}
+
 export async function submitTracer(userIdOrNull: string | undefined, input: TracerSubmitInput) {
   let alumniId = userIdOrNull;
 
@@ -99,16 +211,16 @@ export async function submitTracer(userIdOrNull: string | undefined, input: Trac
         },
       });
 
+      const alumniData = await buildAlumniSyncData(
+        tx,
+        alumniId,
+        input,
+        sub.submissionId,
+        sub.submittedAt,
+      );
       await tx.alumni.update({
         where: { id: alumniId },
-        data: {
-          tracerStatus: 'SUDAH',
-          submissionId: sub.submissionId,
-          submittedAt: sub.submittedAt,
-          ...(input.detail_kerja?.nama_perusahaan ? { pekerjaan: input.detail_kerja.nama_perusahaan } : {}),
-          ...(input.detail_kuliah?.nama_kampus ? { kampus: input.detail_kuliah.nama_kampus } : {}),
-          ...(input.detail_usaha?.nama_usaha ? { pekerjaan: input.detail_usaha.nama_usaha } : {}),
-        },
+        data: alumniData,
       });
 
       return sub;
@@ -129,16 +241,16 @@ export async function submitTracer(userIdOrNull: string | undefined, input: Trac
       },
     });
 
+    const alumniData = await buildAlumniSyncData(
+      tx,
+      alumniId,
+      input,
+      submissionId,
+      new Date(),
+    );
     await tx.alumni.update({
       where: { id: alumniId },
-      data: {
-        tracerStatus: 'SUDAH',
-        submissionId,
-        submittedAt: new Date(),
-        ...(input.detail_kerja?.nama_perusahaan ? { pekerjaan: input.detail_kerja.nama_perusahaan } : {}),
-        ...(input.detail_kuliah?.nama_kampus ? { kampus: input.detail_kuliah.nama_kampus } : {}),
-        ...(input.detail_usaha?.nama_usaha ? { pekerjaan: input.detail_usaha.nama_usaha } : {}),
-      },
+      data: alumniData,
     });
 
     return sub;

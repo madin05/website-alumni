@@ -22,6 +22,7 @@ import {
   INITIAL_MASTER_ALUMNI,
   INITIAL_RESPONDENTS,
 } from "@/data/initialAlumniData";
+import { formatNameTitleCase } from "@/lib/utils";
 
 export interface MasterAlumniRecord {
   id: string;
@@ -199,7 +200,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
 
     try {
       const { adminMasterAlumniApi } = await import("@/services/adminService");
-      const payload = records.map((r) => ({
+      const payload = records.map((r: any) => ({
         nisn: (r.nisn || "").trim(),
         nik: r.nik && r.nik !== "-" ? r.nik.trim() : "",
         nama: (r.nama || "").trim(),
@@ -207,6 +208,16 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
         tahunLulus: Number(r.tahunLulus) || 2024,
         noWhatsapp: r.noWhatsapp && r.noWhatsapp !== "-" ? r.noWhatsapp.trim() : "",
         email: r.email && r.email !== "-" ? r.email.trim() : "",
+        jenisKelamin: r.jenisKelamin,
+        namaSekolah: r.namaSekolah,
+        npsn: r.npsn,
+        statusSekolah: r.statusSekolah,
+        lamaProgram: r.lamaProgram,
+        provinsiSmk: r.provinsiSmk,
+        kabKotaSmk: r.kabKotaSmk,
+        kompKeahlian: r.kompKeahlian,
+        progKeahlian: r.progKeahlian,
+        bidKeahlian: r.bidKeahlian,
       }));
 
       const res = await adminMasterAlumniApi.importCsv(payload);
@@ -266,7 +277,13 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
     });
 
     if (newEntries.length > 0) {
-      set({ masterAlumni: [...newEntries, ...currentList] });
+      const merged = [...newEntries, ...currentList];
+      set({ masterAlumni: merged });
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(SYNCED_MASTER_KEY, JSON.stringify(merged));
+        } catch {}
+      }
     }
 
     return { importedCount, duplicateCount, invalidCount };
@@ -524,7 +541,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
             id: item.id || `mst-${item.nisn}`,
             nisn: item.nisn,
             nik: item.nik || "",
-            nama: item.namaLengkap || item.nama,
+            nama: formatNameTitleCase(item.namaLengkap || item.nama),
             jurusan: item.jurusan,
             tahunLulus,
             noWhatsapp: item.noWhatsApp || item.noWhatsapp || "",
@@ -593,7 +610,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
             submissionId: item.submissionId,
             nisn: alumni.nisn || "",
             nik: alumni.nik || "",
-            nama: alumni.namaLengkap || alumni.nama || "",
+            nama: formatNameTitleCase(alumni.namaLengkap || alumni.nama || ""),
             jurusan: alumni.jurusan || "Teknik Komputer dan Jaringan",
             tahunLulus: Number(alumni.tahunLulus) || 2024,
             noWhatsapp: alumni.noWhatsApp || alumni.noWhatsapp || "",

@@ -62,6 +62,32 @@ function mapDapodikFields(input: Record<string, any>, data: Record<string, any>)
   }
 }
 
+function formatNameTitleCase(raw?: string): string {
+  if (!raw) return '';
+  return raw
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((word) => {
+      if (!word) return '';
+      if (/^[a-z]\.$/i.test(word)) return word.toUpperCase();
+      if (word.includes("'")) {
+        return word
+          .split("'")
+          .map((p) => (p ? p.charAt(0).toUpperCase() + p.slice(1) : ''))
+          .join("'");
+      }
+      if (word.includes('-')) {
+        return word
+          .split('-')
+          .map((p) => (p ? p.charAt(0).toUpperCase() + p.slice(1) : ''))
+          .join('-');
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
+
 function cleanStringOrNull(val: unknown): string | null {
   if (typeof val !== 'string') return null;
   const trimmed = val.trim();
@@ -82,7 +108,7 @@ async function mapCreateInput(input: MasterAlumniCreateInput) {
   const data: Record<string, any> = {
     nisn: input.nisn.trim(),
     nik: cleanNik,
-    namaLengkap: input.nama.trim(),
+    namaLengkap: formatNameTitleCase(input.nama),
     jurusan: input.jurusan.trim(),
     tahunMasuk: tahunLulus - 3,
     tahunLulus,
@@ -95,6 +121,48 @@ async function mapCreateInput(input: MasterAlumniCreateInput) {
 
   mapDapodikFields(input as unknown as Record<string, any>, data);
 
+  const DEFAULT_PROGRAM_KEAHLIAN: Record<string, { progKeahlian: string; bidKeahlian: string }> = {
+    'Teknik Komputer dan Jaringan': {
+      progKeahlian: 'Teknik Komputer dan Informatika',
+      bidKeahlian: 'Teknologi Informasi dan Komunikasi',
+    },
+    'Teknik Pemesinan': {
+      progKeahlian: 'Teknik Mesin',
+      bidKeahlian: 'Teknologi dan Rekayasa',
+    },
+    'Teknik Instalasi Tenaga Listrik': {
+      progKeahlian: 'Teknik Ketenagalistrikan',
+      bidKeahlian: 'Teknologi dan Rekayasa',
+    },
+    'Teknik Elektronika Industri': {
+      progKeahlian: 'Teknik Elektronika',
+      bidKeahlian: 'Teknologi dan Rekayasa',
+    },
+    'Teknik Kendaraan Ringan Otomotif': {
+      progKeahlian: 'Teknik Otomotif',
+      bidKeahlian: 'Teknologi dan Rekayasa',
+    },
+    'Teknik dan Bisnis Sepeda Motor': {
+      progKeahlian: 'Teknik Otomotif',
+      bidKeahlian: 'Teknologi dan Rekayasa',
+    },
+  };
+
+  if (!data.namaSekolah) data.namaSekolah = 'SMKS SASMITA JAYA 2';
+  if (!data.npsn) data.npsn = '20603287';
+  if (!data.statusSekolah) data.statusSekolah = 'Swasta';
+  if (!data.lamaProgram) data.lamaProgram = 3;
+  if (!data.provinsiSmk) data.provinsiSmk = 'Prov. Banten';
+  if (!data.kabKotaSmk) data.kabKotaSmk = 'Kota Tangerang Selatan';
+  if (!data.kompKeahlian) data.kompKeahlian = input.jurusan;
+  if (!data.progKeahlian || !data.bidKeahlian) {
+    const keahlian = DEFAULT_PROGRAM_KEAHLIAN[input.jurusan];
+    if (keahlian) {
+      if (!data.progKeahlian) data.progKeahlian = keahlian.progKeahlian;
+      if (!data.bidKeahlian) data.bidKeahlian = keahlian.bidKeahlian;
+    }
+  }
+
   return data;
 }
 
@@ -102,7 +170,7 @@ function mapUpdateInput(input: MasterAlumniUpdateInput) {
   const data: Record<string, unknown> = {};
   if (input.nisn) data.nisn = input.nisn.trim();
   if (input.nik !== undefined) data.nik = cleanStringOrNull(input.nik);
-  if (input.nama) data.namaLengkap = input.nama.trim();
+  if (input.nama) data.namaLengkap = formatNameTitleCase(input.nama);
   if (input.email !== undefined) data.email = cleanStringOrNull(input.email);
   if (input.jurusan) data.jurusan = input.jurusan.trim();
   if (input.tahunLulus) data.tahunLulus = input.tahunLulus;

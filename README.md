@@ -4,117 +4,92 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Platform resmi penelusuran lulusan (*Tracer Study*) dan pengelolaan data alumni **SMK Sasmita Jaya 2 Pamulang**. Dikembangkan untuk memetakan keterserapan lulusan di Dunia Usaha/Dunia Industri (DUDI), perguruan tinggi, dan wirausaha, sekaligus memenuhi standar pelaporan **Direktorat Jenderal Pendidikan Vokasi (Kemendikbudristek)** dan amanat **Perpres No. 68 Tahun 2022**.
-
----
-
-## Daftar Isi
-- [Fitur Utama](#fitur-utama)
-- [Tech Stack](#tech-stack)
-- [Kredensial Awal & Akun Demo](#kredensial-awal--akun-demo)
-- [Prasyarat Sistem](#prasyarat-sistem)
-- [Langkah Instalasi & Menjalankan Proyek](#langkah-instalasi--menjalankan-proyek)
-- [Struktur Direktori Proyek](#struktur-direktori-proyek)
-- [Alur Kolaborasi Git](#-alur-kolaborasi-git)
-- [Kebijakan Data & Kerahasiaan](#-kebijakan-data--kerahasiaan)
+Aplikasi web untuk mendukung pengelolaan data penelusuran tamatan (*Tracer Study*) dan layanan Bursa Kerja Khusus (BKK) bagi lulusan SMK Sasmita Jaya 2 Pamulang. Sistem ini dirancang untuk memetakan transisi lulusan ke dunia kerja, perguruan tinggi, maupun wirausaha mandiri, selaras dengan instrumen penelusuran tamatan pendidikan vokasi.
 
 ---
 
-## Fitur Utama
+## Fitur
 
-### 1. Landing Page Interaktif & Responsif
-- **Hero Section**: Desain modern dengan visual siswa, statistik keterserapan kerja, dan tombol aksi langsung ke kuesioner.
-- **Navigasi Responsif**: Sidebar drawer khusus tampilan mobile dan tablet/iPad (< 1024px) dengan logo dan tombol login resmi.
-- **6 Layanan Utama Alumni**: Tracer study, statistik karir, forum alumni, bursa kerja khusus (BKK), legalisir ijazah, dan helpdesk.
-- **Dasar Hukum & Akreditasi**: Informasi regulasi resmi (Perpres No. 68/2022 & Permendikbud).
-- **Portal Berita & Agenda Terkini**: Menampilkan update lowongan kerja BKK, workshop persiapan karir, dan agenda reuni.
-- **FAQ Accordion Smooth**: Tanya jawab umum seputar kuesioner tracer study dengan transisi CSS Grid yang mulus.
-- **Footer Komprehensif**: Kontak resmi, alamat Google Maps, dan tautan sosial media SMK Sasmita Jaya 2.
+### 1. Portal Publik & Informasi
+- **Landing Page Terpadu:** Informasi profil tracer study, statistik capaian lulusan, saluran informasi layanan sekolah, dan tautan akses akun.
+- **Halaman Detail Tentang (`/tentang`):** Penjelasan tujuan tracer study, 5 tahapan pengisian instrumen, dan saluran bantuan Helpdesk BKK.
+- **Portal Berita & Agenda (`/berita`):** Publikasi artikel kegiatan sekolah, agenda rekrutmen kerja, dan informasi pembekalan karir alumni.
+- **Laporan Statistik Publik (`/laporan`):** Visualisasi ringkasan keterserapan lulusan berdasarkan program keahlian dan status aktivitas.
 
-### 2. Halaman Detail Tentang (`/tentang`)
-- Penjelasan mendalam mengenai urgensi dan tujuan tracer study.
-- Rincian **5 Langkah Alur Pengisian Kuesioner**.
-- Jaminan Kerahasiaan & Keamanan Data berstandar enkripsi.
-- Quick highlights statistik alumni dan akses cepat chat WhatsApp Helpdesk BKK.
+### 2. Portal Alumni / Responden
+- **Autentikasi Akun Alumni:** Akses masuk mandiri menggunakan Nomor Induk Siswa Nasional (NISN) terdaftar dan kata sandi akun.
+- **Kuesioner Tracer Study 5 Tahap (`/tracer-study`):**
+  - Tahap 1: Verifikasi data pribadi pokok, kontak WhatsApp aktif, email, dan wilayah domisili.
+  - Tahap 2: Pelaporan status kegiatan utama (Bekerja, Kuliah, Wirausaha, Bekerja sambil Kuliah, atau Belum Bekerja) serta waktu tunggu kerja.
+  - Tahap 3: Pengisian rincian pekerjaan (nama instansi/perusahaan, jabatan, lokasi, rentang pendapatan) dan tingkat keselarasan jurusan.
+  - Tahap 4: Penilaian relevansi kompetensi kejuruan dan aspek pembelajaran yang paling bermanfaat pasca kelulusan.
+  - Tahap 5: Penyampaian saran peningkatan kurikulum/BKK/industri, konfirmasi kebenaran data, dan pengiriman kuesioner.
+- **Penerbitan Bukti Tanda Terima (PDF):** Unduh lembar tanda terima kuesioner resmi berformat PDF yang memuat nomor registrasi unik, data alumni, dan pengesahan sekolah.
+- **Bursa Kerja Khusus (BKK Hub):** Penelusuran lowongan pekerjaan dan kesempatan magang mitra DUDI, lengkap dengan filter jurusan, rincian kualifikasi, dan tautan pendaftaran.
+- **Direktori Rekan Alumni:** Pencarian sesama lulusan berdasarkan nama, program keahlian, status karir, dan kota tempat tinggal dengan proteksi privasi kontak.
+- **Pusat Bantuan (Helpdesk):** Formulir pengiriman tiket pengaduan langsung ke staf BKK dan daftar pertanyaan umum (FAQ).
 
-### 3. Formulir 5 Langkah Kuesioner Tracer Study (`/tracer-study`)
-- **Langkah 1**: Validasi Identitas & Kontak Alumni (Nama, NISN, NIK, Jurusan, Tahun Lulus, WhatsApp).
-- **Langkah 2**: Pemilihan Status Kegiatan Utama (*Bekerja*, *Melanjutkan Kuliah*, *Wirausaha*, *Mencari Kerja*).
-- **Langkah 3**: Rincian Informasi Profesi / Kampus / Bidang Usaha & Tingkat Kesesuaian Jurusan.
-- **Langkah 4**: Evaluasi Relevansi Kurikulum & Masukan untuk Sekolah.
-- **Langkah 5**: Konfirmasi Ringkasan & Cetak/Unduh **Tanda Bukti Resmi Pengisian (PDF & QR Code)** sebagai syarat pengambilan ijazah.
-
-### 4. Dashboard Alumni & Manajemen BKK (`/dashboard`)
-- **Dashboard Alumni**: Memantau status pengisian, riwayat karir, dan unduh ulang kartu bukti pengisian.
-- **Dashboard Admin BKK**: Rekapitulasi statistik serapan lulusan, analisis gaji/pendapatan, filter jurusan/tahun, serta ekspor data laporan ke Excel/PDF.
-
----
-
-## Tech Stack
-
-| Kategori | Teknologi |
-|---|---|
-| **Frontend Framework** | [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) |
-| **Build Tool & Bundler** | [Vite 5](https://vitejs.dev/) |
-| **Styling** | [Tailwind CSS 3](https://tailwindcss.com/) + Vanilla CSS Custom Utilities |
-| **State Management** | [Zustand](https://github.com/pmndrs/zustand) (dengan `persist` LocalStorage) |
-| **Routing** | [React Router DOM v6](https://reactrouter.com/) |
-| **Iconography** | [Lucide React](https://lucide.dev/) + Custom SVG School Assets |
-| **Export & Reporting** | [jsPDF](https://github.com/parallax/jsPDF) & [html2canvas](https://html2canvas.hertzen.com/) |
-| **Animasi & Interaksi** | [Canvas Confetti](https://www.npmjs.com/package/canvas-confetti) |
+### 3. Dashboard Administrator & Pengelola BKK
+- **Ringkasan Statistik Eksekutif:** Metrik total populasi lulusan, persentase pengisian survei, diagram sebaran status aktivitas, dan progres per program keahlian.
+- **Master Data Alumni:** Manajemen basis data siswa lulusan, pencarian/filter per angkatan, ekspor data ke Excel, serta impor data massal berkas Excel/CSV.
+- **Data Responden Kuesioner:** Verifikasi dan peninjauan seluruh rincian instrumen jawaban kuesioner yang dikirimkan oleh alumni.
+- **Manajemen Lowongan Kerja:** Tambah, perbarui, dan arsipkan lowongan kerja/magang mitra industri sekolah.
+- **Manajemen Berita & Agenda:** Editor artikel berita, agenda kegiatan, dan pengumuman BKK.
+- **Kotak Masuk Pesan:** Pemantauan dan penanganan tiket keluhan kendala teknis yang dikirimkan melalui Helpdesk.
+- **Laporan & Ekspor:** Pembuatan lembar rekapitulasi resmi dan ekspor data agregat untuk kebutuhan evaluasi internal dan akreditasi sekolah.
 
 ---
 
-## Kredensial Awal & Akun Demo
+## Arsitektur & Tech Stack
 
-Untuk mempermudah pengujian di lingkungan development atau staging, Anda dapat menggunakan akun demo berikut pada modal login atau halaman [Login (`/login`)](http://localhost:5173/login):
+Aplikasi ini dibangun menggunakan arsitektur Single Page Application (SPA) modern pada sisi frontend, dengan modul backend API berbasis REST:
 
-### 1. Akun Alumni
-- **Metode Login**: NISN atau NIK
-- **Contoh NISN**: `0051234567` atau `0061234567`
-- **Contoh NIK**: `3274012304050001`
-- *Tersedia tombol "1-Click Demo: Alumni (Ahmad Dani)" untuk pengisian instan.*
+### Frontend
+- **Framework & Bahasa:** React 18.3 + TypeScript 5.6
+- **Build Tool:** Vite 5.4
+- **Styling:** Tailwind CSS 3.4
+- **State Management:** Zustand 4.5 (terintegrasi dengan browser storage persistence)
+- **Routing:** React Router DOM v6.26
+- **Form Management & Validasi:** React Hook Form 7.53 + Zod 3.23
+- **Manipulasi Data & Dokumen:** SheetJS (xlsx 0.18) untuk pengolahan spreadsheet, jsPDF 4.2 untuk penerbitan dokumen PDF resmi
+- **Ikonografi:** Lucide React 0.446
 
-### 2. Akun Admin BKK `[KHUSUS DEV/DEMO MOCK]`
-- **Identifier**: `admin@smksasmitajaya2.sch.id` (atau ketik `admin`)
-- **Role**: `admin_bkk`
-- *Tersedia tombol "1-Click Demo: Admin BKK" untuk pengujian akses monitoring dan manajemen BKK.*
+### Backend (Direktori `backend/`)
+- **Runtime & Web Framework:** Node.js + Fastify 4.29
+- **ORM & Basis Data:** Prisma ORM 5.22 + MySQL
+- **Autentikasi & Keamanan:** JSON Web Token (JWT), bcryptjs, Fastify Rate Limit, Fastify Helmet, dan CORS handler
 
 ---
 
 ## Prasyarat Sistem
 
-Sebelum menjalankan proyek, pastikan perangkat Anda telah terpasang:
-- **Node.js**: Versi `18.x` atau lebih baru ([Unduh Node.js](https://nodejs.org/))
-- **npm** (v9+) atau **yarn** / **pnpm**
-- **Git** ([Unduh Git](https://git-scm.com/))
+Sebelum memasang dan menjalankan proyek secara lokal, pastikan perangkat telah memenuhi prasyarat berikut:
+
+- **Node.js:** Versi 18.x atau 20.x LTS (disarankan versi LTS terbaru)
+- **Package Manager:** npm (versi 9 atau lebih baru)
+- **Git:** Versi 2.x atau lebih baru
+- **Basis Data (Opsional, untuk backend API):** MySQL 8.x atau MariaDB 10.x
 
 ---
 
-## Langkah Instalasi & Menjalankan Proyek
+## Instalasi dan Menjalankan Proyek
 
-Ikuti langkah-langkah berikut secara berurutan:
+Ikuti instruksi berikut untuk menyiapkan repositori di lingkungan lokal:
 
-### 1. Clone Repository
+### 1. Clone Repositori
 ```bash
 git clone https://github.com/madin05/website-alumni.git
 cd website-alumni
 ```
 
-### 2. Switch ke Branch `staging`
-```bash
-git checkout staging
-```
-
-### 3. Install Dependensi
+### 2. Pemasangan Dependensi Frontend
 ```bash
 npm install
 ```
 
-### 4. Konfigurasi Environment Variable
-Salin berkas template environment:
+### 3. Konfigurasi Variabel Lingkungan Frontend
+Salin template berkas konfigurasi:
 ```bash
 # Windows (PowerShell)
 Copy-Item .env.example .env
@@ -123,79 +98,72 @@ Copy-Item .env.example .env
 cp .env.example .env
 ```
 
-### 5. Jalankan Server Development
+### 4. Menjalankan Server Development Frontend
 ```bash
 npm run dev
 ```
-Buka browser dan akses: `http://localhost:5173`
+Setelah server aktif, buka peramban dan akses alamat yang tertera pada terminal (secara bawaan: `http://localhost:5173`).
 
-### 6. Build untuk Lingkungan Produksi
-Untuk memvalidasi kesiapan kode dan membuat bundle statis:
+### 5. Menjalankan Backend API (Opsional)
+Jika Anda ingin menjalankan layanan backend secara lokal:
 ```bash
-npm run build
-```
-Hasil build akan berada di direktori `dist/`.
-
-### 7. Uji Coba Hasil Build Produksi (Preview)
-```bash
-npm run preview
-```
-
----
-
-## Struktur Direktori Proyek
-
-```text
-web_alumni/
-├── .vscode/               # Pengaturan workspace editor (Tailwind lint fix)
-├── assets/                # Asset master sumber (gambar & SVG icon asli)
-├── public/                # Asset publik statis (logo, ilustrasi, icons)
-├── src/
-│   ├── components/        # Komponen antarmuka React
-│   │   ├── about/         # Halaman detail Tentang Tracer Study (/tentang)
-│   │   ├── auth/          # Halaman Login & Modal (/login)
-│   │   ├── dashboard/     # Layout & komponen Dashboard Alumni & Admin
-│   │   ├── landing/       # Komponen Landing Page (Hero, Navbar, Features, Footer, dll.)
-│   │   ├── news/          # Portal Berita & Detail Artikel (/berita/:id)
-│   │   ├── tracer/        # Form Wizard 5 Langkah Kuesioner (/tracer-study)
-│   │   └── ui/            # Reusable UI Atoms (Button, Card, Modal, Select, dll.)
-│   ├── data/              # Mock data berita, kuesioner, dan FAQ
-│   ├── store/             # Global store state management (Zustand authStore)
-│   ├── types/             # TypeScript type definitions (tracer, user, news)
-│   ├── App.tsx            # Root routing & layout container
-│   ├── index.css          # Core CSS tokens, typography, dan Tailwind directives
-│   └── main.tsx           # Application entry point
-├── .env.example           # Template environment variable
-├── .gitignore             # Aturan berkas yang diabaikan Git
-├── index.html             # HTML template utama
-├── package.json           # Manifest proyek & dependensi
-├── tailwind.config.js     # Konfigurasi Tailwind theme, colors & breakpoints
-├── tsconfig.json          # Konfigurasi TypeScript
-└── vite.config.ts         # Konfigurasi Vite bundler
+cd backend
+npm install
+cp .env.example .env
+# Sesuaikan DATABASE_URL pada backend/.env dengan konfigurasi MySQL lokal Anda
+npx prisma generate
+npx prisma db push
+npm run dev
 ```
 
 ---
 
-## Alur Kolaborasi Git
+## Konfigurasi Environment
 
-Proyek ini menggunakan model branching sederhana:
-- `main` : Kode produksi yang stabil dan siap dideploy.
-- `staging` : Cabang aktif pengembangan frontend dan integrasi fitur baru.
+Variabel lingkungan frontend dikonfigurasi melalui berkas `.env`:
 
-Jika berkontribusi, pastikan membuat branch fitur baru dari `staging`:
-```bash
-git checkout staging
-git pull origin staging
-git checkout -b feat/nama-fitur
-```
-
----
-
-## Kebijakan Data & Kerahasiaan
-
-1. **Data Pengujian (Mock Data)**: Seluruh data alumni, NIK, dan nomor kontak yang tercantum pada sistem saat ini merupakan data sintetis murni untuk keperluan demonstrasi dan pengujian antarmuka.
-2. **Kerahasiaan Kredensial**: Variabel lingkungan konfigurasi rahasia dikelola secara terpisah melalui `.env` lokal dan dilarang untuk dipublikasikan ke remote repository.
+| Variabel | Keterangan | Status |
+|---|---|---|
+| `VITE_APP_NAME` | Nama aplikasi yang ditampilkan pada antarmuka | Opsional |
+| `VITE_APP_URL` | Alamat URL origin frontend | Opsional |
+| `VITE_API_URL` | URL absolut endpoint backend API (kosongkan jika memakai dev proxy) | Opsional |
+| `VITE_PROXY_TARGET` | Target penerusan permintaan proxy `/api` pada mode development Vite | Opsional |
+| `VITE_HELPDESK_PHONE` | Nomor kontak resmi WhatsApp Helpdesk sekolah (format internasional) | Opsional |
 
 ---
 
-© 2026 **SMK Sasmita Jaya 2 Pamulang** — Tim Pengembang Sistem Informasi Alumni & Tracer Study.
+## Perintah yang Tersedia
+
+Daftar perintah npm yang tersedia pada direktori utama:
+
+| Perintah | Fungsi |
+|---|---|
+| `npm run dev` | Menjalankan server development Vite dengan Hot Module Replacement (HMR). |
+| `npm run build` | Menjalankan pemeriksaan tipe TypeScript (`tsc`) dan melakukan kompilasi berkas produksi ke folder `dist/`. |
+| `npm run preview` | Menjalankan server lokal untuk meninjau hasil build produksi dari folder `dist/`. |
+
+---
+
+## Dokumentasi Pendukung
+
+Petunjuk operasional dan spesifikasi teknis telah disusun ke dalam folder `docs/`:
+- **Workflow & SOP Panel Administrator BKK:** [docs/ADMIN_WORKFLOW.md](docs/ADMIN_WORKFLOW.md)
+- **Workflow & Logika Kuesioner Tracer Study:** [docs/TRACER_STUDY_WORKFLOW.md](docs/TRACER_STUDY_WORKFLOW.md)
+- **Integrasi REST API Fastify & Sinkronisasi DB:** [docs/API_DATABASE_INTEGRATION.md](docs/API_DATABASE_INTEGRATION.md)
+- **Spesifikasi Arsitektur Teknis Panel Admin:** [docs/ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md](docs/ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md)
+- **Skema Basis Data Relasional & Pemetaan State:** [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
+- **Arsitektur Model Bursa Kerja Khusus (Loker BKK):** [docs/FLOW_FITUR_LOWONGAN_KERJA.md](docs/FLOW_FITUR_LOWONGAN_KERJA.md)
+- **Panduan Fitur & Arsitektur Landing Page:** [docs/PANDUAN_FITUR_LANDING_PAGE.md](docs/PANDUAN_FITUR_LANDING_PAGE.md)
+- **Analisis Variabel Riil Satpen Kemendikbudristek:** [docs/analisis_variabel_tracer_excel.md](docs/analisis_variabel_tracer_excel.md)
+
+---
+
+## Kebijakan Data dan Kerahasiaan
+
+1. **Perlindungan Data Pribadi:** Seluruh identitas alumni (seperti NISN, NIK, nomor telepon, dan email) dikelola dengan prinsip kehati-hatian. Repositori publik dilarang memuat data pribadi asli milik siswa, alumni, maupun tenaga pengajar.
+2. **Kerahasiaan Kredensial:** Seluruh secret konfigurasi, access token, dan password basis data harus dikelola secara terisolasi pada berkas `.env` lokal masing-masing lingkungan kerja dan tidak boleh dimasukkan ke dalam riwayat Git.
+
+---
+
+Hak Cipta (c) 2026 SMK Sasmita Jaya 2 Pamulang. Hak cipta dilindungi undang-undang.
+
