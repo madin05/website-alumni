@@ -1,8 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
-import {
-  useAdminStore,
-  RespondentRecord,
-} from "@/store/adminStore";
+import React, { useState, useMemo, useEffect, useRef } from "react";
+import { useAdminStore, RespondentRecord } from "@/store/adminStore";
 import { AdminRespondentDetailDrawer } from "./AdminRespondentDetailDrawer";
 import {
   Search,
@@ -15,14 +12,22 @@ import {
   ArrowUp,
   ArrowDown,
   RefreshCw,
+  SlidersHorizontal,
+  Check,
 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
-import { CustomSelect } from "@/components/ui/CustomSelect";
 import { Pagination } from "@/components/ui/Pagination";
 import { Toast } from "@/components/ui/Toast";
 
-const SolidFileCheckIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5 text-[#0d2346]" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+const SolidFileCheckIcon: React.FC<{ className?: string }> = ({
+  className = "w-5 h-5 text-[#0d2346]",
+}) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-3.3 14.7-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4-6 6zM13 9V3.5L18.5 9H13z" />
   </svg>
 );
@@ -92,7 +97,9 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
     try {
       const ok = await fetchRespondentsFromBackend();
       if (ok) {
-        showToast("Data responden kuesioner berhasil disinkronkan dari database pusat.");
+        showToast(
+          "Data responden kuesioner berhasil disinkronkan dari database pusat.",
+        );
       } else {
         showToast("Sinkronisasi selesai (data telah mutakhir).");
       }
@@ -106,6 +113,25 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
   const [search, setSearch] = useState("");
   const [jurusanFilter, setJurusanFilter] = useState("ALL");
   const [aktivitasFilter, setAktivitasFilter] = useState("ALL");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    };
+    if (isFilterOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("touchstart", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, [isFilterOpen]);
   const [selectedRespondent, setSelectedRespondent] =
     useState<RespondentRecord | null>(null);
   const [sortField, setSortField] = useState<SortField>("tanggal");
@@ -277,11 +303,8 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
         <div>
           <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
             <SolidFileCheckIcon className="w-5 h-5 text-[#0d2346]" />
-            <span>
-              Data Responden Tracer Study
-            </span>
+            <span>Data Responden Tracer Study</span>
           </h2>
-         
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           <button
@@ -291,12 +314,11 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-slate-700 rounded-lg hover:bg-slate-50 disabled:opacity-60 transition cursor-pointer shadow-xs"
             title="Ambil data responden terbaru dari database"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-blue-600" : "text-slate-500"}`} />
+            <RefreshCw
+              className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-blue-600" : "text-slate-500"}`}
+            />
             <span>{isSyncing ? "Menyinkronkan..." : "Refresh"}</span>
           </button>
-          <div className="text-xs text-slate-600 font-medium bg-slate-50 px-3.5 py-1.5 rounded-lg border border-slate-200 shrink-0">
-            Total Masuk: <span className="font-bold text-slate-900">{respondents.length} Responden</span>
-          </div>
         </div>
       </div>
 
@@ -360,9 +382,9 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
           </button>
         </div>
 
-        {/* Search & Selectors */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-          <div className="sm:col-span-6">
+        {/* Combined Search & Filter Bar */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 min-w-0">
             <Input
               placeholder="Cari berdasarkan nama, NISN, atau instansi tempat beraktivitas..."
               value={search}
@@ -370,19 +392,131 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
               leftIcon={<Search className="w-4 h-4 text-slate-400" />}
             />
           </div>
-          <div className="sm:col-span-3">
-            <CustomSelect
-              value={jurusanFilter}
-              onChange={(v) => setJurusanFilter(v)}
-              options={JURUSAN_OPTIONS}
-            />
-          </div>
-          <div className="sm:col-span-3">
-            <CustomSelect
-              value={aktivitasFilter}
-              onChange={(v) => setAktivitasFilter(v)}
-              options={STATUS_AKTIVITAS_OPTIONS}
-            />
+
+          <div className="relative shrink-0" ref={filterRef}>
+            <button
+              type="button"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition cursor-pointer shadow-2xs ${
+                (jurusanFilter !== "ALL" || aktivitasFilter !== "ALL")
+                  ? "bg-blue-50 border-blue-200 text-[#0d2346]"
+                  : "bg-slate-50/50 hover:bg-white border-slate-200 text-slate-700 hover:text-slate-900"
+              }`}
+              title="Filter Jurusan & Aktivitas"
+              aria-expanded={isFilterOpen}
+            >
+              <SlidersHorizontal
+                className={`w-4 h-4 ${
+                  jurusanFilter !== "ALL" || aktivitasFilter !== "ALL"
+                    ? "text-[#0d2346]"
+                    : "text-slate-600"
+                }`}
+              />
+              <span className="hidden xs:inline sm:inline">Filter</span>
+              {(jurusanFilter !== "ALL" || aktivitasFilter !== "ALL") && (
+                <span className="min-w-[18px] h-[18px] px-1 bg-[#0d2346] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {(jurusanFilter !== "ALL" ? 1 : 0) + (aktivitasFilter !== "ALL" ? 1 : 0)}
+                </span>
+              )}
+            </button>
+
+            {/* Filter Dropdown Popover */}
+            {isFilterOpen && (
+              <div className="absolute right-0 top-full mt-2 w-72 sm:w-84 max-w-[calc(100vw-32px)] bg-white rounded-2xl border border-slate-200 shadow-xl z-30 p-2.5 animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center justify-between pb-2 mb-2 px-2 border-b border-slate-100">
+                  <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-slate-600" />
+                    <span>Filter Data Responden</span>
+                  </span>
+                  {(jurusanFilter !== "ALL" || aktivitasFilter !== "ALL") && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setJurusanFilter("ALL");
+                        setAktivitasFilter("ALL");
+                      }}
+                      className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 transition cursor-pointer"
+                    >
+                      Reset Semua
+                    </button>
+                  )}
+                </div>
+
+                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
+                  {/* Section 1: Jurusan */}
+                  <div>
+                    <span className="text-[10px] font-medium text-slate-400 e tracking-wider px-2 block mb-1">
+                      Program Keahlian
+                    </span>
+                    <div className="space-y-0.5">
+                      {JURUSAN_OPTIONS.map((opt) => {
+                        const isSelected = jurusanFilter === opt.value;
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => {
+                              setJurusanFilter(opt.value as string);
+                            }}
+                            className={`w-full text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between transition cursor-pointer ${
+                              isSelected
+                                ? "bg-slate-100 font-bold text-[#0d2346]"
+                                : "text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium"
+                            }`}
+                          >
+                            <span className="truncate pr-2">{opt.label}</span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-[#0d2346] shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Section 2: Aktivitas */}
+                  <div className="pt-2 border-t border-slate-100">
+                    <span className="text-[10px] font-medium text-slate-400 e tracking-wider px-2 block mb-1">
+                      Aktivitas Lulusan
+                    </span>
+                    <div className="space-y-0.5">
+                      {STATUS_AKTIVITAS_OPTIONS.map((opt) => {
+                        const isSelected = aktivitasFilter === opt.value;
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => {
+                              setAktivitasFilter(opt.value as string);
+                            }}
+                            className={`w-full text-left px-3 py-1.5 rounded-lg text-xs flex items-center justify-between transition cursor-pointer ${
+                              isSelected
+                                ? "bg-slate-100 font-bold text-[#0d2346]"
+                                : "text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium"
+                            }`}
+                          >
+                            <span className="truncate pr-2">{opt.label}</span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-[#0d2346] shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 mt-2 border-t border-slate-100 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterOpen(false)}
+                    className="w-full py-1.5 text-center text-xs font-bold bg-[#0d2346] text-white rounded-lg hover:bg-slate-800 transition cursor-pointer"
+                  >
+                    Tutup
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -401,7 +535,9 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                         setSortField("nama");
                         setSortOrder("asc");
                       } else {
-                        setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+                        setSortOrder((prev) =>
+                          prev === "asc" ? "desc" : "asc",
+                        );
                       }
                     }}
                     className="inline-flex items-center gap-1 hover:text-white transition cursor-pointer select-none group text-left"
@@ -425,9 +561,11 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                     )}
                   </button>
                 </th>
-                <th className="py-2.5 px-3 font-semibold">Jurusan & Angkatan</th>
-                <th className="py-2.5 px-3 font-semibold">Aktivitas Lulusan</th>
                 <th className="py-2.5 px-3 font-semibold">
+                  Jurusan & Angkatan
+                </th>
+                <th className="py-2.5 px-3 font-semibold">Aktivitas Lulusan</th>
+                <th className="py-2.5 px-3 font-semibold whitespace-nowrap min-w-[110px]">
                   <button
                     type="button"
                     onClick={() => {
@@ -435,7 +573,9 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                         setSortField("tanggal");
                         setSortOrder("desc");
                       } else {
-                        setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
+                        setSortOrder((prev) =>
+                          prev === "desc" ? "asc" : "desc",
+                        );
                       }
                     }}
                     className="inline-flex items-center gap-1 hover:text-white transition cursor-pointer select-none group text-left"
@@ -459,15 +599,20 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                     )}
                   </button>
                 </th>
-                <th className="py-2.5 px-3 font-semibold text-center">Detil Data</th>
+                <th className="py-2.5 px-3 font-semibold text-center whitespace-nowrap min-w-[130px]">
+                  Detil Data
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 text-[11px]">
               {paginatedRespondents.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-6 text-center text-slate-500 text-xs">
-                    Tidak ditemukan data responden kuesioner yang sesuai dengan kriteria
-                    pencarian.
+                  <td
+                    colSpan={5}
+                    className="p-6 text-center text-slate-500 text-xs"
+                  >
+                    Tidak ditemukan data responden kuesioner yang sesuai dengan
+                    kriteria pencarian.
                   </td>
                 </tr>
               ) : (
@@ -500,7 +645,7 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
                     </td>
 
                     {/* 4. Tgl Kirim */}
-                    <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
+                    <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px] whitespace-nowrap">
                       {new Date(rsp.submittedAt).toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "short",
@@ -510,16 +655,16 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
 
                     {/* 5. Detil Data */}
                     <td
-                      className="py-2.5 px-3 text-center"
+                      className="py-2.5 px-3 text-center whitespace-nowrap min-w-[130px]"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
                         type="button"
                         onClick={() => setSelectedRespondent(rsp)}
-                        className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1 text-slate-700 font-semibold transition text-[11px] cursor-pointer "
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-semibold transition-colors text-xs whitespace-nowrap cursor-pointer border border-slate-200/80 shadow-2xs"
                         title="Lihat detil data kuesioner"
                       >
-                        <Eye className="w-3.5 h-3.5 text-slate-700" />
+                        <Eye className="w-3.5 h-3.5 text-slate-600 shrink-0" />
                         <span>Detil Data</span>
                       </button>
                     </td>
@@ -556,4 +701,3 @@ export const AdminRespondentsTab: React.FC<AdminRespondentsTabProps> = ({
     </div>
   );
 };
-

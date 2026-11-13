@@ -70,12 +70,6 @@ export const OverviewBanner: React.FC<OverviewBannerProps> = ({
           </h1>
         </div>
 
-        <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed max-w-3xl">
-          Pantau kemajuan pengisian kuesioner, kelola data lulusan dan
-          responden yang masuk, dan siapkan dokumen laporan penelusuran
-          tamatan untuk sekolah dan dinas terkait.
-        </p>
-
         <div className="mt-5 flex flex-col md:flex-row md:items-center justify-between gap-4 pt-3 border-t border-white/10">
           <div className="flex flex-wrap items-center gap-3">
             <button
@@ -101,9 +95,7 @@ export const OverviewBanner: React.FC<OverviewBannerProps> = ({
             className="relative flex items-center gap-2.5 shrink-0 self-start md:self-auto"
             ref={yearDropdownRef}
           >
-            <span className="text-xs text-slate-300 font-medium">
-              Periode:
-            </span>
+            <span className="text-xs text-slate-300 font-medium">Periode:</span>
             <div className="relative">
               <button
                 type="button"
@@ -194,4 +186,3 @@ export const OverviewBanner: React.FC<OverviewBannerProps> = ({
     </div>
   );
 };
-
