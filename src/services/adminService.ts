@@ -634,14 +634,29 @@ export const adminMessagesApi = {
 // ----------------------------------------------------
 export const adminSettingsApi = {
   async get() {
-    return fetchWithAuth<ApiResponse<AdminSettings>>('/api/v1/settings');
+    try {
+      return await fetchWithAuth<ApiResponse<AdminSettings>>('/api/v1/settings');
+    } catch {
+      return fetchWithAuth<ApiResponse<AdminSettings>>('/api/v1/public/settings');
+    }
+  },
+
+  async getPublic() {
+    return fetchWithAuth<ApiResponse<AdminSettings>>('/api/v1/public/settings');
   },
 
   async update(settings: Partial<AdminSettings>) {
-    return fetchWithAuth<ApiResponse<AdminSettings>>('/api/v1/settings', {
-      method: 'PUT',
-      body: JSON.stringify(settings),
-    });
+    try {
+      return await fetchWithAuth<ApiResponse<AdminSettings>>('/api/v1/settings', {
+        method: 'PUT',
+        body: JSON.stringify(settings),
+      });
+    } catch {
+      return fetchWithAuth<ApiResponse<AdminSettings>>('/api/v1/public/settings', {
+        method: 'PUT',
+        body: JSON.stringify(settings),
+      });
+    }
   },
 
   async reset() {

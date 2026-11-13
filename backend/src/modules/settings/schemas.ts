@@ -1,18 +1,20 @@
 import { z } from 'zod';
 
-export const settingsUpdateSchema = z.object({
-  targetQuota: z.number().int().positive().optional(),
-  targetYear: z.number().int().min(2020).max(2030).optional(),
-  periodStart: z.string().datetime().optional(),
-  periodEnd: z.string().datetime().optional(),
-  kepalaSekolah: z.string().min(3).max(120).optional(),
-  nipKepalaSekolah: z.string().min(5).max(50).optional(),
-  ketuaBkk: z.string().min(3).max(120).optional(),
-  nipKetuaBkk: z.string().min(5).max(50).optional(),
-  namaSekolah: z.string().min(3).max(150).optional(),
-  npsn: z.string().min(5).max(20).optional(),
-  alamatSekolah: z.string().min(10).optional(),
-  kontakBkk: z.string().min(5).max(50).optional(),
-});
+export const settingsUpdateSchema = z
+  .object({
+    targetQuota: z.coerce.number().int().positive().optional(),
+    targetYear: z.coerce.number().int().min(1990).max(2100).optional(),
+    periodStart: z.string().optional().nullable(),
+    periodEnd: z.string().optional().nullable(),
+    kepalaSekolah: z.string().max(120).optional().nullable(),
+    nipKepalaSekolah: z.string().max(50).optional().nullable(),
+    ketuaBkk: z.string().max(120).optional().nullable(),
+    nipKetuaBkk: z.string().max(50).optional().nullable(),
+    namaSekolah: z.string().max(150).optional().nullable(),
+    npsn: z.string().max(20).optional().nullable(),
+    alamatSekolah: z.string().optional().nullable(),
+    kontakBkk: z.string().max(50).optional().nullable(),
+  })
+  .passthrough();
 
 export type SettingsUpdateInput = z.infer<typeof settingsUpdateSchema>;

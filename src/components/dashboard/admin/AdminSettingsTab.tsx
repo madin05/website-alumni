@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAdminStore } from "@/store/adminStore";
 import {
   Save,
@@ -25,35 +25,59 @@ const SolidSettingsIcon: React.FC<{ className?: string }> = ({
 );
 
 export const AdminSettingsTab: React.FC = () => {
-  const { settings, updateSettings, resetToDefaultData } = useAdminStore();
+  const { settings, updateSettings, resetToDefaultData, fetchSettingsFromBackend } =
+    useAdminStore();
 
   const [formData, setFormData] = useState({ ...settings });
   const [toastMessage, setToastMessage] = useState("");
   const [showResetModal, setShowResetModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    fetchSettingsFromBackend();
+  }, [fetchSettingsFromBackend]);
+
+  useEffect(() => {
+    setFormData({ ...settings });
+  }, [settings]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(""), 3500);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateSettings({
-      ...formData,
-      yearlyTargets: {
-        ...(settings.yearlyTargets || {}),
-        [Number(formData.targetYear)]: Number(formData.targetQuota),
-      },
-    });
-    showToast(
-      `Pengaturan dan target Angkatan ${formData.targetYear} berhasil disimpan.`,
-    );
+    setIsSaving(true);
+    try {
+      const ok = await updateSettings({
+        ...formData,
+        yearlyTargets: {
+          ...(settings.yearlyTargets || {}),
+          [Number(formData.targetYear)]: Number(formData.targetQuota),
+        },
+      });
+      if (ok) {
+        showToast(
+          `Pengaturan resmi dan target Angkatan ${formData.targetYear} berhasil disimpan ke database.`,
+        );
+      } else {
+        showToast(
+          `Pengaturan berhasil disimpan di cache lokal.`,
+        );
+      }
+    } catch {
+      showToast("Gagal menyimpan pengaturan ke database.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleConfirmReset = () => {
-    resetToDefaultData();
+  const handleConfirmReset = async () => {
+    await resetToDefaultData();
+    await fetchSettingsFromBackend();
     setFormData({ ...useAdminStore.getState().settings });
-    showToast("Data berhasil dikembalikan ke kondisi awal demo.");
+    showToast("Data pengaturan berhasil dikembalikan ke kondisi default.");
     setShowResetModal(false);
   };
 
@@ -337,10 +361,15 @@ export const AdminSettingsTab: React.FC = () => {
 
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 flex items-center gap-2 cursor-pointer"
+                disabled={isSaving}
+                className="px-6 py-2.5 rounded-xl bg-[#0d2346] hover:bg-[#163868] text-white text-xs sm:text-sm font-semibold shadow-xs transition active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Save className="w-4 h-4 text-slate-300" />
-                <span>Simpan Pengaturan</span>
+                {isSaving ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 text-slate-300" />
+                )}
+                <span>{isSaving ? "Menyimpan ke Database..." : "Simpan Pengaturan"}</span>
               </button>
             </div>
           </form>

@@ -113,8 +113,8 @@ interface AdminState {
     payload: TracerSubmissionPayload,
     submissionId: string,
   ) => void;
-  updateSettings: (updates: Partial<AdminSettings>) => void;
-  resetToDefaultData: () => void;
+  updateSettings: (updates: Partial<AdminSettings>) => Promise<boolean>;
+  resetToDefaultData: () => void | Promise<void>;
 
   // Backend Sync Actions
   fetchMasterAlumniFromBackend: () => Promise<boolean>;
@@ -491,22 +491,75 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
     });
   },
 
-  updateSettings: (updates) => {
-    set((state) => {
-      const newSettings = { ...state.settings, ...updates };
-      const yr = newSettings.targetYear;
-      const quota = newSettings.targetQuota;
-      const updatedYearly: Record<number, number> = {
-        ...(state.settings.yearlyTargets || {}),
-        ...(updates.yearlyTargets || {}),
-        ...(yr && quota ? { [Number(yr)]: Number(quota) } : {}),
+  updateSettings: async (updates) => {
+    const currentSettings = get().settings;
+    const newSettings = { ...currentSettings, ...updates };
+    const yr = newSettings.targetYear;
+    const quota = newSettings.targetQuota;
+    const updatedYearly: Record<number, number> = {
+      ...(currentSettings.yearlyTargets || {}),
+      ...(updates.yearlyTargets || {}),
+      ...(yr && quota ? { [Number(yr)]: Number(quota) } : {}),
+    };
+    newSettings.yearlyTargets = updatedYearly;
+
+    // Simpan optimistik ke state & cache lokal
+    set({ settings: newSettings });
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(SYNCED_SETTINGS_KEY, JSON.stringify(newSettings));
+      } catch {}
+    }
+
+    // Simpan permanen ke database backend MySQL
+    try {
+      const { adminSettingsApi } = await import("@/services/adminService");
+      const payload: Partial<AdminSettings> = {
+        targetQuota: Number(newSettings.targetQuota) || 250,
+        targetYear: Number(newSettings.targetYear) || 2025,
+        periodStart: newSettings.periodStart,
+        periodEnd: newSettings.periodEnd,
+        kepalaSekolah: newSettings.kepalaSekolah,
+        nipKepalaSekolah: newSettings.nipKepalaSekolah,
+        ketuaBkk: newSettings.ketuaBkk,
+        nipKetuaBkk: newSettings.nipKetuaBkk,
+        namaSekolah: newSettings.namaSekolah,
+        npsn: newSettings.npsn,
+        alamatSekolah: newSettings.alamatSekolah,
+        kontakBkk: newSettings.kontakBkk,
       };
-      newSettings.yearlyTargets = updatedYearly;
-      return { settings: newSettings };
-    });
+
+      const res = await adminSettingsApi.update(payload);
+      if (res && res.data) {
+        const saved = res.data;
+        const finalSettings: AdminSettings = {
+          ...newSettings,
+          ...saved,
+          periodStart:
+            typeof saved.periodStart === "string"
+              ? saved.periodStart.split("T")[0]
+              : newSettings.periodStart,
+          periodEnd:
+            typeof saved.periodEnd === "string"
+              ? saved.periodEnd.split("T")[0]
+              : newSettings.periodEnd,
+          yearlyTargets: updatedYearly,
+        };
+        set({ settings: finalSettings });
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem(SYNCED_SETTINGS_KEY, JSON.stringify(finalSettings));
+          } catch {}
+        }
+        return true;
+      }
+    } catch (err) {
+      console.warn("[AdminStore] Gagal menyimpan settings ke backend:", err);
+    }
+    return false;
   },
 
-  resetToDefaultData: () => {
+  resetToDefaultData: async () => {
     if (typeof window !== "undefined") {
       try {
         localStorage.removeItem(SYNCED_MASTER_KEY);
@@ -519,6 +572,12 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
       respondents: INITIAL_RESPONDENTS,
       settings: DEFAULT_SETTINGS,
     });
+    try {
+      const { adminSettingsApi } = await import("@/services/adminService");
+      await adminSettingsApi.reset();
+    } catch (err) {
+      console.warn("[AdminStore] Reset settings di backend gagal:", err);
+    }
   },
 
   fetchMasterAlumniFromBackend: async () => {
