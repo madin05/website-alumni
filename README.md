@@ -5,19 +5,21 @@
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 
-Aplikasi web untuk mendukung pengelolaan data penelusuran tamatan (*Tracer Study*) dan layanan Bursa Kerja Khusus (BKK) bagi lulusan SMK Sasmita Jaya 2 Pamulang. Sistem ini dirancang untuk memetakan transisi lulusan ke dunia kerja, perguruan tinggi, maupun wirausaha mandiri, selaras dengan instrumen penelusuran tamatan pendidikan vokasi.
+Aplikasi web untuk mendukung pengelolaan data penelusuran tamatan (_Tracer Study_) dan layanan Bursa Kerja Khusus (BKK) bagi lulusan SMK Sasmita Jaya 2 Pamulang. Sistem ini dirancang untuk memetakan transisi lulusan ke dunia kerja, perguruan tinggi, maupun wirausaha mandiri, selaras dengan instrumen penelusuran tamatan pendidikan vokasi.
 
 ---
 
 ## Fitur
 
 ### 1. Portal Publik & Informasi
+
 - **Landing Page Terpadu:** Informasi profil tracer study, statistik capaian lulusan, saluran informasi layanan sekolah, dan tautan akses akun.
 - **Halaman Detail Tentang (`/tentang`):** Penjelasan tujuan tracer study, 5 tahapan pengisian instrumen, dan saluran bantuan Helpdesk BKK.
 - **Portal Berita & Agenda (`/berita`):** Publikasi artikel kegiatan sekolah, agenda rekrutmen kerja, dan informasi pembekalan karir alumni.
 - **Laporan Statistik Publik (`/laporan`):** Visualisasi ringkasan keterserapan lulusan berdasarkan program keahlian dan status aktivitas.
 
 ### 2. Portal Alumni / Responden
+
 - **Autentikasi Akun Alumni:** Akses masuk mandiri menggunakan Nomor Induk Siswa Nasional (NISN) terdaftar dan kata sandi akun.
 - **Kuesioner Tracer Study 5 Tahap (`/tracer-study`):**
   - Tahap 1: Verifikasi data pribadi pokok, kontak WhatsApp aktif, email, dan wilayah domisili.
@@ -31,6 +33,7 @@ Aplikasi web untuk mendukung pengelolaan data penelusuran tamatan (*Tracer Study
 - **Pusat Bantuan (Helpdesk):** Formulir pengiriman tiket pengaduan langsung ke staf BKK dan daftar pertanyaan umum (FAQ).
 
 ### 3. Dashboard Administrator & Pengelola BKK
+
 - **Ringkasan Statistik Eksekutif:** Metrik total populasi lulusan, persentase pengisian survei, diagram sebaran status aktivitas, dan progres per program keahlian.
 - **Master Data Alumni:** Manajemen basis data siswa lulusan, pencarian/filter per angkatan, ekspor data ke Excel, serta impor data massal berkas Excel/CSV.
 - **Data Responden Kuesioner:** Verifikasi dan peninjauan seluruh rincian instrumen jawaban kuesioner yang dikirimkan oleh alumni.
@@ -46,6 +49,7 @@ Aplikasi web untuk mendukung pengelolaan data penelusuran tamatan (*Tracer Study
 Aplikasi ini dibangun menggunakan arsitektur Single Page Application (SPA) modern pada sisi frontend, dengan modul backend API berbasis REST:
 
 ### Frontend
+
 - **Framework & Bahasa:** React 18.3 + TypeScript 5.6
 - **Build Tool:** Vite 5.4
 - **Styling:** Tailwind CSS 3.4
@@ -56,6 +60,7 @@ Aplikasi ini dibangun menggunakan arsitektur Single Page Application (SPA) moder
 - **Ikonografi:** Lucide React 0.446
 
 ### Backend (Direktori `backend/`)
+
 - **Runtime & Web Framework:** Node.js + Fastify 4.29
 - **ORM & Basis Data:** Prisma ORM 5.22 + MySQL
 - **Autentikasi & Keamanan:** JSON Web Token (JWT), bcryptjs, Fastify Rate Limit, Fastify Helmet, dan CORS handler
@@ -78,18 +83,22 @@ Sebelum memasang dan menjalankan proyek secara lokal, pastikan perangkat telah m
 Ikuti instruksi berikut untuk menyiapkan repositori di lingkungan lokal:
 
 ### 1. Clone Repositori
+
 ```bash
 git clone https://github.com/madin05/website-alumni.git
 cd website-alumni
 ```
 
 ### 2. Pemasangan Dependensi Frontend
+
 ```bash
 npm install
 ```
 
 ### 3. Konfigurasi Variabel Lingkungan Frontend
+
 Salin template berkas konfigurasi:
+
 ```bash
 # Windows (PowerShell)
 Copy-Item .env.example .env
@@ -99,13 +108,17 @@ cp .env.example .env
 ```
 
 ### 4. Menjalankan Server Development Frontend
+
 ```bash
 npm run dev
 ```
+
 Setelah server aktif, buka peramban dan akses alamat yang tertera pada terminal (secara bawaan: `http://localhost:5173`).
 
 ### 5. Menjalankan Backend API (Opsional)
+
 Jika Anda ingin menjalankan layanan backend secara lokal:
+
 ```bash
 cd backend
 npm install
@@ -122,12 +135,12 @@ npm run dev
 
 Variabel lingkungan frontend dikonfigurasi melalui berkas `.env`:
 
-| Variabel | Keterangan | Status |
-|---|---|---|
-| `VITE_APP_NAME` | Nama aplikasi yang ditampilkan pada antarmuka | Opsional |
-| `VITE_APP_URL` | Alamat URL origin frontend | Opsional |
-| `VITE_API_URL` | URL absolut endpoint backend API (kosongkan jika memakai dev proxy) | Opsional |
-| `VITE_PROXY_TARGET` | Target penerusan permintaan proxy `/api` pada mode development Vite | Opsional |
+| Variabel              | Keterangan                                                          | Status   |
+| --------------------- | ------------------------------------------------------------------- | -------- |
+| `VITE_APP_NAME`       | Nama aplikasi yang ditampilkan pada antarmuka                       | Opsional |
+| `VITE_APP_URL`        | Alamat URL origin frontend                                          | Opsional |
+| `VITE_API_URL`        | URL absolut endpoint backend API (kosongkan jika memakai dev proxy) | Opsional |
+| `VITE_PROXY_TARGET`   | Target penerusan permintaan proxy `/api` pada mode development Vite | Opsional |
 | `VITE_HELPDESK_PHONE` | Nomor kontak resmi WhatsApp Helpdesk sekolah (format internasional) | Opsional |
 
 ---
@@ -136,25 +149,11 @@ Variabel lingkungan frontend dikonfigurasi melalui berkas `.env`:
 
 Daftar perintah npm yang tersedia pada direktori utama:
 
-| Perintah | Fungsi |
-|---|---|
-| `npm run dev` | Menjalankan server development Vite dengan Hot Module Replacement (HMR). |
-| `npm run build` | Menjalankan pemeriksaan tipe TypeScript (`tsc`) dan melakukan kompilasi berkas produksi ke folder `dist/`. |
-| `npm run preview` | Menjalankan server lokal untuk meninjau hasil build produksi dari folder `dist/`. |
-
----
-
-## Dokumentasi Pendukung
-
-Petunjuk operasional dan spesifikasi teknis telah disusun ke dalam folder `docs/`:
-- **Workflow & SOP Panel Administrator BKK:** [docs/ADMIN_WORKFLOW.md](docs/ADMIN_WORKFLOW.md)
-- **Workflow & Logika Kuesioner Tracer Study:** [docs/TRACER_STUDY_WORKFLOW.md](docs/TRACER_STUDY_WORKFLOW.md)
-- **Integrasi REST API Fastify & Sinkronisasi DB:** [docs/API_DATABASE_INTEGRATION.md](docs/API_DATABASE_INTEGRATION.md)
-- **Spesifikasi Arsitektur Teknis Panel Admin:** [docs/ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md](docs/ARSITEKTUR_TEKNIS_DASHBOARD_ADMIN.md)
-- **Skema Basis Data Relasional & Pemetaan State:** [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
-- **Arsitektur Model Bursa Kerja Khusus (Loker BKK):** [docs/FLOW_FITUR_LOWONGAN_KERJA.md](docs/FLOW_FITUR_LOWONGAN_KERJA.md)
-- **Panduan Fitur & Arsitektur Landing Page:** [docs/PANDUAN_FITUR_LANDING_PAGE.md](docs/PANDUAN_FITUR_LANDING_PAGE.md)
-- **Analisis Variabel Riil Satpen Kemendikbudristek:** [docs/analisis_variabel_tracer_excel.md](docs/analisis_variabel_tracer_excel.md)
+| Perintah          | Fungsi                                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `npm run dev`     | Menjalankan server development Vite dengan Hot Module Replacement (HMR).                                   |
+| `npm run build`   | Menjalankan pemeriksaan tipe TypeScript (`tsc`) dan melakukan kompilasi berkas produksi ke folder `dist/`. |
+| `npm run preview` | Menjalankan server lokal untuk meninjau hasil build produksi dari folder `dist/`.                          |
 
 ---
 
@@ -166,4 +165,3 @@ Petunjuk operasional dan spesifikasi teknis telah disusun ke dalam folder `docs/
 ---
 
 Hak Cipta (c) 2026 SMK Sasmita Jaya 2 Pamulang. Hak cipta dilindungi undang-undang.
-
