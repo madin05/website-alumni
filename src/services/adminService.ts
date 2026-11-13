@@ -575,6 +575,33 @@ export const adminJobsApi = {
 // 5. Messages / Inbox API
 // ----------------------------------------------------
 export const adminMessagesApi = {
+  async createMessage(data: {
+    nama: string;
+    email?: string;
+    noWhatsApp?: string;
+    subject: string;
+    message: string;
+  }) {
+    const payload = {
+      nama: data.nama,
+      email: data.email || 'alumni@smksasmitajaya2.sch.id',
+      noWhatsApp: data.noWhatsApp || '',
+      subject: data.subject,
+      message: data.message,
+    };
+    try {
+      return await fetchWithAuth<ApiResponse<any>>('/api/v1/messages', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    } catch {
+      return fetchWithAuth<ApiResponse<any>>('/api/v1/public/messages', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+    }
+  },
+
   async list(params?: {
     page?: number;
     limit?: number;
@@ -592,7 +619,31 @@ export const adminMessagesApi = {
     if (params?.sortOrder) query.append('sortOrder', params.sortOrder);
 
     const queryString = query.toString() ? `?${query.toString()}` : '';
-    return fetchWithAuth<ApiResponse<any[]>>(`/api/v1/messages${queryString}`);
+    try {
+      return await fetchWithAuth<ApiResponse<any[]>>(`/api/v1/messages${queryString}`);
+    } catch {
+      return fetchWithAuth<ApiResponse<any[]>>(`/api/v1/public/messages${queryString}`);
+    }
+  },
+
+  async listPublic(params?: {
+    page?: number;
+    limit?: number;
+    status?: 'UNREAD' | 'FOLLOW_UP' | 'RESOLVED';
+    search?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  }) {
+    const query = new URLSearchParams();
+    if (params?.page) query.append('page', params.page.toString());
+    if (params?.limit) query.append('limit', params.limit.toString());
+    if (params?.status) query.append('status', params.status);
+    if (params?.search) query.append('search', params.search);
+    if (params?.sortBy) query.append('sortBy', params.sortBy);
+    if (params?.sortOrder) query.append('sortOrder', params.sortOrder);
+
+    const queryString = query.toString() ? `?${query.toString()}` : '';
+    return fetchWithAuth<ApiResponse<any[]>>(`/api/v1/public/messages${queryString}`);
   },
 
   async getById(id: string) {

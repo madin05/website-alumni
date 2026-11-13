@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Search,
   CheckCheck,
@@ -32,7 +32,12 @@ export const AdminMessagesTab: React.FC<AdminMessagesTabProps> = ({
     markAsRead,
     markAllAsRead,
     deleteMail,
+    fetchMailsFromBackend,
   } = useMailStore();
+
+  useEffect(() => {
+    fetchMailsFromBackend();
+  }, [fetchMailsFromBackend]);
 
   const role = user?.role === "admin_bkk" ? "admin_bkk" : "alumni";
   const userNisn = user?.nisn;

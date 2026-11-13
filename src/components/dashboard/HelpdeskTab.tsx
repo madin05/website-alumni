@@ -1,30 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MOCK_FAQS } from "@/lib/mockData";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
-import { Send, HelpCircle, ChevronDown } from "lucide-react";
+import { Send, HelpCircle, ChevronDown, CheckCircle2 } from "lucide-react";
 import { useAdminStore } from "@/store/adminStore";
+import { useAuthStore } from "@/store/authStore";
+import { useMailStore } from "@/store/mailStore";
 import { getHelpdeskWaUrl } from "@/lib/whatsapp";
 
 export const HelpdeskTab: React.FC = () => {
+  const { user } = useAuthStore();
+  const { sendTicketFromAlumni } = useMailStore();
+
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [ticketSubject, setTicketSubject] = useState("");
   const [ticketMessage, setTicketMessage] = useState("");
+  const [senderName, setSenderName] = useState(user?.nama || "");
+  const [senderWa, setSenderWa] = useState(user?.noWhatsapp || "");
+  const [senderEmail, setSenderEmail] = useState(user?.email || "");
+
   const [submittedTicket, setSubmittedTicket] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  const handleTicketSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user) {
+      if (!senderName && user.nama) setSenderName(user.nama);
+      if (!senderWa && user.noWhatsapp) setSenderWa(user.noWhatsapp);
+      if (!senderEmail && user.email) setSenderEmail(user.email);
+    }
+  }, [user]);
+
+  const handleTicketSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ticketSubject.trim() || !ticketMessage.trim()) return;
 
     setSubmittedTicket(true);
-    setTimeout(() => {
-      setSubmittedTicket(false);
+    try {
+      await sendTicketFromAlumni({
+        subject: ticketSubject.trim(),
+        message: ticketMessage.trim(),
+        nama: senderName.trim() || user?.nama || "Alumni",
+        email: senderEmail.trim() || user?.email || "",
+        noWhatsApp: senderWa.trim() || user?.noWhatsapp || "",
+        nisn: user?.nisn,
+        jurusan: user?.jurusan,
+        tahunLulus: user?.tahun_lulus,
+      });
+
       setTicketSubject("");
       setTicketMessage("");
       setShowSuccessModal(true);
-    }, 800);
+    } catch (err) {
+      console.error("Gagal mengirim tiket bantuan:", err);
+    } finally {
+      setSubmittedTicket(false);
+    }
   };
 
   return (
@@ -38,7 +69,7 @@ export const HelpdeskTab: React.FC = () => {
 
       {/* Main Grid: Responsive Reordering for Desktop vs Mobile/Tablet */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-        {/* Direct Contact Cards (Desktop: Top Row 12 cols, Mobile/Tablet: Middle order-2 below Form) */}
+        {/* Direct Contact Cards */}
         <div className="order-2 lg:order-1 lg:col-span-12">
           <div className="bg-white rounded-xl border border-slate-200 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4">
             <div className="p-4 sm:p-5 flex items-start gap-3.5">
@@ -70,7 +101,7 @@ export const HelpdeskTab: React.FC = () => {
                   rel="noreferrer"
                   className="inline-block pt-1 text-xs font-bold text-slate-800 hover:underline"
                 >
-                  {useAdminStore.getState().settings.kontakBkk || "+62 812-9876-5432"}
+                  {useAdminStore.getState().settings.kontakBkk || "+62 812-8889-7762"}
                 </a>
               </div>
             </div>
@@ -126,18 +157,35 @@ export const HelpdeskTab: React.FC = () => {
           </div>
         </div>
 
-        {/* Ticket Form (Desktop: Left 6 cols, Mobile/Tablet: Top order-1) */}
+        {/* Ticket Form */}
         <div className="order-1 lg:order-2 lg:col-span-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
           <div className="border-b border-slate-100 pb-3">
             <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
               <span>Kirim Pengaduan / Tiket Bantuan</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Tim admin akan merespons pertanyaan Anda via WhatsApp atau Email
+              Pesan akan langsung masuk ke tabel pengaduan Admin BKK dan tersimpan di sistem
             </p>
           </div>
 
           <form onSubmit={handleTicketSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Input
+                label="Nama Pengirim"
+                placeholder="Nama Anda"
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+                required
+              />
+              <Input
+                label="No. WhatsApp (Untuk Balasan)"
+                placeholder="Contoh: 081234567890"
+                value={senderWa}
+                onChange={(e) => setSenderWa(e.target.value)}
+                required
+              />
+            </div>
+
             <Input
               label="Judul Permasalahan"
               placeholder="Contoh: Kendala Pengisian Tracer / Pertanyaan Loker"
@@ -155,7 +203,7 @@ export const HelpdeskTab: React.FC = () => {
                 value={ticketMessage}
                 onChange={(e) => setTicketMessage(e.target.value)}
                 placeholder="Jelaskan detail kendala Anda..."
-                className="w-full rounded-xl border border-slate-200 bg-white p-3.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                className="w-full rounded-xl border border-slate-200 bg-white p-3.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#0d2346] focus:outline-none focus:ring-2 focus:ring-[#0d2346]/20 transition"
                 required
               />
             </div>
@@ -163,16 +211,16 @@ export const HelpdeskTab: React.FC = () => {
             <Button
               type="submit"
               variant="primary"
-              className="w-full bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              className="w-full bg-[#0d2346] hover:bg-[#163868] text-white cursor-pointer py-2.5 rounded-xl font-semibold transition"
               isLoading={submittedTicket}
             >
               <Send className="w-3.5 h-3.5 mr-2" />
-              <span>Kirim Tiket ke BKK</span>
+              <span>{submittedTicket ? "Mengirim Tiket..." : "Kirim Tiket ke BKK"}</span>
             </Button>
           </form>
         </div>
 
-        {/* Right Column (Desktop: Right 6 cols, Mobile/Tablet: Bottom order-3): FAQs */}
+        {/* Right Column: FAQs */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm order-3 lg:order-3 lg:col-span-6 space-y-3">
           <h3 className="font-bold p-4 text-base text-slate-900 flex items-center gap-2 mb-2">
             <HelpCircle className="w-4 h-4 text-slate-900" />
@@ -182,7 +230,7 @@ export const HelpdeskTab: React.FC = () => {
           {MOCK_FAQS.map((faq, idx) => {
             const isOpen = openFaq === idx;
             return (
-              <div key={idx} className=" overflow-hidden">
+              <div key={idx} className="overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
@@ -196,7 +244,6 @@ export const HelpdeskTab: React.FC = () => {
                   />
                 </button>
 
-                {/* Smooth Grid Accordion Animation */}
                 <div
                   className={`grid transition-[grid-template-rows] duration-300 ease-out ${
                     isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -214,12 +261,12 @@ export const HelpdeskTab: React.FC = () => {
         </div>
       </div>
 
-      {/* Friendly Success Modal */}
+      {/* Success Modal */}
       <ConfirmModal
         isOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
-        title="Tiket Bantuan Terkirim!"
-        message="Tiket pengaduan Anda telah berhasil dikirim ke Tim BKK SMK Sasmita Jaya 2. Tim kami akan segera menindaklanjuti dan menghubungi Anda via WhatsApp atau Email."
+        title="Tiket Bantuan Terkirim ke Database BKK!"
+        message="Tiket pengaduan Anda telah berhasil disimpan ke database sistem dan masuk ke tabel pesan Admin BKK SMK Sasmita Jaya 2. Tim kami akan segera menindaklanjuti kendala Anda."
         confirmText="Selesai"
         type="success"
       />

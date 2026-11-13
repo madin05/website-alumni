@@ -3,10 +3,23 @@ import { HttpError } from '../../core/utils/errors.js';
 import { MessageCreateInput, MessageReplyInput, ListQueryInput } from './schemas.js';
 
 export async function createMessage(input: MessageCreateInput, alumniId?: string) {
+  const cleanEmail = (input.email && input.email.trim()) || 'alumni@smksasmitajaya2.sch.id';
+  const cleanWa = input.noWhatsApp ? input.noWhatsApp.trim() : null;
+
   return prisma.supportTicket.create({
     data: {
-      ...input,
+      nama: input.nama.trim(),
+      email: cleanEmail,
+      noWhatsApp: cleanWa,
+      subject: input.subject.trim(),
+      message: input.message.trim(),
       alumniId: alumniId ?? null,
+      status: 'UNREAD',
+    },
+    include: {
+      alumni: {
+        select: { id: true, nisn: true, namaLengkap: true, email: true, jurusan: true, tahunLulus: true },
+      },
     },
   });
 }

@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const messageCreateSchema = z.object({
-  nama: z.string().min(2).max(120),
-  email: z.string().email(),
-  noWhatsApp: z.string().regex(/^(\+62|62|0)8[0-9]{7,11}$/).optional().or(z.literal('')),
-  subject: z.string().min(3).max(150),
-  message: z.string().min(10),
+  nama: z.string().min(1, 'Nama wajib diisi').max(120),
+  email: z.string().email('Format email tidak valid').optional().nullable().or(z.literal('')),
+  noWhatsApp: z.string().optional().nullable().or(z.literal('')),
+  subject: z.string().min(1, 'Judul permasalahan wajib diisi').max(200),
+  message: z.string().min(1, 'Pesan wajib diisi'),
 });
 
 export type MessageCreateInput = z.infer<typeof messageCreateSchema>;
@@ -28,4 +28,4 @@ export const listQuerySchema = z.object({
 
 export type ListQueryInput = z.infer<typeof listQuerySchema>;
 
-export const idParamSchema = z.object({ id: z.string().cuid() });
+export const idParamSchema = z.object({ id: z.string() });

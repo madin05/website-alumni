@@ -34,6 +34,16 @@ interface MailState {
   markAllAsRead: (role: 'admin_bkk' | 'alumni', userNisn?: string) => void;
   deleteMail: (id: string) => void;
   addMail: (mail: Omit<MailItem, 'id' | 'createdAt' | 'isRead'>) => void;
+  sendTicketFromAlumni: (data: {
+    subject: string;
+    message: string;
+    nama: string;
+    email?: string;
+    noWhatsApp?: string;
+    nisn?: string;
+    jurusan?: string;
+    tahunLulus?: number;
+  }) => Promise<boolean>;
   getMailsForUser: (role: 'admin_bkk' | 'alumni', userNisn?: string) => MailItem[];
   getUnreadCount: (role: 'admin_bkk' | 'alumni', userNisn?: string) => number;
   fetchMailsFromBackend: () => Promise<boolean>;
@@ -264,6 +274,68 @@ export const useMailStore = create<MailState>()(
         set((state) => ({
           mails: [newMail, ...state.mails],
         }));
+      },
+
+      sendTicketFromAlumni: async (ticketData) => {
+        const cleanName = ticketData.nama.trim() || 'Alumni Sasmita';
+        const cleanEmail =
+          ticketData.email?.trim() ||
+          `${ticketData.nisn || 'alumni'}@smksasmitajaya2.sch.id`;
+        const cleanWa = ticketData.noWhatsApp?.trim() || '';
+
+        // Optimistic local add
+        const optimisticId = `ticket-${Date.now()}`;
+        const newMail: MailItem = {
+          id: optimisticId,
+          senderName: cleanName,
+          senderRole: 'alumni',
+          senderEmail: cleanEmail,
+          senderNisn: ticketData.nisn,
+          senderMajor: ticketData.jurusan,
+          senderGradYear: ticketData.tahunLulus,
+          senderAvatarGender:
+            /^(citra|mega|olivia|qori|siti|vina|yasmin|bella|gita|indah|dwi|ani|nur|rina)/i.test(
+              cleanName,
+            )
+              ? 'P'
+              : 'L',
+          recipientRole: 'admin_bkk',
+          subject: ticketData.subject.trim(),
+          preview:
+            ticketData.message.trim().slice(0, 90) +
+            (ticketData.message.length > 90 ? '...' : ''),
+          body: ticketData.message.trim(),
+          category: 'inquiry',
+          createdAt: new Date().toISOString(),
+          isRead: false,
+        };
+
+        set((state) => ({
+          mails: [newMail, ...state.mails],
+        }));
+
+        try {
+          const { adminMessagesApi } = await import('@/services/adminService');
+          const res = await adminMessagesApi.createMessage({
+            nama: cleanName,
+            email: cleanEmail,
+            noWhatsApp: cleanWa,
+            subject: ticketData.subject.trim(),
+            message: ticketData.message.trim(),
+          });
+
+          if (res && res.data) {
+            set((state) => ({
+              mails: state.mails.map((m) =>
+                m.id === optimisticId ? { ...m, id: res.data.id } : m,
+              ),
+            }));
+            return true;
+          }
+        } catch (err) {
+          console.warn('[MailStore] Gagal mengirim tiket ke backend:', err);
+        }
+        return false;
       },
 
       getMailsForUser: (role: 'admin_bkk' | 'alumni', userNisn?: string) => {

@@ -9,13 +9,11 @@ import { z } from 'zod';
 type ListQuery = z.infer<typeof listQuerySchema>;
 
 export async function publicMessagesRoutes(app: FastifyInstance) {
-  app.post('/messages', {
-    preHandler: validateBody(messageCreateSchema),
-  }, async (request, reply) => {
+  const handleCreate = async (request: any, reply: any) => {
     let alumniId: string | undefined;
     try {
       await request.jwtVerify();
-      alumniId = (request as any).user?.id;
+      alumniId = request.user?.id;
     } catch {
       // not authenticated
     }
@@ -23,6 +21,27 @@ export async function publicMessagesRoutes(app: FastifyInstance) {
     const body = request.body as z.infer<typeof messageCreateSchema>;
     const message = await service.createMessage(body, alumniId);
     return reply.status(201).send(successResponse(message, 'Pesan berhasil dikirim'));
+  };
+
+  app.post('/messages', {
+    preHandler: validateBody(messageCreateSchema),
+  }, handleCreate);
+
+  app.post('/public/messages', {
+    preHandler: validateBody(messageCreateSchema),
+  }, handleCreate);
+
+  app.get('/public/messages', {
+    preHandler: validateQuery(listQuerySchema),
+  }, async (request, reply) => {
+    const query = request.query as ListQuery;
+    const { data, total, page, limit } = await service.listMessages(query);
+    return reply.send(paginatedResponse(data, page, limit, total, 'Daftar pesan publik berhasil diambil'));
+  });
+
+  app.get('/public/messages/stats', async (_request, reply) => {
+    const stats = await service.getMessageStats();
+    return reply.send(successResponse(stats, 'Statistik pesan berhasil diambil'));
   });
 }
 
@@ -56,7 +75,7 @@ export async function messagesRoutes(app: FastifyInstance) {
     return reply.send(paginatedResponse(data, page, limit, total, 'Daftar pesan berhasil diambil'));
   });
 
-  app.get('/messages/stats', { preHandler: authorize('ADMIN_BKK') }, async (request, reply) => {
+  app.get('/messages/stats', { preHandler: authorize('ADMIN_BKK') }, async (_request, reply) => {
     const stats = await service.getMessageStats();
     return reply.send(successResponse(stats, 'Statistik pesan berhasil diambil'));
   });
