@@ -152,11 +152,11 @@ function getInitialMasterAlumni(): MasterAlumniRecord[] {
       const cached = localStorage.getItem(SYNCED_MASTER_KEY);
       if (cached) {
         const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch {}
   }
-  return INITIAL_MASTER_ALUMNI;
+  return [];
 }
 
 function getInitialRespondents(): RespondentRecord[] {
@@ -589,7 +589,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
       } catch {
         res = await adminMasterAlumniApi.listPublic({ limit: 1000 });
       }
-      if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+      if (res && res.data && Array.isArray(res.data)) {
         const mapped: MasterAlumniRecord[] = res.data.map((item: any) => {
           const tahunLulus = Number(item.tahunLulus) || 2024;
           const statusTracer =
@@ -643,7 +643,7 @@ export const useAdminStore = create<AdminState>()((set, get) => ({
       ) {
         res = await adminVerificationApi.listPublic({ limit: 1000 });
       }
-      if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+      if (res && res.data && Array.isArray(res.data)) {
         const mapped: RespondentRecord[] = res.data.map((item: any) => {
           const alumni = item.alumni || {};
           const detailKerja = item.detailKerja || {};
