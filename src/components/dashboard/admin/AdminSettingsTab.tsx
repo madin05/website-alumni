@@ -7,6 +7,7 @@ import {
   Calendar,
   UserCheck,
   Building,
+  Info,
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Toast } from "@/components/ui/Toast";
@@ -107,14 +108,25 @@ export const AdminSettingsTab: React.FC = () => {
             {/* Section 1: Target Kuota & Periode */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
                     Target Sasaran & Periode Pengisian
                   </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Konfigurasi jumlah target alumni dan rentang waktu pengisian
-                    tracer study.
-                  </p>
+                  <div
+                    className="relative inline-flex items-center group cursor-help"
+                    tabIndex={0}
+                    aria-label="Konfigurasi jumlah target alumni dan rentang waktu pengisian tracer study."
+                  >
+                    <Info className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
+                    <div
+                      role="tooltip"
+                      className="absolute right-0 sm:left-0 bottom-full mb-1.5 hidden group-hover:block group-focus:block z-30 w-56 sm:w-64 p-2 bg-slate-900 text-white text-[11px] font-normal leading-relaxed rounded-lg shadow-lg pointer-events-none"
+                    >
+                      Konfigurasi jumlah target alumni dan rentang waktu
+                      pengisian tracer study.
+                      <div className="absolute right-2.5 sm:left-2.5 top-full -mt-1 w-2 h-2 bg-slate-900 rotate-45" />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -135,7 +147,8 @@ export const AdminSettingsTab: React.FC = () => {
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
                   />
                   <span className="text-[10px] text-slate-400 block">
-                    Dasar perhitungan target partisipasi untuk Angkatan {formData.targetYear}.
+                    Dasar perhitungan target partisipasi untuk Angkatan{" "}
+                    {formData.targetYear}.
                   </span>
                 </div>
 
@@ -161,48 +174,31 @@ export const AdminSettingsTab: React.FC = () => {
                     Tahun kelulusan alumni yang menjadi fokus pengumpulan data.
                   </span>
                 </div>
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-semibold text-slate-900">
-                    Tanggal Mulai Pengisian
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.periodStart}
-                    onChange={(e) =>
-                      setFormData({ ...formData, periodStart: e.target.value })
-                    }
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-semibold text-slate-900">
-                    Tanggal Batas Pengisian
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.periodEnd}
-                    onChange={(e) =>
-                      setFormData({ ...formData, periodEnd: e.target.value })
-                    }
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm focus:border-[#0d2346] focus:ring-2 focus:ring-[#0d2346]/10 focus:outline-none transition bg-slate-50/50 focus:bg-white"
-                  />
-                </div>
               </div>
             </div>
 
             {/* Section 2: Penandatangan Laporan Resmi */}
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
-                    Nama Pejabat Penandatangan Laporan Resmi
+                    Penanggung Jawab Penandatangan Laporan Resmi
                   </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Data ini dicantumkan pada bagian pengesahan berkas ekspor
-                    laporan PDF.
-                  </p>
+                  <div
+                    className="relative inline-flex items-center group cursor-help"
+                    tabIndex={0}
+                    aria-label="Data ini dicantumkan pada bagian pengesahan berkas ekspor laporan PDF."
+                  >
+                    <Info className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
+                    <div
+                      role="tooltip"
+                      className="absolute right-0 sm:left-0 bottom-full mb-1.5 hidden group-hover:block group-focus:block z-30 w-56 sm:w-64 p-2 bg-slate-900 text-white text-[11px] font-normal leading-relaxed rounded-lg shadow-lg pointer-events-none"
+                    >
+                      Data ini dicantumkan pada bagian pengesahan berkas ekspor
+                      laporan PDF.
+                      <div className="absolute right-2.5 sm:left-2.5 top-full -mt-1 w-2 h-2 bg-slate-900 rotate-45" />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -274,13 +270,25 @@ export const AdminSettingsTab: React.FC = () => {
             {/* Section 3: Identitas Sekolah & Kontak Layanan */}
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
                     Identitas Sekolah & Kontak Layanan
                   </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Informasi resmi lembaga untuk kop surat dan layanan alumni.
-                  </p>
+                  <div
+                    className="relative inline-flex items-center group cursor-help"
+                    tabIndex={0}
+                    aria-label="Informasi resmi lembaga untuk kop surat dan layanan alumni."
+                  >
+                    <Info className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
+                    <div
+                      role="tooltip"
+                      className="absolute right-0 sm:left-0 bottom-full mb-1.5 hidden group-hover:block group-focus:block z-30 w-56 sm:w-64 p-2 bg-slate-900 text-white text-[11px] font-normal leading-relaxed rounded-lg shadow-lg pointer-events-none"
+                    >
+                      Informasi resmi lembaga untuk kop surat dan layanan
+                      alumni.
+                      <div className="absolute right-2.5 sm:left-2.5 top-full -mt-1 w-2 h-2 bg-slate-900 rotate-45" />
+                    </div>
+                  </div>
                 </div>
               </div>
 

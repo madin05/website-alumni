@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useAdminStore, MasterAlumniRecord } from "@/store/adminStore";
 import { AdminImportModal } from "./AdminImportModal";
 import { exportJsonToExcel } from "@/lib/excelExport";
@@ -15,9 +15,10 @@ import {
   Eye,
   FileSpreadsheet,
   RefreshCw,
+  SlidersHorizontal,
+  Check,
 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
-import { CustomSelect } from "@/components/ui/CustomSelect";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Pagination } from "@/components/ui/Pagination";
 import { Toast } from "@/components/ui/Toast";
@@ -73,6 +74,25 @@ export const AdminMasterAlumniTab: React.FC = () => {
     "ALL",
   );
   const [jurusanFilter, setJurusanFilter] = useState("ALL");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  // Close filter dropdown when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    };
+    if (isFilterOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("touchstart", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, [isFilterOpen]);
   const [nameSortOrder, setNameSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
@@ -206,10 +226,10 @@ export const AdminMasterAlumniTab: React.FC = () => {
       const ok = await fetchMasterAlumniFromBackend();
       if (ok) {
         showToast(
-          "Data siswa alumni berhasil disinkronkan dari database pusat.",
+          "Data siswa alumni berhasil disinkronkan dari database.",
         );
       } else {
-        showToast("Sinkronisasi selesai (data telah mutakhir).");
+        showToast("Sinkronisasi selesai");
       }
     } catch {
       showToast("Gagal menyinkronkan data dari database.");
@@ -264,7 +284,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsImportModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium flex items-center gap-1.5 cursor-pointer shrink-0"
             >
               <Upload className="w-3.5 h-3.5 text-slate-600 shrink-0" />
               <span>Impor Berkas</span>
@@ -313,22 +333,90 @@ export const AdminMasterAlumniTab: React.FC = () => {
             </button>
           </div>
 
-          {/* Input & Dropdown */}
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-            <div className="sm:col-span-7">
+          {/* Combined Search & Filter Bar */}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0">
               <Input
                 placeholder="Cari berdasarkan nama lengkap, NISN, atau NIK..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                leftIcon={<Search className="w-4 h-4" />}
+                leftIcon={<Search className="w-4 h-4 text-slate-400" />}
               />
             </div>
-            <div className="sm:col-span-5">
-              <CustomSelect
-                value={jurusanFilter}
-                onChange={(v) => setJurusanFilter(v)}
-                options={JURUSAN_OPTIONS}
-              />
+
+            <div className="relative shrink-0" ref={filterRef}>
+              <button
+                type="button"
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-semibold transition cursor-pointer shadow-2xs ${
+                  jurusanFilter !== "ALL"
+                    ? "bg-blue-50 border-blue-200 text-[#0d2346]"
+                    : "bg-slate-50/50 hover:bg-white border-slate-200 text-slate-700 hover:text-slate-900"
+                }`}
+                title="Filter Program Keahlian"
+                aria-expanded={isFilterOpen}
+              >
+                <SlidersHorizontal
+                  className={`w-4 h-4 ${
+                    jurusanFilter !== "ALL"
+                      ? "text-[#0d2346]"
+                      : "text-slate-600"
+                  }`}
+                />
+                <span className="hidden xs:inline sm:inline">Filter</span>
+                {jurusanFilter !== "ALL" && (
+                  <span className="w-2 h-2 rounded-full bg-[#0d2346] shrink-0" />
+                )}
+              </button>
+
+              {/* Filter Dropdown Popover */}
+              {isFilterOpen && (
+                <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 max-w-[calc(100vw-32px)] bg-white rounded-2xl border border-slate-200 shadow-xl z-30 p-2.5 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="flex items-center justify-between pb-2 mb-1.5 px-2 border-b border-slate-100">
+                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                      <SlidersHorizontal className="w-3.5 h-3.5 text-slate-600" />
+                      <span>Program Keahlian</span>
+                    </span>
+                    {jurusanFilter !== "ALL" && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setJurusanFilter("ALL");
+                        }}
+                        className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 transition cursor-pointer"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-0.5 max-h-64 overflow-y-auto">
+                    {JURUSAN_OPTIONS.map((opt) => {
+                      const isSelected = jurusanFilter === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => {
+                            setJurusanFilter(opt.value as string);
+                            setIsFilterOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition cursor-pointer ${
+                            isSelected
+                              ? "bg-slate-100 font-bold text-[#0d2346]"
+                              : "text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium"
+                          }`}
+                        >
+                          <span className="truncate pr-2">{opt.label}</span>
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-[#0d2346] shrink-0" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -339,7 +427,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
             <table className="w-full text-left text-[11px]">
               <thead className="bg-[#0d2346] text-white text-[11px]">
                 <tr>
-                  <th className="py-2.5 px-3 font-semibold">
+                  <th className="py-2.5 px-3 font-medium min-w-[140px]">
                     <button
                       type="button"
                       onClick={() => {
@@ -362,20 +450,22 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       )}
                     </button>
                   </th>
-                  <th className="py-2.5 px-3 font-semibold">NISN</th>
-                  <th className="py-2.5 px-3 font-semibold">
+                  <th className="py-2.5 px-3 font-medium whitespace-nowrap min-w-[110px]">
+                    NISN
+                  </th>
+                  <th className="py-2.5 px-3 font-medium min-w-[150px]">
                     Program Keahlian
                   </th>
-                  <th className="py-2.5 px-3 font-semibold text-center">
+                  <th className="py-2.5 px-3 font-medium text-center whitespace-nowrap min-w-[130px]">
                     Status Tracer
                   </th>
-                  <th className="py-2.5 px-3 font-semibold text-center">
+                  <th className="py-2.5 px-3 font-medium text-center whitespace-nowrap min-w-[80px]">
                     Preview
                   </th>
-                  <th className="py-2.5 px-3 font-semibold text-center">
+                  <th className="py-2.5 px-3 font-medium text-center whitespace-nowrap min-w-[80px]">
                     Pengingat
                   </th>
-                  <th className="py-2.5 px-3 font-semibold text-center">
+                  <th className="py-2.5 px-3 font-medium text-center whitespace-nowrap min-w-[80px]">
                     Aksi
                   </th>
                 </tr>
@@ -398,21 +488,21 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       className="hover:bg-slate-50 transition"
                     >
                       {/* 1. Nama Lengkap */}
-                      <td className="py-2.5 px-3">
-                        <div className="font-semibold text-slate-900 text-xs">
+                      <td className="py-2.5 px-3 min-w-[140px]">
+                        <div className="font-medium text-slate-900 text-xs">
                           {alumni.nama}
                         </div>
                       </td>
 
                       {/* 2. NISN */}
-                      <td className="py-2.5 px-3 font-mono">
-                        <span className="font-semibold text-slate-900 text-xs">
+                      <td className="py-2.5 px-3 font-mono whitespace-nowrap min-w-[110px]">
+                        <span className="font-medium text-slate-900 text-xs">
                           {alumni.nisn}
                         </span>
                       </td>
 
                       {/* 3. Program Keahlian */}
-                      <td className="py-2.5 px-3">
+                      <td className="py-2.5 px-3 min-w-[150px]">
                         <div className="text-slate-800 font-medium text-xs">
                           {alumni.jurusan}
                         </div>
@@ -422,32 +512,32 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       </td>
 
                       {/* 4. Status Tracer */}
-                      <td className="py-2.5 px-3 text-center">
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap min-w-[130px]">
                         {alumni.statusTracer === "SUDAH" ? (
                           <span
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-50 text-slate-700 border border-slate-200 whitespace-nowrap shadow-2xs"
                             title="Sudah mengisi kuesioner tracer study"
                           >
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <CheckCircle2 className="w-3 h-3 text-slate-600 shrink-0" />
                             <span>Sudah Mengisi</span>
                           </span>
                         ) : (
                           <span
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-50 text-slate-700 border border-slate-200 whitespace-nowrap shadow-2xs"
                             title="Belum mengisi tracer study"
                           >
-                            <Clock className="w-3 h-3 text-amber-600" />
+                            <Clock className="w-3 h-3 text-slate-600 shrink-0" />
                             <span>Belum Mengisi</span>
                           </span>
                         )}
                       </td>
 
                       {/* 5. Preview */}
-                      <td className="py-2.5 px-3 text-center">
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap min-w-[80px]">
                         <button
                           type="button"
                           onClick={() => setSelectedPreviewAlumni(alumni)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-slate-700 hover:text-[#0d2346] hover:bg-slate-100 text-[11px] font-semibold cursor-pointer shadow-2xs border border-slate-200 transition"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-slate-700 hover:text-[#0d2346] hover:bg-slate-100 text-[11px] font-medium cursor-pointer shadow-2xs border border-slate-200 transition"
                           title="Buka data lengkap siswa"
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -456,7 +546,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       </td>
 
                       {/* 5. Pengingat WA */}
-                      <td className="py-2.5 px-3 text-center">
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap min-w-[80px]">
                         {alumni.statusTracer === "BELUM" &&
                         alumni.noWhatsapp &&
                         alumni.noWhatsapp !== "-" &&
@@ -465,7 +555,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
                             href={generateAlumniWaLink(alumni)}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center justify-center p-1.5 rounded-md text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition cursor-pointer"
+                            className="inline-flex items-center justify-center p-1.5 rounded-md text-slate-600 hover:text-slate-700 hover:bg-slate-50 transition cursor-pointer"
                             title="Kirim pengingat WhatsApp"
                           >
                             <WhatsAppIcon className="w-3.5 h-3.5" />
@@ -476,7 +566,7 @@ export const AdminMasterAlumniTab: React.FC = () => {
                       </td>
 
                       {/* 6. Aksi (Hapus) */}
-                      <td className="py-2.5 px-3 text-center">
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap min-w-[80px]">
                         <button
                           type="button"
                           onClick={() => setDeleteConfirmAlumni(alumni)}

@@ -89,6 +89,7 @@ Thumbs.db
 
 # Agent / AI Scratch caches
 .agents/
+skills-lock.json
 
 # Cloudflare, Vercel & Infrastructure Secrets
 .cloudflared/

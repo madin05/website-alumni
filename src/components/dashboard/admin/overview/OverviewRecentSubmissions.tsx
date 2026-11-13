@@ -1,4 +1,5 @@
 import React from "react";
+import { Info } from "lucide-react";
 import { RespondentRecord } from "@/store/adminStore";
 
 interface OverviewRecentSubmissionsProps {
@@ -13,18 +14,29 @@ export const OverviewRecentSubmissions: React.FC<
   return (
     <div className="lg:col-span-5 bg-white rounded-xl p-5 sm:p-6 border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
       <div>
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900">
+        <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+          <div className="flex items-center gap-1.5">
+            <h3 className="font-semibold text-xs sm:text-sm text-slate-900">
               Kuesioner Masuk Terbaru
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              5 alumni terakhir yang mengirimkan data penelusuran
-            </p>
+            <div
+              className="relative inline-flex items-center group cursor-help"
+              tabIndex={0}
+              aria-label="5 alumni terakhir yang mengirimkan data penelusuran."
+            >
+              <Info className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0" />
+              <div
+                role="tooltip"
+                className="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-1.5 hidden group-hover:block group-focus:block z-30 w-52 sm:w-60 p-2 bg-slate-900 text-white text-[11px] font-normal leading-relaxed rounded-lg shadow-lg pointer-events-none"
+              >
+                5 alumni terakhir yang mengirimkan data penelusuran.
+                <div className="absolute right-2.5 sm:left-1/2 sm:-translate-x-1/2 top-full -mt-1 w-2 h-2 bg-slate-900 rotate-45" />
+              </div>
+            </div>
           </div>
           <button
             onClick={() => onNavigateTab("verifikasi")}
-            className="text-xs font-semibold text-blue-600 hover:underline"
+            className="text-xs font-semibold text-blue-600 hover:underline cursor-pointer shrink-0"
           >
             Lihat Semua
           </button>
