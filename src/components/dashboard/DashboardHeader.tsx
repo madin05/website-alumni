@@ -77,8 +77,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const isAdmin = user?.role === "admin_bkk";
 
   const guidePdfUrl = isAdmin
-    ? `${import.meta.env.BASE_URL}Buku_Panduan_Dashboard_Admin.pdf`
-    : `${import.meta.env.BASE_URL}Buku_Panduan_Dashboard_User.pdf`;
+    ? `${import.meta.env.BASE_URL}Buku_Panduan_Dashboard_Admin.pdf?v=2`
+    : `${import.meta.env.BASE_URL}Buku_Panduan_Dashboard_User.pdf?v=2`;
 
   const guidePdfFileName = isAdmin
     ? "Buku_Panduan_Dashboard_Admin.pdf"
