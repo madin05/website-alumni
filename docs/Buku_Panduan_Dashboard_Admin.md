@@ -131,7 +131,7 @@ Klik ikon **Refresh** (panah melingkar) untuk memuat ulang data terbaru dari ser
 - Klik **Unduh Format** untuk mendapatkan berkas template Excel resmi sebelum melakukan impor data baru.
 - Klik **Impor Berkas** untuk mengunggah data lulusan secara massal dari berkas Excel/CSV.
 - **Menyaring Status Pengisian (Nomor 2):** Klik tab **Semua Data** untuk melihat seluruh populasi lulusan, tab **Sudah Mengisi** untuk melihat alumni yang telah menuntaskan kuesioner, atau tab **Belum Mengisi** untuk melihat daftar alumni yang belum berpartisipasi.
-- **Mencari & Memfilter Alumni (Nomor 3):** Ketikkan nama siswa, NISN, atau NIK pada kolom pencarian, atau pilih **Program Keahlian** dan **Tahun Lulus** tertentu pada kotak pilihan di sebelahnya.
+- **Pencarian Instan & Tombol Filter (Nomor 3):** Ketikkan nama siswa, NISN, atau NIK pada kolom pencarian untuk pemfilteran langsung. Klik tombol **Filter** (ikon geser) di sebelah kanan kolom pencarian untuk membuka menu *popover* pemilihan **Program Keahlian** (dilengkapi indikator titik aktif dan tombol *Reset*).
 - **Tindakan pada Baris Tabel (Nomor 4):**
 Klik tombol **Lihat** pada kolom *Preview* untuk melihat kartu rincian lengkap alumni.
 - Klik tombol hijau **Ingatkan** pada kolom *Pengingat* (khusus alumni berstatus *Belum Mengisi*) untuk membuka aplikasi WhatsApp dengan teks undangan pengisian kuesioner yang sudah tersusun otomatis.
@@ -143,7 +143,7 @@ Klik tombol **Lihat** pada kolom *Preview* untuk melihat kartu rincian lengkap a
 **Keterangan Penunjuk Nomor pada Gambar:**
 - **[1] Baris Tombol Aksi Utama:** Terdiri dari tombol Refresh (muat ulang data), Ekspor Excel, Unduh Format (template Excel), dan Impor Berkas.
 - **[2] Tab Filter Status Pengisian:** Penyaring cepat untuk menampilkan Semua Data, hanya alumni yang Sudah Mengisi, atau hanya alumni yang Belum Mengisi kuesioner.
-- **[3] Kolom Pencarian, Filter Program Keahlian, & Tahun Lulus:** Alat pencarian berdasarkan nama/NISN/NIK serta penyaringan data per jurusan dan tahun angkatan.
+- **[3] Bilah Pencarian & Tombol Filter Terpadu:** Kolom pencarian instan nama/NISN/NIK berdampingan dengan tombol Filter berikon geser untuk membuka popover Program Keahlian.
 - **[4] Kolom Preview, Pengingat WhatsApp, & Aksi Hapus:** Tombol Lihat untuk membuka rincian alumni, tombol Ingatkan (WhatsApp) bagi alumni yang belum mengisi, serta tombol ikon tempat sampah untuk menghapus data.
 
 ---
@@ -196,23 +196,19 @@ Tindakan penghapusan bersifat permanen. Menghapus data seorang alumni dari tabel
 Menu **Data Responden** menampilkan daftar seluruh lulusan yang telah mengirimkan formulir kuesioner Tracer Study. Melalui halaman ini, Admin BKK dapat memantau status aktivitas pasca-kelulusan serta memeriksa rincian tempat kerja, perguruan tinggi, atau usaha milik alumni.
 ### Langkah-langkah Mencari dan Memfilter Data Responden
 - Klik menu **Data Responden** pada bilah navigasi kiri hingga tampil halaman **Data Responden Tracer Study** (lihat **Gambar 8**).
-- **Memuat Ulang Data (Nomor 1):** Klik tombol **Refresh Data** di sudut kanan atas apabila Anda ingin memastikan kiriman kuesioner yang baru saja masuk dari portal alumni telah tampil di tabel.
-- **Pencarian & Penyaringan Multi-Kriteria (Nomor 2):**
-Gunakan kolom pencarian untuk mencari berdasarkan **Nama Alumni**, **NISN**, **Nama Perusahaan** tempat bekerja, atau **Nama Perguruan Tinggi**.
-- Gunakan kotak pilihan **Semua Jurusan** untuk menyaring responden dari program keahlian tertentu.
-- Gunakan kotak pilihan **Semua Angkatan** untuk memfokuskan tampilan pada tahun kelulusan tertentu.
-- Gunakan kotak pilihan **Semua Status Aktivitas** untuk menyaring responden yang berstatus *Bekerja*, *Melanjutkan Studi (Kuliah)*, *Bekerja sambil Kuliah*, *Wirausaha*, atau *Belum/Mencari Kerja*.
-- **Membuka Rincian Jawaban (Nomor 3):** Pada kolom *Aksi* di sisi paling kanan tabel, klik tombol berikon mata (**Lihat detil data kuesioner**) untuk membuka panel rincian jawaban responden.
-- **Navigasi Halaman Tabel (Nomor 4):** Gunakan tombol nomor halaman di bagian kanan bawah tabel untuk berpindah ke halaman daftar responden berikutnya.
+- **Memuat Ulang Data (Nomor 1):** Klik tombol **Refresh** di sudut kanan atas untuk menyinkronkan daftar kiriman kuesioner terbaru langsung dari server basis data.
+- **Tab Filter Cepat Aktivitas (Nomor 2):** Klik salah satu tab di atas bilah pencarian (*Semua Responden*, *Bekerja*, *Kuliah*, *Wirausaha*, atau *Mencari Kerja*) untuk menyaring data seketika.
+- **Pencarian Instan & Tombol Filter (Nomor 3):** Ketikkan nama alumni, NISN, atau instansi pada bilah pencarian. Klik tombol **Filter** (ikon geser) di sebelah kanannya untuk membuka menu *popover* pemilihan **Program Keahlian** dan **Aktivitas Lulusan** (disertai lencana angka filter aktif dan tombol *Reset Semua*).
+- **Membuka Rincian Jawaban (Nomor 4):** Pada kolom *Detil Data* di baris tabel, klik tombol **Detil Data** (berikon mata) untuk membuka panel samping rincian jawaban lengkap kuesioner alumni.
 
 ![Gambar 8. Halaman Menu Data Responden Tracer Study](screenshots/anotasi/08-data-responden.png)
 *Gambar 8. Halaman Menu Data Responden Tracer Study*
 
 **Keterangan Penunjuk Nomor pada Gambar:**
 - **[1] Tombol Refresh Data Responden:** Tombol untuk menyinkronkan ulang daftar kiriman kuesioner terbaru dari server basis data.
-- **[2] Kolom Pencarian & Filter Kategori:** Pencarian berdasarkan nama, NISN, nama perusahaan, atau kampus, disertai filter Jurusan, Tahun Lulus, dan Status Aktivitas.
-- **[3] Tombol Buka Rincian Kuesioner (Ikon Mata):** Tombol pada kolom Aksi untuk membuka panel samping berisi seluruh jawaban kuesioner responden.
-- **[4] Navigasi Halaman (Pagination):** Pengatur perpindahan halaman tabel apabila jumlah responden melebihi batas tampilan per halaman.
+- **[2] Tab Filter Cepat Aktivitas:** Tab penyaring cepat kategori responden (Semua Responden, Bekerja, Kuliah, Wirausaha, dan Mencari Kerja).
+- **[3] Bilah Pencarian & Tombol Filter:** Kolom pencarian instan nama/NISN/instansi berdampingan dengan tombol Filter berikon geser untuk membuka popover kriteria.
+- **[4] Tombol Detil Data (Ikon Mata):** Tombol pada kolom tabel untuk membuka panel samping berisi seluruh jawaban kuesioner responden.
 
 ---
 

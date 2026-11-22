@@ -154,14 +154,3 @@ Daftar perintah npm yang tersedia pada direktori utama:
 | `npm run dev`     | Menjalankan server development Vite dengan Hot Module Replacement (HMR).                                   |
 | `npm run build`   | Menjalankan pemeriksaan tipe TypeScript (`tsc`) dan melakukan kompilasi berkas produksi ke folder `dist/`. |
 | `npm run preview` | Menjalankan server lokal untuk meninjau hasil build produksi dari folder `dist/`.                          |
-
----
-
-## Kebijakan Data dan Kerahasiaan
-
-1. **Perlindungan Data Pribadi:** Seluruh identitas alumni (seperti NISN, NIK, nomor telepon, dan email) dikelola dengan prinsip kehati-hatian. Repositori publik dilarang memuat data pribadi asli milik siswa, alumni, maupun tenaga pengajar.
-2. **Kerahasiaan Kredensial:** Seluruh secret konfigurasi, access token, dan password basis data harus dikelola secara terisolasi pada berkas `.env` lokal masing-masing lingkungan kerja dan tidak boleh dimasukkan ke dalam riwayat Git.
-
----
-
-Hak Cipta (c) 2026 SMK Sasmita Jaya 2 Pamulang. Hak cipta dilindungi undang-undang.
